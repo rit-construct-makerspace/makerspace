@@ -1,0 +1,39 @@
+html {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+}
+
+body {
+    margin: 60px auto 0 auto;
+    max-width: 800px;
+}
+
+h2 {
+    margin-top: 60px;
+}
+
+.members {
+    display: flex;
+    flex-flow: row wrap;
+
+    .member {
+        margin: 0 40px 20px 0;
+    
+        img {
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+        }
+    
+        .name {
+            font-weight: 700;
+        }
+    
+        .role {
+            font-weight: 300;
+        }
+    
+        display: flex;
+        align-items: center;
+    }
+}
