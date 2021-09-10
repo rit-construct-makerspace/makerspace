@@ -1,2 +1,2 @@
 # makerspace
-name and everything else subject to change
+http://hack.rit.edu/ begone
