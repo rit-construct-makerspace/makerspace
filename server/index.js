@@ -11,12 +11,12 @@ port: process.env.PORTNUMBER,
 })
 
 pool.query("CREATE TABLE IF NOT EXISTS students(uid SERIAL PRIMARY KEY, "
-    + " firstName VARCHAR(20), lastName VARCHAR(20), email VARCHAR(15), year INTEGER, "
+    + " firstName VARCHAR(20), lastName VARCHAR(20), email VARCHAR(15) UNIQUE, year INTEGER, "
     + " major TEXT, college TEXT, registrationDate DATE DEFAULT CURRENT_DATE, balance MONEY, hold BOOLEAN DEFAULT FALSE);", (err, res) => {
     console.log(err, res);
     pool.query(
         "INSERT INTO students(uid, firstName, lastName, email, year, major, college, balance) " +
-        " VALUES(640000337, 'John', 'Smith', 'js7708@rit.edu', 4, 'Software Engineering', " +
+        " VALUES(640000338, 'Lorem', 'Ipsum', 'li7708@rit.edu', 4, 'Software Engineering', " +
         " 'Golisano College of Computing and Information Sciences', 0.00)",
         (err, res) => {
             console.log(err, res);
@@ -26,7 +26,7 @@ pool.query("CREATE TABLE IF NOT EXISTS students(uid SERIAL PRIMARY KEY, "
 
 
 const getStudents = (request, response) => {
-pool.query('SELECT * FROM students ORDER BY id ASC', (error, results) => {
+pool.query('SELECT * FROM students ORDER BY uid ASC', (error, results) => {
     if (error) {
     throw error
     }
