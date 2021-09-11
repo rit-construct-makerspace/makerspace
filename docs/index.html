@@ -13,7 +13,13 @@ title: Home
     operations of the lab. This includes managing inventory, reservations, and activity logs.
 </p>
 
+<h2>Sponsoring organization</h2>
+
+<p>Rochester Institute of Technology</p>
+
 <h2>Meet the team</h2>
+
+<p>Team AAMPP</p>
 
 <div class="members">
     {% for member in site.data.members %}
@@ -29,3 +35,15 @@ title: Home
 
 
 <h2>Artifacts</h2>
+
+<a href="https://docs.google.com/spreadsheets/d/15uAR_36ksTdQ_u-QEco29fDNKsbyx7VlobAcvEOmsxQ/edit?usp=sharing">Time Tracking Sheet</a>
+
+<h3>Four-ups</h3>
+
+<ul>
+    {% for fourup in site.fourups %}
+        <li>
+            <a href="{{ fourup.url }}">{{ fourup.title }}</a>
+        </li>
+    {% endfor %}
+</ul>
