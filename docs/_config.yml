@@ -1,0 +1,10 @@
+collections:
+  fourups:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: "fourups"
+    values:
+      layout: "fourup"
