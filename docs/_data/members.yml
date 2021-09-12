@@ -1,18 +1,23 @@
 - name: Samuel Malachowsky
   role: Coach
   image: https://claws.rit.edu/photos/getphotoid.php?Client=Marketing&UN=samvse&HASH=0783b1a3992b3a571a822407c8532b5e176fbb84&T=1631380402
+  
+- name: Matt Galan
+  role: Frontend & UX Lead
+  image: https://avatars.githubusercontent.com/u/20482179?v=4
+  
+- name: Andre Grinshpun
+  role: Project Manager
+  image: https://cdn.discordapp.com/attachments/886745035901632532/886745419294589018/IMG_0404.jpg
+  
 - name: Matt Galan
   role: Some Role
   image: https://avatars.githubusercontent.com/u/20482179?v=4
-- name: Matt Galan
-  role: Some Role
-  image: https://avatars.githubusercontent.com/u/20482179?v=4
-- name: Matt Galan
-  role: Some Role
-  image: https://avatars.githubusercontent.com/u/20482179?v=4
-- name: Matt Galan
-  role: Some Role
-  image: https://avatars.githubusercontent.com/u/20482179?v=4
-- name: Matt Galan
-  role: Some Role
-  image: https://avatars.githubusercontent.com/u/20482179?v=4
+  
+- name: Patrick Wilbur
+  role: Backend Lead
+  image: https://avatars.githubusercontent.com/u/35931402?v=4
+  
+- name: Prionti Nasir
+  role: Database Lead
+  image: https://media-exp1.licdn.com/dms/image/C5603AQF9t9sdGJuAXw/profile-displayphoto-shrink_200_200/0/1574687112314?e=1637193600&v=beta&t=koJ3UCbtaWpm-4FpCm4YHzmatFhugY5tN4lB35kwsEw
