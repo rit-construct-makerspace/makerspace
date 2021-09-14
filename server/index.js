@@ -40,7 +40,7 @@ const port = 3000;
 app.use(express.json());
 
 app.get('/', (request, response) => {
-response.json({ info: 'This is our empty homepage.'})
+response.json({ info: 'This is an empty homepage.'})
 })
 
 app.get('/students', getStudents)
