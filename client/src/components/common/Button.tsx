@@ -1,31 +1,8 @@
 import React from "react";
 import Styles from "../../Styles";
-import styled, { css, FlattenInterpolation } from "styled-components";
+import styled from "styled-components";
 
-export enum ButtonType {
-  Normal,
-  Destructive,
-}
-
-const ButtonTypeStyleMap: { [key in ButtonType]: FlattenInterpolation<any> } = {
-  [ButtonType.Normal]: css`
-    background-color: ${Styles.Colors.Orange};
-  `,
-  [ButtonType.Destructive]: css`
-    background-color: ${Styles.Colors.Red};
-  `,
-};
-
-const DisabledExtraStyles = css`
-  background-color: ${Styles.Colors.DarkGray};
-  cursor: default;
-`;
-
-interface StyledButtonProps {
-  $extraStyles: FlattenInterpolation<any>;
-}
-
-const StyledButton = styled.button<StyledButtonProps>`
+const StyledButton = styled.button`
   cursor: pointer;
   font-weight: 500;
   font-size: 16px;
@@ -33,37 +10,39 @@ const StyledButton = styled.button<StyledButtonProps>`
   border: none;
   border-radius: 0;
   padding: 10px 20px;
-  letter-spacing: 0.5px;
   color: ${Styles.Colors.White};
   ${Styles.Shadows.SmallOutset}
-  ${(props) => props.$extraStyles}
+
+  &:disabled {
+    background-color: ${Styles.Colors.DarkGray};
+    cursor: default;
+  }
 `;
 
 interface ButtonProps {
   label: string;
+  className?: string;
   onClick: () => any;
-  buttonType?: ButtonType;
   disabled?: boolean;
 }
 
-export default function Button({
-  label,
-  onClick,
-  buttonType = ButtonType.Normal,
-  disabled = false,
-}: ButtonProps) {
-  const extraStyles = disabled
-    ? DisabledExtraStyles
-    : ButtonTypeStyleMap[buttonType];
-
+function Button({ label, className, onClick, disabled = false }: ButtonProps) {
   return (
     <StyledButton
       type="button"
-      $extraStyles={extraStyles}
-      disabled={disabled}
+      className={className}
       onClick={onClick}
+      disabled={disabled}
     >
       {label}
     </StyledButton>
   );
 }
+
+export const NormalButton = styled(Button)`
+  background-color: ${Styles.Colors.Orange};
+`;
+
+export const DestructiveButton = styled(Button)`
+  background-color: ${Styles.Colors.Red};
+`;
