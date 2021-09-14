@@ -43,7 +43,7 @@ app.get('/', (request, response) => {
 response.json({ info: 'This is our empty homepage.'})
 })
 
-app.get('/users', getStudents)
+app.get('/students', getStudents)
 
 app.listen(port, () => {
 console.log(`App running on port ${port}.`)
