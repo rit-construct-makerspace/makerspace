@@ -41,14 +41,14 @@ const StyledButton = styled.button<StyledButtonProps>`
 
 interface ButtonProps {
   label: string;
-  onClick?: () => any;
+  onClick: () => any;
   buttonType?: ButtonType;
   disabled?: boolean;
 }
 
 export default function Button({
   label,
-  onClick = () => {},
+  onClick,
   buttonType = ButtonType.Normal,
   disabled = false,
 }: ButtonProps) {
