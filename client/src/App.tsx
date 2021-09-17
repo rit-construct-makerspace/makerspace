@@ -1,7 +1,11 @@
-import React from "react";
+import * as React from "react";
+import LeftNav from "./LeftNav";
+import { BrowserRouter } from "react-router-dom";
 
-function App() {
-  return <div>sup</div>;
+export default function App() {
+  return (
+    <BrowserRouter>
+      <LeftNav />
+    </BrowserRouter>
+  );
 }
-
-export default App;
