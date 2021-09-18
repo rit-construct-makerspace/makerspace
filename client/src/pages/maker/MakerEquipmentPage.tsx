@@ -67,7 +67,7 @@ function MachineCard({ name, category }: MachineCardProps) {
   const history = useHistory();
 
   return (
-    <Grid item onClick={() => history.push("/")}>
+    <Grid item onClick={() => history.push("/create-reservation")}>
       <Card sx={{ width: 250 }}>
         <CardActionArea>
           <CardMedia
