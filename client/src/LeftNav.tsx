@@ -13,6 +13,7 @@ import {
 import HandymanIcon from "@mui/icons-material/Handyman";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import EventIcon from "@mui/icons-material/Event";
+import SchoolIcon from "@mui/icons-material/School";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import PeopleIcon from "@mui/icons-material/People";
 import HistoryIcon from "@mui/icons-material/History";
@@ -81,6 +82,11 @@ export default function LeftNav() {
           icon={<HandymanIcon />}
         />
         <ListItemLink
+          to="/maker/training"
+          primary="Training"
+          icon={<SchoolIcon />}
+        />
+        <ListItemLink
           to="/maker/materials"
           primary="Materials"
           icon={<InventoryIcon />}
@@ -92,6 +98,11 @@ export default function LeftNav() {
           to="/admin/equipment"
           primary="Equipment"
           icon={<HandymanIcon />}
+        />
+        <ListItemLink
+          to="/admin/training"
+          primary="Training"
+          icon={<SchoolIcon />}
         />
         <ListItemLink
           to="/admin/materials"

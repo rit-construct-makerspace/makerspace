@@ -1,8 +1,9 @@
 import * as React from "react";
 import LeftNav from "./LeftNav";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import Page from "./Page";
+import Page from "./pages/Page";
 import { Box, CssBaseline } from "@mui/material";
+import MakerEquipmentPage from "./pages/maker/MakerEquipmentPage";
 
 export default function App() {
   return (
@@ -12,13 +13,19 @@ export default function App() {
         <LeftNav />
         <Switch>
           <Route path="/maker/equipment">
-            <Page title="Equipment" />
+            <MakerEquipmentPage />
+          </Route>
+          <Route path="/maker/training">
+            <Page title="Training" />
           </Route>
           <Route path="/maker/materials">
             <Page title="Materials" />
           </Route>
           <Route path="/admin/equipment">
             <Page title="Equipment" />
+          </Route>
+          <Route path="/admin/training">
+            <Page title="Training" />
           </Route>
           <Route path="/admin/materials">
             <Page title="Materials" />
