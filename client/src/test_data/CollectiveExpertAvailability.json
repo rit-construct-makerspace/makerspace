@@ -1,0 +1,123 @@
+{
+  "data": [
+    {
+      "dayOfWeek": "Monday",
+      "dateString": "September 27th",
+      "expertAvailabilities": [
+        {
+          "expert": {
+            "name": "Adam Savage",
+            "avatarHref": "https://speaking.com/wp-content/uploads/2017/06/Adam-Savage.jpg",
+            "id": "test-id-1"
+          },
+          "availability": [
+            {
+              "startTime": "10:15",
+              "endTime": "13:30"
+            },
+            {
+              "startTime": "16:45",
+              "endTime": "19:00"
+            }
+          ]
+        },
+        {
+          "expert": {
+            "name": "Jamie Hyneman",
+            "avatarHref": "https://pbs.twimg.com/profile_images/877872917995859971/0iN84zuy.jpg",
+            "id": "test-id-2"
+          },
+          "availability": [
+            {
+              "startTime": "09:00",
+              "endTime": "17:00"
+            }
+          ]
+        },
+        {
+          "expert": {
+            "name": "Grant Imahara",
+            "avatarHref": "https://www.mercurynews.com/wp-content/uploads/2020/07/SJM-L-IMAHARA-0716-2.jpg",
+            "id": "test-id-3"
+          },
+          "availability": [
+            {
+              "startTime": "11:00",
+              "endTime": "12:30"
+            },
+            {
+              "startTime": "14:00",
+              "endTime": "16:15"
+            },
+            {
+              "startTime": "19:00",
+              "endTime": "21:00"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "dayOfWeek": "Tuesday",
+      "dateString": "September 28th",
+      "expertAvailabilities": [
+        {
+          "expert": {
+            "name": "Adam Savage",
+            "avatarHref": "https://speaking.com/wp-content/uploads/2017/06/Adam-Savage.jpg",
+            "id": "test-id-1"
+          },
+          "availability": [
+            {
+              "startTime": "12:45",
+              "endTime": "15:00"
+            },
+            {
+              "startTime": "16:45",
+              "endTime": "19:00"
+            }
+          ]
+        },
+        {
+          "expert": {
+            "name": "Grant Imahara",
+            "avatarHref": "https://www.mercurynews.com/wp-content/uploads/2020/07/SJM-L-IMAHARA-0716-2.jpg",
+            "id": "test-id-3"
+          },
+          "availability": [
+            {
+              "startTime": "09:00",
+              "endTime": "12:30"
+            },
+            {
+              "startTime": "14:00",
+              "endTime": "16:15"
+            },
+            {
+              "startTime": "19:00",
+              "endTime": "21:00"
+            }
+          ]
+        }
+      ]
+    },{
+      "dayOfWeek": "Wednesday",
+      "dateString": "September 29th",
+      "expertAvailabilities": [
+        {
+          "expert": {
+            "name": "Jamie Hyneman",
+            "avatarHref": "https://pbs.twimg.com/profile_images/877872917995859971/0iN84zuy.jpg",
+            "id": "test-id-2"
+          },
+          "availability": [
+            {
+              "startTime": "14:30",
+              "endTime": "21:00"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

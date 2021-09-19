@@ -1,6 +1,7 @@
 import React, { ReactNodeArray } from "react";
 import { Avatar, Card, CardActionArea, Tooltip } from "@mui/material";
 import styled from "styled-components";
+import ExpertAvailability from "../../../types/ExpertAvailability";
 
 const StyledDiv = styled.div`
   display: flex;
@@ -38,9 +39,8 @@ export interface TimeSlot {
 }
 
 interface ExpertAvailabilityStripProps {
-  expertName: string;
-  avatarHref: string;
-  availability: TimeSlot[];
+  expertAvailability: ExpertAvailability;
+  onExpertClick: (expert: ExpertAvailability) => void;
 }
 
 function getTimeIndex(time: string) {
@@ -49,13 +49,12 @@ function getTimeIndex(time: string) {
 }
 
 export default function ExpertAvailabilityStrip({
-  expertName,
-  avatarHref,
-  availability,
+  expertAvailability,
+  onExpertClick,
 }: ExpertAvailabilityStripProps) {
   const timeIntervals: boolean[] = [];
 
-  availability.forEach((timeSlot) => {
+  expertAvailability.availability.forEach((timeSlot) => {
     const startIndex = getTimeIndex(timeSlot.startTime);
     const endIndex = getTimeIndex(timeSlot.endTime);
 
@@ -64,27 +63,29 @@ export default function ExpertAvailabilityStrip({
     }
   });
 
-  const idk: ReactNodeArray = [];
-
-  console.log(getTimeIndex("09:00"));
+  const quarterHourBlocks: ReactNodeArray = [];
 
   for (let i = getTimeIndex("09:00"); i < getTimeIndex("21:00"); i++) {
-    idk.push(
+    quarterHourBlocks.push(
       <StyledQuarterHourBlock
         available={timeIntervals[i]}
         addGap={(i + 1) % 4 === 0}
+        key={`quarter-hour-block-${i}`}
       />
     );
   }
 
   return (
-    <Card elevation={4} sx={{ height: "fit-content", ml: 1 }}>
-      <CardActionArea>
+    <Card elevation={4} sx={{ height: "fit-content", ml: 2 }}>
+      <CardActionArea onClick={() => onExpertClick(expertAvailability)}>
         <StyledDiv>
-          <Tooltip title={expertName} placement="top">
-            <Avatar alt="Profile picture 1" src={avatarHref} />
+          <Tooltip title={expertAvailability.expert.name} placement="top">
+            <Avatar
+              alt="Profile picture 1"
+              src={expertAvailability.expert.avatarHref}
+            />
           </Tooltip>
-          <div>{idk}</div>
+          <div>{quarterHourBlocks}</div>
         </StyledDiv>
       </CardActionArea>
     </Card>
