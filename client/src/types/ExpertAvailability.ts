@@ -1,7 +1,7 @@
-import Person from "./Person";
 import TimeSlot from "./TimeSlot";
+import Expert from "./Expert";
 
 export default interface ExpertAvailability {
-  expert: Person;
+  expert: Expert;
   availability: TimeSlot[];
 }

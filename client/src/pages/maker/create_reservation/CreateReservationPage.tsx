@@ -4,6 +4,8 @@ import { Step, StepLabel, Stepper } from "@mui/material";
 import ChooseExpertStep from "./ChooseExpertStep";
 import SelectTimeStep from "./SelectTimeStep";
 import ExpertAvailability from "../../../types/ExpertAvailability";
+import AddDetailsStep from "./AddDetailsStep";
+import ConfirmationStep from "./ConfirmationStep";
 
 interface TotalDayStripProps {}
 
@@ -23,7 +25,7 @@ export default function CreateReservationPage({}: CreateReservationPageProps) {
 
   return (
     <Page title="Create a reservation">
-      <Stepper activeStep={activeStep} sx={{ mb: 8 }}>
+      <Stepper activeStep={activeStep} sx={{ mb: 2, width: 900 }}>
         {["Choose an expert", "Select a time", "Add details"].map((label) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -48,6 +50,15 @@ export default function CreateReservationPage({}: CreateReservationPageProps) {
           chosenExpert={chosenExpert}
         />
       )}
+
+      {activeStep === 2 && (
+        <AddDetailsStep
+          stepBackwards={stepBackwards}
+          stepForwards={stepForwards}
+        />
+      )}
+
+      {activeStep == 3 && <ConfirmationStep />}
     </Page>
   );
 }
