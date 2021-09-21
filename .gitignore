@@ -1,9 +1,5 @@
 .idea
-.jekyll-cache
 **/node_modules
 process.env
 
 /client/coverage
-
-/docs/.jekyll-cache
-/docs/_site
