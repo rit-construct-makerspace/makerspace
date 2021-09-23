@@ -10,6 +10,12 @@
 
 - Test and watch `npm run test.watch`
 
+- Add a new migration `npm run knex:migrate:make -- some-migration-name`
+
+- Run migrations `npm run knex:migrate:latest`
+
+- Rollback migration `npm run knex:migrate:rollback`
+
 Initial code structure and setup heavily influenced by:
 
  https://mbbaig.blog/apollo-server-typescript/

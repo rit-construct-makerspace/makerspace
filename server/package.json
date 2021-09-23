@@ -8,7 +8,10 @@
     "test": "jest",
     "test:watch": "jest --verbose --detectOpenHandles",
     "start:dev": "npm run build:dev",
-    "build:dev": "nodemon 'src/server.ts' --exec 'ts-node' src/server.ts -e ts,graphql"
+    "build:dev": "nodemon 'src/server.ts' --exec 'ts-node' src/server.ts -e ts,graphql",
+    "knex:migrate:make": "knex --knexfile src/db/knex.ts migrate:make -x ts",
+    "knex:migrate:latest": "knex --knexfile src/db/knex.ts migrate:latest",
+    "knex:migrate:rollback": "knex --knexfile src/db/knex.ts migrate:rollback"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +26,7 @@
     "graphql-tools": "^8.2.0",
     "helmet": "^4.6.0",
     "http": "^0.0.1-security",
+    "knex": "^0.95.11",
     "ncp": "^2.0.0",
     "pg": "^8.7.1"
   },
