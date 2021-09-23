@@ -21,3 +21,5 @@ Initial code structure and setup heavily influenced by:
  https://mbbaig.blog/apollo-server-typescript/
 
  https://javascript.plainenglish.io/writing-a-node-js-graphql-backend-that-actually-scales-a-complete-guide-part-1-setup-cddceae25bdc
+
+ https://gist.github.com/tukkajukka/9893e5f111862d06044b73fa944a8741

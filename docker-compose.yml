@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  server:
+    image: server
+    build:
+      context: server
+      dockerfile: ./Dockerfile
+      target: base
+    volumes:
+      - ./src:/home/node/app/src
+    expose:
+      - '3000'
+    ports:
+      - 3000:3000
+    command: npm run start
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=practicedocker
+    
