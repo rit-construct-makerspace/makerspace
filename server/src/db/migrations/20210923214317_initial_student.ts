@@ -18,10 +18,11 @@ export async function up(knex: Knex): Promise<void> {
             t.boolean('hold').defaultTo(false);
           });
         }
-      });
-
+    });
+    
 }
 
 
 export async function down(knex: Knex): Promise<void> {
 }
+

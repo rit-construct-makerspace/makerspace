@@ -5,6 +5,9 @@ import compression from "compression";
 import cors from "cors";
 import helmet from "helmet";
 import { schema } from "./schema";
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const PORT = process.env.PORT || 3000;
 const app = express();

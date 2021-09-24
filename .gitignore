@@ -2,6 +2,7 @@
 .jekyll-cache
 **/node_modules
 process.env
+.env
 
 /client/coverage
 

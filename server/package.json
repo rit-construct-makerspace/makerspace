@@ -4,14 +4,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node 'dist/server.js'",
-    "build": "tsc -p . && ncp src dist",
+    "build": "tsc -p .",
     "test": "jest",
     "test:watch": "jest --verbose --detectOpenHandles",
     "start:dev": "npm run build:dev",
     "build:dev": "nodemon 'src/server.ts' --exec 'ts-node' src/server.ts -e ts,graphql",
-    "knex:migrate:make": "knex --knexfile src/db/knex.ts migrate:make -x ts",
-    "knex:migrate:latest": "knex --knexfile src/db/knex.ts migrate:latest",
-    "knex:migrate:rollback": "knex --knexfile src/db/knex.ts migrate:rollback"
+    "knex:migrate:make": "knex --migrations-directory src/db/migrations migrate:make -x ts",
+    "knex:migrate:latest": "knex --knexfile dist/db/knexFile.js migrate:latest",
+    "knex:migrate:rollback": "knex --knexfile dist/db/knexFile.js migrate:rollback"
   },
   "keywords": [],
   "author": "",

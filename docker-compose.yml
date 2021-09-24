@@ -2,22 +2,32 @@ version: '3.4'
 
 services:
   server:
+    container_name: makerspace_server
     image: server
+    depends_on:
+      - db
     build:
       context: server
       dockerfile: ./Dockerfile
       target: base
     volumes:
-      - ./src:/home/node/app/src
+      - ./server:/home/node/app/src
     expose:
       - '3000'
     ports:
       - 3000:3000
-    command: npm run start
+    command: npm run start && npm run knex:migrate:latest
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
   db:
     image: postgres
+    container_name: makerspace_db
+    ports:
+      - "5432:5432"
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=practicedocker
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
     
