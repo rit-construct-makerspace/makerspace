@@ -1,44 +1,78 @@
 import React from "react";
 import {
   Button,
-  Card,
-  CardActions,
   CardContent,
-  IconButton,
   MenuItem,
   Select,
   Stack,
   TextField,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import { Question, QuestionType } from "../../../types/Quiz";
+import { Option, Question, QuestionType } from "../../../types/Quiz";
 import OptionDraft from "./OptionDraft";
+import QuizItemDraft from "./QuizItemDraft";
+import { v4 as uuidv4 } from "uuid";
+import produce, { Draft } from "immer";
 
 interface QuestionDraftProps {
   question: Question;
-  removeQuestion: (id: string) => void;
-  setQuestionTitle: (id: string, title: string) => void;
-  setQuestionType: (id: string, questionType: QuestionType) => void;
-  addOption: (id: string) => void;
-  removeOption: (questionId: string, optionId: string) => void;
-  setOptionText: (questionId: string, optionId: string, text: string) => void;
-  toggleOptionCorrect: (questionId: string, optionId: string) => void;
+  updateQuestion: (updatedQuestion: Question) => void;
+}
+
+function updateOptions(draft: Draft<Question>, clickedOptionId: string) {
+  if (draft.questionType === QuestionType.Checkboxes) {
+    const clickedOptionIndex = draft.options.findIndex(
+      (option) => option.id === clickedOptionId
+    );
+
+    draft.options[clickedOptionIndex].correct =
+      !draft.options[clickedOptionIndex].correct;
+  }
+
+  if (draft.questionType === QuestionType.MultipleChoice) {
+    draft.options.forEach((o) => (o.correct = o.id === clickedOptionId));
+  }
+}
+
+// When switching from a checkboxes to multiple choice, we need to make sure
+// we aren't left with multiple correct options (there should only be one)
+function adjustOptionsToQuestionType(draft: Draft<Question>) {
+  if (draft.questionType === QuestionType.MultipleChoice) {
+    const firstCorrectOptionIndex = draft.options.findIndex((o) => o.correct);
+
+    draft.options.forEach(
+      (option, index) => (option.correct = index === firstCorrectOptionIndex)
+    );
+  }
 }
 
 export default function QuestionDraft({
   question,
-  removeQuestion,
-  setQuestionTitle,
-  setQuestionType,
-  addOption,
-  removeOption,
-  setOptionText,
-  toggleOptionCorrect,
+  updateQuestion,
 }: QuestionDraftProps) {
   return (
-    <Card elevation={2} sx={{ width: 600 }}>
+    <QuizItemDraft
+      extraActions={
+        <Select
+          value={question.questionType}
+          size="small"
+          sx={{ ml: "auto", mr: 1, width: 160 }}
+          onChange={(e) => {
+            const updatedQuestion = produce(question, (draft) => {
+              // @ts-ignore
+              draft.questionType = e.target.value;
+              adjustOptionsToQuestionType(draft);
+            });
+
+            updateQuestion(updatedQuestion);
+          }}
+        >
+          <MenuItem value={QuestionType.MultipleChoice}>
+            Multiple choice
+          </MenuItem>
+          <MenuItem value={QuestionType.Checkboxes}>Checkboxes</MenuItem>
+        </Select>
+      }
+    >
       <CardContent>
         <TextField
           id="outlined-basic"
@@ -46,8 +80,8 @@ export default function QuestionDraft({
           fullWidth
           variant="outlined"
           value={question.title}
-          onChange={(event) =>
-            setQuestionTitle(question.id, event.target.value)
+          onChange={(e) =>
+            updateQuestion({ ...question, title: e.target.value })
           }
         />
       </CardContent>
@@ -58,45 +92,51 @@ export default function QuestionDraft({
             key={option.id}
             questionType={question.questionType}
             option={option}
-            onRemove={() => removeOption(question.id, option.id)}
-            onTextChange={(e) =>
-              setOptionText(question.id, option.id, e.target.value)
-            }
-            onToggleCorrect={() => toggleOptionCorrect(question.id, option.id)}
+            onRemove={() => {
+              const updatedQuestion = produce(question, (draft) => {
+                const i = draft.options.findIndex((o) => o.id === option.id);
+                draft.options.splice(i, 1);
+              });
+
+              updateQuestion(updatedQuestion);
+            }}
+            onTextChange={(e) => {
+              const updatedQuestion = produce(question, (draft) => {
+                const i = draft.options.findIndex((o) => o.id === option.id);
+                draft.options[i].text = e.target.value;
+              });
+
+              updateQuestion(updatedQuestion);
+            }}
+            onToggleCorrect={() => {
+              const updatedQuestion = produce(question, (draft) => {
+                updateOptions(draft, option.id);
+              });
+
+              updateQuestion(updatedQuestion);
+            }}
           />
         ))}
 
-        <Button onClick={() => addOption(question.id)}>+ Add option</Button>
-      </Stack>
+        <Button
+          sx={{ mx: 1 }}
+          onClick={() => {
+            const newOption: Option = {
+              id: uuidv4(),
+              text: "",
+              correct: false,
+            };
 
-      <CardActions>
-        <IconButton aria-label="Move up">
-          <ArrowDownwardIcon />
-        </IconButton>
+            const updatedQuestion = produce(question, (draft) => {
+              draft.options.push(newOption);
+            });
 
-        <IconButton aria-label="Move down">
-          <ArrowUpwardIcon />
-        </IconButton>
-
-        <IconButton aria-label="Delete">
-          <DeleteIcon onClick={() => removeQuestion(question.id)} />
-        </IconButton>
-
-        <Select
-          value={question.questionType}
-          size="small"
-          sx={{ ml: "auto", width: 160 }}
-          onChange={(e) => {
-            // @ts-ignore idk how to convince TS that `value` is a `QuestionType`
-            setQuestionType(question.id, e.target.value);
+            updateQuestion(updatedQuestion);
           }}
         >
-          <MenuItem value={QuestionType.MultipleChoice}>
-            Multiple choice
-          </MenuItem>
-          <MenuItem value={QuestionType.Checkboxes}>Checkboxes</MenuItem>
-        </Select>
-      </CardActions>
-    </Card>
+          + Add option
+        </Button>
+      </Stack>
+    </QuizItemDraft>
   );
 }

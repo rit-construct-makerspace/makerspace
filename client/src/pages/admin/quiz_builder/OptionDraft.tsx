@@ -48,8 +48,9 @@ export default function OptionDraft({
         onChange={onTextChange}
         sx={{ mx: 1 }}
       />
-      <IconButton size="small">
-        <CloseIcon onClick={onRemove} />
+
+      <IconButton size="small" onClick={onRemove}>
+        <CloseIcon />
       </IconButton>
     </Stack>
   );

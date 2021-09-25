@@ -1,8 +1,11 @@
-export interface QuizItem {
-  id: string;
+export enum QuizItemType {
+  Question = "QUESTION",
+  YoutubeEmbed = "YOUTUBE_EMBED",
+  ImageEmbed = "IMAGE_EMBED",
 }
 
-export interface Option extends QuizItem {
+export interface Option {
+  id: string;
   text: string;
   correct: boolean;
 }
@@ -12,19 +15,27 @@ export enum QuestionType {
   Checkboxes = "CHECKBOXES",
 }
 
-export interface Question extends QuizItem {
+export interface Question {
+  quizItemType: QuizItemType.Question;
+  id: string;
   questionType: QuestionType;
   title: string;
   options: Option[];
 }
 
-export interface YouTubeEmbed extends QuizItem {
+export interface YoutubeEmbed {
+  quizItemType: QuizItemType.YoutubeEmbed;
+  id: string;
   embedId: string;
 }
 
-export interface ImageEmbed extends QuizItem {
+export interface ImageEmbed {
+  quizItemType: QuizItemType.ImageEmbed;
+  id: string;
   href: string;
 }
+
+export type QuizItem = Question | YoutubeEmbed | ImageEmbed;
 
 export interface Quiz {
   id: string;
