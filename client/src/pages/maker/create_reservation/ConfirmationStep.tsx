@@ -1,10 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import CheckIcon from "@mui/icons-material/Check";
 import { Button, Container, Stack, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
-
-const StyledDiv = styled.div``;
 
 interface ConfirmationStepProps {}
 

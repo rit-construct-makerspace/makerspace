@@ -1,15 +1,7 @@
-import React, { forwardRef, useMemo } from "react";
+import React from "react";
 import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
 import Drawer from "@mui/material/Drawer";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
-import {
-  Link as RouterLink,
-  LinkProps as RouterLinkProps,
-  useLocation,
-} from "react-router-dom";
 import HandymanIcon from "@mui/icons-material/Handyman";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import EventIcon from "@mui/icons-material/Event";
@@ -20,35 +12,10 @@ import HistoryIcon from "@mui/icons-material/History";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import HoldAlert from "./HoldAlert";
+import NavLink from "./NavLink";
 
 const drawerWidth = 250;
-
-interface ListItemLinkProps {
-  icon?: React.ReactElement;
-  primary: string;
-  to: string;
-}
-
-function ListItemLink({ icon, primary, to }: ListItemLinkProps) {
-  const url = useLocation();
-
-  const renderLink = useMemo(
-    () =>
-      forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
-        (itemProps, ref) => (
-          <RouterLink to={to} ref={ref} {...itemProps} role={undefined} />
-        )
-      ),
-    [to]
-  );
-
-  return (
-    <ListItem button selected={url.pathname === to} component={renderLink}>
-      {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-      <ListItemText primary={primary} />
-    </ListItem>
-  );
-}
 
 export default function LeftNav() {
   return (
@@ -74,19 +41,21 @@ export default function LeftNav() {
         </Typography>
       </Stack>
 
+      {false && <HoldAlert />}
+
       <List component="nav">
         <Divider textAlign="left">MAKER</Divider>
-        <ListItemLink
+        <NavLink
           to="/maker/equipment"
           primary="Equipment"
           icon={<HandymanIcon />}
         />
-        <ListItemLink
+        <NavLink
           to="/maker/training"
           primary="Training"
           icon={<SchoolIcon />}
         />
-        <ListItemLink
+        <NavLink
           to="/maker/materials"
           primary="Materials"
           icon={<InventoryIcon />}
@@ -94,37 +63,34 @@ export default function LeftNav() {
       </List>
       <List component="nav">
         <Divider textAlign="left">ADMIN</Divider>
-        <ListItemLink
+        <NavLink
           to="/admin/equipment"
           primary="Equipment"
           icon={<HandymanIcon />}
         />
-        <ListItemLink
+        <NavLink
           to="/admin/training"
           primary="Training"
           icon={<SchoolIcon />}
         />
-        <ListItemLink
+        <NavLink
           to="/admin/materials"
           primary="Materials"
           icon={<InventoryIcon />}
         />
-        <ListItemLink
+        <NavLink
           to="/admin/reservations"
           primary="Reservations"
           icon={<EventIcon />}
+          notificationCount={1}
         />
-        <ListItemLink
+        <NavLink
           to="/admin/storefront"
           primary="Storefront"
           icon={<StorefrontIcon />}
         />
-        <ListItemLink
-          to="/admin/people"
-          primary="People"
-          icon={<PeopleIcon />}
-        />
-        <ListItemLink
+        <NavLink to="/admin/people" primary="People" icon={<PeopleIcon />} />
+        <NavLink
           to="/admin/audit"
           primary="Audit Logs"
           icon={<HistoryIcon />}

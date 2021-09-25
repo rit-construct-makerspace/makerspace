@@ -1,10 +1,11 @@
 import * as React from "react";
-import LeftNav from "./LeftNav";
+import LeftNav from "./left_nav/LeftNav";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Page from "./pages/Page";
 import { Box, createTheme, ThemeProvider } from "@mui/material";
 import MakerEquipmentPage from "./pages/maker/MakerEquipmentPage";
 import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
+import QuizBuilderPage from "./pages/admin/quiz_builder/QuizBuilderPage";
 
 const theme = createTheme();
 
@@ -17,6 +18,9 @@ export default function App() {
           <Switch>
             <Route path="/create-reservation">
               <CreateReservationPage />
+            </Route>
+            <Route path="/quiz-builder">
+              <QuizBuilderPage />
             </Route>
             <Route path="/maker/equipment">
               <MakerEquipmentPage />
