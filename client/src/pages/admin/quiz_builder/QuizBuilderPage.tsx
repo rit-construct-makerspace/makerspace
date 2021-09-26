@@ -16,6 +16,7 @@ import { Button, ButtonGroup, Stack } from "@mui/material";
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import ImageIcon from "@mui/icons-material/Image";
+import YouTubeEmbedDraft from "./YouTubeEmbedDraft";
 
 interface QuizBuilderPageProps {}
 
@@ -86,14 +87,22 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
                 <QuestionDraft
                   key={item.id}
                   question={item}
-                  updateQuestion={(updatedQuestion: Question) =>
+                  updateQuestion={(updatedQuestion) =>
                     updateItem(item.id, updatedQuestion)
                   }
                   removeQuestion={() => removeItem(item.id)}
                 />
               );
             case QuizItemType.YoutubeEmbed:
-              return <div>yt</div>;
+              return (
+                <YouTubeEmbedDraft
+                  youtubeEmbed={item}
+                  updateYoutubeEmbed={(updatedYoutubeEmbed) => {
+                    updateItem(item.id, updatedYoutubeEmbed);
+                  }}
+                  onRemove={() => removeItem(item.id)}
+                />
+              );
             case QuizItemType.ImageEmbed:
               return <div>imgur</div>;
           }
