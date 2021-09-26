@@ -9,18 +9,20 @@ const StyledImage = styled.img`
 `;
 
 interface ImageEmbedDraftProps {
+  index: number;
   imageEmbed: ImageEmbed;
   updateImageEmbed: (updatedImageEmbed: ImageEmbed) => void;
   onRemove: () => void;
 }
 
 export default function ImageEmbedDraft({
+  index,
   imageEmbed,
   updateImageEmbed,
   onRemove,
 }: ImageEmbedDraftProps) {
   return (
-    <QuizItemDraft onRemove={onRemove}>
+    <QuizItemDraft onRemove={onRemove} index={index} itemId={imageEmbed.id}>
       <Stack padding={2} spacing={2}>
         <TextField
           label="Image URL"

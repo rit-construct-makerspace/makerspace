@@ -41,18 +41,22 @@ function adjustOptionsToQuestionType(draft: Draft<Question>) {
 }
 
 interface QuestionDraftProps {
+  index: number;
   question: Question;
   updateQuestion: (updatedQuestion: Question) => void;
   removeQuestion: () => void;
 }
 
 export default function QuestionDraft({
+  index,
   question,
   updateQuestion,
   removeQuestion,
 }: QuestionDraftProps) {
   return (
     <QuizItemDraft
+      index={index}
+      itemId={question.id}
       onRemove={removeQuestion}
       extraActions={
         <Select

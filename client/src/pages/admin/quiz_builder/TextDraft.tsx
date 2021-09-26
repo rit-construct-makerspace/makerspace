@@ -4,18 +4,20 @@ import { TextField } from "@mui/material";
 import { Text } from "../../../types/Quiz";
 
 interface TextDraftProps {
+  index: number;
   text: Text;
   updateText: (updatedText: Text) => void;
   onRemove: () => void;
 }
 
 export default function TextDraft({
+  index,
   text,
   updateText,
   onRemove,
 }: TextDraftProps) {
   return (
-    <QuizItemDraft onRemove={onRemove}>
+    <QuizItemDraft onRemove={onRemove} index={index} itemId={text.id}>
       <TextField
         multiline
         sx={{ m: 2 }}

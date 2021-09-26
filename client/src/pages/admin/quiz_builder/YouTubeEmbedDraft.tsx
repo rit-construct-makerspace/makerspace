@@ -12,18 +12,20 @@ const StyledIFrame = styled.iframe`
 `;
 
 interface YouTubeEmbedProps {
+  index: number;
   youtubeEmbed: YoutubeEmbed;
   updateYoutubeEmbed: (updatedYoutubeEmbed: YoutubeEmbed) => void;
   onRemove: () => void;
 }
 
 export default function YouTubeEmbedDraft({
+  index,
   youtubeEmbed,
   updateYoutubeEmbed,
   onRemove,
 }: YouTubeEmbedProps) {
   return (
-    <QuizItemDraft onRemove={onRemove}>
+    <QuizItemDraft onRemove={onRemove} index={index} itemId={youtubeEmbed.id}>
       <Stack padding={2} spacing={2}>
         <TextField
           label="YouTube URL"
