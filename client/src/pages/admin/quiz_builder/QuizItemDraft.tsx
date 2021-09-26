@@ -15,7 +15,10 @@ export default function QuizItemDraft({
   extraActions,
 }: QuizItemDraftProps) {
   return (
-    <Card elevation={4} sx={{ width: 600 }}>
+    <Card
+      elevation={4}
+      sx={{ width: 600, display: "flex", flexFlow: "column nowrap" }}
+    >
       {children}
       <CardActions>
         <IconButton aria-label="Delete" onClick={onRemove}>

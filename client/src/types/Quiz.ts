@@ -1,5 +1,6 @@
 export enum QuizItemType {
   Question = "QUESTION",
+  Text = "TEXT",
   YoutubeEmbed = "YOUTUBE_EMBED",
   ImageEmbed = "IMAGE_EMBED",
 }
@@ -23,6 +24,12 @@ export interface Question {
   options: Option[];
 }
 
+export interface Text {
+  quizItemType: QuizItemType.Text;
+  id: string;
+  text: string;
+}
+
 export interface YoutubeEmbed {
   quizItemType: QuizItemType.YoutubeEmbed;
   id: string;
@@ -35,7 +42,7 @@ export interface ImageEmbed {
   href: string;
 }
 
-export type QuizItem = Question | YoutubeEmbed | ImageEmbed;
+export type QuizItem = Question | Text | YoutubeEmbed | ImageEmbed;
 
 export interface Quiz {
   id: string;

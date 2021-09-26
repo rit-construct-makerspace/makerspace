@@ -1,5 +1,16 @@
 import React from "react";
 import Page from "../../Page";
+import { v4 as uuidv4 } from "uuid";
+import { useImmer } from "use-immer";
+import QuestionDraft from "./QuestionDraft";
+import { Button, ButtonGroup, Stack } from "@mui/material";
+import ContactSupportIcon from "@mui/icons-material/ContactSupport";
+import YouTubeIcon from "@mui/icons-material/YouTube";
+import TextFieldsIcon from "@mui/icons-material/TextFields";
+import ImageIcon from "@mui/icons-material/Image";
+import YouTubeEmbedDraft from "./YouTubeEmbedDraft";
+import ImageEmbedDraft from "./ImageEmbedDraft";
+import TextDraft from "./TextDraft";
 import {
   ImageEmbed,
   Question,
@@ -7,17 +18,9 @@ import {
   Quiz,
   QuizItem,
   QuizItemType,
+  Text,
   YoutubeEmbed,
 } from "../../../types/Quiz";
-import { v4 as uuidv4 } from "uuid";
-import { useImmer } from "use-immer";
-import QuestionDraft from "./QuestionDraft";
-import { Button, ButtonGroup, Stack } from "@mui/material";
-import ContactSupportIcon from "@mui/icons-material/ContactSupport";
-import YouTubeIcon from "@mui/icons-material/YouTube";
-import ImageIcon from "@mui/icons-material/Image";
-import YouTubeEmbedDraft from "./YouTubeEmbedDraft";
-import ImageEmbedDraft from "./ImageEmbedDraft";
 
 interface QuizBuilderPageProps {}
 
@@ -58,6 +61,16 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
     addItem(newQuestion);
   };
 
+  const createText = () => {
+    const newText: Text = {
+      quizItemType: QuizItemType.Text,
+      id: uuidv4(),
+      text: "",
+    };
+
+    addItem(newText);
+  };
+
   const createYoutubeEmbed = () => {
     const newVideoEmbed: YoutubeEmbed = {
       quizItemType: QuizItemType.YoutubeEmbed,
@@ -94,6 +107,17 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
                   removeQuestion={() => removeItem(item.id)}
                 />
               );
+            case QuizItemType.Text:
+              return (
+                <TextDraft
+                  key={item.id}
+                  text={item}
+                  updateText={(updatedText) => {
+                    updateItem(item.id, updatedText);
+                  }}
+                  onRemove={() => removeItem(item.id)}
+                />
+              );
             case QuizItemType.YoutubeEmbed:
               return (
                 <YouTubeEmbedDraft
@@ -119,9 +143,13 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
           }
         })}
 
-        <ButtonGroup fullWidth={true}>
+        <ButtonGroup fullWidth={true} sx={{ minWidth: 600 }}>
           <Button startIcon={<ContactSupportIcon />} onClick={createQuestion}>
             Question
+          </Button>
+
+          <Button startIcon={<TextFieldsIcon />} onClick={createText}>
+            Text
           </Button>
 
           <Button startIcon={<YouTubeIcon />} onClick={createYoutubeEmbed}>
