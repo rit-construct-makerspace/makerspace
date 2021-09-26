@@ -89,6 +89,7 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
                   updateQuestion={(updatedQuestion: Question) =>
                     updateItem(item.id, updatedQuestion)
                   }
+                  removeQuestion={() => removeItem(item.id)}
                 />
               );
             case QuizItemType.YoutubeEmbed:

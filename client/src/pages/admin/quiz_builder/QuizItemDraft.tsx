@@ -5,18 +5,20 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 interface QuizItemDraftProps {
   children: ReactNode;
+  onRemove: () => void;
   extraActions?: ReactNode;
 }
 
 export default function QuizItemDraft({
   children,
+  onRemove,
   extraActions,
 }: QuizItemDraftProps) {
   return (
     <Card elevation={4} sx={{ width: 600 }}>
       {children}
       <CardActions>
-        <IconButton aria-label="Delete">
+        <IconButton aria-label="Delete" onClick={onRemove}>
           <DeleteOutlineIcon />
         </IconButton>
         <IconButton aria-label="Duplicate">

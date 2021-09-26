@@ -13,11 +13,6 @@ import QuizItemDraft from "./QuizItemDraft";
 import { v4 as uuidv4 } from "uuid";
 import produce, { Draft } from "immer";
 
-interface QuestionDraftProps {
-  question: Question;
-  updateQuestion: (updatedQuestion: Question) => void;
-}
-
 function updateOptions(draft: Draft<Question>, clickedOptionId: string) {
   if (draft.questionType === QuestionType.Checkboxes) {
     const clickedOptionIndex = draft.options.findIndex(
@@ -45,12 +40,20 @@ function adjustOptionsToQuestionType(draft: Draft<Question>) {
   }
 }
 
+interface QuestionDraftProps {
+  question: Question;
+  updateQuestion: (updatedQuestion: Question) => void;
+  removeQuestion: () => void;
+}
+
 export default function QuestionDraft({
   question,
   updateQuestion,
+  removeQuestion,
 }: QuestionDraftProps) {
   return (
     <QuizItemDraft
+      onRemove={removeQuestion}
       extraActions={
         <Select
           value={question.questionType}
