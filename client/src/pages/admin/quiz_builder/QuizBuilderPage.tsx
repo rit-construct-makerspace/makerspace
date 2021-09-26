@@ -17,6 +17,7 @@ import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import ImageIcon from "@mui/icons-material/Image";
 import YouTubeEmbedDraft from "./YouTubeEmbedDraft";
+import ImageEmbedDraft from "./ImageEmbedDraft";
 
 interface QuizBuilderPageProps {}
 
@@ -96,6 +97,7 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
             case QuizItemType.YoutubeEmbed:
               return (
                 <YouTubeEmbedDraft
+                  key={item.id}
                   youtubeEmbed={item}
                   updateYoutubeEmbed={(updatedYoutubeEmbed) => {
                     updateItem(item.id, updatedYoutubeEmbed);
@@ -104,7 +106,16 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
                 />
               );
             case QuizItemType.ImageEmbed:
-              return <div>imgur</div>;
+              return (
+                <ImageEmbedDraft
+                  key={item.id}
+                  imageEmbed={item}
+                  updateImageEmbed={(updatedImageEmbed) => {
+                    updateItem(item.id, updatedImageEmbed);
+                  }}
+                  onRemove={() => removeItem(item.id)}
+                />
+              );
           }
         })}
 
