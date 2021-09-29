@@ -16,6 +16,12 @@
 
 - Rollback migration `npm run knex:migrate:rollback`
 
+- Build containers `docker-compose build`
+
+- Run containers `docker-compose up -d`
+
+- Stop containers `docker-compose down`
+
 Initial code structure and setup heavily influenced by:
 
  https://mbbaig.blog/apollo-server-typescript/

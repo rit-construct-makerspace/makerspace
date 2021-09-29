@@ -7,7 +7,7 @@ import helmet from "helmet";
 import { schema } from "./schema";
 import dotenv from 'dotenv'
 
-dotenv.config()
+dotenv.config({path:__dirname+'/./../.env'})
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -20,6 +20,7 @@ app.use(compression());
 
 const server = new ApolloServer({
   schema,
+  introspection: true,
 });
 
 (async function startServer () {

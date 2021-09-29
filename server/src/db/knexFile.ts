@@ -1,13 +1,14 @@
+require('dotenv').config({path:__dirname+'/./../../.env'})
 // Update with your config settings.
 module.exports = {
 
   development: {
     client: "pg",
     connection: {
-      host: "172.22.0.1",
-      user: "postgres",
-      database: "test",
-      password: "password",
+      host: "localhost",
+      user: process.env.POSTGRES_USER,
+      database: process.env.POSTGRES_DB,
+      password: process.env.POSTGRES_PASSWORD,
       port: 5432,
     },
     pool: {
@@ -23,10 +24,10 @@ module.exports = {
   production: {
     client: "pg",
     connection: {
-      host: "172.22.0.1",
-      user: "postgres",
-      database: "test",
-      password: "password",
+      host: "makerspace_db",
+      user: process.env.POSTGRES_USER,
+      database: process.env.POSTGRES_DB,
+      password: process.env.POSTGRES_PASSWORD,
       port: 5432,
     },
     pool: {

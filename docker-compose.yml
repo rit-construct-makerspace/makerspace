@@ -9,7 +9,7 @@ services:
     build:
       context: server
       dockerfile: ./Dockerfile
-      target: base
+      target: production
     volumes:
       - ./server:/home/node/app/src
     expose:
@@ -18,16 +18,16 @@ services:
       - 3000:3000
     command: npm run start && npm run knex:migrate:latest
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
   db:
     image: postgres
     container_name: makerspace_db
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER
-      - POSTGRES_PASSWORD
-      - POSTGRES_DB
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     
