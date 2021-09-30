@@ -1,13 +1,12 @@
 .idea
-.jekyll-cache
 **/node_modules
 process.env
 .env
 
 /client/coverage
-
 /docs/.jekyll-cache
 /docs/_site
 
-# Transpiled Server F   iles
+# Transpiled Server Files
 server/dist
+
