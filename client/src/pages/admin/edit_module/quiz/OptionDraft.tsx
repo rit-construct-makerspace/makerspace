@@ -1,6 +1,6 @@
 import React, { ChangeEventHandler } from "react";
 import { IconButton, Stack, TextField } from "@mui/material";
-import { Option, QuestionType } from "../../../types/Quiz";
+import { Option, QuestionType } from "../../../../types/Quiz";
 import CloseIcon from "@mui/icons-material/Close";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
