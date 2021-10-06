@@ -2,6 +2,7 @@ import React from "react";
 import Page from "../../Page";
 import {
   Autocomplete,
+  Button,
   Checkbox,
   Divider,
   FormControlLabel,
@@ -10,6 +11,9 @@ import {
   Typography,
 } from "@mui/material";
 import styled from "styled-components";
+import EngineeringIcon from "@mui/icons-material/Engineering";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import HistoryIcon from "@mui/icons-material/History";
 
 interface EditEquipmentPageProps {}
 
@@ -22,6 +26,22 @@ const StyledMachineImage = styled.img`
 export default function EditEquipmentPage({}: EditEquipmentPageProps) {
   return (
     <Page title="Manage equipment">
+      <Stack direction="row" spacing={1} sx={{ mt: -2, mb: 4 }}>
+        <Button variant="outlined" startIcon={<EngineeringIcon />}>
+          Schedule Maintenance
+        </Button>
+        <Button variant="outlined" startIcon={<HistoryIcon />}>
+          View Logs
+        </Button>
+        <Button
+          variant="outlined"
+          startIcon={<DeleteOutlineIcon />}
+          color="error"
+        >
+          Delete
+        </Button>
+      </Stack>
+
       <Typography variant="h5" component="div">
         Basic information
       </Typography>
@@ -67,11 +87,19 @@ export default function EditEquipmentPage({}: EditEquipmentPageProps) {
       <Typography variant="h5" component="div">
         Training Modules
       </Typography>
+      <p>
+        Imagine a list of required training modules here, with the ability to
+        add and remove required modules
+      </p>
 
       <Divider sx={{ my: 4 }} />
       <Typography variant="h5" component="div">
         Makers
       </Typography>
+      <p>
+        Image a list of makers who have fulfilled the training modules and thus
+        have access to this equipment, with the ability to add or remove makers
+      </p>
     </Page>
   );
 }
