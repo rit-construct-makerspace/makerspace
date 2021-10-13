@@ -9,6 +9,7 @@ import TrainingModulesPage from "./pages/admin/training_modules/TrainingModulesP
 import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
 import styled from "styled-components";
+import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
 
 const StyledWipDisclaimer = styled.div`
   position: absolute;
@@ -33,15 +34,19 @@ export default function App() {
             <Route path="/create-reservation">
               <CreateReservationPage />
             </Route>
+
             <Route path="/quiz-builder">
               <EditModulePage />
             </Route>
+
             <Route path="/maker/equipment">
               <EquipmentPage isAdmin={false} />
             </Route>
+
             <Route path="/maker/training">
               <Page title="Training" />
             </Route>
+
             <Route path="/maker/materials">
               <Page title="Materials" />
             </Route>
@@ -49,24 +54,35 @@ export default function App() {
             <Route path="/admin/edit-equipment">
               <EditEquipmentPage />
             </Route>
+
             <Route path="/admin/equipment">
               <EquipmentPage isAdmin={true} />
             </Route>
+
             <Route path="/admin/training">
               <TrainingModulesPage />
             </Route>
+
             <Route path="/admin/materials">
               <Page title="Materials" />
             </Route>
+
             <Route path="/admin/reservations">
               <Page title="Reservations" />
             </Route>
+
+            <Route path="/admin/monitor/select-room">
+              <SelectRoomPage />
+            </Route>
+
             <Route path="/admin/storefront">
               <Page title="Storefront" />
             </Route>
+
             <Route path="/admin/people">
               <Page title="People" />
             </Route>
+
             <Route path="/admin/audit">
               <Page title="Audit Logs" />
             </Route>
