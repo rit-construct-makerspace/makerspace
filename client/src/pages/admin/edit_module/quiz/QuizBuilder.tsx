@@ -1,9 +1,8 @@
 import React from "react";
-import Page from "../../Page";
 import { v4 as uuidv4 } from "uuid";
 import { useImmer } from "use-immer";
 import QuestionDraft from "./QuestionDraft";
-import { Button, ButtonGroup } from "@mui/material";
+import { Button, ButtonGroup, Stack } from "@mui/material";
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
@@ -20,12 +19,12 @@ import {
   QuizItemType,
   Text,
   YoutubeEmbed,
-} from "../../../types/Quiz";
+} from "../../../../types/Quiz";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 
 interface QuizBuilderPageProps {}
 
-export default function QuizBuilderPage({}: QuizBuilderPageProps) {
+export default function QuizBuilder({}: QuizBuilderPageProps) {
   const [quiz, setQuiz] = useImmer<Quiz>({
     id: uuidv4(),
     items: [],
@@ -103,7 +102,7 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Page title="Create training quiz">
+      <Stack>
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -181,7 +180,7 @@ export default function QuizBuilderPage({}: QuizBuilderPageProps) {
             Image
           </Button>
         </ButtonGroup>
-      </Page>
+      </Stack>
     </DragDropContext>
   );
 }

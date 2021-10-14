@@ -9,7 +9,7 @@ interface PageProps {
 
 export default function Page({ title, children }: PageProps) {
   return (
-    <Box sx={{ padding: 4 }}>
+    <Box sx={{ padding: 4, width: "100%" }}>
       <Typography variant="h3" paddingBottom={4}>
         {title}
       </Typography>

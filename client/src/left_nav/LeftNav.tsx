@@ -14,6 +14,12 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import HoldAlert from "./HoldAlert";
 import NavLink from "./NavLink";
+import LogoSvg from "../assets/logo.svg";
+import styled from "styled-components";
+
+const StyledLogo = styled.img`
+  margin: 20px 12px 12px 12px;
+`;
 
 const drawerWidth = 250;
 
@@ -31,6 +37,8 @@ export default function LeftNav() {
       variant="permanent"
       anchor="left"
     >
+      <StyledLogo src={LogoSvg} alt="" />
+
       <Stack direction="row" alignItems="center" spacing={2} padding={2}>
         <Avatar
           alt="matt"

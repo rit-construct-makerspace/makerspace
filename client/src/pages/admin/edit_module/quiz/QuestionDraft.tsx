@@ -7,7 +7,7 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { Option, Question, QuestionType } from "../../../types/Quiz";
+import { Option, Question, QuestionType } from "../../../../types/Quiz";
 import OptionDraft from "./OptionDraft";
 import QuizItemDraft from "./QuizItemDraft";
 import { v4 as uuidv4 } from "uuid";
