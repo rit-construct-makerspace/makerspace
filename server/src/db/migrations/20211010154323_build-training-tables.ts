@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     knex.schema.hasTable('TrainingModule').then(function(exists) {
         if (!exists) {
           return knex.schema.createTable('TrainingModule', function(t) {
-            t.uuid('id').primary();
+            t.increments('id');
             t.string('name', 100);
           });
         }
@@ -15,10 +15,11 @@ export async function up(knex: Knex): Promise<void> {
     knex.schema.hasTable('Question').then(function(exists) {
         if (!exists) {
           return knex.schema.createTable('Question', function(t) {
-            t.uuid('id').primary();
-            t.foreign('module').references('id').inTable('TrainingModule');
+            t.increments('id')
+            t.integer('module')
+            t.foreign('module').references('id').inTable('TrainingModule')
             t.enu('questionType', ['MULTIPLE_CHOICE', 'CHECKBOXES'])
-            t.text('text');
+            t.text('text')
           });
         }
     });
@@ -26,7 +27,8 @@ export async function up(knex: Knex): Promise<void> {
     knex.schema.hasTable('QuestionOption').then(function(exists) {
         if (!exists) {
           return knex.schema.createTable('QuestionOption', function(t) {
-            t.uuid('id').primary();
+            t.increments('id');
+            t.integer('question')
             t.foreign('question').references('id').inTable('Question');
             t.text('text');
             t.boolean('correct');

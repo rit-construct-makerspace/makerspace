@@ -4,10 +4,10 @@ export const TrainingTypeDefs = gql`
   type TrainingModule {
     id: ID!
     name: String!
-    items: [TrainingModuleItem]!
+    items: [Question]!
   }
 
-  type TrainingModuleItem {
+  interface TrainingModuleItem {
     id: ID!
   }
 
@@ -17,8 +17,9 @@ export const TrainingTypeDefs = gql`
   }
 
   type Question implements TrainingModuleItem {
+    id: ID!
     text: String!
-    questionType: QuestionType!
+    type: QuestionType!
     options: [QuestionOption]!
   }
 
@@ -29,7 +30,7 @@ export const TrainingTypeDefs = gql`
   }
 
   type Query {
-    getModules: [TrainingModule]
+    modules: [TrainingModule]
   }
 
   input QuestionInput {
@@ -43,14 +44,14 @@ export const TrainingTypeDefs = gql`
   }
 
   type Mutation {
-    createModule(name: String)
-    createQuestion(question: QuestionInput)
-    createQuestionOption(option: QuestionOptionInput)
-    updateModule(id: ID!)
-    updateQuestion()
-    updateQuestionOption()
-    deleteModule()
-    deleteQuestion()
-    deleteQuestionOption()
+    createModule(name: String): TrainingModule 
+    addQuestion(module_id: ID!, question: QuestionInput): Question
+    addOption(option: QuestionOptionInput): QuestionOption
+    updateModule(id: ID!, name: String): TrainingModule
+    updateQuestion(id: ID!, question: QuestionInput): Question
+    updateOption(id: ID!, option: QuestionOptionInput): QuestionOption
+    deleteModule(id: ID!): TrainingModule
+    deleteQuestion(id: ID!): Question
+    deleteOption(id: ID!): QuestionOption
   }
 `;
