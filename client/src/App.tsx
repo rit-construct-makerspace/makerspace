@@ -8,20 +8,8 @@ import CreateReservationPage from "./pages/maker/create_reservation/CreateReserv
 import TrainingModulesPage from "./pages/admin/training_modules/TrainingModulesPage";
 import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
-import styled from "styled-components";
 import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
 import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
-
-const StyledWipDisclaimer = styled.div`
-  position: absolute;
-  bottom: 40px;
-  right: 40px;
-  font-weight: 700;
-  font-size: 80px;
-  z-index: 10;
-  opacity: 0.1;
-  pointer-events: none;
-`;
 
 const theme = createTheme();
 
