@@ -10,6 +10,7 @@ import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
 import styled from "styled-components";
 import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
+import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
 
 const StyledWipDisclaimer = styled.div`
   position: absolute;
@@ -73,6 +74,10 @@ export default function App() {
 
             <Route path="/admin/monitor/select-room">
               <SelectRoomPage />
+            </Route>
+
+            <Route path="/admin/monitor/sample-room">
+              <MonitorRoomPage />
             </Route>
 
             <Route path="/admin/storefront">

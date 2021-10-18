@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Person from "../../../types/Person";
+import { useHistory } from "react-router-dom";
 
 export interface Room {
   id: string;
@@ -22,9 +23,13 @@ interface RoomCardProps {
 }
 
 export default function RoomCard({ room, monitor }: RoomCardProps) {
+  const history = useHistory();
+
   return (
     <Card sx={{ width: 400, mr: 2, mb: 2 }}>
-      <CardActionArea>
+      <CardActionArea
+        onClick={() => history.push("/admin/monitor/sample-room")}
+      >
         <CardMedia component="img" image={room.image} sx={{ height: 200 }} />
         <CardContent>
           <Typography variant="h6" component="div" mb={1}>
