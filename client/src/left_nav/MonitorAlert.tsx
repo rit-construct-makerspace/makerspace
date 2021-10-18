@@ -1,13 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import { Alert } from "@mui/lab";
 import { Button, Link, Stack, Typography } from "@mui/material";
 import MonitorIcon from "@mui/icons-material/Monitor";
-
-const StyledDiv = styled.div`
-  background: ${({ theme }) => theme.palette.primary.light};
-  border-radius: 4px;
-`;
 
 interface MonitoringBoxProps {}
 
