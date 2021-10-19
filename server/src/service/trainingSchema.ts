@@ -46,7 +46,7 @@ export const TrainingTypeDefs = gql`
   type Mutation {
     createModule(name: String): TrainingModule 
     addQuestion(module_id: ID!, question: QuestionInput): Question
-    addOption(option: QuestionOptionInput): QuestionOption
+    addOption(question_id: ID!, option: QuestionOptionInput): QuestionOption
     updateModule(id: ID!, name: String): TrainingModule
     updateQuestion(id: ID!, question: QuestionInput): Question
     updateOption(id: ID!, option: QuestionOptionInput): QuestionOption

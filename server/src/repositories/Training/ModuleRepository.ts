@@ -39,6 +39,10 @@ export class ModuleRepo implements IModuleRepo {
     return ModuleMap.toDomain(knexResult);
   }
 
+  // public async updateModule(moduel: Module): Promise<Module> {
+    
+  // }
+
   public async addModule(module: Module): Promise<Module> {
     const insert = await knex("TrainingModule").insert(
       { name: module.name },
