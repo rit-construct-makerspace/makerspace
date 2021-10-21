@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@mui/icons-material": "^5.0.0",
-    "@mui/lab": "next",
+    "@mui/lab": "latest",
     "@mui/material": "next",
     "@mui/styled-engine-sc": "next",
     "@testing-library/jest-dom": "latest",
