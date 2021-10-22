@@ -1,56 +1,12 @@
-# Create React App example with styled-components & TypeScript
+# Makerspace Client
 
-The main difference between this and the non-typescript example is that you need to add the following path config to your tsconfig:
+This is a React JS web application used by makers, labbies, and admins alike.
 
-```json
-"paths": {
-  "@mui/styled-engine": ["./node_modules/@mui/styled-engine-sc"]
-}
-```
+Notable technologies used include [React](https://reactjs.org/), [TypeScript](https://www.typescriptlang.org/), [styled-components](https://styled-components.com/), and [MUI](https://mui.com/getting-started/usage/).
 
-and install @types/styled-components:
+## Run locally
 
-```
-npm install --save-dev @types/styled-components
-```
-
-Alternatively, to skip this configuration, you can set `skipLibCheck: true` in your tsconfig.
-
-## How to use
-
-Download the example [or clone the repo](https://github.com/mui-org/material-ui):
-
-<!-- #default-branch-switch -->
-
-```sh
-curl https://codeload.github.com/mui-org/material-ui/tar.gz/master | tar -xz --strip=2 material-ui-master/examples/create-react-app-with-styled-components-typescript
-cd create-react-app-with-styled-components-typescript
-```
-
-Install it and run:
-
-```sh
-npm install
-npm start
-```
-
-## CodeSandbox
-
-<!-- #default-branch-switch -->
-
-Note that CodeSandbox is not supporting react-app-rewired, yet you can [still see the code](https://codesandbox.io/s/github/mui-org/material-ui/tree/master/examples/create-react-app-with-styled-components-typescript).
-
-The following link leverages this demo: https://mui.com/guides/interoperability/#change-the-default-styled-engine with Parcel's alias feature within the `package.json`
-
-[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/styled-components-interoperability-w9z9d)
-
-## The idea behind the example
-
-This example demonstrates how you can setup [Create React App](https://github.com/facebookincubator/create-react-app) with [styled-components](https://styled-components.com/) as a style engine for your application using TypeScript.
-
-## What's next?
-
-<!-- #default-branch-switch -->
-
-You now have a working example project.
-You can head back to the documentation, continuing browsing it from the [templates](https://mui.com/getting-started/templates/) section.
+1. Make sure you're in the `makerspace/client` directory
+1. Install dependencies: `npm install`
+1. Start dev server: `npm start`
+1. View app at http://localhost:3000/
