@@ -16,6 +16,8 @@ import HoldAlert from "./HoldAlert";
 import NavLink from "./NavLink";
 import LogoSvg from "../assets/logo.svg";
 import styled from "styled-components";
+import MonitorIcon from "@mui/icons-material/Monitor";
+import MonitorAlert from "./MonitorAlert";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -48,6 +50,8 @@ export default function LeftNav() {
           Matt Galan
         </Typography>
       </Stack>
+
+      <MonitorAlert />
 
       {false && <HoldAlert />}
 
@@ -91,6 +95,11 @@ export default function LeftNav() {
           primary="Reservations"
           icon={<EventIcon />}
           notificationCount={1}
+        />
+        <NavLink
+          to="/admin/monitor/select-room"
+          primary="Monitor"
+          icon={<MonitorIcon />}
         />
         <NavLink
           to="/admin/storefront"
