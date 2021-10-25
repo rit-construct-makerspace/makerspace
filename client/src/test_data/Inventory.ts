@@ -27,7 +27,7 @@ export default [
     labels: ["Electronics"],
     unit: "board",
     pluralUnit: "boards",
-    count: 23,
+    count: 6,
     pricePerUnit: 8,
   },
   {

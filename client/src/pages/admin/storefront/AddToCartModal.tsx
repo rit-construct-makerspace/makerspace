@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import {
+  Alert,
   Avatar,
+  Button,
   Card,
+  Collapse,
   Divider,
   Modal,
   Stack,
@@ -21,6 +24,19 @@ export default function AddToCartModal({
   onClose,
   item,
 }: AddToCartModalProps) {
+  const [count, setCount] = useState(0);
+
+  const cost = count * item.pricePerUnit || 0;
+
+  const validCost = cost > 0;
+  const enoughInInventory = count <= item.count;
+
+  const addToCart = () => {
+    if (!validCost || !enoughInInventory) return;
+
+    onClose();
+  };
+
   return (
     <Modal open={open} onClose={onClose}>
       <Card
@@ -38,7 +54,6 @@ export default function AddToCartModal({
           <Typography variant="h5" component="div" sx={{ mb: 2 }}>
             Add to shopping cart
           </Typography>
-
           <Stack direction="row" spacing={2} alignItems="center" mb={4}>
             <Avatar alt="" src={item.image} />
 
@@ -47,13 +62,25 @@ export default function AddToCartModal({
             </Typography>
           </Stack>
 
-          <Stack alignSelf="flex-end" alignItems="flex-end" width="min-content">
+          <Stack
+            alignSelf="flex-end"
+            alignItems="flex-end"
+            width="min-content"
+            mb={2}
+          >
             <Stack direction="row" alignItems="center" spacing={1}>
               <TextField
                 label="Count"
                 size="small"
                 sx={{ width: 100 }}
                 type="number"
+                autoFocus
+                onKeyDown={({ key }) => {
+                  if (key === "Enter") addToCart();
+                }}
+                onChange={(e) => {
+                  setCount(parseInt(e.target.value));
+                }}
               />
               <Typography variant="body1">{item.pluralUnit}</Typography>
             </Stack>
@@ -65,9 +92,24 @@ export default function AddToCartModal({
             <Divider flexItem sx={{ my: 1 }} />
 
             <Typography variant="h6" component="div">
-              $7.43
+              ${cost.toFixed(2)}
             </Typography>
           </Stack>
+
+          <Collapse in={!enoughInInventory}>
+            <Alert severity="error">
+              Only {item.count} {item.pluralUnit} left in inventory
+            </Alert>
+          </Collapse>
+
+          <Button
+            variant="contained"
+            sx={{ alignSelf: "flex-end", mt: 2 }}
+            disabled={!validCost || !enoughInInventory}
+            onClick={addToCart}
+          >
+            Add to cart
+          </Button>
         </Stack>
       </Card>
     </Modal>

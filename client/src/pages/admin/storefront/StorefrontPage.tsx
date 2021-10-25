@@ -40,9 +40,9 @@ export default function StorefrontPage({}: StorefrontPageProps) {
         ))}
       </Stack>
 
-      {activeItem && (
+      {activeItem && showModal && (
         <AddToCartModal
-          open={showModal}
+          open
           onClose={() => setShowModal(false)}
           item={activeItem}
         />
