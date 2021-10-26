@@ -12,11 +12,13 @@ import CloseIcon from "@mui/icons-material/Close";
 interface ShoppingCartRowProps {
   shoppingCartEntry: ShoppingCartEntry;
   removeEntry: () => void;
+  setEntryCount: (newCount: number) => void;
 }
 
 export default function ShoppingCartRow({
   shoppingCartEntry,
   removeEntry,
+  setEntryCount,
 }: ShoppingCartRowProps) {
   const { item, count } = shoppingCartEntry;
 
@@ -40,6 +42,7 @@ export default function ShoppingCartRow({
           type="number"
           size="small"
           sx={{ width: 100 }}
+          onChange={(e) => setEntryCount(parseInt(e.target.value))}
         />
 
         <Typography variant="body1" width={100}>

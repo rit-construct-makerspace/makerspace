@@ -41,11 +41,22 @@ export default function StorefrontPage({}: StorefrontPageProps) {
       draft.splice(index, 1);
     });
 
+  const setEntryCount = (id: string, newCount: number) =>
+    setShoppingCart((draft) => {
+      const index = draft.findIndex((e: ShoppingCartEntry) => e.id === id);
+
+      const valid = newCount > 0 && newCount <= draft[index].item.count;
+      if (!valid) return;
+
+      draft[index].count = newCount;
+    });
+
   return (
     <Page title="Storefront">
       <ShoppingCart
         entries={shoppingCart}
         removeEntry={removeFromShoppingCart}
+        setEntryCount={setEntryCount}
       />
 
       <Typography variant="h5" component="div" sx={{ mb: 2, mt: 8 }}>
