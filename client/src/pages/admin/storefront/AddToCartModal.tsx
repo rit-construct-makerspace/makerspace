@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Alert,
   Avatar,
@@ -15,25 +15,30 @@ import InventoryItem from "../../../types/InventoryItem";
 
 interface AddToCartModalProps {
   open: boolean;
+  count: number;
+  setCount: (count: number) => void;
+  addToCart: () => void;
   onClose: () => void;
   item: InventoryItem;
 }
 
 export default function AddToCartModal({
   open,
+  count,
+  setCount,
+  addToCart,
   onClose,
   item,
 }: AddToCartModalProps) {
-  const [count, setCount] = useState(0);
-
   const cost = count * item.pricePerUnit || 0;
 
   const validCost = cost > 0;
   const enoughInInventory = count <= item.count;
 
-  const addToCart = () => {
+  const tryAddToCart = () => {
     if (!validCost || !enoughInInventory) return;
 
+    addToCart();
     onClose();
   };
 
@@ -54,6 +59,7 @@ export default function AddToCartModal({
           <Typography variant="h5" component="div" sx={{ mb: 2 }}>
             Add to shopping cart
           </Typography>
+
           <Stack direction="row" spacing={2} alignItems="center" mb={4}>
             <Avatar alt="" src={item.image} />
 
@@ -76,7 +82,7 @@ export default function AddToCartModal({
                 type="number"
                 autoFocus
                 onKeyDown={({ key }) => {
-                  if (key === "Enter") addToCart();
+                  if (key === "Enter") tryAddToCart();
                 }}
                 onChange={(e) => {
                   setCount(parseInt(e.target.value));
@@ -106,7 +112,7 @@ export default function AddToCartModal({
             variant="contained"
             sx={{ alignSelf: "flex-end", mt: 2 }}
             disabled={!validCost || !enoughInInventory}
-            onClick={addToCart}
+            onClick={tryAddToCart}
           >
             Add to cart
           </Button>
