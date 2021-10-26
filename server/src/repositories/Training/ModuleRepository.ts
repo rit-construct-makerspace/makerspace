@@ -39,9 +39,37 @@ export class ModuleRepo implements IModuleRepo {
     return ModuleMap.toDomain(knexResult);
   }
 
-  // public async updateModule(moduel: Module): Promise<Module> {
-    
-  // }
+  public async save(module: Module): Promise<void> {
+    knex.transaction((trx: any) => {
+      knex('books').transacting(trx).insert({name: 'Old Books'})
+        .then(() => {
+
+          for (let e of module.domainEvents) {
+            switch (e.name) {
+              case 'NAME_CHANGE':
+              case 'NEW_QUESTION':
+              case 'DELETE_QUESTION':
+              case 'NEW_OPTION':
+              case 'DELETE_OPTION':
+            }
+          }
+
+        })
+        .then(trx.commit)
+        .catch(trx.rollback);
+    })
+    .then(() => {
+      console.log('Transaction complete.');
+    })
+    .catch((err: any) => {
+      console.error(err);
+    });
+  }
+
+  public async deleteModuleById(moduleId: number | string): Promise<void> {
+    const knexResult = await knex("TrainingModule")
+      .delete();
+  }  
 
   public async addModule(module: Module): Promise<Module> {
     const insert = await knex("TrainingModule").insert(

@@ -6,7 +6,7 @@ export enum QuestionType {
 }
 
 export interface Question {
-    id: number;
+    id: number | undefined;
     text: string;
     type: QuestionType;
     options: Option[];
