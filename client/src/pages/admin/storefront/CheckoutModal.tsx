@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import PrettyModal from "../../../common/PrettyModal";
 import { Button, Divider, Stack, Typography } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import InventoryIcon from "@mui/icons-material/Inventory";
 
 function StepNumber({ children }: { children: ReactNode }) {
   return (
@@ -11,6 +12,7 @@ function StepNumber({ children }: { children: ReactNode }) {
       sx={{
         color: "primary.main",
         fontWeight: 700,
+        width: "54px",
       }}
     >
       {children}
@@ -25,9 +27,9 @@ interface CheckoutModalProps {
 
 export default function CheckoutModal({ open, onClose }: CheckoutModalProps) {
   return (
-    <PrettyModal open={open} onClose={onClose}>
-      <Stack spacing={2}>
-        <Stack direction="row" spacing={2} alignItems="center">
+    <PrettyModal open={open} onClose={onClose} width={430}>
+      <Stack spacing={2} px={2}>
+        <Stack direction="row" spacing={4} alignItems="center">
           <StepNumber>1</StepNumber>
           <Stack spacing={1}>
             <Typography variant="body1">
@@ -52,8 +54,8 @@ export default function CheckoutModal({ open, onClose }: CheckoutModalProps) {
           <StepNumber>2</StepNumber>
           <Stack spacing={1}>
             <Typography variant="body1">Update Construct inventory.</Typography>
-            <Button variant="outlined" startIcon={<OpenInNewIcon />}>
-              Open portal
+            <Button variant="outlined" startIcon={<InventoryIcon />}>
+              Update inventory
             </Button>
           </Stack>
         </Stack>
