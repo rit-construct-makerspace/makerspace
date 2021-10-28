@@ -10,6 +10,7 @@ import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
 import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
 import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
+import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 
 const theme = createTheme();
 
@@ -69,7 +70,7 @@ export default function App() {
             </Route>
 
             <Route path="/admin/storefront">
-              <Page title="Storefront" />
+              <StorefrontPage />
             </Route>
 
             <Route path="/admin/people">
