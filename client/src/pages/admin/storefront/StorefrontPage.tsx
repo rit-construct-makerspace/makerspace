@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Page from "../../Page";
-import { Divider, Stack, Typography } from "@mui/material";
+import { Button, Divider, Stack, Typography } from "@mui/material";
 import Inventory from "../../../test_data/Inventory";
 import InventoryRow from "../../../common/InventoryRow";
 import SearchBar from "../../../common/SearchBar";
@@ -9,6 +9,7 @@ import AddToCartModal from "./AddToCartModal";
 import { useImmer } from "use-immer";
 import ShoppingCart from "./ShoppingCart";
 import { v4 as uuidv4 } from "uuid";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 export interface ShoppingCartEntry {
   id: string;
@@ -52,7 +53,19 @@ export default function StorefrontPage({}: StorefrontPageProps) {
     });
 
   return (
-    <Page title="Storefront">
+    <Page
+      title="Storefront"
+      topRightAddons={
+        <Button
+          variant="outlined"
+          startIcon={<OpenInNewIcon />}
+          href="/admin/storefront/preview"
+          target="_blank"
+        >
+          Customer view
+        </Button>
+      }
+    >
       <ShoppingCart
         entries={shoppingCart}
         removeEntry={removeFromShoppingCart}
