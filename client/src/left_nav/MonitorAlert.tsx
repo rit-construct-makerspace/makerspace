@@ -7,20 +7,16 @@ interface MonitoringBoxProps {}
 
 export default function MonitorAlert({}: MonitoringBoxProps) {
   return (
-    <Alert
-      severity="info"
-      icon={<MonitorIcon />}
-      sx={{ mb: 2, borderRadius: 0 }}
-    >
+    <Alert severity="info" icon={<MonitorIcon />} sx={{ borderRadius: 0 }}>
       <Stack>
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{ lineHeight: 1.2, mt: "2px" }}>
           You are monitoring the{" "}
           <Link href="/admin/monitor/sample-room" sx={{ fontWeight: 500 }}>
             woodshop
           </Link>
         </Typography>
 
-        <Stack direction="row" alignItems="center" sx={{ mt: 1 }}>
+        <Stack direction="row" alignItems="center" sx={{ mt: 2 }}>
           <Typography variant="body1" sx={{ fontWeight: 500, flexGrow: 1 }}>
             23:45
           </Typography>
