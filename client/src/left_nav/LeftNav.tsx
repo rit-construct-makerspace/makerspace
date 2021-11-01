@@ -18,6 +18,7 @@ import LogoSvg from "../assets/logo.svg";
 import styled from "styled-components";
 import MonitorIcon from "@mui/icons-material/Monitor";
 import MonitorAlert from "./MonitorAlert";
+import CardReaderAlert from "./CardReaderAlert";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -51,9 +52,13 @@ export default function LeftNav() {
         </Typography>
       </Stack>
 
-      <MonitorAlert />
+      <Stack spacing={1} my={2}>
+        <MonitorAlert />
 
-      {false && <HoldAlert />}
+        <CardReaderAlert />
+
+        {false && <HoldAlert />}
+      </Stack>
 
       <List component="nav">
         <Divider textAlign="left">MAKER</Divider>
