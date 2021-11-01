@@ -11,6 +11,8 @@ import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
 import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
 import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
 import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
+import InventoryPage from "./pages/admin/inventory/InventoryPage";
+import EditMaterialPage from "./pages/admin/edit_material/EditMaterialPage";
 
 const theme = createTheme();
 
@@ -53,8 +55,12 @@ export default function App() {
               <TrainingModulesPage />
             </Route>
 
-            <Route path="/admin/materials">
-              <Page title="Materials" />
+            <Route path="/admin/inventory/:id">
+              <EditMaterialPage />
+            </Route>
+
+            <Route path="/admin/inventory">
+              <InventoryPage />
             </Route>
 
             <Route path="/admin/reservations">

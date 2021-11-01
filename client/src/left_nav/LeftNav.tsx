@@ -91,8 +91,8 @@ export default function LeftNav() {
           icon={<SchoolIcon />}
         />
         <NavLink
-          to="/admin/materials"
-          primary="Materials"
+          to="/admin/inventory"
+          primary="Inventory"
           icon={<InventoryIcon />}
         />
         <NavLink
