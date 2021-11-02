@@ -1,7 +1,7 @@
 import React from "react";
 import QuizItemDraft from "./QuizItemDraft";
 import { TextField } from "@mui/material";
-import { Text } from "../../../types/Quiz";
+import { Text } from "../../../../types/Quiz";
 
 interface TextDraftProps {
   index: number;

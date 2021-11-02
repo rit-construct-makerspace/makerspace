@@ -14,6 +14,15 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import HoldAlert from "./HoldAlert";
 import NavLink from "./NavLink";
+import LogoSvg from "../assets/logo.svg";
+import styled from "styled-components";
+import MonitorIcon from "@mui/icons-material/Monitor";
+import MonitorAlert from "./MonitorAlert";
+import CardReaderAlert from "./CardReaderAlert";
+
+const StyledLogo = styled.img`
+  margin: 20px 12px 12px 12px;
+`;
 
 const drawerWidth = 250;
 
@@ -31,6 +40,8 @@ export default function LeftNav() {
       variant="permanent"
       anchor="left"
     >
+      <StyledLogo src={LogoSvg} alt="" />
+
       <Stack direction="row" alignItems="center" spacing={2} padding={2}>
         <Avatar
           alt="matt"
@@ -41,7 +52,13 @@ export default function LeftNav() {
         </Typography>
       </Stack>
 
-      {false && <HoldAlert />}
+      <Stack spacing={1} my={2}>
+        <MonitorAlert />
+
+        <CardReaderAlert />
+
+        {false && <HoldAlert />}
+      </Stack>
 
       <List component="nav">
         <Divider textAlign="left">MAKER</Divider>
@@ -83,6 +100,11 @@ export default function LeftNav() {
           primary="Reservations"
           icon={<EventIcon />}
           notificationCount={1}
+        />
+        <NavLink
+          to="/admin/monitor/select-room"
+          primary="Monitor"
+          icon={<MonitorIcon />}
         />
         <NavLink
           to="/admin/storefront"

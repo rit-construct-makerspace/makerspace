@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { ImageEmbed } from "../../../types/Quiz";
+import { ImageEmbed } from "../../../../types/Quiz";
 import QuizItemDraft from "./QuizItemDraft";
 import { Stack, TextField } from "@mui/material";
 
