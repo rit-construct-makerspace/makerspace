@@ -4,6 +4,9 @@ import { ModuleChanges } from "../events/DomainEvents";
 import { Option } from "./option";
 import { Question } from "./question";
 
+// follows aggreate root pattern. Idea is that you can make a number of
+// changes to a module instance (add options to questions, change name, etc.) 
+// and then save the changes in a single unit of work using the module repoe
 export class Module extends AggregateRoot {
   id: number | undefined;
   name: string;
