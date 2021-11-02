@@ -23,8 +23,10 @@ export async function up(knex: Knex): Promise<void> {
             t.string('category', 50);
             t.foreign('category').references('name').inTable('MachineFamilies');
             t.string('room', 5);
-            t.boolean('reserved').defaultTo(false);
             t.date('date_added').defaultTo(knex.fn.now());
+            t.boolean('reserved').defaultTo(false);
+            t.integer('reserved_by');
+            t.foreign('reserved_by').references('id').inTable('students');
           });
         }
     });
