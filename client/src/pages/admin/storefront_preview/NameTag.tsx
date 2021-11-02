@@ -4,9 +4,10 @@ import { Avatar, Paper, Stack, Typography } from "@mui/material";
 
 interface NameTagProps {
   person: Person;
+  scale?: number;
 }
 
-export default function NameTag({ person }: NameTagProps) {
+export default function NameTag({ person, scale = 1 }: NameTagProps) {
   const [angle] = useState(Math.random() * 10 - 5);
 
   return (
@@ -17,7 +18,7 @@ export default function NameTag({ person }: NameTagProps) {
         pt: 1,
         pb: 2,
         borderRadius: 4,
-        transform: `rotate(${angle}deg)`,
+        transform: `rotate(${angle}deg) scale(${scale})`,
       }}
     >
       <Stack alignItems="center">
