@@ -35,7 +35,7 @@ export const TrainingTypeDefs = gql`
 
   input QuestionInput {
     text: String!
-    questionType: QuestionType!
+    type: QuestionType!
   }
 
   input QuestionOptionInput {    

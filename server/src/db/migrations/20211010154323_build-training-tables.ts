@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     knex.schema.hasTable('TrainingModule').then(function(exists) {
         if (!exists) {
           return knex.schema.createTable('TrainingModule', function(t) {
-            t.increments('id');
+            t.increments('id').primary();
             t.string('name', 100);
           });
         }
@@ -15,9 +15,10 @@ export async function up(knex: Knex): Promise<void> {
     knex.schema.hasTable('Question').then(function(exists) {
         if (!exists) {
           return knex.schema.createTable('Question', function(t) {
-            t.increments('id')
+            t.increments('id').primary()
             t.integer('module')
-            t.foreign('module').references('id').inTable('TrainingModule')
+            .references('TrainingModule.id')
+            .onDelete('CASCADE') // If module is deleted, delete question as well
             t.enu('questionType', ['MULTIPLE_CHOICE', 'CHECKBOXES'])
             t.text('text')
           });
@@ -29,7 +30,8 @@ export async function up(knex: Knex): Promise<void> {
           return knex.schema.createTable('QuestionOption', function(t) {
             t.increments('id');
             t.integer('question')
-            t.foreign('question').references('id').inTable('Question');
+            .references('Question.id')
+            .onDelete('CASCADE') // If question is deleted, delete option as well
             t.text('text');
             t.boolean('correct');
           });

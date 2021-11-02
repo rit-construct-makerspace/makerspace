@@ -3,13 +3,26 @@ import { Question } from "../../models/training/question";
 import { QuestionMap } from "../../mappers/training/questionMapper";
 import { query } from "express";
 
-export interface IQuestionRepo {}
+export interface IQuestionRepo {
+  getQuestionById(questionId: number | string): Promise<Question>;
+  getQuestionsByModule(moduleId: number | string): Promise<Question[]>;
+  addQuestionToModule(
+    moduleId: number | string,
+    question: Question
+  ): Promise<Question>;
+  deleteQuestionById(questionId: number | string): Promise<void>
+}
 
 export class QuestionRepo implements IQuestionRepo {
-  constructor() {}
+
+  private queryBuilder
+
+  constructor(queryBuilder?: any) {
+    this.queryBuilder = queryBuilder || knex
+  }
 
   public async getQuestionById(questionId: number | string): Promise<Question> {
-    const knexResult = await knex("Question")
+    const knexResult = await this.queryBuilder("Question")
       .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.id")
       .select(
         "Question.id",
@@ -24,7 +37,7 @@ export class QuestionRepo implements IQuestionRepo {
   public async getQuestionsByModule(
     moduleId: number | string
   ): Promise<Question[]> {
-    const knexResult = await knex("Question")
+    const knexResult = await this.queryBuilder("Question")
       .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.id")
       .select(
         "Question.id",
@@ -40,10 +53,15 @@ export class QuestionRepo implements IQuestionRepo {
     moduleId: number | string,
     question: Question
   ): Promise<Question> {
-    const insert = await knex("TrainingModule").insert(
-      { module: moduleId, type: question.type, text: question.text },
+    const insert = await this.queryBuilder("Question").insert(
+      { module: moduleId, questionType: question.type, text: question.text },
       "id"
     );
     return this.getQuestionById(insert[0]);
   }
+
+  public async deleteQuestionById(questionId: number) {
+    await this.queryBuilder("Question").where({ id: questionId }).del();
+  }
+
 }
