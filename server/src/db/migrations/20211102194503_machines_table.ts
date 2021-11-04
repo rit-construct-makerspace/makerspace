@@ -2,16 +2,16 @@ import { Knex } from "knex";
 
 
 export async function up(knex: Knex): Promise<void> {
-
+    
     knex.schema.hasTable('MachineFamilies').then(function(exists) {
         if (!exists) {
-          return knex.schema.createTable('MachineFamilies', function(t) {
-            t.increments('id');
-            t.string('name', 50);
-            t.text('description');
-            t.integer('training_module');
-            t.foreign('training_module').references('id').inTable('TrainingModule');
-          });
+            return knex.schema.createTable('MachineFamilies', function(t) {
+                t.increments('id');
+                t.string('name', 50);
+                t.text('description');
+                t.integer('training_module');
+                t.foreign('training_module').references('id').inTable('TrainingModule');
+              });
         }
     });
 
@@ -20,12 +20,12 @@ export async function up(knex: Knex): Promise<void> {
           return knex.schema.createTable('Machines', function(t) {
             t.increments('id');
             t.string('name', 50);
-            t.string('category', 50);
-            t.foreign('category').references('name').inTable('MachineFamilies');
+            t.integer('category');
+            t.foreign('category').references('id').inTable('MachineFamilies');
             t.string('room', 5);
             t.date('date_added').defaultTo(knex.fn.now());
             t.boolean('reserved').defaultTo(false);
-            t.integer('reserved_by');
+            t.uuid('reserved_by');
             t.foreign('reserved_by').references('id').inTable('students');
           });
         }
