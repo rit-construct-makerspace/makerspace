@@ -2,6 +2,7 @@
 **/node_modules
 process.env
 .env
+.vscode
 
 /client/coverage
 /docs/.jekyll-cache
