@@ -1,11 +1,11 @@
-import { ServiceTypeDefs } from "../serviceSchema";
-import ServiceResolvers from "../serviceResolver";
+import { TrainingTypeDefs } from "../trainingSchema";
+import ServiceResolvers from "../trainingResolver";
 import { graphql } from "graphql";
 import { makeExecutableSchema } from "graphql-tools";
 
 // create a mocked schema for the tests
 const schema = makeExecutableSchema({
-  typeDefs: ServiceTypeDefs,
+  typeDefs: TrainingTypeDefs,
   resolvers: ServiceResolvers,
 });
 

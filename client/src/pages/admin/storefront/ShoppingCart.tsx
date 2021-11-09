@@ -10,12 +10,14 @@ interface ShoppingCartProps {
   entries: ShoppingCartEntry[];
   removeEntry: (id: string) => void;
   setEntryCount: (id: string, newCount: number) => void;
+  emptyCart: () => void;
 }
 
 export default function ShoppingCart({
   entries,
   removeEntry,
   setEntryCount,
+  emptyCart,
 }: ShoppingCartProps) {
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
@@ -69,6 +71,10 @@ export default function ShoppingCart({
       <CheckoutModal
         open={showCheckoutModal}
         onClose={() => setShowCheckoutModal(false)}
+        onFinalize={() => {
+          setShowCheckoutModal(false);
+          emptyCart();
+        }}
       />
     </>
   );

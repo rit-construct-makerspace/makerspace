@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Page from "../../Page";
-import { Divider, Stack, Typography } from "@mui/material";
+import { Button, Divider, Stack, Typography } from "@mui/material";
 import Inventory from "../../../test_data/Inventory";
 import InventoryRow from "../../../common/InventoryRow";
 import SearchBar from "../../../common/SearchBar";
@@ -9,11 +9,16 @@ import AddToCartModal from "./AddToCartModal";
 import { useImmer } from "use-immer";
 import ShoppingCart from "./ShoppingCart";
 import { v4 as uuidv4 } from "uuid";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
 export interface ShoppingCartEntry {
   id: string;
   item: InventoryItem;
   count: number;
+}
+
+function updateLocalStorage(cart: ShoppingCartEntry[] | null) {
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 interface StorefrontPageProps {}
@@ -26,6 +31,20 @@ export default function StorefrontPage({}: StorefrontPageProps) {
   const [addToCartCount, setAddToCartCount] = useState(0);
   const [shoppingCart, setShoppingCart] = useImmer<ShoppingCartEntry[]>([]);
 
+  const getCartFromStorage = useCallback(() => {
+    const storedCart = localStorage.getItem("cart");
+    const parsedCart = storedCart && JSON.parse(storedCart);
+    setShoppingCart(parsedCart || []);
+  }, []);
+
+  useEffect(() => {
+    // Load the cart on page load
+    getCartFromStorage();
+
+    // Load the cart whenever localstorage changes
+    window.addEventListener("storage", getCartFromStorage);
+  }, []);
+
   const addToShoppingCart = (item: InventoryItem, count: number) =>
     setShoppingCart((draft) => {
       draft.push({
@@ -33,12 +52,15 @@ export default function StorefrontPage({}: StorefrontPageProps) {
         item,
         count,
       });
+
+      updateLocalStorage(draft);
     });
 
   const removeFromShoppingCart = (id: string) =>
     setShoppingCart((draft) => {
       const index = draft.findIndex((e: ShoppingCartEntry) => e.id === id);
       draft.splice(index, 1);
+      updateLocalStorage(draft);
     });
 
   const setEntryCount = (id: string, newCount: number) =>
@@ -49,14 +71,34 @@ export default function StorefrontPage({}: StorefrontPageProps) {
       if (!valid) return;
 
       draft[index].count = newCount;
+
+      updateLocalStorage(draft);
     });
 
+  const emptyCart = () => {
+    setShoppingCart((draft) => []);
+    updateLocalStorage([]);
+  };
+
   return (
-    <Page title="Storefront">
+    <Page
+      title="Storefront"
+      topRightAddons={
+        <Button
+          variant="outlined"
+          startIcon={<OpenInNewIcon />}
+          href="/admin/storefront/preview"
+          target="_blank"
+        >
+          Customer view
+        </Button>
+      }
+    >
       <ShoppingCart
         entries={shoppingCart}
         removeEntry={removeFromShoppingCart}
         setEntryCount={setEntryCount}
+        emptyCart={emptyCart}
       />
 
       <Typography variant="h5" component="div" sx={{ mb: 2, mt: 8 }}>
