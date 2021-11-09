@@ -1,37 +1,37 @@
-import React, { useState } from "react";
+import React from "react";
 import Page from "../../Page";
 import { Divider, Stack } from "@mui/material";
 import Inventory from "../../../test_data/Inventory";
 import SearchBar from "../../../common/SearchBar";
-import ItemRow from "./ItemRow";
 import PageSectionHeader from "../../../common/PageSectionHeader";
-import RestockModal from "./RestockModal";
-import InventoryItem from "../../../types/InventoryItem";
-import PendingOrders from "./PendingOrders";
+import PurchaseOrderList from "./PurchaseOrderList";
+import { useHistory } from "react-router-dom";
+import InventoryRow from "../../../common/InventoryRow";
+import RunningLow from "./RunningLow";
 
 interface InventoryPageProps {}
 
 export default function InventoryPage({}: InventoryPageProps) {
-  const [restockItem, setRestockItem] = useState<InventoryItem | null>(null);
+  const history = useHistory();
 
   return (
     <Page title="Inventory">
-      <PendingOrders />
+      <PurchaseOrderList />
+
+      <RunningLow />
 
       <PageSectionHeader>All Materials</PageSectionHeader>
 
       <SearchBar placeholder="Search inventory" />
       <Stack divider={<Divider flexItem />} mt={2}>
         {Inventory.map((item) => (
-          <ItemRow
+          <InventoryRow
             item={item}
-            onRestock={() => setRestockItem(item)}
             key={item.id}
+            onClick={() => history.push(`/admin/inventory/${item.id}`)}
           />
         ))}
       </Stack>
-
-      <RestockModal item={restockItem} onClose={() => setRestockItem(null)} />
     </Page>
   );
 }

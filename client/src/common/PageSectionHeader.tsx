@@ -11,7 +11,7 @@ export default function PageSectionHeader({
   top,
 }: PageSectionHeaderProps) {
   return (
-    <Typography variant="h5" component="div" sx={{ mb: 2, mt: top ? 0 : 6 }}>
+    <Typography variant="h5" component="div" sx={{ mb: 2, mt: top ? 0 : 10 }}>
       {children}
     </Typography>
   );
