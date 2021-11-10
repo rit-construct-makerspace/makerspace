@@ -23,9 +23,14 @@ function StepNumber({ children }: { children: ReactNode }) {
 interface CheckoutModalProps {
   open: boolean;
   onClose: () => void;
+  onFinalize: () => void;
 }
 
-export default function CheckoutModal({ open, onClose }: CheckoutModalProps) {
+export default function CheckoutModal({
+  open,
+  onClose,
+  onFinalize,
+}: CheckoutModalProps) {
   return (
     <PrettyModal open={open} onClose={onClose} width={430}>
       <Stack spacing={2} px={2}>
@@ -54,7 +59,11 @@ export default function CheckoutModal({ open, onClose }: CheckoutModalProps) {
           <StepNumber>2</StepNumber>
           <Stack spacing={1}>
             <Typography variant="body1">Update Construct inventory.</Typography>
-            <Button variant="outlined" startIcon={<InventoryIcon />}>
+            <Button
+              variant="outlined"
+              startIcon={<InventoryIcon />}
+              onClick={onFinalize}
+            >
               Update inventory
             </Button>
           </Stack>

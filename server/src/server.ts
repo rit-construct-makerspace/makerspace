@@ -17,10 +17,10 @@ app.use(corstOpts);
 app.use(helmet());
 app.use(compression());
 
-
 const server = new ApolloServer({
   schema,
   introspection: true,
+  debug: process.env.NODE_DEV === 'development',
 });
 
 (async function startServer () {
