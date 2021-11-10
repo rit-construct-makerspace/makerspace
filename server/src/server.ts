@@ -30,5 +30,5 @@ const server = new ApolloServer({
 
 const httpServer = createServer(app);
 httpServer.listen({ port: PORT }, (): void =>
-  console.log(`🚀GraphQL-Server is running on http://localhost:z${PORT}/graphql`)
+  console.log(`🚀GraphQL-Server is running on http://localhost:${PORT}/graphql`)
 );
