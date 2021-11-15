@@ -12,13 +12,10 @@ import HistoryIcon from "@mui/icons-material/History";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import HoldAlert from "./HoldAlert";
 import NavLink from "./NavLink";
 import LogoSvg from "../assets/logo.svg";
 import styled from "styled-components";
 import MonitorIcon from "@mui/icons-material/Monitor";
-import MonitorAlert from "./MonitorAlert";
-import CardReaderAlert from "./CardReaderAlert";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -52,13 +49,11 @@ export default function LeftNav() {
         </Typography>
       </Stack>
 
-      <Stack spacing={1} my={2}>
-        <MonitorAlert />
-
-        <CardReaderAlert />
-
-        {false && <HoldAlert />}
-      </Stack>
+      {/*<Stack spacing={1} my={2}>*/}
+      {/*  <MonitorAlert />*/}
+      {/*  <CardReaderAlert />*/}
+      {/*  <HoldAlert />*/}
+      {/*</Stack>*/}
 
       <List component="nav">
         <Divider textAlign="left">MAKER</Divider>
@@ -91,8 +86,8 @@ export default function LeftNav() {
           icon={<SchoolIcon />}
         />
         <NavLink
-          to="/admin/materials"
-          primary="Materials"
+          to="/admin/inventory"
+          primary="Inventory"
           icon={<InventoryIcon />}
         />
         <NavLink

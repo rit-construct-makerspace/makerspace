@@ -4,28 +4,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Button, Divider, Stack, Typography } from "@mui/material";
 import ShoppingCartRow from "./ShoppingCartRow";
 import CheckoutModal from "./CheckoutModal";
-
-function EmptyShoppingCart() {
-  return (
-    <Stack
-      sx={{
-        bgcolor: "grey.100",
-        p: 2,
-        borderRadius: 1,
-      }}
-      direction="row"
-      alignItems="center"
-      justifyContent="center"
-      spacing={1}
-    >
-      <ShoppingCartIcon fontSize="inherit" opacity={0.5} />
-
-      <Typography color="grey.600" fontStyle="italic">
-        Shopping cart empty.
-      </Typography>
-    </Stack>
-  );
-}
+import EmptyPageSection from "../../../common/EmptyPageSection";
 
 interface ShoppingCartProps {
   entries: ShoppingCartEntry[];
@@ -52,7 +31,12 @@ export default function ShoppingCart({
         Shopping cart
       </Typography>
 
-      {entries.length === 0 && <EmptyShoppingCart />}
+      {entries.length === 0 && (
+        <EmptyPageSection
+          icon={<ShoppingCartIcon />}
+          label="Shopping cart empty."
+        />
+      )}
 
       <Stack spacing={1} divider={<Divider flexItem />}>
         {entries.map((entry) => (
