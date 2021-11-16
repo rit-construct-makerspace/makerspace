@@ -4,31 +4,31 @@ export const StoreFrontTypeDefs = gql`
 
 	scalar Date
 
-  type InventoryItem {
-    id: ID!;
-    image: String;
-    name: String;
-    labels: [String];
-    unit: String;
-    pluralUnit: String;
-    count: Int;
-    pricePerUnit: Float;
-  }
+	type InventoryItem {
+		id: ID!;
+		image: String;
+		name: String;
+		labels: [String];
+		unit: String;
+		pluralUnit: String;
+		count: Int;
+		pricePerUnit: Float;
+	}
 
 	input InventoryItemInput {
-    image: String;
-    name: String;
-    labels: [String];
-    unit: String;
-    pluralUnit: String;
-    count: Int;
-    pricePerUnit: Float;
-  }
+		image: String;
+		name: String;
+		labels: [String];
+		unit: String;
+		pluralUnit: String;
+		count: Int;
+		pricePerUnit: Float;
+	}
 
-  type PurchaseOrderItem {
-    id: ID!;
-    item: InventoryItem;
-    count: Int;
+	type PurchaseOrderItem {
+		id: ID!;
+		item: InventoryItem;
+		count: Int;
 	}
 
 	type PurchaseOrder {
@@ -50,17 +50,17 @@ export const StoreFrontTypeDefs = gql`
 
 	# might belong in a different file but just gonna throw it here for now
 	type Person {
-  	id: ID!;
-  	name: String;
-  	avatarHref: String;
+		id: ID!;
+		name: String;
+		avatarHref: String;
 	}
 
-  type Query {
+	type Query {
 		InventoryItems: [InventoryItem]
 		PurchaseOrders: [PurchaseOrder]
-  }
+	}
 
-  type Mutation {
+	type Mutation {
 		createPurchaseOrder(PO: PurchaseOrderInput): PurchaseOrder
 		addItemToPurchaseOrder(POId: ID!, itemId: ID!, count: Int): PurchaseOrder
 		removeItemToPurchaseOrder(POId: ID!, itemId: ID!, count: Int): PurchaseOrder
@@ -70,5 +70,5 @@ export const StoreFrontTypeDefs = gql`
 		addItemToInventory(item: InventoryItemInput): InventoryItem
 		addItemAmount(itemId: ID!, count: Int!): InventoryItem
 		removeItemAmount(itemId: ID!, count: Int!): InventoryItem
-  }
+	}
 `;
