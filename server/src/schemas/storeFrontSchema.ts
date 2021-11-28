@@ -5,53 +5,58 @@ export const StoreFrontTypeDefs = gql`
   scalar Date
 
   type InventoryItem {
-    id: ID!;
-    image: String;
-    name: String;
-    labels: [String];
-    unit: String;
-    pluralUnit: String;
-    count: Int;
-    pricePerUnit: Float;
+    id: ID!
+    image: String
+    name: String
+    labels: [String]
+    unit: String
+    pluralUnit: String
+    count: Int
+    pricePerUnit: Float
   }
 
   input InventoryItemInput {
-    image: String;
-    name: String;
-    labels: [String];
-    unit: String;
-    pluralUnit: String;
-    count: Int;
-    pricePerUnit: Float;
+    image: String
+    name: String
+    labels: [String]
+    unit: String
+    pluralUnit: String
+    count: Int
+    pricePerUnit: Float
   }
 
   type PurchaseOrderItem {
-    id: ID!;
-    item: InventoryItem;
-    count: Int;
+    id: ID!
+    item: InventoryItem
+    count: Int
   }
 
   type PurchaseOrder {
-    id: ID!;
-    creator: Person;
-    createDate: Date;
-    expectedDeliveryDate: Date;
-    items: [PurchaseOrderItem];
-    attachments: [String];
+    id: ID!
+    creator: Person
+    createDate: Date
+    expectedDeliveryDate: Date
+    items: [PurchaseOrderItem]
+    attachments: [String]
+  }
+
+  input PurchaseOrderItemInput {
+    itemID: Int
+    count: Int
   }
 
   input PurchaseOrderInput {
-    creator: Person;
-    expectedDeliveryDate: Date;
-    items: [PurchaseOrderItem];
-    attachments: [String];
+    creatorID: Int
+    expectedDeliveryDate: Date
+    items: [PurchaseOrderItemInput]
+    attachments: [String]
   }
 
   # might belong in a different file but just gonna throw it here for now
   type Person {
-    id: ID!;
-    name: String;
-    image: String;
+    id: ID!
+    name: String
+    image: String
   }
 
   type Query {
