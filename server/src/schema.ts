@@ -6,7 +6,7 @@ import ServiceResolvers from "./resolvers/trainingResolver";
 import { DateResolver } from 'graphql-scalars'
 
 // for custom scalars such as Date
-const resolveFunctions = {
+const resolveFunctions = { 
   Date: DateResolver
 }
 
