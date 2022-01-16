@@ -3,7 +3,7 @@ import { gql } from "apollo-server-express";
 export const MachinesTypeDefs = gql`
   type Machine {
     id: ID!
-    machineFamily: Int!
+    machineFamily: MachineFamily!
     name: String!
     room: String!
     addedAt: Date
@@ -14,20 +14,21 @@ export const MachinesTypeDefs = gql`
     id: ID!
     name: String!
     description: String
-    trainingModule: Int
+    trainingModule: TrainingModule!
   }
 
   type Reservation {
     id: ID!
-    studentId: Int!
-    machineId: Int!
+    userId: User!
+    supervisorId: User!
+    machineId: Machine!
     createdAt: Date
     startTime: DateTime!
     endTime: DateTime!
   }
 
   input MachineInput {
-    machineFamily: Int!
+    machineFamily: MachineFamily!
     name: String!
     room: String!
     addedAt: Date
@@ -37,12 +38,13 @@ export const MachinesTypeDefs = gql`
   input MachineFamilyInput {
     name: String!
     description: String
-    trainingModule: Int!
+    trainingModule: TrainingModule!
   }
 
   input ReservationInput {    
-    studentId: Int!
-    machineId: Int!
+    userId: User!
+    supervisorId: User!
+    machineId: Machine!
     createdAt: Date
     startTime: DateTime!
     endTime: DateTime!
