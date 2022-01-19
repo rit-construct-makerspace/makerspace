@@ -3,6 +3,7 @@
   "version": "5.0.0",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.5.7",
     "@mui/icons-material": "^5.0.0",
     "@mui/lab": "latest",
     "@mui/material": "next",
@@ -10,6 +11,7 @@
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
     "@testing-library/user-event": "latest",
+    "graphql": "^16.2.0",
     "immer": "^9.0.6",
     "react": "latest",
     "react-beautiful-dnd": "^13.1.0",
