@@ -1,4 +1,4 @@
-import React, { ReactNodeArray } from "react";
+import React, { ReactNode, ReactNodeArray } from "react";
 import styled from "styled-components";
 import TimeSlot from "../../../types/TimeSlot";
 
@@ -44,7 +44,7 @@ export default function AvailabilityStrip({
     }
   });
 
-  const quarterHourBlocks: ReactNodeArray = [];
+  const quarterHourBlocks: ReactNode[] = [];
 
   for (let i = getTimeIndex("09:00"); i < getTimeIndex("21:00"); i++) {
     quarterHourBlocks.push(
