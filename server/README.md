@@ -10,7 +10,7 @@
 
 - Test and watch `npm run test.watch`
 
-## Database Stuff
+### Database Stuff
 
 - Add a new migration `npm run knex:migrate:make -- some-migration-name`
 
@@ -18,7 +18,7 @@
 
 - Rollback migration `npm run knex:migrate:rollback`
 
-## Containerizing
+### Containerizing
 
 - Build containers `docker-compose build`
 
@@ -46,6 +46,6 @@
 
 - test: tests
 
-## Env Variables
+### Env Variables
 
 - create a copy of .env.example named .env and add your values, both docker and node can utilize these
