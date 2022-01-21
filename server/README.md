@@ -10,22 +10,42 @@
 
 - Test and watch `npm run test.watch`
 
+### Database Stuff
+
 - Add a new migration `npm run knex:migrate:make -- some-migration-name`
 
 - Run migrations `npm run knex:migrate:latest`
 
 - Rollback migration `npm run knex:migrate:rollback`
 
+### Containerizing
+
 - Build containers `docker-compose build`
 
 - Run containers `docker-compose up -d`
 
+- Run only the db container `docker-compose up -d db`
+
 - Stop containers `docker-compose down`
 
-Initial code structure and setup heavily influenced by:
+### Src Folder Structure
 
- https://mbbaig.blog/apollo-server-typescript/
+- db: for knex migrations and config
 
- https://javascript.plainenglish.io/writing-a-node-js-graphql-backend-that-actually-scales-a-complete-guide-part-1-setup-cddceae25bdc
+- mappers: classes that convert from db to class objects
 
- https://gist.github.com/tukkajukka/9893e5f111862d06044b73fa944a8741
+- models: classes that represent the domain objects, nested into folders by sub-domain
+
+- repositories: classes that know how to get/upload domain objects, nested into folders by sub-domain
+
+- resolvers: graphql resolvers 
+
+- schemas: graphql schemas
+
+- service: service classes, also nested by sub-domain
+
+- test: tests
+
+### Env Variables
+
+- create a copy of .env.example named .env and add your values, both docker and node can utilize these
