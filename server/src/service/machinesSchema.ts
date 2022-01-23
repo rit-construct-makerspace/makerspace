@@ -28,7 +28,7 @@ export const MachinesTypeDefs = gql`
   }
 
   input MachineInput {
-    machineFamily: MachineFamily!
+    machineFamily: Int!
     name: String!
     room: String!
     addedAt: Date
@@ -38,13 +38,13 @@ export const MachinesTypeDefs = gql`
   input MachineFamilyInput {
     name: String!
     description: String
-    trainingModule: TrainingModule!
+    trainingModule: Int!
   }
 
   input ReservationInput {    
-    userId: User!
-    supervisorId: User!
-    machineId: Machine!
+    userId: Int!
+    supervisorId: Int!
+    machineId: Int!
     createdAt: Date
     startTime: DateTime!
     endTime: DateTime!
