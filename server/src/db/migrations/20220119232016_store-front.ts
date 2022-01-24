@@ -17,6 +17,7 @@ export async function up(knex: Knex): Promise<void> {
         }
     });
 
+    // if we know every label we can use an enum instead of this table
     knex.schema.hasTable('Label').then(function (exists) {
         if (!exists) {
             return knex.schema.createTable('Label', function (t) {
@@ -31,9 +32,11 @@ export async function up(knex: Knex): Promise<void> {
             return knex.schema.createTable('Label', function (t) {
                 t.increments('id').primary();
                 t.integer('item')
-                    .references('InventoryItem.id');
+                    .references('InventoryItem.id')
+                    .onDelete('CASCADE');
                 t.integer('label')
-                    .references('Label.id');
+                    .references('Label.id')
+                    .onDelete('CASCADE');
             });
         }
     });
@@ -57,7 +60,8 @@ export async function up(knex: Knex): Promise<void> {
                 t.integer('item')
                     .references('InventoryItem.id');
                 t.integer('purchaseOrder')
-                    .references('PurchaseOrder.id');
+                    .references('PurchaseOrder.id')
+                    .onDelete('CASCADE');;
                 t.integer('count');
             });
         }
@@ -68,7 +72,8 @@ export async function up(knex: Knex): Promise<void> {
             return knex.schema.createTable('PurchaseOrderAttachment', function (t) {
                 t.increments('id').primary();
                 t.integer('purchaseOrder')
-                    .references('PurchaseOrder.id');
+                    .references('PurchaseOrder.id')
+                    .onDelete('CASCADE');
                 t.text('attachment');
             });
         }
@@ -79,39 +84,39 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 
-    knex.schema.hasTable('InventoryItem').then(function(exists) {
+    knex.schema.hasTable('InventoryItem').then(function (exists) {
         if (exists) {
-          return knex.schema.dropTable('InventoryItem');
+            return knex.schema.dropTable('InventoryItem');
         }
     });
 
-    knex.schema.hasTable('Label').then(function(exists) {
+    knex.schema.hasTable('Label').then(function (exists) {
         if (exists) {
-          return knex.schema.dropTable('Label');
+            return knex.schema.dropTable('Label');
         }
     });
 
-    knex.schema.hasTable('InventoryItemLabel').then(function(exists) {
+    knex.schema.hasTable('InventoryItemLabel').then(function (exists) {
         if (exists) {
-          return knex.schema.dropTable('InventoryItemLabel');
+            return knex.schema.dropTable('InventoryItemLabel');
         }
     });
 
-    knex.schema.hasTable('PurchaseOrder').then(function(exists) {
+    knex.schema.hasTable('PurchaseOrder').then(function (exists) {
         if (exists) {
-          return knex.schema.dropTable('PurchaseOrder');
+            return knex.schema.dropTable('PurchaseOrder');
         }
     });
 
-    knex.schema.hasTable('PurchaseOrderItem').then(function(exists) {
+    knex.schema.hasTable('PurchaseOrderItem').then(function (exists) {
         if (exists) {
-          return knex.schema.dropTable('PurchaseOrderItem');
+            return knex.schema.dropTable('PurchaseOrderItem');
         }
     });
 
-    knex.schema.hasTable('PurchaseOrderAttachment').then(function(exists) {
+    knex.schema.hasTable('PurchaseOrderAttachment').then(function (exists) {
         if (exists) {
-          return knex.schema.dropTable('PurchaseOrderAttachment');
+            return knex.schema.dropTable('PurchaseOrderAttachment');
         }
     });
 
