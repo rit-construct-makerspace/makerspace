@@ -14,6 +14,7 @@ import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import StorefrontPreviewPage from "./pages/admin/storefront_preview/StorefrontPreviewPage";
 import InventoryPage from "./pages/admin/inventory/InventoryPage";
 import EditMaterialPage from "./pages/admin/edit_material/EditMaterialPage";
+import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 const apolloClient = new ApolloClient({
@@ -98,7 +99,7 @@ export default function App() {
                 </Route>
 
                 <Route path="/admin/audit">
-                  <Page title="Audit Logs" />
+                  <AuditLogsPage />
                 </Route>
               </Switch>
             </Box>
