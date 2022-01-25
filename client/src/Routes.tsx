@@ -14,6 +14,7 @@ import InventoryPage from "./pages/admin/inventory/InventoryPage";
 import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
 import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
 import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
+import TrainingPage from "./pages/maker/training/TrainingPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -43,7 +44,7 @@ export default function Routes() {
             </Route>
 
             <Route path="/maker/training">
-              <Page title="Training" />
+              <TrainingPage />
             </Route>
 
             <Route path="/maker/materials">
