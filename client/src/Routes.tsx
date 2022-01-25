@@ -15,6 +15,7 @@ import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
 import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
 import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
+import UsersPage from "./pages/admin/users/UsersPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -88,7 +89,7 @@ export default function Routes() {
             </Route>
 
             <Route path="/admin/people">
-              <Page title="People" />
+              <UsersPage />
             </Route>
 
             <Route path="/admin/audit">
