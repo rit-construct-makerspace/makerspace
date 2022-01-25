@@ -4,9 +4,11 @@ import { InventoryItem } from "../../models/store/inventoryItem";
 
 
 export interface IInventoryRepo {
+  getItems(): Promise<InventoryItem[]>
   getItemById(itemId: number | string): Promise<InventoryItem>;
   updateItemById(item: InventoryItem): Promise<InventoryItem>;
   addItem(item: InventoryItem): Promise<InventoryItem>;
+  addItemAmount(itemId: number, amount: number): Promise<InventoryItem>;
   deleteItemById(questitemIdionId: number | string): Promise<void>
 }
 
@@ -16,6 +18,23 @@ export class InventoryRepo implements IInventoryRepo {
 
   constructor(queryBuilder?: any) {
     this.queryBuilder = queryBuilder || knex
+  }
+
+  public async getItems(): Promise<InventoryItem[]> {
+    const knexResult = await this.queryBuilder("InventoryItem")
+      .leftJoin("InventoryItemLabel", "InventoryItemLabel.item", "=", "InventoryItem.id")
+      .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
+      .select(
+        "InventoryItem.id",
+        "InventoryItem.image",
+        "InventoryItem.name",
+        "InventoryItem.unit",
+        "InventoryItem.pluralUnit",
+        "InventoryItem.count",
+        "InventoryItem.pricePerUnit",
+        "Label.label",
+      );
+    return InventoryItemMappper.toDomain(knexResult);
   }
 
   public async getItemById(itemId: number | string): Promise<InventoryItem> {
@@ -64,6 +83,16 @@ export class InventoryRepo implements IInventoryRepo {
       }, "id");
     this.updateLabels(newId, item.labels);
     return InventoryItemMappper.toDomain(newId)[0];
+  }
+
+  public async addItemAmount(itemId: number, amount: number): Promise<InventoryItem> {
+    const updateItem = await this.queryBuilder('InventoryItem')
+    .where({ id: itemId })
+    .update({
+      count: knex.raw(`?? + ${amount}`, ['count'])
+    }, "id");
+
+  return InventoryItemMappper.toDomain(this.getItemById(updateItem[0]))[0];
   }
 
   public async deleteItemById(itemId: number | string): Promise<void> {

@@ -1,8 +1,12 @@
+import { InventoryRepo } from "../repositories/Store/inventoryRepository";
+import { InventoryService } from "../service/InventoryService";
+
 const StorefrontResolvers = {
     Query: {
       // InventoryItems: [InventoryItem]
       InventoryItems: async (_: any, args: any, context: any) => {
-
+        let inventoryService = new InventoryService(new InventoryRepo());
+        return inventoryService.getAllInventoryItems();
       },
 
       // PurchaseOrders: [PurchaseOrder]
@@ -44,12 +48,14 @@ const StorefrontResolvers = {
 
       // addItemToInventory(item: InventoryItemInput): InventoryItem      
       addItemToInventory: async (_: any, args: any) => {
-
+        let inventoryService = new InventoryService(new InventoryRepo());
+        return inventoryService.addItemToInventory(args.item); 
       },
 
       // addItemAmount(itemId: ID!, count: Int!): InventoryItem      
       addItemAmount: async (_: any, args: any) => {
-
+        let inventoryService = new InventoryService(new InventoryRepo());
+        return inventoryService.addAmountToItem(args.itemId, args.count); 
       },
 
       // removeItemAmount(itemId: ID!, count: Int!): InventoryItem      
