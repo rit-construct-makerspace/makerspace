@@ -48,7 +48,6 @@ export async function up(knex: Knex): Promise<void> {
                 t.text('creator'); // update this when we have user stuff done
                 t.date('createDate');
                 t.date('expectedDeliveryDate');
-                t.text('text')
             });
         }
     });

@@ -32,11 +32,18 @@ export class PORepo implements IPORepo {
         "PurchaseOrder.creator",
         "PurchaseOrder.createDate",
         "PurchaseOrder.expectedDeliveryDate",
-        "PurchaseOrder.text",
-        "PurchaseOrderItem.id",
+        "PurchaseOrderItem.id as itemId",
         "PurchaseOrderItem.item",
-        "PurchaseOrderItem.count",
-        "PurchaseOrderAttachment.id",
+        "InventoryItem.id as invItemId",
+        "InventoryItem.image",
+        "InventoryItem.name",
+        "InventoryItem.unit",
+        "InventoryItem.pluralUnit",
+        "InventoryItem.count",
+        "InventoryItem.pricePerUnit",
+        "Label.label",
+        "PurchaseOrderItem.count as poItemCount",
+        "PurchaseOrderAttachment.id as attachId",
         "PurchaseOrderAttachment.attachment"
       )
       .where("PurchaseOrder.id", poId);

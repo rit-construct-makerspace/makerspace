@@ -3,18 +3,26 @@ import { InventoryItem } from "../../models/store/inventoryItem";
 export class InventoryItemMappper {
   public static toDomain(raw: any): InventoryItem[] {
     let arr: InventoryItem[] = [];
+
     raw.forEach((i: any) => {
-      if (!arr.some((question) => question.id === i.id))
-        arr.push({ id: i.id, text: i.text, type: i.type, options: [] });
-      if (i.option_id !== null) {
-        let index: number = arr.findIndex((x) => (x.id = i.id));
-        arr[index].options.push({
-          id: i.option_id,
-          text: i.text,
-          correct: i.correct,
+      if (!arr.some((item) => item.id === i.id))
+        arr.push({ 
+          id: i.id, 
+          image: i.image, 
+          name: i.name, 
+          unit: i.unit,
+          pluralUnit: i.pluralUnit,
+          count: i.count,
+          pricePerUnit: i.pricePerUnit,
+          labels: []
         });
+
+      if (i.label !== null) {
+        let index: number = arr.findIndex((x) => (x.id = i.id));
+        arr[index].labels.push(i.label);
       }
+
     });
-    return arr; // a bit awkward that this returns an array vs single object
+    return arr;
   }
 }
