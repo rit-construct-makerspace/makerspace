@@ -10,8 +10,8 @@ export async function up(knex: Knex): Promise<void> {
             t.string('first_name', 100);
             t.string('last_name', 100);
             t.text('email').unique();
-            t.enu('type', ['student', 'faculty', 'employee']);
-            t.enu('privilege_level', ['maker', 'labbie', 'admin']);
+            t.enu('type', ['STUDENT', 'FACULTY', 'EMPLOYEE']);
+            t.enu('privilege_level', ['MAKER', 'LABBIE', 'ADMIN']);
             t.date('registration_date').defaultTo(knex.fn.now());
             t.decimal('balance');
             t.integer('holds');
