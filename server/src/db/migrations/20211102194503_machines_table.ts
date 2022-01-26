@@ -20,7 +20,7 @@ export async function up(knex: Knex): Promise<void> {
           t.string('name', 50);
           t.integer('machine_family').references('id').inTable('MachineFamilies');
           t.string('room', 5);
-          t.timestamp('added_on').defaultTo(knex.fn.now());
+          t.timestamp('added_at').defaultTo(knex.fn.now());
           t.boolean('in_use').defaultTo(false);
         });
       }
@@ -29,9 +29,9 @@ export async function up(knex: Knex): Promise<void> {
       if (!exists) {
         return knex.schema.createTable('Reservations', function (t) {
           t.increments('id');
-          t.integer('student_id').references('id').inTable('Users');
+          t.integer('user_id').references('id').inTable('Users');
           t.integer('machine_id').references('id').inTable('Machines');
-          t.timestamp('created_on').defaultTo(knex.fn.now());
+          t.timestamp('created_at').defaultTo(knex.fn.now());
           t.time('start_time');
           t.time('end_time');
         });

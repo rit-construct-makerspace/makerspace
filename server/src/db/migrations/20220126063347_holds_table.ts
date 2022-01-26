@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
         if (!exists) {
             return knex.schema.createTable('Holds', function(t) {
                 t.increments('id');
-                t.enu('type', ['incomplete_training', 'safety_violation', 'financial']);
+                t.enu('type', ['INCOMPLETE_TRAINING', 'SAFETY_VIOLATION', 'BALANCE_DUE']);
                 t.text('description');
                 t.timestamp('created_on').defaultTo(knex.fn.now());
                 t.timestamp('removed_on');
