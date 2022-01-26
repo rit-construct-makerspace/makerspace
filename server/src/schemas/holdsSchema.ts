@@ -12,8 +12,8 @@ export const HoldsTypeDefs = gql`
     id: ID!
     type: HoldType!
     description: String
-    createdOn: Date
-    removedOn: Date
+    createdAt: DateTime
+    removedAt: DateTime
     userId: User!
   }
 
@@ -21,8 +21,8 @@ export const HoldsTypeDefs = gql`
     id: Int!
     type: HoldType!
     description: String
-    createdOn: Date
-    removedOn: Date
+    createdAt: DateTime
+    removedAt: DateTime
     userId: Int!
   }
 
