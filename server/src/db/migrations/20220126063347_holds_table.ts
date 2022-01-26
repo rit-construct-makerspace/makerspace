@@ -8,8 +8,8 @@ export async function up(knex: Knex): Promise<void> {
                 t.increments('id');
                 t.enu('type', ['INCOMPLETE_TRAINING', 'SAFETY_VIOLATION', 'BALANCE_DUE']);
                 t.text('description');
-                t.timestamp('created_on').defaultTo(knex.fn.now());
-                t.timestamp('removed_on');
+                t.timestamp('created_at').defaultTo(knex.fn.now());
+                t.timestamp('removed_at');
                 t.integer('user_id').references('id').inTable('Users');
               });
         }
