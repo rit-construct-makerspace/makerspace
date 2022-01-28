@@ -14,7 +14,7 @@ export const UsersTypeDefs = gql`
     year: Int
     college: String
     major: String
-    description: String
+    aboutMe: String
   }
 
   enum Privilege{
