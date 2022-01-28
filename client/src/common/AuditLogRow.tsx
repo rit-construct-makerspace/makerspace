@@ -9,12 +9,13 @@ interface LogRowProps {
 
 export default function AuditLogRow({log}: LogRowProps) {
     return (
-        <CardActionArea sx={{ py: 2 }}>
-            <Stack direction="row" alignItems="center" spacing={8}>
 
-                <Stack direction="row" spacing={0.5}>
+        <CardActionArea sx={{ py: 0.5 }}>
+            <Stack direction="row" alignItems="center" spacing={4}>
+
+                <Typography variant="body1" width={150}>
                     {log.time}
-                </Stack>
+                </Typography>
 
                 <Typography variant="body1" width={150}>
                     {log.user}

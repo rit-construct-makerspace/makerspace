@@ -1,10 +1,11 @@
 import React from "react";
 import Page from "../../Page";
-import { Divider, Stack } from "@mui/material";
+import {Button, Divider, InputAdornment, Stack, TextField, Typography} from "@mui/material";
 import Logs from "../../../test_data/Logs";
-import SearchBar from "../../../common/SearchBar";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import AuditLogRow from "../../../common/AuditLogRow";
+import {DateRange} from "@mui/icons-material";
+import {DatePicker} from "@mui/lab";
 
 
 interface LogPageProps {}
@@ -16,7 +17,28 @@ export default function LogPage({}: LogPageProps) {
 
             <PageSectionHeader>Audit Logs</PageSectionHeader>
 
-            <SearchBar placeholder="Search" />
+            <TextField  placeholder="Search for Events" size="small" />
+            <TextField  placeholder="User" size="small" />
+            <DateRange/>
+            <Button>Search</Button>
+
+            <pre ></pre>
+            <Stack direction="row" alignItems="center" spacing={4}>
+
+                <Typography variant="body1" width={150} fontWeight={"bold"}>
+                    Date
+                </Typography>
+                <Typography variant="body1" width={150} fontWeight={"bold"}>
+                    User
+                </Typography>
+                <Typography variant="body1" width={150} fontWeight={"bold"}>
+                    Event Type
+                </Typography>
+                <Typography variant="body1" width={150} fontWeight={"bold"}>
+                    Description
+                </Typography>
+
+            </Stack>
             <Stack divider={<Divider flexItem />} mt={2}>
                 {Logs.map((log) => (
                     <AuditLogRow
