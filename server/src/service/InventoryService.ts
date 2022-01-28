@@ -17,7 +17,11 @@ export class InventoryService {
     }
 
     public async addAmountToItem(itemId: number, amount: number) : Promise<InventoryItem> {
-        return this.inventoryRepo.addItemAmount(item);
+        return this.inventoryRepo.addItemAmount(itemId, amount);
+    }
+
+    public async removeAmountFromItem(itemId: number, amount: number) : Promise<InventoryItem> {
+      return this.inventoryRepo.addItemAmount(itemId, -1 * amount);
     }
 
   }

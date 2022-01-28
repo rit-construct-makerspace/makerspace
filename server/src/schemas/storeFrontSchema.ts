@@ -67,7 +67,7 @@ export const StoreFrontTypeDefs = gql`
   type Mutation {
     createPurchaseOrder(PO: PurchaseOrderInput): PurchaseOrder
     addItemToPurchaseOrder(POId: ID!, itemId: ID!, count: Int): PurchaseOrder
-    removeItemFromPurchaseOrder(POId: ID!, itemId: ID!, count: Int): PurchaseOrder
+    removeItemFromPurchaseOrder(POId: ID!, itemId: ID!): PurchaseOrder
     updateItemAmountInPurchaseOrder(POId: ID!, POItemId: ID!, count: Int!): PurchaseOrder
     addAttachmentsToPurchaseOrder(POId: ID!, attachments: [String]): PurchaseOrder
     removeAttachmentFromPurchaseOrder(POId: ID!, attachment: String): PurchaseOrder
