@@ -15,7 +15,9 @@ import StorefrontPreviewPage from "./pages/admin/storefront_preview/StorefrontPr
 import InventoryPage from "./pages/admin/inventory/InventoryPage";
 import EditMaterialPage from "./pages/admin/edit_material/EditMaterialPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
+import { createTheme, ThemeProvider } from "@mui/material";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import Routes from "./Routes";
 
 const apolloClient = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URL ?? "http://localhost:3000/graphql",
@@ -105,6 +107,7 @@ export default function App() {
             </Box>
           </Switch>
         </BrowserRouter>
+        <Routes />
       </ThemeProvider>
     </ApolloProvider>
   );
