@@ -97,21 +97,26 @@ export default function CreatePurchaseOrderPage({}: CreatePurchaseOrderPageProps
         spacing={1}
         sx={{
           width: "100%",
-          maxWidth: 500,
+          maxWidth: 600,
           mb: purchaseOrder.items.length > 0 ? 2 : 1,
         }}
       >
         {purchaseOrder.items.map((item) => (
           <Stack direction="row" alignItems="center" spacing={2} key={item.id}>
             <InvItemNamePic item={item} />
-            <TextField
-              label="Count"
-              type="number"
-              size="small"
-              sx={{ width: 80 }}
-              value={item.count}
-              onChange={(e) => setItemCount(item.id, e.target.value)}
-            />
+            <Stack direction="row" alignItems="center" spacing={1} width={180}>
+              <TextField
+                label="Count"
+                type="number"
+                size="small"
+                sx={{ width: 80 }}
+                value={item.count}
+                onChange={(e) => setItemCount(item.id, e.target.value)}
+              />
+              <Typography variant="body1">
+                {item.count === 1 ? item.unit : item.pluralUnit}
+              </Typography>
+            </Stack>
             <CloseButton onClick={() => removeItem(item.id)} />
           </Stack>
         ))}
