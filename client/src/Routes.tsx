@@ -5,7 +5,7 @@ import { Box } from "@mui/material";
 import LeftNav from "./left_nav/LeftNav";
 import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 import EditModulePage from "./pages/admin/edit_module/EditModulePage";
-import EquipmentPage from "./pages/both/EquipmentPage";
+import EquipmentPage from "./pages/both/equipment/EquipmentPage";
 import Page from "./pages/Page";
 import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
 import TrainingModulesPage from "./pages/admin/training_modules/TrainingModulesPage";
@@ -17,6 +17,7 @@ import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
 import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
+import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage"
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -98,7 +99,7 @@ export default function Routes() {
             </Route>
 
             <Route path="/admin/audit">
-              <Page title="Audit Logs" />
+              <AuditLogsPage />
             </Route>
           </Switch>
         </Box>
