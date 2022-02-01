@@ -18,7 +18,7 @@ export async function up(knex: Knex): Promise<void> {
         return knex.schema.createTable('Machines', function (t) {
           t.increments('id');
           t.string('name', 50);
-          t.integer('category').references('id').inTable('MachineFamilies');
+          t.integer('machine_family').references('id').inTable('MachineFamilies');
           t.string('room', 5);
           t.timestamp('added_at').defaultTo(knex.fn.now());
           t.boolean('in_use').defaultTo(false);

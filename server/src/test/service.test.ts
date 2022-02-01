@@ -1,5 +1,5 @@
-import { TrainingTypeDefs } from "../trainingSchema";
-import ServiceResolvers from "../trainingResolver";
+import { TrainingTypeDefs } from "../schemas/trainingSchema";
+import ServiceResolvers from "../resolvers/trainingResolver";
 import { graphql } from "graphql";
 import { makeExecutableSchema } from "graphql-tools";
 

@@ -8,8 +8,8 @@ import {
   Grid,
   Stack,
 } from "@mui/material";
-import Page from "../Page";
-import SearchBar from "../../common/SearchBar";
+import Page from "../../Page";
+import SearchBar from "../../../common/SearchBar";
 import MachineCard from "./MachineCard";
 import { useHistory } from "react-router-dom";
 
