@@ -18,25 +18,29 @@ export class PurchaseOrderMappper {
 
         if (i.attachment !== null) {
           let index: number = arr.findIndex((x) => (x.id = i.id));
-          arr[index].attachments.push(i.attachment);
+          if (!arr[index].attachments.some((y) => y === i.attachment))
+            arr[index].attachments.push(i.attachment);
         }
 
         if (i.itemId !== null) {
           let index: number = arr.findIndex((x) => (x.id = i.id));
-          arr[index].items.push({
-            id: i.itemId,
-            count: i.count,
-            item: {
-              id: i.invItemId,
-              image: i.image,
-              name: i.name,
-              unit: i.unit,
-              pluralUnit: i.pluralUnit,
-              count: i.count,
-              pricePerUnit: i.pricePerUnit,
-              labels: [],
-            },
-          });
+
+          if (!arr[index].items.some((y) => y.id === i.itemId)) {
+            arr[index].items.push({
+              id: i.itemId,
+              count: i.poItemCount,
+              item: {
+                id: i.invItemId,
+                image: i.image,
+                name: i.name,
+                unit: i.unit,
+                pluralUnit: i.pluralUnit,
+                count: i.count,
+                pricePerUnit: i.pricePerUnit,
+                labels: [],
+              },
+            });
+          }
         }
 
         if (i.label !== null) {

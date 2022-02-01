@@ -46,4 +46,8 @@ export class PurchaseOrderService {
       return await this.poRepo.removeAttachmentFromPO(attachment, poId);
   }
 
+  public async deletePurchaseOrder(poId: number) : Promise<void> {
+    return await this.poRepo.deletePOById(poId);
+  }
+
 }

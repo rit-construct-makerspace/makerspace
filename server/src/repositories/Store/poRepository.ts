@@ -159,11 +159,11 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
     return this.getPOById(poId);
   }
 
-  public async removeItemFromPO(itemId: number | string, poId: number | string): Promise<PurchaseOrder> {
+  public async removeItemFromPO(poId: number | string, itemId: number | string): Promise<PurchaseOrder> {
     await this.queryBuilder("PurchaseOrderItem")
       .where({
         purchaseOrder: poId,
-        item: itemId,
+        id: itemId,
       }).del();
     return this.getPOById(poId);
   }
@@ -172,7 +172,7 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
     await this.queryBuilder("PurchaseOrderItem")
       .where({
         purchaseOrder: poId,
-        item: itemId,
+        id: itemId,
       }).update({ count: count });
     return this.getPOById(poId);
   }
@@ -180,7 +180,7 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
   public async deletePOById(poId: number | string): Promise<void> {
     await this.queryBuilder("PurchaseOrder")
       .where({
-        purchaseOrder: poId,
+        id: poId,
       }).del();
   }
 

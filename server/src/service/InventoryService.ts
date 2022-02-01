@@ -28,4 +28,8 @@ export class InventoryService {
       return this.inventoryRepo.addItemAmount(itemId, -1 * amount);
     }
 
+    public async deleteInventoryItem(itemId: number) : Promise<void> {
+      return this.inventoryRepo.deleteItemById(itemId);
+    }
+
   }

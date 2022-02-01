@@ -34,6 +34,11 @@ const StorefrontResolvers = {
       createPurchaseOrder: async (_: any, args: any) => {
         return purchaseOrderService.createNewPurchaseOrder(args.PO.creatorID, args.PO.expectedDeliveryDate, args.PO.items, args.PO.attachments);
       },
+      
+      //deletePurchaseOrder(POId: ID!): PurchaseOrder
+      deletePurchaseOrder: async (_: any, args: any) => {
+        return purchaseOrderService.deletePurchaseOrder(args.POId);
+      },
 
       // addItemToPurchaseOrder(POId: ID!, itemId: ID!, count: Int): PurchaseOrder
       addItemToPurchaseOrder: async (_: any, args: any) => {
@@ -67,13 +72,18 @@ const StorefrontResolvers = {
 
       // addItemAmount(itemId: ID!, count: Int!): InventoryItem      
       addItemAmount: async (_: any, args: any) => {
-        return inventoryService.addAmountToItem(args.itemId, args.count); 
+        return await inventoryService.addAmountToItem(args.itemId, args.count); 
       },
 
       // removeItemAmount(itemId: ID!, count: Int!): InventoryItem      
       removeItemAmount: async (_: any, args: any) => {
-        return inventoryService.removeAmountFromItem(args.itemId, args.count); 
+        return await inventoryService.removeAmountFromItem(args.itemId, args.count); 
       },
+
+      //deleteInventoryItem(itemId: ID!): InventoryItem
+      deleteInventoryItem: async (_:any, args: any) => {
+        return await inventoryService.deleteInventoryItem(args.itemId);
+      }
   
     },
   };
