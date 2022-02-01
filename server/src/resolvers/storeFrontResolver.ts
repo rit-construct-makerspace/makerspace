@@ -52,7 +52,8 @@ const StorefrontResolvers = {
 
       // addItemToInventory(item: InventoryItemInput): InventoryItem      
       addItemToInventory: async (_: any, args: any) => {
-        return inventoryService.addItemToInventory(args.item); 
+        console.log('resolver: adding item to inventory')
+        return await inventoryService.addItemToInventory(args.item); 
       },
 
       // addItemAmount(itemId: ID!, count: Int!): InventoryItem      

@@ -29,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
 
     knex.schema.hasTable('InventoryItemLabel').then(function (exists) {
         if (!exists) {
-            return knex.schema.createTable('Label', function (t) {
+            return knex.schema.createTable('InventoryItemLabel', function (t) {
                 t.increments('id').primary();
                 t.integer('item')
                     .references('InventoryItem.id')

@@ -81,7 +81,7 @@ export class InventoryRepo implements IInventoryRepo {
         count: item.count,
         pricePerUnit: item.pricePerUnit
       }, "id");
-    this.updateLabels(newId, item.labels);
+    await this.updateLabels(newId[0], item.labels);
     return InventoryItemMappper.toDomain(newId)[0];
   }
 
@@ -100,13 +100,14 @@ export class InventoryRepo implements IInventoryRepo {
   }
 
   private async updateLabels(itemId: number, labels: string[]): Promise<void> {
-    await this.queryBuilder('InventoryItemLabel').where('item', itemId).del();
-    await this.queryBuilder.from('InventoryItemLabel')
-      .insert(
-        this.queryBuilder.from('Label')
-          .whereIn('Label.label', labels)
-          .select(knex.raw('? AS ??', [itemId, 'item']), 'Label.id')
-      );
+    await this.queryBuilder('InventoryItemLabel').del().where({item: itemId});
+    if (labels.length > 0)
+      await this.queryBuilder.from('InventoryItemLabel')
+        .insert(
+          this.queryBuilder.from('Label')
+            .whereIn('Label.label', labels)
+            .select(knex.raw('? AS ??', [itemId, 'item']), 'Label.id')
+        );
   }
 
 }
