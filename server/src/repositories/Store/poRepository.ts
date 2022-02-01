@@ -1,4 +1,4 @@
-import knex from "knex";
+import { knex } from "../../db";
 import { PurchaseOrderMappper } from "../../mappers/store/PurchaseOrderMapper";
 import { InventoryItem } from "../../models/store/inventoryItem";
 import { PurchaseOrder } from "../../models/store/purchaseOrder";
@@ -32,6 +32,8 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
       .leftJoin("PurchaseOrderItem", "PurchaseOrderItem.purchaseOrder", "=", "PurchaseOrder.id")
       .leftJoin("PurchaseOrderAttachment", "PurchaseOrderAttachment.purchaseOrder", "=", "PurchaseOrder.id")
       .leftJoin("InventoryItem", "InventoryItem.id", "=", "PurchaseOrderItem.item")
+      .leftJoin("InventoryItemLabel", "InventoryItemLabel.item", "=", "InventoryItem.id")
+      .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
       .select(
         "PurchaseOrder.id",
         "PurchaseOrder.creator",
@@ -50,7 +52,7 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
         "PurchaseOrderItem.count as poItemCount",
         "PurchaseOrderAttachment.id as attachId",
         "PurchaseOrderAttachment.attachment"
-      )
+      );
     return PurchaseOrderMappper.toDomain(knexResult);
   }
 
@@ -59,6 +61,8 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
       .leftJoin("PurchaseOrderItem", "PurchaseOrderItem.purchaseOrder", "=", "PurchaseOrder.id")
       .leftJoin("PurchaseOrderAttachment", "PurchaseOrderAttachment.purchaseOrder", "=", "PurchaseOrder.id")
       .leftJoin("InventoryItem", "InventoryItem.id", "=", "PurchaseOrderItem.item")
+      .leftJoin("InventoryItemLabel", "InventoryItemLabel.item", "=", "InventoryItem.id")
+      .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
       .select(
         "PurchaseOrder.id",
         "PurchaseOrder.creator",
@@ -83,12 +87,12 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
   }
 
   public async createNewPO(creatorId: number, expectedDeliveryDate: Date, items: PurchaseOrderItemInput[], attachments: string[]): Promise<PurchaseOrder> {
-    const newId = await this.queryBuilder("PurchaseOrder")
+    const newId = (await this.queryBuilder("PurchaseOrder")
     .insert({
       creator: creatorId,
-      createDate: Date.now(),
+      createDate: new Date().toISOString(),
       expectedDeliveryDate: expectedDeliveryDate,
-    }, "id");
+    }, "id"))[0];
 
     if (items.length > 0) {
      this.addItemsToPO(newId, items);

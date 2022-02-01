@@ -61,7 +61,9 @@ export const StoreFrontTypeDefs = gql`
 
   type Query {
     InventoryItems: [InventoryItem]
+    InventoryItem(Id: ID!): InventoryItem
     PurchaseOrders: [PurchaseOrder]
+    PurchaseOrder(Id: ID!): PurchaseOrder
   }
 
   type Mutation {

@@ -8,6 +8,10 @@ export class InventoryService {
       this.inventoryRepo = repo;
     }
    
+    public async getInventoryItemsById(id: number) : Promise<InventoryItem> {
+      return await this.inventoryRepo.getItemById(id);
+    }
+
     public async getAllInventoryItems() : Promise<InventoryItem[]> {
       return await this.inventoryRepo.getItems();
     }

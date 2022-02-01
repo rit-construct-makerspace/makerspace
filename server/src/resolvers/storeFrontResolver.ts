@@ -13,10 +13,20 @@ const StorefrontResolvers = {
         return inventoryService.getAllInventoryItems();
       },
 
+      //InventoryItem(Id: ID!): InventoryItem
+      InventoryItem: async(_: any, args: any, context: any) => {
+        return inventoryService.getInventoryItemsById(args.Id);
+      },
+
       // PurchaseOrders: [PurchaseOrder]
       PurchaseOrders: async (_: any, args: any, context: any) => {
-        return purchaseOrderService.getAllPurchaseOrders();
-      },      
+        return await purchaseOrderService.getAllPurchaseOrders();
+      },    
+      
+      // PurchaseOrder(Id: ID!): PurchaseOrder
+      PurchaseOrder: async (_: any, args: any, context: any) => {
+        return purchaseOrderService.getPurchaseOrder(args.Id);
+      }, 
     },
   
     Mutation: {
@@ -47,12 +57,11 @@ const StorefrontResolvers = {
 
       // removeAttachmentFromPurchaseOrder(POId: ID!, attachment: String): PurchaseOrder      
       removeAttachmentFromPurchaseOrder: async (_: any, args: any) => {
-
+        return purchaseOrderService.removeAttachment(args.POId, args.attachment);
       },
 
       // addItemToInventory(item: InventoryItemInput): InventoryItem      
       addItemToInventory: async (_: any, args: any) => {
-        console.log('resolver: adding item to inventory')
         return await inventoryService.addItemToInventory(args.item); 
       },
 

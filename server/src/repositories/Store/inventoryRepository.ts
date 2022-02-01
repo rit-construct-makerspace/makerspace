@@ -68,11 +68,12 @@ export class InventoryRepo implements IInventoryRepo {
       }, "id");
 
     this.updateLabels(item.id, item.labels);
-    return InventoryItemMappper.toDomain(this.getItemById(updateItem[0]))[0];
+    const result = await this.getItemById(updateItem[0])
+    return InventoryItemMappper.toDomain(result)[0];
   }
 
   public async addItem(item: InventoryItem): Promise<InventoryItem> {
-    const newId = await this.queryBuilder("InventoryItem")
+    const newId = (await this.queryBuilder("InventoryItem")
       .insert({
         image: item.image,
         name: item.name,
@@ -80,9 +81,9 @@ export class InventoryRepo implements IInventoryRepo {
         pluralUnit: item.pluralUnit,
         count: item.count,
         pricePerUnit: item.pricePerUnit
-      }, "id");
-    await this.updateLabels(newId[0], item.labels);
-    return InventoryItemMappper.toDomain(newId)[0];
+      }, "id"))[0];
+    await this.updateLabels(newId, item.labels);
+    return await this.getItemById(newId)
   }
 
   public async addItemAmount(itemId: number, amount: number): Promise<InventoryItem> {
@@ -101,7 +102,7 @@ export class InventoryRepo implements IInventoryRepo {
 
   private async updateLabels(itemId: number, labels: string[]): Promise<void> {
     await this.queryBuilder('InventoryItemLabel').del().where({item: itemId});
-    if (labels.length > 0)
+    if (labels && labels.length > 0)
       await this.queryBuilder.from('InventoryItemLabel')
         .insert(
           this.queryBuilder.from('Label')
