@@ -1,5 +1,5 @@
 export default interface User {
-  id: string;
+  id: number;
   name: string;
   image: string;
   role: string;

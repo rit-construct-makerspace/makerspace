@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import Person from "../../../types/Person";
 import {
   Avatar,
@@ -10,8 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import Equipment from "../../../types/Equipment";
-
-const StyledDiv = styled.div``;
 
 interface EquipmentQualificationsCardProps {
   equipment: Equipment;
@@ -26,7 +23,7 @@ export default function EquipmentQualificationsCard({
 }: EquipmentQualificationsCardProps) {
   return (
     <Card sx={{ width: 300 }}>
-      <CardMedia component="img" src={equipment.imageSrc} height="150" />
+      <CardMedia component="img" src={equipment.image} height="150" />
       <CardContent>
         <Typography variant="h6" component="div">
           {equipment.name}
