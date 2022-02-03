@@ -6,16 +6,16 @@ import { PurchaseOrderItemInput } from "../../models/store/purchaseOrderItemInpu
 
 export interface IPurchaseOrderRepo {
   getAllPOs(): Promise<PurchaseOrder[]>;
-  getPOById(poId: number | string): Promise<PurchaseOrder>;
+  getPOById(poId: number): Promise<PurchaseOrder>;
   createNewPO(creatorId: number, expectedDeliveryDate: Date, items: PurchaseOrderItemInput[], attachments: string[]): Promise<PurchaseOrder>;
   addItemToPO(item: InventoryItem, poId: number, count: number): Promise<PurchaseOrder>;
   addItemsToPO(poId: number, items: PurchaseOrderItemInput[]): Promise<PurchaseOrder>;
-  addAttachmentToPO(attachment: string, poId: number | string): Promise<PurchaseOrder>;
+  addAttachmentToPO(attachment: string, poId: number): Promise<PurchaseOrder>;
   addAttachmentsToPO(attachments: string[], poId: number): Promise<PurchaseOrder>;
-  removeAttachmentFromPO(attachment: string, poId: number | string): Promise<PurchaseOrder>;
-  removeItemFromPO(itemId: number | string, poId: number | string): Promise<PurchaseOrder>;
-  updateItemCountInPO(itemId: number | string, count: number, poId: number | string): Promise<PurchaseOrder>;
-  deletePOById(poId: number | string): Promise<void>;
+  removeAttachmentFromPO(attachment: string, poId: number): Promise<PurchaseOrder>;
+  removeItemFromPO(itemId: number, poId: number): Promise<PurchaseOrder>;
+  updateItemCountInPO(itemId: number, count: number, poId: number): Promise<PurchaseOrder>;
+  deletePOById(poId: number): Promise<void>;
 }
 
 
@@ -56,7 +56,7 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
     return PurchaseOrderMappper.toDomain(knexResult);
   }
 
-  public async getPOById(poId: number | string): Promise<PurchaseOrder> {
+  public async getPOById(poId: number): Promise<PurchaseOrder> {
     const knexResult = await this.queryBuilder("PurchaseOrder")
       .leftJoin("PurchaseOrderItem", "PurchaseOrderItem.purchaseOrder", "=", "PurchaseOrder.id")
       .leftJoin("PurchaseOrderAttachment", "PurchaseOrderAttachment.purchaseOrder", "=", "PurchaseOrder.id")
@@ -150,7 +150,7 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
     return this.getPOById(poId);
   }
 
-  public async removeAttachmentFromPO(attachment: string, poId: number | string): Promise<PurchaseOrder> {
+  public async removeAttachmentFromPO(attachment: string, poId: number): Promise<PurchaseOrder> {
     await this.queryBuilder("PurchaseOrderAttachment")
       .where({
         purchaseOrder: poId,
@@ -159,7 +159,7 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
     return this.getPOById(poId);
   }
 
-  public async removeItemFromPO(poId: number | string, itemId: number | string): Promise<PurchaseOrder> {
+  public async removeItemFromPO(poId: number, itemId: number): Promise<PurchaseOrder> {
     await this.queryBuilder("PurchaseOrderItem")
       .where({
         purchaseOrder: poId,
@@ -168,7 +168,7 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
     return this.getPOById(poId);
   }
 
-  public async updateItemCountInPO(itemId: number | string, count: number, poId: number | string): Promise<PurchaseOrder> {
+  public async updateItemCountInPO(itemId: number | string, count: number, poId: number): Promise<PurchaseOrder> {
     await this.queryBuilder("PurchaseOrderItem")
       .where({
         purchaseOrder: poId,
@@ -177,7 +177,7 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
     return this.getPOById(poId);
   }
 
-  public async deletePOById(poId: number | string): Promise<void> {
+  public async deletePOById(poId: number): Promise<void> {
     await this.queryBuilder("PurchaseOrder")
       .where({
         id: poId,

@@ -4,11 +4,11 @@ import { InventoryItem } from "../../models/store/inventoryItem";
 
 export interface IInventoryRepo {
   getItems(): Promise<InventoryItem[]>;
-  getItemById(itemId: number | string): Promise<InventoryItem>;
+  getItemById(itemId: number): Promise<InventoryItem>;
   updateItemById(item: InventoryItem): Promise<InventoryItem>;
   addItem(item: InventoryItem): Promise<InventoryItem>;
   addItemAmount(itemId: number, amount: number): Promise<InventoryItem>;
-  deleteItemById(questitemIdionId: number | string): Promise<void>;
+  deleteItemById(questitemIdionId: number): Promise<void>;
 }
 
 export class InventoryRepo implements IInventoryRepo {
@@ -40,7 +40,7 @@ export class InventoryRepo implements IInventoryRepo {
     return InventoryItemMappper.toDomain(knexResult);
   }
 
-  public async getItemById(itemId: number | string): Promise<InventoryItem> {
+  public async getItemById(itemId: number): Promise<InventoryItem> {
     const knexResult = await this.queryBuilder("InventoryItem")
       .leftJoin(
         "InventoryItemLabel",
@@ -119,7 +119,7 @@ export class InventoryRepo implements IInventoryRepo {
     return await this.getItemById(updateItem);
   }
 
-  public async deleteItemById(itemId: number | string): Promise<void> {
+  public async deleteItemById(itemId: number): Promise<void> {
     await this.queryBuilder("InventoryItem").where({ id: itemId }).del();
   }
 
