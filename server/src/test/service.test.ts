@@ -1,26 +1,26 @@
-import { TrainingTypeDefs } from "../schemas/trainingSchema";
-import ServiceResolvers from "../resolvers/trainingResolver";
-import { graphql } from "graphql";
-import { makeExecutableSchema } from "graphql-tools";
+import { Module } from "../models/training/module";
+import { knex } from "../db";
+import { ModuleRepo } from "../repositories/Training/ModuleRepository";
 
-// create a mocked schema for the tests
-const schema = makeExecutableSchema({
-  typeDefs: TrainingTypeDefs,
-  resolvers: ServiceResolvers,
-});
 
-describe("User Schema", () => {
-  test("Test getAllUsers query", async () => {
-    const query = `
-        {
-            user: getAllUsers {
-                name
-            }
-        }
-    `;
-    return graphql(schema, query).then((result: any) => {
-      const users = result.data.user;
-      expect(users.length).toBe(2);
-    });
+describe("Example test set", () => {
+
+  beforeAll(() => {
+    return knex.migrate.latest();
+    // we can here also seed our tables, if we have any seeding files
   });
+
+  afterAll(() => {
+    knex.destroy();
+  });
+
+  test("example test", async () => {
+    let mr = new ModuleRepo();
+    let m1 = new Module("test", []);
+    await mr.addModule(m1);
+    let mods = await mr.getModules();
+    expect(mods.length).toBe(1);
+  });
+
+
 });
