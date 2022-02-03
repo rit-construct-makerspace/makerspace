@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "fix": "ts-jest config:migrate jest.config.js",
     "start": "node 'dist/server.js'",
     "build": "tsc -p .",
-    "test": "jest",
+    "test": "npm run build && jest",
     "test:watch": "jest --verbose --detectOpenHandles",
     "start:dev": "npm run build:dev",
     "build:dev": "nodemon 'src/server.ts' --exec 'ts-node' src/server.ts -e ts,graphql",
@@ -28,7 +29,8 @@
     "http": "^0.0.1-security",
     "knex": "^0.95.11",
     "ncp": "^2.0.0",
-    "pg": "^8.7.1"
+    "pg": "^8.7.1",
+    "sqlite3": "^5.0.2"
   },
   "description": "",
   "devDependencies": {

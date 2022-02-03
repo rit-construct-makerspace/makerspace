@@ -17,6 +17,8 @@ import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
 import CreatePurchaseOrderPage from "./pages/admin/create_purchase_order/CreatePurchaseOrderPage";
+import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
+import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage"
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -97,8 +99,12 @@ export default function Routes() {
               <UsersPage />
             </Route>
 
+            <Route path="/admin/manage-user">
+              <ManageUserPage />
+            </Route>
+
             <Route path="/admin/audit">
-              <Page title="Audit Logs" />
+              <AuditLogsPage />
             </Route>
           </Switch>
         </Box>
