@@ -11,68 +11,30 @@ import {
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReservationAttachment from "./ReservationAttachment";
 import Reservation from "../../../types/Reservation";
+import { format } from "date-fns";
 
 interface ReservationCardProps {
   reservation: Reservation;
 }
 
-const weekdays = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
-const months = [
-  "Jan.",
-  "Feb.",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "Aug.",
-  "Sept.",
-  "Oct.",
-  "Nov.",
-  "Dec.",
-];
-
-function formatDate(dateTime: string) {
-  const d = new Date(dateTime);
-  return `${weekdays[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
-}
-
-function formatTime(dateTime: string) {
-  const d = new Date(dateTime);
-  return d.toLocaleTimeString().replaceAll(":00", "");
-}
-
-// '11:30 AM' -> 'AM'
-function getTimePeriod(time: string) {
-  return time.substring(time.length - 2);
-}
-
 function formatReservationTime(reservation: Reservation) {
-  const date = formatDate(reservation.startTime);
+  const startDate = new Date(reservation.startTime);
+  const endDate = new Date(reservation.endTime);
 
-  const startTime = formatTime(reservation.startTime);
-  const endTime = formatTime(reservation.endTime);
+  const formattedDate = format(startDate, "EEEE, MMM do");
 
-  const fullTime = `${date}, ${startTime} — ${endTime}`;
+  const startTime = format(startDate, "h:mm");
+  const endTime = format(endDate, "h:mm");
 
-  const startPeriod = getTimePeriod(startTime);
-  const endPeriod = getTimePeriod(endTime);
+  let startPeriod = format(startDate, "a ");
+  const endPeriod = format(endDate, "a ");
 
   // If both times are in AM, remove the first "AM". Same for PM.
   if (startPeriod === endPeriod) {
-    return fullTime.replace(startPeriod, "");
+    startPeriod = "";
   }
 
-  return fullTime;
+  return `${formattedDate}, ${startTime} ${startPeriod}— ${endTime} ${endPeriod}`;
 }
 
 export default function ReservationCard({ reservation }: ReservationCardProps) {
