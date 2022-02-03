@@ -26,6 +26,10 @@ export const AuditLogsTypeDefs = gql`
     eventType: EventType!
     Description: String!
   }
+  
+  type Query {
+    auditLogs: [Log]
+  }
 
   type Mutation {
     addLog(log: LogInput): Log
