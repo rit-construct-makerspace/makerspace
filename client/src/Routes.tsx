@@ -18,7 +18,8 @@ import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
 import CreatePurchaseOrderPage from "./pages/admin/create_purchase_order/CreatePurchaseOrderPage";
 import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
-import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage"
+import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
+import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -80,7 +81,7 @@ export default function Routes() {
             </Route>
 
             <Route path="/admin/reservations">
-              <Page title="Reservations" />
+              <ReservationsPage />
             </Route>
 
             <Route path="/admin/monitor/select-room">

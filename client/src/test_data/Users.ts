@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
 const firstNames = [
   "Bob",
   "Susan",
@@ -41,13 +39,15 @@ function getRandomListElement(list: any[]) {
   return list[Math.floor(Math.random() * list.length)];
 }
 
+let nextUserId = 0;
+
 function generateUser(role: string) {
   const image = getRandomListElement(images);
   const firstName = getRandomListElement(firstNames);
   const lastName = getRandomListElement(lastNames);
   const name = `${firstName} ${lastName}`;
 
-  return { id: uuidv4(), name, image, role };
+  return { id: nextUserId++, name, image, role };
 }
 
 export default function generateUsers(
