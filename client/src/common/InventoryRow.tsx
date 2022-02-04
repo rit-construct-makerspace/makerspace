@@ -12,7 +12,7 @@ interface InventoryRowProps {
 export default function InventoryRow({ item, onClick }: InventoryRowProps) {
   return (
     <CardActionArea onClick={onClick} sx={{ py: 2 }}>
-      <Stack direction="row" alignItems="center" spacing={8}>
+      <Stack sx={{opacity: item.count === 0 ? 0.3 : 1}} direction="row" alignItems="center" spacing={8}>
         <InvItemNamePic item={item} />
 
         <Stack direction="row" spacing={0.5}>

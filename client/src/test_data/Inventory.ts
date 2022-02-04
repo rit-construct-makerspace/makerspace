@@ -41,4 +41,15 @@ export default [
     count: 47,
     pricePerUnit: 0.5,
   },
+  {
+    id: 4,
+    image:
+        "https://mobileimages.lowes.com/productimages/fed3b49c-9876-42e7-ab9e-5dfa25e23d1a/08970752.jpg?size=pdhi",
+    name: "3/4in x 3ft metal rod",
+    labels: ["Metal", "Raw Materials"],
+    unit: "rod",
+    pluralUnit: "rods",
+    count: 0,
+    pricePerUnit: 15,
+  }
 ];

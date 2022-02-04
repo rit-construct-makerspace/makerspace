@@ -20,6 +20,7 @@ import CreatePurchaseOrderPage from "./pages/admin/create_purchase_order/CreateP
 import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
+import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -53,7 +54,7 @@ export default function Routes() {
             </Route>
 
             <Route path="/maker/materials">
-              <Page title="Materials" />
+              <InventoryPreviewPage />
             </Route>
 
             <Route path="/admin/edit-equipment">
