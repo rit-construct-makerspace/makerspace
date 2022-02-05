@@ -3,9 +3,9 @@ import { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
 
-    knex.schema.hasTable('InventoryItem').then(function (exists) {
+    knex.schema.hasTable('InventoryItem').then((exists) => {
         if (!exists) {
-            return knex.schema.createTable('InventoryItem', function (t) {
+            return knex.schema.createTable('InventoryItem', (t) => {
                 t.increments('id').primary();
                 t.text('image');
                 t.text('name');
@@ -18,18 +18,18 @@ export async function up(knex: Knex): Promise<void> {
     });
 
     // if we know every label we can use an enum instead of this table
-    knex.schema.hasTable('Label').then(function (exists) {
+    knex.schema.hasTable('Label').then((exists) => {
         if (!exists) {
-            return knex.schema.createTable('Label', function (t) {
+            return knex.schema.createTable('Label', (t) => {
                 t.increments('id').primary();
                 t.text('label');
             });
         }
     });
 
-    knex.schema.hasTable('InventoryItemLabel').then(function (exists) {
+    knex.schema.hasTable('InventoryItemLabel').then((exists) => {
         if (!exists) {
-            return knex.schema.createTable('InventoryItemLabel', function (t) {
+            return knex.schema.createTable('InventoryItemLabel', (t) => {
                 t.increments('id').primary();
                 t.integer('item')
                     .references('InventoryItem.id')
@@ -41,20 +41,20 @@ export async function up(knex: Knex): Promise<void> {
         }
     });
 
-    knex.schema.hasTable('PurchaseOrder').then(function (exists) {
+    knex.schema.hasTable('PurchaseOrder').then((exists) => {
         if (!exists) {
-            return knex.schema.createTable('PurchaseOrder', function (t) {
+            return knex.schema.createTable('PurchaseOrder', (t) => {
                 t.increments('id').primary();
-                t.text('creator'); // update this when we have user stuff done
+                t.text('creator'); // TODO: update this when we have user stuff done
                 t.date('createDate');
                 t.date('expectedDeliveryDate');
             });
         }
     });
 
-    knex.schema.hasTable('PurchaseOrderItem').then(function (exists) {
+    knex.schema.hasTable('PurchaseOrderItem').then((exists) => {
         if (!exists) {
-            return knex.schema.createTable('PurchaseOrderItem', function (t) {
+            return knex.schema.createTable('PurchaseOrderItem', (t) => {
                 t.increments('id').primary();
                 t.integer('item')
                     .references('InventoryItem.id');
@@ -66,9 +66,9 @@ export async function up(knex: Knex): Promise<void> {
         }
     });
 
-    knex.schema.hasTable('PurchaseOrderAttachment').then(function (exists) {
+    knex.schema.hasTable('PurchaseOrderAttachment').then((exists) => {
         if (!exists) {
-            return knex.schema.createTable('PurchaseOrderAttachment', function (t) {
+            return knex.schema.createTable('PurchaseOrderAttachment', (t) => {
                 t.increments('id').primary();
                 t.integer('purchaseOrder')
                     .references('PurchaseOrder.id')
@@ -83,37 +83,37 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 
-    knex.schema.hasTable('InventoryItem').then(function (exists) {
+    knex.schema.hasTable('InventoryItem').then((exists) => {
         if (exists) {
             return knex.schema.dropTable('InventoryItem');
         }
     });
 
-    knex.schema.hasTable('Label').then(function (exists) {
+    knex.schema.hasTable('Label').then((exists) => {
         if (exists) {
             return knex.schema.dropTable('Label');
         }
     });
 
-    knex.schema.hasTable('InventoryItemLabel').then(function (exists) {
+    knex.schema.hasTable('InventoryItemLabel').then((exists) => {
         if (exists) {
             return knex.schema.dropTable('InventoryItemLabel');
         }
     });
 
-    knex.schema.hasTable('PurchaseOrder').then(function (exists) {
+    knex.schema.hasTable('PurchaseOrder').then((exists) => {
         if (exists) {
             return knex.schema.dropTable('PurchaseOrder');
         }
     });
 
-    knex.schema.hasTable('PurchaseOrderItem').then(function (exists) {
+    knex.schema.hasTable('PurchaseOrderItem').then((exists) => {
         if (exists) {
             return knex.schema.dropTable('PurchaseOrderItem');
         }
     });
 
-    knex.schema.hasTable('PurchaseOrderAttachment').then(function (exists) {
+    knex.schema.hasTable('PurchaseOrderAttachment').then((exists) => {
         if (exists) {
             return knex.schema.dropTable('PurchaseOrderAttachment');
         }
