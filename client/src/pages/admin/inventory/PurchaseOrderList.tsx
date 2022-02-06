@@ -4,10 +4,13 @@ import PageSectionHeader from "../../../common/PageSectionHeader";
 import TestData from "../../../test_data/PurchaseOrders";
 import PurchaseOrder from "./PurchaseOrder";
 import CreateIcon from "@mui/icons-material/Create";
+import { useHistory } from "react-router-dom";
 
 interface PendingOrdersProps {}
 
 export default function PurchaseOrderList({}: PendingOrdersProps) {
+  const history = useHistory();
+
   return (
     <Stack>
       <PageSectionHeader top>Purchase Orders</PageSectionHeader>
@@ -23,7 +26,11 @@ export default function PurchaseOrderList({}: PendingOrdersProps) {
         ))}
       </Stack>
 
-      <Button startIcon={<CreateIcon />} sx={{ mt: 2, alignSelf: "center" }}>
+      <Button
+        startIcon={<CreateIcon />}
+        sx={{ mt: 2, alignSelf: "center" }}
+        onClick={() => history.push("/admin/create-purchase-order")}
+      >
         Create order
       </Button>
     </Stack>

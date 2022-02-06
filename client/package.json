@@ -11,6 +11,7 @@
     "@testing-library/jest-dom": "latest",
     "@testing-library/react": "latest",
     "@testing-library/user-event": "latest",
+    "date-fns": "^2.28.0",
     "graphql": "^16.2.0",
     "immer": "^9.0.6",
     "react": "latest",
@@ -24,7 +25,7 @@
   },
   "scripts": {
     "tsc": "./node_modules/.bin/tsc",
-    "start": "react-app-rewired start",
+    "start": "PORT=3001 react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"

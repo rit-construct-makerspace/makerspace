@@ -1,5 +1,5 @@
 export default interface Equipment {
-  id: string;
+  id: number;
   name: string;
-  imageSrc: string;
+  image: string;
 }
