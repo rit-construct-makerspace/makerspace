@@ -6,7 +6,7 @@ export const AuditLogsTypeDefs = gql`
     timeDate: Date!
     user: User!
     eventType: EventType!
-    Description: String!
+    description: String!
   }
 
   enum EventType{
@@ -24,7 +24,7 @@ export const AuditLogsTypeDefs = gql`
     timeDate: Date!
     user: User!
     eventType: EventType!
-    Description: String!
+    description: String!
   }
   
   type Query {
