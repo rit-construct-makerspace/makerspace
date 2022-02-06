@@ -6,7 +6,7 @@ export const MachinesTypeDefs = gql`
     machineFamily: MachineFamily!
     name: String!
     room: String!
-    addedAt: Date
+    addedAt: DateTime
     inUse: Boolean!
   }
 
@@ -22,7 +22,7 @@ export const MachinesTypeDefs = gql`
     userId: User!
     supervisorId: User!
     machineId: Machine!
-    createdAt: Date
+    createdAt: DateTime
     startTime: DateTime!
     endTime: DateTime!
   }
@@ -31,7 +31,7 @@ export const MachinesTypeDefs = gql`
     machineFamily: Int!
     name: String!
     room: String!
-    addedAt: Date
+    addedAt: DateTime
     inUse: Boolean!
   }
 
@@ -45,7 +45,7 @@ export const MachinesTypeDefs = gql`
     userId: Int!
     supervisorId: Int!
     machineId: Int!
-    createdAt: Date
+    createdAt: DateTime
     startTime: DateTime!
     endTime: DateTime!
   }
