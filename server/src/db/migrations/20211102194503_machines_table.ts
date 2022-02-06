@@ -29,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
       if (!exists) {
         return knex.schema.createTable('Reservations', function (t) {
           t.increments('id');
-          t.integer('student_id').references('id').inTable('Students');
+          t.integer('student_id').references('id').inTable('User');
           t.integer('machine_id').references('id').inTable('Machines');
           t.timestamp('created_at').defaultTo(knex.fn.now());
           t.time('start_time');
