@@ -2,7 +2,7 @@ import { gql } from "apollo-server-express";
 
 export const StoreFrontTypeDefs = gql`
 
-  scalar Date
+  scalar DateTime
 
   type InventoryItem {
     id: ID!
@@ -34,8 +34,8 @@ export const StoreFrontTypeDefs = gql`
   type PurchaseOrder {
     id: ID!
     creator: Person
-    createDate: Date
-    expectedDeliveryDate: Date
+    createDate: DateTime
+    expectedDeliveryDate: DateTime
     items: [PurchaseOrderItem]
     attachments: [String]
   }
@@ -47,7 +47,7 @@ export const StoreFrontTypeDefs = gql`
 
   input PurchaseOrderInput {
     creatorID: Int
-    expectedDeliveryDate: Date
+    expectedDeliveryDate: DateTime
     items: [PurchaseOrderItemInput]
     attachments: [String]
   }

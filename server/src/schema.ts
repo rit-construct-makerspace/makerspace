@@ -4,11 +4,11 @@ import { TrainingTypeDefs } from "./schemas/trainingSchema";
 import { StoreFrontTypeDefs } from "./schemas/storeFrontSchema";
 import trainingResolvers from "./resolvers/trainingResolver";
 import storefrontResolvers from "./resolvers/storeFrontResolver";
-import { DateResolver } from 'graphql-scalars'
+import { DateTimeResolver } from 'graphql-scalars'
 
 // for custom scalars such as Date
 const resolveFunctions = { 
-  Date: DateResolver
+  DateTime: DateTimeResolver
 }
 
 const resolvers = [trainingResolvers, storefrontResolvers, resolveFunctions]
