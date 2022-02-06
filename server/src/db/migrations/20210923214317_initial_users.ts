@@ -14,7 +14,6 @@ export async function up(knex: Knex): Promise<void> {
             t.enu('privilege_level', ['MAKER', 'LABBIE', 'ADMIN']).defaultTo('MAKER');
             t.date('registration_date').defaultTo(knex.fn.now());
             t.decimal('balance');
-            t.integer('holds').defaultTo(0);
             t.integer('year');
             t.text('college');
             t.text('major');
