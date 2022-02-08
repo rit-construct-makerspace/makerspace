@@ -1,5 +1,5 @@
 import { knex } from "../../db";
-import { singleInventoryItemtoDomain } from "../../mappers/store/InventoryItemMapper";
+import { inventoryItemstoDomain, singleInventoryItemtoDomain } from "../../mappers/store/InventoryItemMapper";
 import { InventoryItem } from "../../models/store/inventoryItem";
 import { InventoryItemInput } from "../../models/store/inventoryItemInput";
 
@@ -48,19 +48,7 @@ export class InventoryRepository implements IInventoryRepository {
         "InventoryItem.count",
         "InventoryItem.pricePerUnit"
       );
-    const result = knexResult.map((i: any) => {
-      const value: InventoryItem = {
-        id: i.id,
-        image: i.image,
-        name: i.name,
-        unit: i.unit,
-        pluralUnit: i.pluralUnit,
-        count: i.count,
-        pricePerUnit: i.pricePerUnit
-      }
-      return value
-    })
-    return result;
+    return inventoryItemstoDomain(knexResult);
   }
 
   public async getItemById(itemId: number): Promise<InventoryItem> {

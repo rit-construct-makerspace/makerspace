@@ -50,7 +50,7 @@ export class PurchaseOrderRepository implements IPurchaseOrderRepository {
         "purchaseOrder",
       )
       .where("purchaseOrder", poId);
-      return purchaseOrderItemsToDomain(knexResult);
+    return purchaseOrderItemsToDomain(knexResult);
   }
 
   public async getAllPOs(): Promise<PurchaseOrder[]> {
@@ -61,7 +61,7 @@ export class PurchaseOrderRepository implements IPurchaseOrderRepository {
         "createDate",
         "expectedDeliveryDate",
       );
-      return purchaseOrdersToDomain(knexResult);
+    return purchaseOrdersToDomain(knexResult);
   }
 
   public async getPOById(poId: number): Promise<PurchaseOrder> {
@@ -73,7 +73,7 @@ export class PurchaseOrderRepository implements IPurchaseOrderRepository {
         "expectedDeliveryDate",
       )
       .where("id", poId);
-      return singlePurchaseOrderToDomain(knexResult);
+    return singlePurchaseOrderToDomain(knexResult);
   }
 
   public async createNewPO(creatorId: number, expectedDeliveryDate: Date, items: PurchaseOrderItemInput[], attachments: string[]): Promise<PurchaseOrder> {
