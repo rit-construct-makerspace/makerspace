@@ -1,15 +1,19 @@
 import { knex } from "../../db";
-import { PurchaseOrderMappper } from "../../mappers/store/PurchaseOrderMapper";
+import { purchaseOrderItemsToDomain } from "../../mappers/store/PurchaseOrderItemMapper";
+import { purchaseOrdersToDomain, singlePurchaseOrderToDomain } from "../../mappers/store/PurchaseOrderMapper";
 import { InventoryItem } from "../../models/store/inventoryItem";
 import { PurchaseOrder } from "../../models/store/purchaseOrder";
+import { PurchaseOrderItem } from "../../models/store/purchaseOrderItem";
 import { PurchaseOrderItemInput } from "../../models/store/purchaseOrderItemInput";
 
-export interface IPurchaseOrderRepo {
+export interface IPurchaseOrderRepository {
   getAllPOs(): Promise<PurchaseOrder[]>;
   getPOById(poId: number): Promise<PurchaseOrder>;
+  getPOItemsById(poId: number): Promise<PurchaseOrderItem[]>;
   createNewPO(creatorId: number, expectedDeliveryDate: Date, items: PurchaseOrderItemInput[], attachments: string[]): Promise<PurchaseOrder>;
   addItemToPO(item: InventoryItem, poId: number, count: number): Promise<PurchaseOrder>;
   addItemsToPO(poId: number, items: PurchaseOrderItemInput[]): Promise<PurchaseOrder>;
+  getAttachmentsById(poId: number): Promise<string[]>;
   addAttachmentToPO(attachment: string, poId: number): Promise<PurchaseOrder>;
   addAttachmentsToPO(attachments: string[], poId: number): Promise<PurchaseOrder>;
   removeAttachmentFromPO(attachment: string, poId: number): Promise<PurchaseOrder>;
@@ -19,7 +23,7 @@ export interface IPurchaseOrderRepo {
 }
 
 
-export class PurchaseOrderRepo implements IPurchaseOrderRepo {
+export class PurchaseOrderRepository implements IPurchaseOrderRepository {
 
   private queryBuilder
 
@@ -27,81 +31,67 @@ export class PurchaseOrderRepo implements IPurchaseOrderRepo {
     this.queryBuilder = queryBuilder || knex
   }
 
+  public async getAttachmentsById(poId: number): Promise<string[]> {
+    const knexResult = await this.queryBuilder("PurchaseOrderAttachment")
+      .select(
+        "attachment"
+      )
+      .where("id", poId);
+    const result = knexResult.map((i: any) => i.attachment)
+    return result;
+  }
+
+  public async getPOItemsById(poId: number): Promise<PurchaseOrderItem[]> {
+    const knexResult = await this.queryBuilder("PurchaseOrderItem")
+      .select(
+        "id",
+        "item",
+        "count",
+        "purchaseOrder",
+      )
+      .where("purchaseOrder", poId);
+    return purchaseOrderItemsToDomain(knexResult);
+  }
+
   public async getAllPOs(): Promise<PurchaseOrder[]> {
     const knexResult = await this.queryBuilder("PurchaseOrder")
-      .leftJoin("PurchaseOrderItem", "PurchaseOrderItem.purchaseOrder", "=", "PurchaseOrder.id")
-      .leftJoin("PurchaseOrderAttachment", "PurchaseOrderAttachment.purchaseOrder", "=", "PurchaseOrder.id")
-      .leftJoin("InventoryItem", "InventoryItem.id", "=", "PurchaseOrderItem.item")
-      .leftJoin("InventoryItemLabel", "InventoryItemLabel.item", "=", "InventoryItem.id")
-      .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
       .select(
-        "PurchaseOrder.id",
-        "PurchaseOrder.creator",
-        "PurchaseOrder.createDate",
-        "PurchaseOrder.expectedDeliveryDate",
-        "PurchaseOrderItem.id as itemId",
-        "PurchaseOrderItem.item",
-        "InventoryItem.id as invItemId",
-        "InventoryItem.image",
-        "InventoryItem.name",
-        "InventoryItem.unit",
-        "InventoryItem.pluralUnit",
-        "InventoryItem.count",
-        "InventoryItem.pricePerUnit",
-        "Label.label",
-        "PurchaseOrderItem.count as poItemCount",
-        "PurchaseOrderAttachment.id as attachId",
-        "PurchaseOrderAttachment.attachment"
+        "id",
+        "creator",
+        "createDate",
+        "expectedDeliveryDate",
       );
-    return PurchaseOrderMappper.toDomain(knexResult);
+    return purchaseOrdersToDomain(knexResult);
   }
 
   public async getPOById(poId: number): Promise<PurchaseOrder> {
     const knexResult = await this.queryBuilder("PurchaseOrder")
-      .leftJoin("PurchaseOrderItem", "PurchaseOrderItem.purchaseOrder", "=", "PurchaseOrder.id")
-      .leftJoin("PurchaseOrderAttachment", "PurchaseOrderAttachment.purchaseOrder", "=", "PurchaseOrder.id")
-      .leftJoin("InventoryItem", "InventoryItem.id", "=", "PurchaseOrderItem.item")
-      .leftJoin("InventoryItemLabel", "InventoryItemLabel.item", "=", "InventoryItem.id")
-      .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
       .select(
-        "PurchaseOrder.id",
-        "PurchaseOrder.creator",
-        "PurchaseOrder.createDate",
-        "PurchaseOrder.expectedDeliveryDate",
-        "PurchaseOrderItem.id as itemId",
-        "PurchaseOrderItem.item",
-        "InventoryItem.id as invItemId",
-        "InventoryItem.image",
-        "InventoryItem.name",
-        "InventoryItem.unit",
-        "InventoryItem.pluralUnit",
-        "InventoryItem.count",
-        "InventoryItem.pricePerUnit",
-        "Label.label",
-        "PurchaseOrderItem.count as poItemCount",
-        "PurchaseOrderAttachment.id as attachId",
-        "PurchaseOrderAttachment.attachment"
+        "id",
+        "creator",
+        "createDate",
+        "expectedDeliveryDate",
       )
-      .where("PurchaseOrder.id", poId);
-    return PurchaseOrderMappper.toDomain(knexResult)[0];
+      .where("id", poId);
+    return singlePurchaseOrderToDomain(knexResult);
   }
 
   public async createNewPO(creatorId: number, expectedDeliveryDate: Date, items: PurchaseOrderItemInput[], attachments: string[]): Promise<PurchaseOrder> {
     const newId = (await this.queryBuilder("PurchaseOrder")
-    .insert({
-      creator: creatorId,
-      createDate: new Date().toISOString(),
-      expectedDeliveryDate: expectedDeliveryDate,
-    }, "id"))[0];
+      .insert({
+        creator: creatorId,
+        createDate: new Date().toISOString(),
+        expectedDeliveryDate: expectedDeliveryDate,
+      }, "id"))[0];
 
-    if (items.length > 0) {
-     this.addItemsToPO(newId, items);
+    if (items && items.length > 0) {
+      this.addItemsToPO(newId, items);
     }
 
-    if (attachments.length > 0) {
+    if (attachments && attachments.length > 0) {
       this.addAttachmentsToPO(attachments, newId);
     }
-
+    console.log(newId);
     return this.getPOById(newId);
   }
 
