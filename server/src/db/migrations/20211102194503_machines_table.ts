@@ -30,11 +30,11 @@ export async function up(knex: Knex): Promise<void> {
       if (!exists) {
         return knex.schema.createTable('Reservations', function (t) {
           t.increments('id');
-          t.integer('user_id').references('id').inTable('Users');
-          t.integer('equipment_id').references('id').inTable('Equipment');
-          t.timestamp('created_at').defaultTo(knex.fn.now());
-          t.time('start_time');
-          t.time('end_time');
+          t.integer('userId').references('id').inTable('Users');
+          t.integer('equipmentId').references('id').inTable('Equipment');
+          t.timestamp('createdAt').defaultTo(knex.fn.now());
+          t.time('startTime');
+          t.time('endTime');
         });
       }
     });
