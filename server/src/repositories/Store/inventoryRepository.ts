@@ -3,7 +3,7 @@ import { singleInventoryItemtoDomain } from "../../mappers/store/InventoryItemMa
 import { InventoryItem } from "../../models/store/inventoryItem";
 import { InventoryItemInput } from "../../models/store/inventoryItemInput";
 
-export interface IInventoryRepo {
+export interface IInventoryRepository {
   getItems(): Promise<InventoryItem[]>;
   getItemById(itemId: number): Promise<InventoryItem>;
   updateItemById(itemId: number, item: InventoryItemInput): Promise<InventoryItem>;
@@ -14,7 +14,7 @@ export interface IInventoryRepo {
   getLabels(itemId: number): Promise<string[] | null>;
 }
 
-export class InventoryRepo implements IInventoryRepo {
+export class InventoryRepository implements IInventoryRepository {
   private queryBuilder;
 
   constructor(queryBuilder?: any) {

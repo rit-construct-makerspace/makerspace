@@ -1,12 +1,12 @@
 import { InventoryItemInput } from "../models/store/inventoryItemInput";
 import { PurchaseOrder } from "../models/store/purchaseOrder";
 import { PurchaseOrderInput } from "../models/store/purchaseOrderInput";
-import { InventoryRepo } from "../repositories/Store/inventoryRepository";
+import { InventoryRepository } from "../repositories/Store/inventoryRepository";
 import { LabelRepository } from "../repositories/Store/labelRepository";
-import { PurchaseOrderRepo } from "../repositories/Store/purchaseOrderRepository";
+import { PurchaseOrderRepository } from "../repositories/Store/purchaseOrderRepository";
 
-const inventoryRepo = new InventoryRepo();
-const poRepo = new PurchaseOrderRepo();
+const inventoryRepo = new InventoryRepository();
+const poRepo = new PurchaseOrderRepository();
 const labelRepo = new LabelRepository()
 
 const StorefrontResolvers = {

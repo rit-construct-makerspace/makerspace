@@ -6,7 +6,7 @@ import { PurchaseOrder } from "../../models/store/purchaseOrder";
 import { PurchaseOrderItem } from "../../models/store/purchaseOrderItem";
 import { PurchaseOrderItemInput } from "../../models/store/purchaseOrderItemInput";
 
-export interface IPurchaseOrderRepo {
+export interface IPurchaseOrderRepository {
   getAllPOs(): Promise<PurchaseOrder[]>;
   getPOById(poId: number): Promise<PurchaseOrder>;
   getPOItemsById(poId: number): Promise<PurchaseOrderItem[]>;
@@ -23,7 +23,7 @@ export interface IPurchaseOrderRepo {
 }
 
 
-export class PurchaseOrderRepo implements IPurchaseOrderRepo {
+export class PurchaseOrderRepository implements IPurchaseOrderRepository {
 
   private queryBuilder
 
