@@ -4,7 +4,7 @@ import { TrainingTypeDefs } from "./schemas/trainingSchema";
 import { StoreFrontTypeDefs } from "./schemas/storeFrontSchema";
 import trainingResolvers from "./resolvers/trainingResolver";
 import storefrontResolvers from "./resolvers/storeFrontResolver";
-import { DateTimeResolver } from 'graphql-scalars'
+import { DateTimeResolver, DateTimeTypeDefinition } from 'graphql-scalars'
 
 // for custom scalars such as Date
 const resolveFunctions = { 
@@ -14,6 +14,6 @@ const resolveFunctions = {
 const resolvers = [trainingResolvers, storefrontResolvers, resolveFunctions]
 
 export const schema = makeExecutableSchema({
-  typeDefs: [TrainingTypeDefs, StoreFrontTypeDefs],
+  typeDefs: [TrainingTypeDefs, StoreFrontTypeDefs, DateTimeTypeDefinition],
   resolvers: mergeResolvers(resolvers),
 });

@@ -1,12 +1,16 @@
 import { InventoryItemInput } from "../models/store/inventoryItemInput";
+import { PurchaseOrder } from "../models/store/purchaseOrder";
 import { PurchaseOrderInput } from "../models/store/purchaseOrderInput";
 import { InventoryRepo } from "../repositories/Store/inventoryRepository";
+import { LabelRepository } from "../repositories/Store/labelRepository";
 import { PurchaseOrderRepo } from "../repositories/Store/purchaseOrderRepository";
 
 const inventoryRepo = new InventoryRepo();
 const poRepo = new PurchaseOrderRepo();
+const labelRepo = new LabelRepository()
 
 const StorefrontResolvers = {
+
   Query: {
     // InventoryItems: [InventoryItem]
     InventoryItems: async (_: any, args: any, context: any) => {
@@ -27,6 +31,35 @@ const StorefrontResolvers = {
     PurchaseOrder: async (_: any, args: { Id: number }, context: any) => {
       return await poRepo.getPOById(args.Id);
     },
+
+    Labels: async () => {
+      return await labelRepo.getAllLabels();
+    }
+  },
+
+  PurchaseOrder: {
+    creator: () => {
+      // no users repo yet so this is fake data
+      return {id: 5, name: "Adam Savage"}
+    },
+    items: async (parent: PurchaseOrder) => {
+      return await poRepo.getPOItemsById(parent.id);
+    },
+    attachments: async (parent: any) => {
+      return await poRepo.getAttachmentsById(parent.id);
+    }
+  },
+
+  PurchaseOrderItem: {
+    item: async (parent: any) => {
+      return await inventoryRepo.getItemById(parent.item)
+    }
+  },
+
+  InventoryItem: {
+    labels: (parent: any) => {
+      return inventoryRepo.getLabels(parent.id);
+    }
   },
 
   Mutation: {
@@ -83,6 +116,14 @@ const StorefrontResolvers = {
     //deleteInventoryItem(itemId: ID!): InventoryItem
     deleteInventoryItem: async (_: any, args: { itemId: number }) => {
       return inventoryRepo.deleteItemById(args.itemId);
+    },
+
+    createLabel: async (_: any, args: { label: string }) => {
+      await labelRepo.addLabel(args.label);
+    },
+
+    deleteLabel: async (_: any, args: { label: string }) => {
+      await labelRepo.deleteLabel(args.label);
     }
 
   },

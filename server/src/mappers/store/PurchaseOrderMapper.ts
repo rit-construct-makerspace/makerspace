@@ -1,57 +1,21 @@
 import { PurchaseOrder } from "../../models/store/purchaseOrder";
 
-export class PurchaseOrderMappper {
-  public static toDomain(raw: any): PurchaseOrder[] {
-    let arr: PurchaseOrder[] = [];
-    if (raw) {
-      raw.forEach((i: any) => {
-        if (!arr.some((po) => po.id === i.id)) {
-          arr.push({
-            id: i.id,
-            creator: i.creator,
-            createDate: i.createDate,
-            expectedDeliveryDate: i.expectedDeliveryDate,
-            items: [],
-            attachments: [],
-          });
-        }
-
-        if (i.attachment !== null) {
-          let index: number = arr.findIndex((x) => (x.id = i.id));
-          if (!arr[index].attachments.some((y) => y === i.attachment))
-            arr[index].attachments.push(i.attachment);
-        }
-
-        if (i.itemId !== null) {
-          let index: number = arr.findIndex((x) => (x.id = i.id));
-
-          if (!arr[index].items.some((y) => y.id === i.itemId)) {
-            arr[index].items.push({
-              id: i.itemId,
-              count: i.poItemCount,
-              item: {
-                id: i.invItemId,
-                image: i.image,
-                name: i.name,
-                unit: i.unit,
-                pluralUnit: i.pluralUnit,
-                count: i.count,
-                pricePerUnit: i.pricePerUnit,
-                labels: [],
-              },
-            });
-          }
-        }
-
-        if (i.label !== null) {
-          let index: number = arr.findIndex((x) => (x.id = i.id));
-          let itemIndex: number = arr[index].items.findIndex(
-            (x) => (x.id = i.itemId)
-          );
-          arr[index].items[itemIndex].item.labels.push(i.label);
-        }
-      });
-    }
-    return arr;
-  }
+export function purchaseOrdersToDomain(raw: any): PurchaseOrder[] {
+  const result = raw.map((i: any) => {
+    return singlePurchaseOrderToDomain(i)
+  });
+  return result;
 }
+
+export function singlePurchaseOrderToDomain(raw: any): PurchaseOrder {
+  if (Array.isArray(raw))
+    raw = raw[0]
+  const value: PurchaseOrder = {
+    id: raw.id,
+    creatorId: raw.creator,
+    createDate: raw.createDate,
+    expectedDeliveryDate: raw.expectedDeliveryDate,
+  };
+  return value;
+}
+

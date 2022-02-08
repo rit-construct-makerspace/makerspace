@@ -1,7 +1,6 @@
-import { InventoryItem } from "./inventoryItem";
-
 export interface PurchaseOrderItem {
     id: number;
-    item: InventoryItem;
+    item: number;
     count: number;
+    purchaseOrder: number;
   }

@@ -1,15 +1,17 @@
 import { knex } from "../../db";
-import {toDomain } from "../../mappers/store/InventoryItemMapper";
+import { singleInventoryItemtoDomain } from "../../mappers/store/InventoryItemMapper";
 import { InventoryItem } from "../../models/store/inventoryItem";
 import { InventoryItemInput } from "../../models/store/inventoryItemInput";
 
 export interface IInventoryRepo {
   getItems(): Promise<InventoryItem[]>;
   getItemById(itemId: number): Promise<InventoryItem>;
-  updateItemById(item: InventoryItem): Promise<InventoryItem>;
+  updateItemById(itemId: number, item: InventoryItemInput): Promise<InventoryItem>;
   addItem(item: InventoryItemInput): Promise<InventoryItem>;
   addItemAmount(itemId: number, amount: number): Promise<InventoryItem>;
   deleteItemById(questitemIdionId: number): Promise<void>;
+  addLabels(itemId: number, labels: string[]): Promise<void>;
+  getLabels(itemId: number): Promise<string[] | null>;
 }
 
 export class InventoryRepo implements IInventoryRepo {
@@ -19,7 +21,7 @@ export class InventoryRepo implements IInventoryRepo {
     this.queryBuilder = queryBuilder || knex;
   }
 
-  public async getItems(): Promise<InventoryItem[]> {
+  public async getLabels(itemId: number): Promise<string[] | null> {
     const knexResult = await this.queryBuilder("InventoryItem")
       .leftJoin(
         "InventoryItemLabel",
@@ -28,6 +30,15 @@ export class InventoryRepo implements IInventoryRepo {
         "InventoryItem.id"
       )
       .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
+      .select("Label.label").where("InventoryItem.id", itemId);
+    const result = knexResult.map((i: any) => i.label)
+    if (result.length === 1 && result[0] === null)
+      return null;
+    return result;
+  }
+
+  public async getItems(): Promise<InventoryItem[]> {
+    const knexResult = await this.queryBuilder("InventoryItem")
       .select(
         "InventoryItem.id",
         "InventoryItem.image",
@@ -35,38 +46,43 @@ export class InventoryRepo implements IInventoryRepo {
         "InventoryItem.unit",
         "InventoryItem.pluralUnit",
         "InventoryItem.count",
-        "InventoryItem.pricePerUnit",
-        "Label.label"
+        "InventoryItem.pricePerUnit"
       );
-    return toDomain(knexResult);
+    const result = knexResult.map((i: any) => {
+      const value: InventoryItem = {
+        id: i.id,
+        image: i.image,
+        name: i.name,
+        unit: i.unit,
+        pluralUnit: i.pluralUnit,
+        count: i.count,
+        pricePerUnit: i.pricePerUnit
+      }
+      return value
+    })
+    return result;
   }
 
   public async getItemById(itemId: number): Promise<InventoryItem> {
-    const knexResult = await this.queryBuilder("InventoryItem")
-      .leftJoin(
-        "InventoryItemLabel",
-        "InventoryItemLabel.item",
-        "=",
-        "InventoryItem.id"
-      )
-      .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
+    const knexResult = await this.queryBuilder
       .select(
-        "InventoryItem.id",
-        "InventoryItem.image",
-        "InventoryItem.name",
-        "InventoryItem.unit",
-        "InventoryItem.pluralUnit",
-        "InventoryItem.count",
-        "InventoryItem.pricePerUnit",
-        "Label.label"
+        "id",
+        "image",
+        "name",
+        "unit",
+        "pluralUnit",
+        "count",
+        "pricePerUnit",
       )
-      .where("InventoryItem.id", itemId);
-    return toDomain(knexResult)[0];
+      .from("InventoryItem")
+      .where("InventoryItem.id", itemId).first();
+
+    return singleInventoryItemtoDomain(knexResult);
   }
 
-  public async updateItemById(item: InventoryItem): Promise<InventoryItem> {
+  public async updateItemById(itemId: number, item: InventoryItemInput): Promise<InventoryItem> {
     const updateItem = await this.queryBuilder("InventoryItem")
-      .where({ id: item.id })
+      .where({ id: itemId })
       .update(
         {
           name: item.name,
@@ -79,9 +95,9 @@ export class InventoryRepo implements IInventoryRepo {
         "id"
       );
 
-    this.updateLabels(item.id, item.labels);
-    const result = await this.getItemById(updateItem[0]);
-    return toDomain(result)[0];
+    this.setLabels(itemId, item.labels);
+    return await this.getItemById(updateItem[0]);
+
   }
 
   public async addItem(item: InventoryItemInput): Promise<InventoryItem> {
@@ -98,7 +114,8 @@ export class InventoryRepo implements IInventoryRepo {
         "id"
       )
     )[0];
-    await this.updateLabels(newId, item.labels);
+    if (item.labels && item.labels.length > 0)
+      await this.addLabels(newId, item.labels);
     return await this.getItemById(newId);
   }
 
@@ -124,14 +141,27 @@ export class InventoryRepo implements IInventoryRepo {
     await this.queryBuilder("InventoryItem").where({ id: itemId }).del();
   }
 
-  private async updateLabels(itemId: number, labels: string[]): Promise<void> {
+  public async addLabels(itemId: number, labels: string[]): Promise<void> {
+    await this.queryBuilder.from("InventoryItemLabel").insert(
+      this.queryBuilder
+        .from("Label")
+        .whereIn("Label.label", labels)
+        .select(knex.raw("? AS ??", [itemId, "item"]), "Label.id")
+    );
+  }
+
+  public async setLabels(itemId: number, labels: string[]): Promise<void> {
     await this.queryBuilder("InventoryItemLabel").del().where({ item: itemId });
-    if (labels && labels.length > 0)
-      await this.queryBuilder.from("InventoryItemLabel").insert(
-        this.queryBuilder
-          .from("Label")
-          .whereIn("Label.label", labels)
-          .select(knex.raw("? AS ??", [itemId, "item"]), "Label.id")
-      );
+    await this.addLabels(itemId, labels);
+  }
+
+  public async removeLabels(itemId: number, labels: string[]): Promise<void> {
+    await this.queryBuilder.from("InventoryItemLabel")
+      .whereIn('label', () => {
+        this.queryBuilder.select('id')
+          .from('Label')
+          .whereIn('label', labels);
+      })
+      .del()
   }
 }
