@@ -3,25 +3,26 @@ import { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
     
-    return knex.schema.hasTable('MachineFamilies').then(function(exists) {
+    return knex.schema.hasTable('EquipmentLabels').then(function(exists) {
         if (!exists) {
-            return knex.schema.createTable('MachineFamilies', function(t) {
+            return knex.schema.createTable('EquipmentLabels', function(t) {
                 t.increments('id');
                 t.string('name', 50);
-                t.text('description');
-                t.integer('training_module').references('id').inTable('TrainingModule');
+                t.specificType('trainingModules', 'integer ARRAY')
+                  .references('id').inTable('TrainingModule');
               });
         }
     }).then(async () => {
-      const exists = await knex.schema.hasTable('Machines');
+      const exists = await knex.schema.hasTable('Equipment');
       if (!exists) {
-        return knex.schema.createTable('Machines', function (t) {
+        return knex.schema.createTable('Equipment', function (t) {
           t.increments('id');
           t.string('name', 50);
-          t.integer('machine_family').references('id').inTable('MachineFamilies');
+          t.specificType('equipmentLabels', 'integer ARRAY')
+            .references('id').inTable('EquipmentLabels');
           t.string('room', 5);
-          t.timestamp('added_at').defaultTo(knex.fn.now());
-          t.boolean('in_use').defaultTo(false);
+          t.timestamp('addedAt').defaultTo(knex.fn.now());
+          t.boolean('inUse').defaultTo(false);
         });
       }
     }).then(async () => {
@@ -30,7 +31,7 @@ export async function up(knex: Knex): Promise<void> {
         return knex.schema.createTable('Reservations', function (t) {
           t.increments('id');
           t.integer('user_id').references('id').inTable('Users');
-          t.integer('machine_id').references('id').inTable('Machines');
+          t.integer('equipment_id').references('id').inTable('Equipment');
           t.timestamp('created_at').defaultTo(knex.fn.now());
           t.time('start_time');
           t.time('end_time');
@@ -47,12 +48,12 @@ export async function down(knex: Knex): Promise<void> {
       return knex.schema.dropTable('MachineFamilies');
     }
   }).then(async () => {
-    const exists = await knex.schema.hasTable('Machines');
+    const exists = await knex.schema.hasTable('Equipment');
     if (exists) {
-      return knex.schema.dropTable('Machines');
+      return knex.schema.dropTable('Equipment');
     }
   }).then(async () => {
-    knex.schema.hasTable('Machines').then(function(exists) {
+    knex.schema.hasTable('Reservations').then(function(exists) {
     if (exists) {
       return knex.schema.dropTable('Reservations');
     }

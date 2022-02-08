@@ -1,6 +1,10 @@
 import { gql } from "apollo-server-express";
+import { HoldsTypeDefs } from "./holdsSchema";
 
 export const UsersTypeDefs = gql`
+
+  scalar DateTime
+
   type User {
     id: ID!
     firstName: String!
@@ -8,7 +12,7 @@ export const UsersTypeDefs = gql`
     email: String!
     isStudent: Boolean!
     privilege: Privilege!
-    registrationDate: Date!
+    registrationDate: DateTime!
     holds: [Hold]
     trainingModules: [TrainingModule]
     year: Int
@@ -57,8 +61,8 @@ export const UsersTypeDefs = gql`
     addTrainingModuleToUser(userID: ID!, moduleID: ID!): User
     removeTrainingModuleFromUser(userID: ID!, moduleID: ID!): User
 
-    addHold(userID: ID!, hold: Hold): User
-    removeHold(userID: ID!, hold: Hold): User
+    addHold(userID: ID!, hold: HoldInput): User
+    removeHold(userID: ID!, hold: HoldInput): User
 
     addDescription(userID: ID!, description: String): User
 
