@@ -85,7 +85,6 @@ export class InventoryRepository implements IInventoryRepository {
 
     this.setLabels(itemId, item.labels);
     return await this.getItemById(updateItem[0]);
-
   }
 
   public async addItem(item: InventoryItemInput): Promise<InventoryItem> {
@@ -130,17 +129,19 @@ export class InventoryRepository implements IInventoryRepository {
   }
 
   public async addLabels(itemId: number, labels: string[]): Promise<void> {
-    await this.queryBuilder.from("InventoryItemLabel").insert(
-      this.queryBuilder
-        .from("Label")
-        .whereIn("Label.label", labels)
-        .select(knex.raw("? AS ??", [itemId, "item"]), "Label.id")
-    );
+    await this.queryBuilder.into(knex.raw('?? (??, ??)', ['InventoryItemLabel', 'item', 'label']))
+      .insert(
+        this.queryBuilder
+          .from("Label")
+          .whereIn("Label.label", labels)
+          .select(knex.raw("? AS ??", [itemId, "item"]), "Label.id AS label")
+      );
   }
 
   public async setLabels(itemId: number, labels: string[]): Promise<void> {
     await this.queryBuilder("InventoryItemLabel").del().where({ item: itemId });
-    await this.addLabels(itemId, labels);
+    if (labels && labels.length > 0)
+      await this.addLabels(itemId, labels);
   }
 
   public async removeLabels(itemId: number, labels: string[]): Promise<void> {
