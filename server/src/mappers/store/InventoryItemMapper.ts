@@ -7,7 +7,8 @@ export function inventoryItemstoDomain(raw: any): InventoryItem[] {
   return result;
 }
 
-export function singleInventoryItemtoDomain(raw: any): InventoryItem {
+export function singleInventoryItemtoDomain(raw: any): InventoryItem | null {
+  if (raw === undefined || raw === null) return null;
   const value: InventoryItem = {
     id: raw.id,
     image: raw.image,

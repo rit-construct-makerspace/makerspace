@@ -91,7 +91,6 @@ export class PurchaseOrderRepository implements IPurchaseOrderRepository {
     if (attachments && attachments.length > 0) {
       this.addAttachmentsToPO(attachments, newId);
     }
-    console.log(newId);
     return this.getPOById(newId);
   }
 
