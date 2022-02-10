@@ -31,9 +31,4 @@ export const HoldsTypeDefs = gql`
   type Query {
       holds: [Hold]
   }
-
-  type Mutation {
-    placeHold(hold: HoldInput): Hold
-    removeHold(holdId: ID!): Hold
-  }
 `;

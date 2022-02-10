@@ -1,74 +1,73 @@
 import { gql } from "apollo-server-express";
 
-export const MachinesTypeDefs = gql`
-  type Machine {
+export const EquipmentTypeDefs = gql`
+
+  scalar DateTime
+
+  type Equipment {
     id: ID!
-    machineFamily: MachineFamily!
     name: String!
     room: String!
-    addedAt: DateTime
+    equipmentLabels: [EquipmentLabel]
+    addedAt: DateTime!
     inUse: Boolean!
   }
 
-  type MachineFamily {
+  type EquipmentLabel {
     id: ID!
     name: String!
-    description: String
-    trainingModule: TrainingModule!
+    trainingModules: [TrainingModule]
   }
 
   type Reservation {
     id: ID!
     userId: User!
     supervisorId: User!
-    machineId: Machine!
-    createdAt: DateTime
+    equipmentId: Equipment!
+    createdAt: DateTime!
     startTime: DateTime!
     endTime: DateTime!
   }
 
-  input MachineInput {
-    machineFamily: Int!
+  input EquipmentInput {
     name: String!
     room: String!
+    equipmentLabels: [Int]
     addedAt: DateTime
-    inUse: Boolean!
+    inUse: Boolean = false
   }
 
-  input MachineFamilyInput {
+  input EquipmentLabelInput {
     name: String!
-    description: String
-    trainingModule: Int!
+    trainingModules: [Int]
   }
 
   input ReservationInput {    
     userId: Int!
     supervisorId: Int!
-    machineId: Int!
+    equipmentId: Int!
     createdAt: DateTime
     startTime: DateTime!
     endTime: DateTime!
   }
 
   type Query {
-      machineFamilies: [MachineFamily]
-      machines: [Machine]
-      reservations: [Reservations]
+      equipmentLabels: [EquipmentLabel]
+      equipment: [Equipment]
+      reservations: [Reservation]
   }
 
   type Mutation {
-    createMachineFamily(machineFamily: MachineFamilyInput): MachineFamily
+    createEquipmentLabel(EquipmentLabel: EquipmentLabelInput): EquipmentLabel
+    updateEquipmentLabel(EquipmentLabel: EquipmentLabelInput): EquipmentLabel
+    removeEquipmentLabel(EquipmentLabel: EquipmentLabelInput): EquipmentLabel
 
-    attachTrainingModuleToMachineFamily(machineFamilyId: ID!, trainingModule: ID!): MachineFamily
-    updateTrainingModuleInMachineFamily(machineFamilyId: ID!, trainingModule: ID!): MachineFamily
-    detachTrainingModuleFromMachineFamily(machineFamilyId: ID!): MachineFamily
+    attachTrainingModuleToEquipmentLabel(EquipmentLabelId: ID!, trainingModule: ID!): EquipmentLabel
+    detachTrainingModuleFromEquipmentLabel(EquipmentLabelId: ID!, trainingModule: ID!): EquipmentLabel
 
-    updateMachineFamily(machineFamily: MachineFamilyInput): MachineFamily
-    removeMachineFamily(machineFamily: MachineFamilyInput): MachineFamily
-
-    addMachine(machine: MachineInput): Machine
-    updateMachine(machine: MachineInput): Machine
-    removeMachine(machineId: ID!): Machine
+    addEquipment(Equipment: EquipmentInput): Equipment
+    updateEquipment(Equipment: EquipmentInput): Equipment
+    removeEquipment(EquipmentId: ID!): Equipment
     
     createReservation(reservation: ReservationInput): Reservation
     updateReservation(reservation: ReservationInput): Reservation
