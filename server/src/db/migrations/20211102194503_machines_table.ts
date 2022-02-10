@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
         }
     }).then(async () => {
       // table that stores training modules attached to equipment labels
-      const exists = await knex.schema.hasTable('EquipmentLabelTrainingModules');
+      const exists = await knex.schema.hasTable('ModulesForLabels');
       if (!exists) {
         return knex.schema.createTable('ModulesForLabels', function (t) {
           t.increments('id');
@@ -34,7 +34,7 @@ export async function up(knex: Knex): Promise<void> {
     }).then(async () => {
       const exists = await knex.schema.hasTable('LabelsForEquipment');
       if (!exists) {
-        return knex.schema.createTable('Equipment', function (t) {
+        return knex.schema.createTable('LabelsForEquipment', function (t) {
           t.increments('id');
           t.integer('equipmentId').references('id').inTable('Equipment');
           t.integer('equipmentLabelId').references('id').inTable('EquipmentLabels');
