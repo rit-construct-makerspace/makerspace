@@ -3,25 +3,41 @@ import { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
     
-    return knex.schema.hasTable('MachineFamilies').then(function(exists) {
+    return knex.schema.hasTable('EquipmentLabels').then(function(exists) {
         if (!exists) {
-            return knex.schema.createTable('MachineFamilies', function(t) {
+            return knex.schema.createTable('EquipmentLabels', function(t) {
                 t.increments('id');
                 t.string('name', 50);
-                t.text('description');
-                t.integer('training_module').references('id').inTable('TrainingModule');
               });
         }
     }).then(async () => {
-      const exists = await knex.schema.hasTable('Machines');
+      // table that stores training modules attached to equipment labels
+      const exists = await knex.schema.hasTable('ModulesForLabels');
       if (!exists) {
-        return knex.schema.createTable('Machines', function (t) {
+        return knex.schema.createTable('ModulesForLabels', function (t) {
+          t.increments('id');
+          t.integer('equipmentLabelId').references('id').inTable('EquipmentLabels');
+          t.integer('trainingModuleId').references('id').inTable('TrainingModule');
+        });
+      }
+    }).then(async () => {
+      const exists = await knex.schema.hasTable('Equipment');
+      if (!exists) {
+        return knex.schema.createTable('Equipment', function (t) {
           t.increments('id');
           t.string('name', 50);
-          t.integer('machine_family').references('id').inTable('MachineFamilies');
           t.string('room', 5);
-          t.timestamp('added_at').defaultTo(knex.fn.now());
-          t.boolean('in_use').defaultTo(false);
+          t.timestamp('addedAt').defaultTo(knex.fn.now());
+          t.boolean('inUse').defaultTo(false);
+        });
+      }
+    }).then(async () => {
+      const exists = await knex.schema.hasTable('LabelsForEquipment');
+      if (!exists) {
+        return knex.schema.createTable('LabelsForEquipment', function (t) {
+          t.increments('id');
+          t.integer('equipmentId').references('id').inTable('Equipment');
+          t.integer('equipmentLabelId').references('id').inTable('EquipmentLabels');
         });
       }
     }).then(async () => {
@@ -29,11 +45,11 @@ export async function up(knex: Knex): Promise<void> {
       if (!exists) {
         return knex.schema.createTable('Reservations', function (t) {
           t.increments('id');
-          t.integer('student_id').references('id').inTable('Users');
-          t.integer('machine_id').references('id').inTable('Machines');
-          t.timestamp('created_at').defaultTo(knex.fn.now());
-          t.time('start_time');
-          t.time('end_time');
+          t.integer('userId').references('id').inTable('Users');
+          t.integer('equipmentId').references('id').inTable('Equipment');
+          t.timestamp('createdAt').defaultTo(knex.fn.now());
+          t.time('startTime');
+          t.time('endTime');
         });
       }
     });
@@ -42,17 +58,27 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 
-  return knex.schema.hasTable('MachineFamilies').then(function(exists) {
+  return knex.schema.hasTable('EquipmentLabels').then(function(exists) {
     if (exists) {
-      return knex.schema.dropTable('MachineFamilies');
+      return knex.schema.dropTable('EquipmentLabels');
     }
   }).then(async () => {
-    const exists = await knex.schema.hasTable('Machines');
+    const exists = await knex.schema.hasTable('ModulesForLabels');
     if (exists) {
-      return knex.schema.dropTable('Machines');
+      return knex.schema.dropTable('ModulesForLabels');
     }
   }).then(async () => {
-    knex.schema.hasTable('Machines').then(function(exists) {
+    const exists = await knex.schema.hasTable('Equipment');
+    if (exists) {
+      return knex.schema.dropTable('Equipment');
+    }
+  }).then(async () => {
+    const exists = await knex.schema.hasTable('LabelsForEquipment');
+    if (exists) {
+      return knex.schema.dropTable('LabelsForEquipment');
+    }
+  }).then(async () => {
+    knex.schema.hasTable('Reservations').then(function(exists) {
     if (exists) {
       return knex.schema.dropTable('Reservations');
     }

@@ -10,11 +10,10 @@ export async function up(knex: Knex): Promise<void> {
             t.string('first_name', 100);
             t.string('last_name', 100);
             t.text('email').unique();
-            t.string('type', 8); // student, faculty, employee
-            t.string('privilege_level', 6); // maker, labbie, admin
+            t.enu('type', ['STUDENT', 'FACULTY', 'EMPLOYEE']);
+            t.enu('privilege_level', ['MAKER', 'LABBIE', 'ADMIN']).defaultTo('MAKER');
             t.date('registration_date').defaultTo(knex.fn.now());
             t.decimal('balance');
-            t.boolean('hold').defaultTo(false);
             t.integer('year');
             t.text('college');
             t.text('major');

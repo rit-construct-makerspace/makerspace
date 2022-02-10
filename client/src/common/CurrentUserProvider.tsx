@@ -8,9 +8,10 @@ interface CurrentUserProviderProps {
 }
 
 export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
+  // TODO: remove hardcoded test data
   const value = {
     user: {
-      id: "12345",
+      id: 12345,
       name: "Jack Loggedin",
       image:
         "https://t3.ftcdn.net/jpg/02/99/04/20/240_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",

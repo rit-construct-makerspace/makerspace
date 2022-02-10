@@ -52,11 +52,12 @@ export default function MonitorRoomPage({}: MonitorRoomPageProps) {
       </Typography>
 
       <Stack direction="row" spacing={2}>
+        {/* TODO: remove this hardcoded test data */}
         <EquipmentQualificationsCard
           equipment={{
-            id: "123",
+            id: 123,
             name: "Soldering iron",
-            imageSrc:
+            image:
               "https://ae01.alicdn.com/kf/Hc43d9bc0340547709698a3900a1566f69/ROBOTEC-1325-Cnc-Router-Auction-3D-Cnc-Wood-Carving-Machine-Cnc-Milling-Machine-Design-For-Wood.jpg_Q90.jpg_.webp",
           }}
           qualifiedPeople={[AdamSavage, AdamSavage, AdamSavage]}
@@ -64,9 +65,9 @@ export default function MonitorRoomPage({}: MonitorRoomPageProps) {
         />
         <EquipmentQualificationsCard
           equipment={{
-            id: "123",
+            id: 123,
             name: "Soldering iron",
-            imageSrc:
+            image:
               "https://ae01.alicdn.com/kf/Hc43d9bc0340547709698a3900a1566f69/ROBOTEC-1325-Cnc-Router-Auction-3D-Cnc-Wood-Carving-Machine-Cnc-Milling-Machine-Design-For-Wood.jpg_Q90.jpg_.webp",
           }}
           qualifiedPeople={[AdamSavage, AdamSavage, AdamSavage]}
@@ -74,9 +75,9 @@ export default function MonitorRoomPage({}: MonitorRoomPageProps) {
         />
         <EquipmentQualificationsCard
           equipment={{
-            id: "123",
+            id: 123,
             name: "Soldering iron",
-            imageSrc:
+            image:
               "https://ae01.alicdn.com/kf/Hc43d9bc0340547709698a3900a1566f69/ROBOTEC-1325-Cnc-Router-Auction-3D-Cnc-Wood-Carving-Machine-Cnc-Milling-Machine-Design-For-Wood.jpg_Q90.jpg_.webp",
           }}
           qualifiedPeople={[AdamSavage, AdamSavage, AdamSavage]}

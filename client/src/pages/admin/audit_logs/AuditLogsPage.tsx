@@ -19,7 +19,8 @@ export default function LogPage({}: LogPageProps) {
 
             <TextField  placeholder="Search for Events" size="small" />
             <TextField  placeholder="User" size="small" />
-            <DateRange/>
+            <TextField label="Start date" type="date" InputLabelProps={{ shrink: true }}/>
+            <TextField label="End Date" type="date" InputLabelProps={{ shrink: true }}/>
             <Button>Search</Button>
 
             <pre ></pre>
