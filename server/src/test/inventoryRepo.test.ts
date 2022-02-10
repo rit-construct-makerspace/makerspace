@@ -4,6 +4,7 @@ import { InventoryRepository } from "../repositories/Store/inventoryRepository";
 import { LabelRepository } from "../repositories/Store/labelRepository";
 
 describe("InventoryRepository test set", () => {
+
   beforeAll(() => {
     return knex.migrate.latest();
     // we can here also seed our tables, if we have any seeding files
