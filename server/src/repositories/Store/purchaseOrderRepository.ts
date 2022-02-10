@@ -95,13 +95,11 @@ export class PurchaseOrderRepository implements IPurchaseOrderRepository {
   }
 
   public async addItemToPO(item: InventoryItem, poId: number, count: number): Promise<PurchaseOrder> {
-    await this.queryBuilder("PurchaseOrderItem")
-      .insert({
-        item: item.id,
-        purchaseOrder: poId,
-        count: count,
-      });
-    return this.getPOById(poId);
+    let poii : PurchaseOrderItemInput = {
+      count,
+      itemId: item.id
+    } 
+    return await this.addItemsToPO(poId,[poii]);
   }
 
   public async addItemsToPO(poId: number, items: PurchaseOrderItemInput[]): Promise<PurchaseOrder> {
