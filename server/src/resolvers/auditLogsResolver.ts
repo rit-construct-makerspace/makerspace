@@ -1,12 +1,19 @@
-import {AuditLogs} from "../models/auditLogs/auditLogs";
 import {AuditLogRepo} from "../repositories/AuditLogs/AuditLogRepository";
+
+const alr = new AuditLogRepo();
 
 const AuditLogResolvers = {
     Query: {
         auditLogs: async (_: any, args: any, context: any) => {
             try {
-                const alr = new AuditLogRepo();
                 return await alr.getLogs();
+            } catch (e) {
+                console.log("Error:", e);
+            }
+        },
+        auditLog: async (_: any, args: any, context: any) => {
+            try {
+                return await alr.getLogByID(args.id);
             } catch (e) {
                 console.log("Error:", e);
             }
@@ -17,8 +24,7 @@ const AuditLogResolvers = {
 
         addLog: async (_: any, args: any) => {
             try {
-                const alr = new AuditLogRepo();
-                return await alr.addLog(args);
+                return await alr.addLog(args.log);
             } catch (e) {
                 console.log("Error:", e);
             }
@@ -26,8 +32,7 @@ const AuditLogResolvers = {
 
         modifyLogDescription: async (_: any, args: any) => {
             try {
-                const alr = new AuditLogRepo();
-                return await alr.modifyLogDescription(args);
+                return await alr.modifyLogDescription(args.logID, args.description);
             } catch (e) {
                 console.log("Error:", e);
             }
@@ -35,8 +40,7 @@ const AuditLogResolvers = {
 
         deleteLog: async (_: any, args: any) => {
             try {
-                const alr = new AuditLogRepo();
-                return await alr.deleteLog(args);
+                return await alr.deleteLog(args.logID);
             } catch (e) {
                 console.log("Error:", e);
             }
