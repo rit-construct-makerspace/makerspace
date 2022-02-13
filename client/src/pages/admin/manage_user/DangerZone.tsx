@@ -23,7 +23,7 @@ export default function DangerZone({}: DangerZoneProps) {
         startIcon={<DeleteIcon />}
         sx={{ mt: 1 }}
         onClick={() =>
-          confirm(
+          window.confirm(
             "Are you sure you wish to delete John Smith's account? This cannot be undone."
           )
         }
