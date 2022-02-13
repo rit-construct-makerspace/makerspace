@@ -1,11 +1,6 @@
-import { Person } from "./person";
-import { PurchaseOrderItem } from "./purchaseOrderItem";
-
 export interface PurchaseOrder {
     id: number;
-    creator: Person;
+    creatorId: number;
     createDate: Date;
     expectedDeliveryDate: Date;
-    items: PurchaseOrderItem[];
-    attachments: string[];
   }

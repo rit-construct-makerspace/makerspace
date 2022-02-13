@@ -1,4 +1,3 @@
-import { PurchaseOrderItem } from "./purchaseOrderItem";
 import { PurchaseOrderItemInput } from "./purchaseOrderItemInput";
 
 export interface PurchaseOrderInput {

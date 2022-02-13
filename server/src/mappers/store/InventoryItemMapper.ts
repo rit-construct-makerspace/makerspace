@@ -1,27 +1,23 @@
 import { InventoryItem } from "../../models/store/inventoryItem";
 
-export function toDomain(raw: any): InventoryItem[] {
-  let arr: InventoryItem[] = [];
+export function inventoryItemstoDomain(raw: any): InventoryItem[] {
+  const result = raw.map((i: any) => {
+    return singleInventoryItemtoDomain(i);
+  })
+  return result;
+}
 
-  raw.forEach((i: any) => {
-    if (!arr.some((item) => item.id === i.id))
-      arr.push({
-        id: i.id,
-        image: i.image,
-        name: i.name,
-        unit: i.unit,
-        pluralUnit: i.pluralUnit,
-        count: i.count,
-        pricePerUnit: i.pricePerUnit,
-        labels: []
-      });
-
-    if (i.label !== null) {
-      let index: number = arr.findIndex((x) => (x.id = i.id));
-      arr[index].labels.push(i.label);
-    }
-
-  });
-  return arr;
+export function singleInventoryItemtoDomain(raw: any): InventoryItem | null {
+  if (raw === undefined || raw === null) return null;
+  const value: InventoryItem = {
+    id: raw.id,
+    image: raw.image,
+    name: raw.name,
+    unit: raw.unit,
+    pluralUnit: raw.pluralUnit,
+    count: raw.count,
+    pricePerUnit: raw.pricePerUnit
+  }
+  return value;
 }
 

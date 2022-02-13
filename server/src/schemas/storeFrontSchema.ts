@@ -64,6 +64,7 @@ export const StoreFrontTypeDefs = gql`
     InventoryItem(Id: ID!): InventoryItem
     PurchaseOrders: [PurchaseOrder]
     PurchaseOrder(Id: ID!): PurchaseOrder
+    Labels: [String]
   }
 
   type Mutation {
@@ -75,8 +76,11 @@ export const StoreFrontTypeDefs = gql`
     updateItemAmountInPurchaseOrder(POId: ID!, POItemId: ID!, count: Int!): PurchaseOrder
     addAttachmentsToPurchaseOrder(POId: ID!, attachments: [String]): PurchaseOrder
     removeAttachmentFromPurchaseOrder(POId: ID!, attachment: String): PurchaseOrder
-    addItemToInventory(item: InventoryItemInput): InventoryItem
+    createInventoryItem(item: InventoryItemInput): InventoryItem
+    updateInventoryItem(itemId: ID!, item: InventoryItemInput): InventoryItem
     addItemAmount(itemId: ID!, count: Int!): InventoryItem
     removeItemAmount(itemId: ID!, count: Int!): InventoryItem
+    createLabel(label: String): String
+    deleteLabel(label: String): String
   }
 `;
