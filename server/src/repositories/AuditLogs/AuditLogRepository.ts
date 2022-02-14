@@ -1,9 +1,13 @@
 import {AuditLogs} from "../../models/auditLogs/auditLogs";
+import {EventType} from "../../models/auditLogs/eventTypes";
 import { knex } from "../../db";
-import {singleLogToDomain, logsToDomain} from "../../mappers/auditLogs/auditLogMapper"
+import {singleLogToDomain, logsToDomain, logsToDomainByDate} from "../../mappers/auditLogs/auditLogMapper";
 
 export interface IAuditLogRepo {
     getLogByID(logID: number): Promise<AuditLogs | null>;
+    getLogsByEventType(eventType: EventType): Promise<AuditLogs[]>;
+    getLogsByUser(args: any): Promise<AuditLogs[]>;
+    getLogsByDate(startDate: Date, endDate: Date): Promise<AuditLogs[]>
     getLogs(): Promise<AuditLogs[]>;
     addLog(log: AuditLogs): Promise<AuditLogs | null>;
     modifyLogDescription(logID: number, description: string): Promise<AuditLogs | null>;
@@ -32,8 +36,50 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         return singleLogToDomain(knexResult);
     }
 
+    public async getLogsByEventType(eventType: EventType): Promise<AuditLogs[]> {
+        const knexResult = await this.queryBuilder
+            .first(
+                "id",
+                "timeDate",
+                "user",
+                "eventType",
+                "description"
+            )
+            .from("AuditLogs")
+            .where("eventType", eventType);
+
+        return logsToDomain(knexResult);
+    }
+
+    //Waiting on User model to be implemented to update params
+    public async getLogsByUser(args: any): Promise<AuditLogs[]> {
+        const knexResult = await this.queryBuilder
+            .first(
+                "id",
+                "timeDate",
+                "user",
+                "eventType",
+                "description"
+            )
+            .from("AuditLogs")
+            .where("user", args);
+
+        return logsToDomain(knexResult);
+    }
+
+    public async getLogsByDate(startDate: Date, endDate: Date): Promise<AuditLogs[]> {
+        const knexResult = await this.queryBuilder("AuditLogs").select(
+            "AuditLogs.id",
+            "AuditLogs.timeDate",
+            "AuditLogs.user",
+            "AuditLogs.eventType",
+            "AuditLogs.description"
+        );
+        return logsToDomainByDate(knexResult, startDate, endDate);
+    }
+
     public async getLogs(): Promise<AuditLogs[]> {
-        const knexResult = await this.queryBuilder("InventoryItem").select(
+        const knexResult = await this.queryBuilder("AuditLogs").select(
             "AuditLogs.id",
             "AuditLogs.timeDate",
             "AuditLogs.user",

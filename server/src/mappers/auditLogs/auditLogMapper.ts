@@ -18,3 +18,12 @@ import { AuditLogs } from "../../models/auditLogs/auditLogs";
         }
         return value;
     }
+
+    export function logsToDomainByDate(raw: any, startDate: Date, endDate: Date): AuditLogs[] {
+        const result = raw.map((i: any) => {
+            if (i.timeDate <= endDate && i.timeDate >= startDate) {
+                return singleLogToDomain(i);
+            }
+        })
+        return result;
+    }
