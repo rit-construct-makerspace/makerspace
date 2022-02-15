@@ -58,8 +58,8 @@ export const UsersTypeDefs = gql`
     updateStudentUser(user: StudentUserInput): User
     updateFacultyUser(user: FacultyUserInput): User
 
-    addTrainingModuleToUser(userID: ID!, moduleID: ID!): User
-    removeTrainingModuleFromUser(userID: ID!, moduleID: ID!): User
+    addTraining(userID: ID!, moduleID: ID!): User
+    removeTraining(userID: ID!, moduleID: ID!): User
 
     addHold(userID: ID!, hold: HoldInput): User
     removeHold(userID: ID!, hold: HoldInput): User
