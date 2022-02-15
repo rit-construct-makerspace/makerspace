@@ -1,4 +1,4 @@
-export interface Reservation {
+export interface ReservationInput {
     userId: number;
     supervisorId: number;
     machineId: number;
