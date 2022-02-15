@@ -93,7 +93,6 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         const newID = (
             await this.queryBuilder("AuditLogs").insert(
                 {
-                    timeDate: log.timeDate,
                     user: log.user,
                     eventType: log.eventType,
                     description: log.description,
