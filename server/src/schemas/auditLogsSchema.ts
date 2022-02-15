@@ -3,7 +3,7 @@ import { gql } from "apollo-server-express";
 export const AuditLogsTypeDefs = gql`
   type Log {
     id: ID!
-    timeDate: Date!
+    timeDate: DateTime!
     user: User!
     eventType: EventType!
     description: String
@@ -21,14 +21,18 @@ export const AuditLogsTypeDefs = gql`
   }
 
   input LogInput {
-    timeDate: Date!
+    timeDate: DateTime!
     user: User!
     eventType: EventType!
-    description: String!
+    description: String
   }
   
   type Query {
     auditLogs: [Log]
+    auditLog(logID: ID!): Log
+    auditLogsByUser(user: User!): [Log]
+    auditLogsByEventType(eventType: EventType!): [Log]
+    auditLogsByDate(startDate: DateTime!, endDate: DateTime!): [Log]
   }
 
   type Mutation {

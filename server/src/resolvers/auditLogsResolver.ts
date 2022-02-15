@@ -18,6 +18,27 @@ const AuditLogResolvers = {
                 console.log("Error:", e);
             }
         },
+        auditLogsByUser: async (_: any, args: any, context: any) => {
+            try {
+                return await alr.getLogsByEventType(args.user);
+            } catch (e) {
+                console.log("Error:", e);
+            }
+        },
+        auditLogsByEventType: async (_: any, args: any, context: any) => {
+            try {
+                return await alr.getLogsByEventType(args.eventType);
+            } catch (e) {
+                console.log("Error:", e);
+            }
+        },
+        auditLogsByDate: async (_: any, args: any, context: any) => {
+            try {
+                return await alr.getLogsByDate(args.startDate, args.endDate);
+            } catch (e) {
+                console.log("Error:", e);
+            }
+        },
     },
 
     Mutation: {
