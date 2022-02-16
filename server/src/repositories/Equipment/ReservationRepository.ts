@@ -51,7 +51,7 @@ export class ReservationRepository implements IReservationRepository {
     }
 
     public async updateReservation(id: number, reservation: ReservationInput): Promise<Reservation | null> {
-        await this.queryBuilder("Reservation")
+        await this.queryBuilder("Reservations")
         .where("id", id)
         .update({
             userId: reservation.userId,
@@ -83,5 +83,3 @@ export class ReservationRepository implements IReservationRepository {
         await this.queryBuilder("Reservations").where({ id: id }).del();
     }
 }
-
-
