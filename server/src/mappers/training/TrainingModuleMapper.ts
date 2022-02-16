@@ -1,9 +1,7 @@
 import { TrainingModule } from "../../models/training/trainingModule";
 
 export function trainingModulesToDomain(raw: any): TrainingModule[] {
-  return raw.map((i: any) => {
-    return singleTrainingModuleToDomain(i);
-  })
+  return raw.map((i: any) => singleTrainingModuleToDomain(i));
 }
 
 export function singleTrainingModuleToDomain(raw: any): TrainingModule | null {

@@ -1,9 +1,8 @@
 import { Reservation } from "../../models/equipment/reservation";
 
 export function reservationsToDomain(raw: any): Reservation[] {
-  return raw.map((i: any) => {
-    return singleReservationToDomain(i);
-  })
+  return raw.map((i: any) => singleReservationToDomain(i));
+
 }
 
 export function singleReservationToDomain(raw: any): Reservation | null {

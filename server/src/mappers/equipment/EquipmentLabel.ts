@@ -1,9 +1,7 @@
 import { EquipmentLabel } from "../../models/equipment/equipmentLabel";
 
 export function equipmentLabelsToDomain(raw: any): EquipmentLabel[] {
-  return raw.map((i: any) => {
-    return singleEquipmentLabelToDomain(i);
-  })
+  return raw.map((i: any) => singleEquipmentLabelToDomain(i));
 }
 
 export function singleEquipmentLabelToDomain(raw: any): EquipmentLabel | null {
