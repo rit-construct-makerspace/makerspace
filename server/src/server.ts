@@ -1,7 +1,7 @@
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
-import { createServer } from "http";
+import { createServer } from "https";
 import compression from "compression";
 import cors from "cors";
 import { schema } from "./schema";
@@ -13,18 +13,20 @@ import { v4 as uuid } from "uuid";
 import assert from "assert";
 import fs from "fs";
 
+
 dotenv.config({ path: __dirname + "/./../.env" });
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 const corstOpts = cors();
 
-app.use(corstOpts);
-app.use(compression());
+
 
 const secret = process.env.SESSION_SECRECT;
+const issuer = process.env.ISSUER;
 
 assert(secret, "SESSION_SECRET env value is null");
+assert(issuer, "ISSUER env value is null");
 
 app.use(
   session({
@@ -37,6 +39,7 @@ app.use(
 );
 
 const samlConfig = {
+  path: "/login/callback",
   callbackUrl: process.env.CALLBACK_URL,
   entryPoint: process.env.ENTRY_POINT,
   issuer: process.env.ISSUER,
@@ -50,6 +53,7 @@ const samlConfig = {
 
 const samlStrategy = new SamlStrategy(samlConfig, (profile: any, done: any) => {
   // your body implementation on success
+  console.log("we did it");
   return done(null, profile);
 });
 
@@ -68,7 +72,7 @@ declare global {
 }
 
 passport.serializeUser((user, done) => {
-  done(undefined, user.id);
+  done(null, user);
 });
 
 passport.deserializeUser((id, done) => {
@@ -76,8 +80,12 @@ passport.deserializeUser((id, done) => {
   done(null, matchingUser);
 });
 
+app.use(corstOpts);
+app.use(compression());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 const server = new ApolloServer({
   schema,
@@ -115,13 +123,19 @@ app.get("/Shibboleth.sso/Metadata", function (req, res) {
     .status(200)
     .send(
       samlStrategy.generateServiceProviderMetadata(
-        fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8"),
-        fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8")
+        fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8")
       )
     );
 });
 
-const httpServer = createServer(app);
-httpServer.listen({ port: PORT }, (): void =>
-  console.log(`🚀GraphQL-Server is running on http://localhost:${PORT}/graphql`)
+const options = {
+  key: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
+  cert: fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8"),
+};
+
+const httpsServer = createServer(options, app);
+httpsServer.listen({ port: PORT }, (): void =>
+  console.log(
+    `🚀GraphQL-Server is running on https://localhost:${PORT}/graphql`
+  )
 );
