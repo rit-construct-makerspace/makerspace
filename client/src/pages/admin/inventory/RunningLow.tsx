@@ -12,7 +12,7 @@ export default function RunningLow({}: RunningLowProps) {
 
   return (
     <Stack>
-      <PageSectionHeader>Running Low</PageSectionHeader>
+      <PageSectionHeader top>Running Low</PageSectionHeader>
 
       <Stack divider={<Divider flexItem />}>
         {Inventory.slice(1, 3).map((item) => (
