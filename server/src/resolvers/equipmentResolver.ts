@@ -1,14 +1,13 @@
-import { Equipment } from "../models/equipment/equipment";
 import { EquipmentInput } from "../models/equipment/equipmentInput";
-import { EquipmentLabel } from "../models/equipment/equipmentLabel";
 import { EquipmentLabelInput } from "../models/equipment/equipmentLabelInput";
-import { Reservation } from "../models/equipment/reservation";
 import { ReservationInput } from "../models/equipment/reservationInput";
 import { EquipmentRepository } from "../repositories/Equipment/EquipmentRepository";
-import { ReservationRepository } from "../repositories/Equipment/ReservationsRepository";
+import { EquipmentLabelRepository } from "../repositories/Equipment/EquipmentLabelRepository";
+import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
 
 const equipmentRepo = new EquipmentRepository();
 const reservationRepo = new ReservationRepository();
+const equipmentLabelRepo = new EquipmentLabelRepository();
 
 const EquipmentResolvers = {
 
@@ -19,6 +18,14 @@ const EquipmentResolvers = {
 
     equipment: async (_: any, args: { Id: number }, context: any) => {
       return await equipmentRepo.getEquipmentById(args.Id);
+    },
+
+    equipmentLabels: async (_: any, args: any, context: any) => {
+      return await equipmentLabelRepo.getEquipmentLabels();
+    },
+
+    equipmentLabel: async (_: any, args: { Id: number }, context: any) => {
+      return await equipmentLabelRepo.getEquipmentLabelById(args.Id);
     },
 
     reservations: async (_: any, args: { Id: number }, context: any) => {
@@ -36,6 +43,12 @@ const EquipmentResolvers = {
     }
   },
 
+  EquipmentLabel: {
+    trainingModules: (parent: any) => {
+      return equipmentLabelRepo.getTrainingModules(parent.id);
+    }
+  },
+
   Mutation: {
 
     addEquipment: async (_: any, args: { equipment: EquipmentInput }) => {
@@ -48,6 +61,18 @@ const EquipmentResolvers = {
 
     removeEquipment: async (_: any, args: { id: number }) => {
       return await equipmentRepo.removeEquipment(args.id);
+    },
+
+    addEquipmentLabel: async (_: any, args: { equipmentLabel: EquipmentLabelInput }) => {
+      return await equipmentLabelRepo.addEquipmentLabel(args.equipmentLabel);
+    },
+
+    updateEquipmentLabel: async (_: any, args: { id: number, equipmentLabel: EquipmentLabelInput }) => {
+      return await equipmentLabelRepo.updateEquipmentLabel(args.id, args.equipmentLabel);
+    },
+
+    removeEquipmentLabel: async (_: any, args: { id: number }) => {
+      return await equipmentLabelRepo.removeEquipmentLabel(args.id);
     },
 
     addReservation: async (_: any, args: { reservation: ReservationInput }) => {
