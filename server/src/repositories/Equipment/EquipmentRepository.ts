@@ -82,14 +82,14 @@ export class EquipmentRepository implements IEquipmentRepository {
     }
 
     public async updateLabels(id: number, equipmentLabels: number[]): Promise<void> {
-      await this.queryBuilder("LabelsForEquipment").del().where("equipmentId", id);      ;
+      await this.queryBuilder("LabelsForEquipment").del().where("equipmentId", id);
       if (equipmentLabels && equipmentLabels.length > 0) {
         await this.addLabelsToEquipment(id, equipmentLabels);
       }
     }
 
     public async updateEquipment(id: number, equipment: EquipmentInput): Promise<Equipment | null> {
-      return this.queryBuilder("Equipment")
+      await this.queryBuilder("Equipment")
         .where("id", id)
         .update({
           name: equipment.name,
@@ -97,9 +97,8 @@ export class EquipmentRepository implements IEquipmentRepository {
           inUse: equipment.inUse
         }).then(async () => {
           await this.updateLabels(id, equipment.equipmentLabels);
-        }).then(async () => {
-          await this.getEquipmentById(id);
         });
+        return this.getEquipmentById(id);
     }
 
     public async addEquipment(equipment: EquipmentInput): Promise<Equipment | null> {
