@@ -17,7 +17,7 @@ declare global {
 }
 
 export default function setupAuth(app: express.Application) {
-  const secret = process.env.SESSION_SECRECT;
+  const secret = process.env.SESSION_SECRET;
   const issuer = process.env.ISSUER;
   const callback = process.env.CALLBACK_URL;
   const entryPoint = process.env.ENTRY_POINT;
