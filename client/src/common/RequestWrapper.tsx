@@ -21,6 +21,7 @@ export default function RequestWrapper({
         width="100%"
         height="100%"
         minHeight="400px"
+        p={2}
       >
         <CircularProgress />
       </Stack>
@@ -35,6 +36,7 @@ export default function RequestWrapper({
         width="100%"
         height="100%"
         minHeight="400px"
+        p={2}
       >
         <Alert severity="error" title={error.name}>
           {error.message}
