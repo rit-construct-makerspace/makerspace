@@ -10,6 +10,7 @@ import express from "express";
 declare global {
   namespace Express {
     interface User {
+      nameID: string;
       id: number;
       username: string;
     }
@@ -33,7 +34,7 @@ export default function setupAuth(app: express.Application) {
       secret: secret,
       resave: false,
       saveUninitialized: false,
-      //cookie: { secure: true }  // this will make cookies send only over https
+      cookie: { secure: true }  // this will make cookies send only over https
     })
   );
 
@@ -63,11 +64,11 @@ export default function setupAuth(app: express.Application) {
 
   passport.serializeUser((user, done) => {
     console.log(user);
-    done(null, user);
+    done(null, user.nameID);
   });
 
-  passport.deserializeUser((id, done) => {
-    const matchingUser = { id: 1, username: "test user" }; // fake user that everyone gets until we have a user repo and user type
+  passport.deserializeUser((nameID, done) => {
+    const matchingUser = { id: 1, username: "test user", nameID: "fdsfgsdfgsdfg" }; // fake user that everyone gets until we have a user repo and user type
     done(null, matchingUser);
   });
 
