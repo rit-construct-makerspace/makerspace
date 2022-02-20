@@ -35,7 +35,9 @@ function addMissingFields(data: any): InventoryItem[] {
 
 export default function InventoryPage() {
   const history = useHistory();
-  const { loading, error, data } = useQuery(QUERY_INVENTORY_ITEMS);
+  const { loading, error, data } = useQuery(QUERY_INVENTORY_ITEMS, {
+    fetchPolicy: "no-cache",
+  });
 
   const safeData = data ? addMissingFields(data.InventoryItems) : [];
 
