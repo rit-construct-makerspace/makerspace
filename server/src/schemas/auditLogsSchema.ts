@@ -1,6 +1,9 @@
 import { gql } from "apollo-server-express";
 
 export const AuditLogsTypeDefs = gql`
+
+  scalar DateTime
+
   type Log {
     id: ID!
     timeDate: DateTime!
