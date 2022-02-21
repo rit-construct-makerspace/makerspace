@@ -30,6 +30,7 @@ jobs:
         with:
           node-version: '14'
           cache: npm
+          cache-dependency-path: client/package-lock.json
       
       - name: Install Node modules
         run: |
