@@ -1,7 +1,7 @@
 import React from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import RoomCard, { Room } from "./RoomCard";
+import RoomCard from "./RoomCard";
 import { Stack } from "@mui/material";
 
 const MockRooms = [

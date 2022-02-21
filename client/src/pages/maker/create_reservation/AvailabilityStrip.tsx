@@ -1,4 +1,4 @@
-import React, { ReactNode, ReactNodeArray } from "react";
+import React, { ReactNode } from "react";
 import styled from "styled-components";
 import TimeSlot from "../../../types/TimeSlot";
 
