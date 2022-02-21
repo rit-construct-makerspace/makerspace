@@ -27,8 +27,17 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: Lint frontend
+      - name: Install Node modules
         run: |
           cd client
           npm i
+      
+      - name: Lint frontend
+        run: |
+          cd client
           npm run lint
+          
+      - name: Type checking
+        run: |
+          cd client
+          npm run tsc
