@@ -1,14 +1,16 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Frontend
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
+    paths: ['client/**']
   pull_request:
     branches: [ master ]
+    paths: ['client/**']
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -25,8 +27,22 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       
-      - name: Lint frontend
+      - name: Install Node modules
         run: |
           cd client
           npm i
+      
+      - name: Lint frontend
+        run: |
+          cd client
           npm run lint
+          
+      - name: Type checking
+        run: |
+          cd client
+          npm run tsc
+
+      - name: Prettier format check
+        run: |
+          cd client
+          npm run prettier-check

@@ -6,36 +6,26 @@ import SearchBar from "../../../common/SearchBar";
 import PreviewInventoryRow from "../../../common/PreviewInventoryRow";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 
-
 export default function InventoryPreviewPage() {
+  return (
+    <Page title="Inventory">
+      <SearchBar placeholder="Search inventory" />
 
-    return (
-        <Page title="Inventory">
+      <PageSectionHeader>All Materials</PageSectionHeader>
 
-            <SearchBar placeholder="Search inventory" />
+      <Stack divider={<Divider flexItem />} mt={2}>
+        {Inventory.map((item) => (
+          <PreviewInventoryRow item={item} key={item.id} />
+        ))}
+      </Stack>
 
-            <PageSectionHeader>All Materials</PageSectionHeader>
+      <PageSectionHeader>Out of Stock</PageSectionHeader>
 
-            <Stack divider={<Divider flexItem />} mt={2}>
-                {Inventory.map((item) => (
-                    <PreviewInventoryRow
-                        item={item}
-                        key={item.id}
-                    />
-                ))}
-            </Stack>
-
-            <PageSectionHeader>Out of Stock</PageSectionHeader>
-
-            <Stack divider={<Divider flexItem />} mt={2}>
-                {Inventory.slice(4).map((item) => (
-                    <PreviewInventoryRow
-                        item={item}
-                        key={item.id}
-                    />
-                ))}
-            </Stack>
-
-        </Page>
-    );
+      <Stack divider={<Divider flexItem />} mt={2}>
+        {Inventory.slice(4).map((item) => (
+          <PreviewInventoryRow item={item} key={item.id} />
+        ))}
+      </Stack>
+    </Page>
+  );
 }
