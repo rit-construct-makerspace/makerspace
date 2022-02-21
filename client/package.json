@@ -27,7 +27,7 @@
     "tsc": "./node_modules/.bin/tsc",
     "start": "PORT=3001 react-app-rewired start",
     "build": "react-app-rewired build",
-    "lint": "node_modules/.bin/eslint src",
+    "lint": "node_modules/.bin/eslint src --max-warnings=0",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },
