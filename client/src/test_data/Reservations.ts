@@ -1,4 +1,4 @@
-export default {
+const reservations = {
   pending: [
     {
       id: 1,
@@ -34,3 +34,5 @@ export default {
   confirmed: [],
   all: [],
 };
+
+export default reservations;

@@ -7,12 +7,10 @@ import PrettyModal from "../common/PrettyModal";
 const SWIPE_START_CHAR = ";";
 const SWIPE_END_CHAR = "?";
 
-interface CardReaderAlertProps {}
-
 let readingSwipe = false;
 let swipeBuffer: string[] = [];
 
-export default function CardReaderAlert({}: CardReaderAlertProps) {
+export default function CardReaderAlert() {
   const [showModal, setShowModal] = useState(false);
   const [uid, setUid] = useState("");
 

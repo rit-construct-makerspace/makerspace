@@ -4,9 +4,7 @@ import { Button, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 
-interface DangerZoneProps {}
-
-export default function DangerZone({}: DangerZoneProps) {
+export default function DangerZone() {
   const { user } = useCurrentUser();
 
   if (user.role !== "Admin") {

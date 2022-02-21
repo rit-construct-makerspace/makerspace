@@ -4,23 +4,8 @@ import TrainingModule from "./TrainingModule";
 import SearchBar from "../../../common/SearchBar";
 import { Divider, Fab, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { gql, useQuery } from "@apollo/client";
 
-interface TrainingModulesPageProps {}
-
-const TRAINING_MODULES_QUERY = gql`
-  query GetTrainingModules {
-    modules {
-      id
-    }
-  }
-`;
-
-export default function TrainingModulesPage({}: TrainingModulesPageProps) {
-  const { loading, error, data } = useQuery(TRAINING_MODULES_QUERY);
-
-  console.log(data);
-
+export default function TrainingModulesPage() {
   return (
     <Page title="Training modules">
       <SearchBar placeholder="Search training modules" />

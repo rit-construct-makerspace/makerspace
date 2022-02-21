@@ -1,16 +1,11 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import Page from "../../Page";
 import QuizBuilder from "./quiz/QuizBuilder";
 import { Button, Stack, Tab, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 
-const StyledDiv = styled.div``;
-
-interface EditModulePageProps {}
-
-export default function EditModulePage({}: EditModulePageProps) {
+export default function EditModulePage() {
   const [tabIndex, setTabIndex] = useState("questions-tab");
   return (
     <Page title="Edit training module">

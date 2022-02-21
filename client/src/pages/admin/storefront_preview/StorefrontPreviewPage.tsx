@@ -4,9 +4,7 @@ import NoTransactionView from "./NoTransactionView";
 import { ShoppingCartEntry } from "../storefront/StorefrontPage";
 import CreatingTransactionView from "./CreatingTransactionView";
 
-interface StorefrontPreviewPageProps {}
-
-export default function StorefrontPreviewPage({}: StorefrontPreviewPageProps) {
+export default function StorefrontPreviewPage() {
   const [cart, setCart] = useState<ShoppingCartEntry[]>([]);
 
   const getCartFromStorage = useCallback(() => {
@@ -21,7 +19,7 @@ export default function StorefrontPreviewPage({}: StorefrontPreviewPageProps) {
 
     // Load the cart whenever localstorage changes
     window.addEventListener("storage", getCartFromStorage);
-  }, []);
+  }, [getCartFromStorage]);
 
   return (
     <Box sx={{ padding: 4, width: "100%", height: "100vh" }}>

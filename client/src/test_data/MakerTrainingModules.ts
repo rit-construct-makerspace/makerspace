@@ -1,4 +1,4 @@
-export default {
+const makerTrainingModules = {
   available: [
     {
       id: 1,
@@ -67,3 +67,5 @@ export default {
     },
   ],
 };
+
+export default makerTrainingModules;

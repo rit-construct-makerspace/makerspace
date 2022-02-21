@@ -7,9 +7,7 @@ import AvailableModuleThumbnail from "./AvailableModuleThumbnail";
 import CompletedModuleThumbnail from "./CompletedModuleThumbnail";
 import { Stack } from "@mui/material";
 
-interface TrainingPageProps {}
-
-export default function TrainingPage({}: TrainingPageProps) {
+export default function TrainingPage() {
   return (
     <Page title="Training">
       <Explainer />

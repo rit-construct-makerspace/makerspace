@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import {
   Button,
   ButtonGroup,
@@ -11,8 +10,6 @@ import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import HandymanIcon from "@mui/icons-material/Handyman";
 import PeopleIcon from "@mui/icons-material/People";
 import { useHistory } from "react-router-dom";
-
-const StyledDiv = styled.div``;
 
 interface TrainingModuleProps {
   title: string;

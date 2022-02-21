@@ -21,9 +21,7 @@ function updateLocalStorage(cart: ShoppingCartEntry[] | null) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-interface StorefrontPageProps {}
-
-export default function StorefrontPage({}: StorefrontPageProps) {
+export default function StorefrontPage() {
   const [showModal, setShowModal] = useState(false);
   const [activeItem, setActiveItem] = useState<InventoryItem | undefined>(
     undefined
@@ -35,7 +33,7 @@ export default function StorefrontPage({}: StorefrontPageProps) {
     const storedCart = localStorage.getItem("cart");
     const parsedCart = storedCart && JSON.parse(storedCart);
     setShoppingCart(parsedCart || []);
-  }, []);
+  }, [setShoppingCart]);
 
   useEffect(() => {
     // Load the cart on page load
@@ -43,7 +41,7 @@ export default function StorefrontPage({}: StorefrontPageProps) {
 
     // Load the cart whenever localstorage changes
     window.addEventListener("storage", getCartFromStorage);
-  }, []);
+  }, [getCartFromStorage]);
 
   const addToShoppingCart = (item: InventoryItem, count: number) =>
     setShoppingCart((draft) => {
@@ -76,7 +74,7 @@ export default function StorefrontPage({}: StorefrontPageProps) {
     });
 
   const emptyCart = () => {
-    setShoppingCart((draft) => []);
+    setShoppingCart(() => []);
     updateLocalStorage([]);
   };
 

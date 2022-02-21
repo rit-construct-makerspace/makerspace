@@ -32,9 +32,7 @@ interface NewPurchaseOrder {
   items: InventoryItem[];
 }
 
-interface CreatePurchaseOrderPageProps {}
-
-export default function CreatePurchaseOrderPage({}: CreatePurchaseOrderPageProps) {
+export default function CreatePurchaseOrderPage() {
   const [purchaseOrder, setPurchaseOrder] = useImmer<NewPurchaseOrder>({
     expectedDelivery: "",
     items: [],

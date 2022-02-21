@@ -5,9 +5,7 @@ import Logs from "../../../test_data/Logs";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import AuditLogRow from "../../../common/AuditLogRow";
 
-interface LogPageProps {}
-
-export default function LogPage({}: LogPageProps) {
+export default function LogPage() {
   return (
     <Page title="Logs">
       <PageSectionHeader>Audit Logs</PageSectionHeader>
@@ -26,7 +24,6 @@ export default function LogPage({}: LogPageProps) {
       />
       <Button>Search</Button>
 
-      <pre></pre>
       <Stack direction="row" alignItems="center" spacing={4}>
         <Typography variant="body1" width={150} fontWeight={"bold"}>
           Date

@@ -37,9 +37,7 @@ const MockRooms = [
   },
 ];
 
-interface SelectRoomPageProps {}
-
-export default function SelectRoomPage({}: SelectRoomPageProps) {
+export default function SelectRoomPage() {
   return (
     <Page title="Select a room to monitor">
       <SearchBar placeholder="Search rooms" sx={{ mb: 4 }} />

@@ -14,9 +14,7 @@ const AdamSavage = {
   id: "test-id-1",
 };
 
-interface NoTransactionViewProps {}
-
-export default function NoTransactionView({}: NoTransactionViewProps) {
+export default function NoTransactionView() {
   return (
     <Stack alignItems="center" justifyContent="center" height="100%">
       <StyledLogo src={LogoSvg} alt="" />

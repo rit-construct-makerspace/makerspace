@@ -10,9 +10,7 @@ const AdamSavage = {
   id: "test-id-1",
 };
 
-interface MonitorRoomPageProps {}
-
-export default function MonitorRoomPage({}: MonitorRoomPageProps) {
+export default function MonitorRoomPage() {
   return (
     <Page title="Workshop">
       <Typography variant="h5" component="div" sx={{ mb: 2 }}>

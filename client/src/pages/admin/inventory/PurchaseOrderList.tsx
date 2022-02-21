@@ -6,9 +6,7 @@ import PurchaseOrder from "./PurchaseOrder";
 import CreateIcon from "@mui/icons-material/Create";
 import { useHistory } from "react-router-dom";
 
-interface PendingOrdersProps {}
-
-export default function PurchaseOrderList({}: PendingOrdersProps) {
+export default function PurchaseOrderList() {
   const history = useHistory();
 
   return (

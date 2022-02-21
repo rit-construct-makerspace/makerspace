@@ -7,13 +7,7 @@ import ExpertAvailability from "../../../types/ExpertAvailability";
 import AddDetailsStep from "./AddDetailsStep";
 import ConfirmationStep from "./ConfirmationStep";
 
-interface TotalDayStripProps {}
-
-function TotalDayStrip({}: TotalDayStripProps) {}
-
-interface CreateReservationPageProps {}
-
-export default function CreateReservationPage({}: CreateReservationPageProps) {
+export default function CreateReservationPage() {
   const [activeStep, setActiveStep] = useState(0);
 
   const [chosenExpert, setChosenExpert] = useState<
@@ -58,7 +52,7 @@ export default function CreateReservationPage({}: CreateReservationPageProps) {
         />
       )}
 
-      {activeStep == 3 && <ConfirmationStep />}
+      {activeStep === 3 && <ConfirmationStep />}
     </Page>
   );
 }
