@@ -28,6 +28,7 @@
     "start": "PORT=3001 react-app-rewired start",
     "build": "react-app-rewired build",
     "lint": "node_modules/.bin/eslint src --max-warnings=0",
+    "prettier-check": "node_modules/.bin/prettier --check \"src/**/*.[j|t]s(x)\"",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject"
   },

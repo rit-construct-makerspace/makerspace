@@ -41,3 +41,8 @@ jobs:
         run: |
           cd client
           npm run tsc
+
+      - name: Prettier format check
+        run: |
+          cd client
+          npm run prettier-check
