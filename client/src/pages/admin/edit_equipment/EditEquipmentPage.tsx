@@ -15,15 +15,13 @@ import EngineeringIcon from "@mui/icons-material/Engineering";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import HistoryIcon from "@mui/icons-material/History";
 
-interface EditEquipmentPageProps {}
-
 const StyledMachineImage = styled.img`
   width: 200px;
   height: 200px;
   border-radius: 4px;
 `;
 
-export default function EditEquipmentPage({}: EditEquipmentPageProps) {
+export default function EditEquipmentPage() {
   return (
     <Page title="Manage equipment">
       <Stack direction="row" spacing={1} sx={{ mt: -2, mb: 4 }}>

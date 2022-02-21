@@ -3,9 +3,7 @@ import { useParams } from "react-router-dom";
 import EditMaterialPage from "./EditMaterialPage";
 import NewMaterialPage from "./NewMaterialPage";
 
-interface MaterialPageProps {}
-
-export default function MaterialPage({}: MaterialPageProps) {
+export default function MaterialPage() {
   const { id } = useParams<{ id: string }>();
 
   const isNewItem = id.toLocaleLowerCase() === "new";

@@ -22,9 +22,7 @@ import {
 } from "../../../../types/Quiz";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 
-interface QuizBuilderPageProps {}
-
-export default function QuizBuilder({}: QuizBuilderPageProps) {
+export default function QuizBuilder() {
   const [quiz, setQuiz] = useImmer<Quiz>({
     id: uuidv4(),
     items: [],
@@ -104,7 +102,7 @@ export default function QuizBuilder({}: QuizBuilderPageProps) {
     <DragDropContext onDragEnd={onDragEnd}>
       <Stack>
         <Droppable droppableId="droppable">
-          {(provided, snapshot) => (
+          {(provided) => (
             <div {...provided.droppableProps} ref={provided.innerRef}>
               {quiz.items.map((item, index) => {
                 switch (item.quizItemType) {
@@ -156,6 +154,8 @@ export default function QuizBuilder({}: QuizBuilderPageProps) {
                         onRemove={() => removeItem(item.id)}
                       />
                     );
+                  default:
+                    return null;
                 }
               })}
               {provided.placeholder}

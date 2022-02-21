@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { Alert, AlertTitle, Collapse } from "@mui/material";
 import CloseButton from "../../../common/CloseButton";
 
-interface PurchaseOrderExplainerProps {}
-
-export default function PurchaseOrderExplainer({}: PurchaseOrderExplainerProps) {
+export default function PurchaseOrderExplainer() {
   const [showAlert, setShowAlert] = useState<boolean>(true);
 
   return (

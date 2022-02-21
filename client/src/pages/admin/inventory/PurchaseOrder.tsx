@@ -62,6 +62,7 @@ export default function PurchaseOrder({ order }: PurchaseOrderCardProps) {
             <a
               href={att}
               target="_blank"
+              rel="noreferrer"
               aria-label={`Attachment ${index}`}
               key={index}
             >

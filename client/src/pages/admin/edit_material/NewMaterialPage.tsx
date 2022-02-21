@@ -16,7 +16,7 @@ export default function NewMaterialPage() {
 
   const [itemDraft, setItemDraft] = useState<Partial<InventoryItemInput>>({});
 
-  const [createInventoryItem, { data, loading, error }] = useMutation(
+  const [createInventoryItem, { data, loading }] = useMutation(
     CREATE_INVENTORY_ITEM,
     { variables: { item: itemDraft } }
   );
@@ -24,7 +24,7 @@ export default function NewMaterialPage() {
   // Redirect to the inventory page upon successful mutation
   useEffect(() => {
     if (data?.createInventoryItem?.id) history.push("/admin/inventory");
-  }, [data]);
+  }, [data, history]);
 
   return (
     <MaterialEditor

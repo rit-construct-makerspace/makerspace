@@ -3,9 +3,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Button, Container, Stack, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
-interface ConfirmationStepProps {}
-
-export default function ConfirmationStep({}: ConfirmationStepProps) {
+export default function ConfirmationStep() {
   const history = useHistory();
 
   return (

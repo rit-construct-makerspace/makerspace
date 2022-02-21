@@ -7,9 +7,7 @@ import UserCard from "./UserCard";
 
 const testUsers = generateUsers(3, 9, 50);
 
-interface UsersPageProps {}
-
-export default function UsersPage({}: UsersPageProps) {
+export default function UsersPage() {
   return (
     <Page title="People">
       <SearchBar placeholder="Search people" sx={{ mb: 2 }} />

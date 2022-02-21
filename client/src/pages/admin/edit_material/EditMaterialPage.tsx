@@ -45,13 +45,13 @@ export default function EditMaterialPage() {
       ...query.data.InventoryItem,
       __typename: undefined,
     });
-  }, [query.data]);
+  }, [query.data, setItemDraft]);
 
   // Redirect to the inventory page upon successful mutation
   useEffect(() => {
     if (mutation.data?.updateInventoryItem?.id)
       history.push("/admin/inventory");
-  }, [mutation.data]);
+  }, [mutation.data, history]);
 
   return (
     <RequestWrapper loading={query.loading} error={query.error}>
