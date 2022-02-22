@@ -1,6 +1,6 @@
 import React from "react";
 import InventoryItem from "../types/InventoryItem";
-import { CardActionArea, Chip, Stack, Typography } from "@mui/material";
+import { CardActionArea, Stack, Typography } from "@mui/material";
 import InvItemNamePic from "./InvItemNamePic";
 import InvItemCount from "./InvItemCount";
 
@@ -19,12 +19,6 @@ export default function InventoryRow({ item, onClick }: InventoryRowProps) {
         spacing={8}
       >
         <InvItemNamePic item={item} />
-
-        <Stack direction="row" spacing={0.5}>
-          {item.labels.map((l, index) => (
-            <Chip label={l} size="small" key={`${l}-${index}`} />
-          ))}
-        </Stack>
 
         <InvItemCount item={item} sx={{ width: 100 }} />
 
