@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Page from "../../Page";
 import { Button, Divider, Stack } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
@@ -24,22 +24,14 @@ const QUERY_INVENTORY_ITEMS = gql`
   }
 `;
 
-// TODO: Remove this function and query for the fields instead
-function addMissingFields(data: any): InventoryItem[] {
-  return data.map((incomplete: any) => ({
-    ...incomplete,
-    image: "https://thediyplan.com/wp-content/uploads/2020/03/IMG_2897.jpg",
-    labels: ["Test 1", "Test 2"],
-  }));
-}
-
 export default function InventoryPage() {
   const history = useHistory();
+
+  const [searchText, setSearchText] = useState<string>("");
+
   const { loading, error, data } = useQuery(QUERY_INVENTORY_ITEMS, {
     fetchPolicy: "no-cache",
   });
-
-  const safeData = data ? addMissingFields(data.InventoryItems) : [];
 
   return (
     <RequestWrapper loading={loading} error={error}>
@@ -49,18 +41,25 @@ export default function InventoryPage() {
         <PageSectionHeader>All Materials</PageSectionHeader>
 
         <Stack direction="row" alignItems="center" spacing={1}>
-          <SearchBar placeholder="Search inventory" />
+          <SearchBar
+            placeholder="Search inventory"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
           <Button
             variant="outlined"
             startIcon={<CreateIcon />}
             onClick={() => history.push(`/admin/inventory/new`)}
+            sx={{ height: 40 }}
           >
             New material
           </Button>
         </Stack>
 
         <Stack divider={<Divider flexItem />} mt={2}>
-          {safeData.map((item) => (
+          {data?.InventoryItems?.filter((item: InventoryItem) =>
+            item.name.includes(searchText)
+          ).map((item: InventoryItem) => (
             <InventoryRow
               item={item}
               key={item.id}
