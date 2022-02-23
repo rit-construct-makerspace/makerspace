@@ -15,10 +15,7 @@ describe("InventoryRepository test set", () => {
     const tables = [
       "InventoryItem",
       "Label",
-      "InventoryItemLabel",
-      "PurchaseOrder",
-      "PurchaseOrderItem",
-      "PurchaseOrderAttachment",
+      "InventoryItemLabel"
     ];
     tables.forEach(async (t) => {
       await knex(t).del().where("id", "!=", "null");
@@ -46,6 +43,7 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
+      threshold: 0
     };
     await invenRepo.addItem(item);
     let items = await invenRepo.getItems();
@@ -56,6 +54,7 @@ describe("InventoryRepository test set", () => {
     expect(items[0].pluralUnit).toBe(item.pluralUnit);
     expect(items[0].pricePerUnit).toBe(item.pricePerUnit);
     expect(items[0].unit).toBe(item.unit);
+    expect(items[0].threshold).toBe(item.threshold);
   });
 
   test("getAllInventoryItems with three items", async () => {
@@ -69,6 +68,7 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
+      threshold: 0
     };
     await invenRepo.addItem(item);
     await invenRepo.addItem(item);
@@ -93,6 +93,7 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
+      threshold: 0
     };
     let itemOutput = await invenRepo.addItem(item);
     if (itemOutput !== null) {
@@ -118,6 +119,7 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
+      threshold: 0
     };
     let item2: InventoryItemInput = {
       count: 11,
@@ -127,6 +129,7 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet2",
       pricePerUnit: 5.52,
       unit: "foot2",
+      threshold: 0
     };
     let item1Output = await invenRepo.addItem(item1);
     let item2Output = await invenRepo.addItem(item2);
@@ -153,6 +156,7 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
+      threshold: 0
     };
     let item1Output = await invenRepo.addItem(item1);
     if (item1Output !== null) {
@@ -178,6 +182,7 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
+      threshold: 0
     };
     let item1Output = await invenRepo.addItem(item1);
     if (item1Output !== null) {
