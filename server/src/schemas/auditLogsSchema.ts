@@ -1,7 +1,6 @@
 import { gql } from "apollo-server-express";
 
 export const AuditLogsTypeDefs = gql`
-
   scalar DateTime
 
   type Log {
@@ -12,9 +11,8 @@ export const AuditLogsTypeDefs = gql`
     description: String
   }
 
-  enum EventType{
+  enum EventType {
     DATABASE_MODIFICATION
-    PURCHASE_ORDERS
     RESERVATIONS
     TRAINING
     INVENTORY_MANAGEMENT
@@ -29,7 +27,7 @@ export const AuditLogsTypeDefs = gql`
     eventType: EventType!
     description: String
   }
-  
+
   type Query {
     auditLogs: [Log]
     auditLog(logID: ID!): Log
@@ -40,9 +38,9 @@ export const AuditLogsTypeDefs = gql`
 
   type Mutation {
     addLog(log: LogInput): Log
-    
+
     modifyLogDescription(logID: ID!, description: String): Log
-    
+
     deleteLog(logID: ID!): Log
   }
 `;
