@@ -33,7 +33,7 @@ export const AuditLogsTypeDefs = gql`
   type Query {
     auditLogs: [Log]
     auditLog(logID: ID!): Log
-    auditLogsByUser(user: User!): [Log]
+    auditLogsByUser(userID: ID!): [Log]
     auditLogsByEventType(eventType: EventType!): [Log]
     auditLogsByDate(startDate: DateTime!, endDate: DateTime!): [Log]
   }

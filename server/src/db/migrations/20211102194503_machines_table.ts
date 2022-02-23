@@ -29,6 +29,7 @@ export async function up(knex: Knex): Promise<void> {
           t.string('room', 5);
           t.timestamp('addedAt').defaultTo(knex.fn.now());
           t.boolean('inUse').defaultTo(false);
+          t.integer('room_id').references("id").inTable("Rooms");
         });
       }
     }).then(async () => {

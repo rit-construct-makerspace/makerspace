@@ -22,25 +22,25 @@ export const RoomTypeDefs = gql`
   type Query {
     rooms: [Room]
     room(roomID: ID!): Room
-    roomsByEquipment(equipment: Equipment!): [Room]
-    roomsByLabbie(labbie: User!): [Room]
+    roomByEquipment(equipmentID: ID!): Room
+    roomsByLabbie(labbieID: ID!): [Room]
     roomsByIfOpen(isOpen: Boolean!): [Room]
   }
 
   type Mutation {
     addRoom(room: RoomInput): Room
-    removeRoom(room: RoomInput): Room
+    removeRoom(roomID: ID!): Room
     
     updateRoomName(roomID: ID!, name: String): Room
     
-    addEquipmentToRoom(roomID: ID!, equipment: Equipment): Room
-    removeEquipmentFromRoom(roomID: ID!, equipment: Equipment): Room
+    addEquipmentToRoom(roomID: ID!, equipmentID: ID!): Room
+    removeEquipmentFromRoom(roomID: ID!, equipmentID: ID!): Room
     
-    addUserToRoom(roomID: ID!, user: User): Room
-    removeUserFromRoom(roomID: ID!, user: User): Room
+    addUserToRoom(roomID: ID!, userID: ID!): Room
+    removeUserFromRoom(roomID: ID!, userID: ID!): Room
     
-    addLabbieToRoom(roomID: ID!, labbie: User): Room
-    removeLabbieFromRoom(roomID: ID!, labbie: User): Room
+    addLabbieToRoom(roomID: ID!, labbieID: ID!): Room
+    removeLabbieFromRoom(roomID: ID!, labbieID: ID!): Room
     
     closeRoom(roomID: ID!): Room
     openRoom(roomID: ID!): Room

@@ -17,6 +17,7 @@ export async function up(knex: Knex): Promise<void> {
             t.integer('year');
             t.text('college');
             t.text('major');
+            t.integer('room_id').references("id").inTable("Rooms");
           });
         }
     });
