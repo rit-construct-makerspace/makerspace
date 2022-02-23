@@ -7,7 +7,7 @@ Potential future enhancements:
   - Reschedule reservations
  */
 
-export const ReservationsSchema = gql`
+export const ReservationsTypeDefs = gql`
   enum ReservationStatus {
     PENDING
     CONFIRMED
@@ -16,14 +16,26 @@ export const ReservationsSchema = gql`
 
   type Reservation {
     id: ID!
+    creator: User
     maker: User
     labbie: User
     createDate: DateTime
-    creator: Person
+    startTime: DateTime
+    endTime: DateTime
     equipment: Equipment
     status: ReservationStatus
     lastUpdated: DateTime
     events: [ReservationEvent]
+
+    """
+    **True:** The maker is proficient with the machine,
+    and does not need labbie supervision.
+
+    **False:** The maker is *not* proficient with the machine,
+    *does* need labbie supervision. The reservation cannot
+    be approved until a labbie is assigned.
+    """
+    makerIsProficient: Boolean
   }
 
   enum ReservationEventType {
@@ -48,10 +60,19 @@ export const ReservationsSchema = gql`
   }
 
   input ReservationInput {
-    creatorId: ID!
-    makerId: ID!
-    equipmentId: ID!
-    labbieId: ID # leave undefined for an unassigned reservation
+    creatorId: Int!
+    makerId: Int!
+    equipmentId: Int!
+
+    """
+    Leave blank to create an unassigned reservation.
+    """
+    labbieId: Int
+
+    """
+    If provided, a comment will automatically be placed on the reservation,
+    with the maker as the author.
+    """
     startingMakerComment: String
   }
 
