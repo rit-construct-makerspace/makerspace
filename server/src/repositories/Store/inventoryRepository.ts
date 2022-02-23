@@ -45,7 +45,8 @@ export class InventoryRepository implements IInventoryRepository {
       "InventoryItem.unit",
       "InventoryItem.pluralUnit",
       "InventoryItem.count",
-      "InventoryItem.pricePerUnit"
+      "InventoryItem.pricePerUnit",
+      "InventoryItem.threshold"
     );
     return inventoryItemstoDomain(knexResult);
   }
@@ -59,7 +60,8 @@ export class InventoryRepository implements IInventoryRepository {
         "unit",
         "pluralUnit",
         "count",
-        "pricePerUnit"
+        "pricePerUnit",
+        "InventoryItem.threshold"
       )
       .from("InventoryItem")
       .where("id", itemId);
@@ -80,6 +82,7 @@ export class InventoryRepository implements IInventoryRepository {
         pluralUnit: item.pluralUnit,
         count: item.count,
         pricePerUnit: item.pricePerUnit,
+        threshold: item.threshold
       });
 
     this.setLabels(itemId, item.labels);
@@ -98,6 +101,7 @@ export class InventoryRepository implements IInventoryRepository {
           pluralUnit: item.pluralUnit,
           count: item.count,
           pricePerUnit: item.pricePerUnit,
+          threshold: item.threshold
         },
         "id"
       )

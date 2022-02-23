@@ -10,6 +10,7 @@ export const StoreFrontTypeDefs = gql`
     pluralUnit: String
     count: Int
     pricePerUnit: Float
+    threshold: Int
   }
 
   input InventoryItemInput {
@@ -20,6 +21,7 @@ export const StoreFrontTypeDefs = gql`
     pluralUnit: String
     count: Int
     pricePerUnit: Float
+    threshold: Int
   }
 
   extend type Query {
