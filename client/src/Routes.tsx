@@ -14,7 +14,6 @@ import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
 import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
-import CreatePurchaseOrderPage from "./pages/admin/create_purchase_order/CreatePurchaseOrderPage";
 import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
@@ -74,10 +73,6 @@ export default function Routes() {
 
             <Route path="/admin/inventory">
               <InventoryPage />
-            </Route>
-
-            <Route path="/admin/create-purchase-order">
-              <CreatePurchaseOrderPage />
             </Route>
 
             <Route path="/admin/reservations">
