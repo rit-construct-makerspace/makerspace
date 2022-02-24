@@ -33,6 +33,7 @@ export interface InventoryItemInput {
   pluralUnit: string;
   count: number;
   pricePerUnit: number;
+  threshold: number;
 }
 
 interface MaterialPageProps {
@@ -164,7 +165,13 @@ export default function MaterialEditor({
               spacing={1}
               sx={{ flex: 1 }}
             >
-              <TextField label="Threshold" type="number" sx={{ flex: 1 }} />
+              <TextField
+                label="Threshold"
+                type="number"
+                sx={{ flex: 1 }}
+                value={itemDraft.threshold ?? ""}
+                onChange={handleIntChange("threshold")}
+              />
               <HelpTooltip
                 title={
                   'If the count falls below this number, this item will appear in the "Running Low" section on the inventory page. Leave at 0 for no threshold.'

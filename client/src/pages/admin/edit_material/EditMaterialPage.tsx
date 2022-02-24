@@ -12,6 +12,7 @@ const GET_INVENTORY_ITEM = gql`
       pluralUnit
       pricePerUnit
       count
+      threshold
     }
   }
 `;
