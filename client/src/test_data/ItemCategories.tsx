@@ -1,4 +1,4 @@
-export default [
+const categories = [
   "Lumber",
   "Raw Materials",
   "Electronics",
@@ -11,3 +11,5 @@ export default [
   "Decoration",
   "Finishing",
 ];
+
+export default categories;

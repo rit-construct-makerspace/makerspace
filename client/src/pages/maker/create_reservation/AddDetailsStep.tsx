@@ -1,10 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Alert } from "@mui/lab";
-
-const StyledDiv = styled.div``;
 
 interface AddDetailsStepProps {
   stepBackwards: () => void;

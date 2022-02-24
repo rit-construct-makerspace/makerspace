@@ -1,7 +1,7 @@
 import React from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import RoomCard, { Room } from "./RoomCard";
+import RoomCard from "./RoomCard";
 import { Stack } from "@mui/material";
 
 const MockRooms = [
@@ -37,9 +37,7 @@ const MockRooms = [
   },
 ];
 
-interface SelectRoomPageProps {}
-
-export default function SelectRoomPage({}: SelectRoomPageProps) {
+export default function SelectRoomPage() {
   return (
     <Page title="Select a room to monitor">
       <SearchBar placeholder="Search rooms" sx={{ mb: 4 }} />

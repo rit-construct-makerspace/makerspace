@@ -1,7 +1,6 @@
 import { gql } from "apollo-server-express";
 
 export const EquipmentTypeDefs = gql`
-
   scalar DateTime
 
   type Equipment {
@@ -50,9 +49,5 @@ export const EquipmentTypeDefs = gql`
     addEquipment(Equipment: EquipmentInput): Equipment
     updateEquipment(Equipment: EquipmentInput): Equipment
     removeEquipment(EquipmentId: ID!): Equipment
-    
-    createReservation(reservation: ReservationInput): Reservation
-    updateReservation(reservation: ReservationInput): Reservation
-    removeReservation(reservationId: ID!): Reservation
   }
 `;

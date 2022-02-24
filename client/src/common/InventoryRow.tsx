@@ -1,6 +1,6 @@
 import React from "react";
 import InventoryItem from "../types/InventoryItem";
-import { CardActionArea, Chip, Stack, Typography } from "@mui/material";
+import { CardActionArea, Stack, Typography } from "@mui/material";
 import InvItemNamePic from "./InvItemNamePic";
 import InvItemCount from "./InvItemCount";
 
@@ -12,14 +12,13 @@ interface InventoryRowProps {
 export default function InventoryRow({ item, onClick }: InventoryRowProps) {
   return (
     <CardActionArea onClick={onClick} sx={{ py: 2 }}>
-      <Stack sx={{opacity: item.count === 0 ? 0.3 : 1}} direction="row" alignItems="center" spacing={8}>
+      <Stack
+        sx={{ opacity: item.count === 0 ? 0.5 : 1 }}
+        direction="row"
+        alignItems="center"
+        spacing={8}
+      >
         <InvItemNamePic item={item} />
-
-        <Stack direction="row" spacing={0.5}>
-          {item.labels.map((l, index) => (
-            <Chip label={l} size="small" key={`${l}-${index}`} />
-          ))}
-        </Stack>
 
         <InvItemCount item={item} sx={{ width: 100 }} />
 

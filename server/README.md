@@ -57,6 +57,24 @@ the `db` container, then click the CLI button in the top right. It has a `>_` ic
 3. Enter your commands. For example, `\dt` will list all tables. See [this guide](https://www.postgresqltutorial.com/postgresql-cheat-sheet/)
 for more ideas.
 
+## Setting Up SAML auth
+
+You will need to generate a cert and a privite key for the Service Provider (us) and you
+will also need the cert from the Identity Provider.
+
+Use `openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -nodes -days 900` to generate cert and private key.
+Save these two files to the cert directory under server and name them `cert.pem` and `key.pem`
+
+If you have the metadata for the Identity Provider the cert should be listed under the `ds:X509Certificate` tag.
+Copy the tag's contents into a file named `cert_idp.pem`
+
+Finally add the callback url, entry point, and issuer fields to your .env file
+
+The callback url is the url the Identity Provider redirects back to after attempting authentication
+The entry point is the url on the Identity Provider that the Service Provider redirects the user to to start auth
+The issuer (also sometimes refered to as a domain or entityID) is an identifier for the Service Provider, usually just the url to the metadata file
+
+
 ---
 ---
 ---

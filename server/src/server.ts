@@ -1,29 +1,34 @@
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
-import {
-  ApolloServerPluginLandingPageGraphQLPlayground
-} from "apollo-server-core";
-import { createServer } from "http";
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import { createServer } from "https";
 import compression from "compression";
 import cors from "cors";
-import helmet from "helmet";
 import { schema } from "./schema";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
+import fs from "fs";
+import setupAuth from "./auth"
 
-dotenv.config({ path: __dirname + '/./../.env' })
+
+dotenv.config({ path: __dirname + "/./../.env" });
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 const corstOpts = cors();
+
+
+setupAuth(app)
 
 app.use(corstOpts);
 app.use(compression());
 
 const server = new ApolloServer({
   schema,
-  plugins: [
-    ApolloServerPluginLandingPageGraphQLPlayground(),
-  ],
+  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+  context: ({ req }) => ({
+    getUser: () => req.user,
+    logout: () => req.logout(),
+  }),
 });
 
 (async function startServer() {
@@ -31,7 +36,25 @@ const server = new ApolloServer({
   server.applyMiddleware({ app, path: "/graphql" });
 })();
 
-const httpServer = createServer(app);
-httpServer.listen({ port: PORT }, (): void =>
-  console.log(`🚀GraphQL-Server is running on http://localhost:${PORT}/graphql`)
-);
+let options = {};
+
+// attempt to start with https, switch to http on failure
+try {
+  options = {
+    key: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
+    cert: fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8"),
+  };
+  const httpsServer = createServer(options, app);
+  httpsServer.listen({ port: PORT }, (): void =>
+    console.log(
+      `🚀GraphQL-Server is running on https://localhost:${PORT}/graphql`
+    )
+  );
+} catch (e) {
+  const httpServer = createServer(app);
+  httpServer.listen({ port: PORT }, (): void =>
+    console.log(
+      `🚀GraphQL-Server is running on http://localhost:${PORT}/graphql`
+    )
+  );
+}

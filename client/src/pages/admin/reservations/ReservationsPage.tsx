@@ -4,9 +4,7 @@ import PageSectionHeader from "../../../common/PageSectionHeader";
 import ReservationCard from "./ReservationCard";
 import Reservations from "../../../test_data/Reservations";
 
-interface ReservationsPageProps {}
-
-export default function ReservationsPage({}: ReservationsPageProps) {
+export default function ReservationsPage() {
   return (
     <Page title="Reservations">
       <PageSectionHeader top>Your Pending Reservations</PageSectionHeader>

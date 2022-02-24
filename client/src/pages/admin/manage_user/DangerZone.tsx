@@ -4,9 +4,7 @@ import { Button, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 
-interface DangerZoneProps {}
-
-export default function DangerZone({}: DangerZoneProps) {
+export default function DangerZone() {
   const { user } = useCurrentUser();
 
   if (user.role !== "Admin") {
@@ -23,7 +21,7 @@ export default function DangerZone({}: DangerZoneProps) {
         startIcon={<DeleteIcon />}
         sx={{ mt: 1 }}
         onClick={() =>
-          confirm(
+          window.confirm(
             "Are you sure you wish to delete John Smith's account? This cannot be undone."
           )
         }

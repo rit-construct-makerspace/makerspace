@@ -3,9 +3,7 @@ import { Alert } from "@mui/lab";
 import { Button, Link, Stack, Typography } from "@mui/material";
 import MonitorIcon from "@mui/icons-material/Monitor";
 
-interface MonitoringBoxProps {}
-
-export default function MonitorAlert({}: MonitoringBoxProps) {
+export default function MonitorAlert() {
   return (
     <Alert severity="info" icon={<MonitorIcon />} sx={{ borderRadius: 0 }}>
       <Stack>

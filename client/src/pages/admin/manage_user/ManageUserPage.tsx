@@ -8,11 +8,9 @@ import DangerZone from "./DangerZone";
 import generateUsers from "../../../test_data/Users";
 import HistoryIcon from "@mui/icons-material/History";
 
-interface ManageUserPageProps {}
-
 const user = generateUsers(1, 0, 0)[0];
 
-export default function ManageUserPage({}: ManageUserPageProps) {
+export default function ManageUserPage() {
   return (
     <Page title="Manage User">
       <Stack direction="row" alignItems="center" spacing={2}>
