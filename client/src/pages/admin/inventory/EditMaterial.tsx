@@ -59,7 +59,7 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
   // Close the modal upon successful mutation
   useEffect(() => {
     if (mutation.data?.updateInventoryItem?.id) onClose();
-  }, [mutation.data]);
+  }, [mutation.data, onClose]);
 
   return (
     <RequestWrapper loading={query.loading} error={query.error} minHeight={322}>

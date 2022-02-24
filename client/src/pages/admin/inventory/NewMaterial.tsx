@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
 import MaterialModalContents, {
   InventoryItemInput,
@@ -19,8 +18,6 @@ interface NewMaterialProps {
 }
 
 export default function NewMaterial({ onClose }: NewMaterialProps) {
-  const history = useHistory();
-
   const [itemDraft, setItemDraft] = useState<Partial<InventoryItemInput>>({});
 
   const [createInventoryItem, { data, loading }] = useMutation(
@@ -34,7 +31,7 @@ export default function NewMaterial({ onClose }: NewMaterialProps) {
   // Close the modal upon successful mutation
   useEffect(() => {
     if (data?.createInventoryItem?.id) onClose();
-  }, [data, history]);
+  }, [data, onClose]);
 
   return (
     <MaterialModalContents
