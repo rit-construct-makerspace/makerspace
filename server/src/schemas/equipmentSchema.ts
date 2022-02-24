@@ -12,16 +12,6 @@ export const EquipmentTypeDefs = gql`
     inUse: Boolean!
   }
 
-  type Reservation {
-    id: ID!
-    userId: User!
-    supervisorId: User!
-    equipmentId: Equipment!
-    createdAt: DateTime!
-    startTime: DateTime!
-    endTime: DateTime!
-  }
-
   input EquipmentInput {
     name: String!
     room: String!
@@ -30,19 +20,9 @@ export const EquipmentTypeDefs = gql`
     inUse: Boolean = false
   }
 
-  input ReservationInput {    
-    userId: Int!
-    supervisorId: Int!
-    equipmentId: Int!
-    createdAt: DateTime
-    startTime: DateTime!
-    endTime: DateTime!
-  }
-
   type Query {
       equipment: [Equipment]
       trainingModulesByEquipment: [TrainingModule]
-      reservations: [Reservation]
   }
 
   type Mutation {
