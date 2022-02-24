@@ -8,15 +8,9 @@ export const EquipmentTypeDefs = gql`
     id: ID!
     name: String!
     room: String!
-    equipmentLabels: [EquipmentLabel]
+    trainingModules: [TrainingModule]
     addedAt: DateTime!
     inUse: Boolean!
-  }
-
-  type EquipmentLabel {
-    id: ID!
-    name: String!
-    trainingModules: [TrainingModule]
   }
 
   type Reservation {
@@ -32,14 +26,9 @@ export const EquipmentTypeDefs = gql`
   input EquipmentInput {
     name: String!
     room: String!
-    equipmentLabels: [Int]
+    trainingModules: [Int]
     addedAt: DateTime
     inUse: Boolean = false
-  }
-
-  input EquipmentLabelInput {
-    name: String!
-    trainingModules: [Int]
   }
 
   input ReservationInput {    
@@ -52,19 +41,12 @@ export const EquipmentTypeDefs = gql`
   }
 
   type Query {
-      equipmentLabels: [EquipmentLabel]
       equipment: [Equipment]
+      trainingModulesByEquipment: [TrainingModule]
       reservations: [Reservation]
   }
 
   type Mutation {
-    createEquipmentLabel(EquipmentLabel: EquipmentLabelInput): EquipmentLabel
-    updateEquipmentLabel(EquipmentLabel: EquipmentLabelInput): EquipmentLabel
-    removeEquipmentLabel(EquipmentLabel: EquipmentLabelInput): EquipmentLabel
-
-    attachTrainingModuleToEquipmentLabel(EquipmentLabelId: ID!, trainingModule: ID!): EquipmentLabel
-    detachTrainingModuleFromEquipmentLabel(EquipmentLabelId: ID!, trainingModule: ID!): EquipmentLabel
-
     addEquipment(Equipment: EquipmentInput): Equipment
     updateEquipment(Equipment: EquipmentInput): Equipment
     removeEquipment(EquipmentId: ID!): Equipment
