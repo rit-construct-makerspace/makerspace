@@ -6,40 +6,25 @@ import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useHistory } from "react-router-dom";
 import InventoryRow from "../../../common/InventoryRow";
 import CreateIcon from "@mui/icons-material/Create";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import InventoryItem from "../../../types/InventoryItem";
 import RequestWrapper from "../../../common/RequestWrapper";
-
-const QUERY_INVENTORY_ITEMS = gql`
-  query getInventoryItems {
-    InventoryItems {
-      id
-      name
-      unit
-      pluralUnit
-      count
-      pricePerUnit
-      threshold
-    }
-  }
-`;
+import MaterialModal from "./MaterialModal";
+import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
 
 function sortItemsByName(items: InventoryItem[]): InventoryItem[] {
-  return (
-    items.sort((a: InventoryItem, b: InventoryItem) =>
-      a.name > b.name ? 1 : -1
-    ) ?? []
-  );
+  return [...items].sort((a, b) => (a.name > b.name ? 1 : -1)) ?? [];
 }
 
 export default function InventoryPage() {
   const history = useHistory();
 
   const [searchText, setSearchText] = useState<string>("");
+  const [modalItemId, setModalItemId] = useState<string>("");
 
-  const { loading, error, data } = useQuery(QUERY_INVENTORY_ITEMS, {
-    fetchPolicy: "no-cache",
-  });
+  const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
+
+  console.log(data);
 
   const safeData = data?.InventoryItems ?? [];
   const sortedItems = sortItemsByName(safeData);
@@ -72,7 +57,7 @@ export default function InventoryPage() {
           <Button
             variant="outlined"
             startIcon={<CreateIcon />}
-            onClick={() => history.push(`/admin/inventory/new`)}
+            onClick={() => setModalItemId("new")}
             sx={{ height: 40 }}
           >
             New material
@@ -84,10 +69,15 @@ export default function InventoryPage() {
             <InventoryRow
               item={item}
               key={item.id}
-              onClick={() => history.push(`/admin/inventory/${item.id}`)}
+              onClick={() => setModalItemId(item.id + "")}
             />
           ))}
         </Stack>
+
+        <MaterialModal
+          itemId={modalItemId}
+          onClose={() => setModalItemId("")}
+        />
       </Page>
     </RequestWrapper>
   );

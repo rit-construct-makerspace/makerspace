@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import MaterialEditor, { InventoryItemInput } from "./MaterialEditor";
+import MaterialModalContents, {
+  InventoryItemInput,
+} from "./MaterialModalContents";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useHistory, useParams } from "react-router-dom";
 import RequestWrapper from "../../../common/RequestWrapper";
+import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
 
 const GET_INVENTORY_ITEM = gql`
   query GetInventoryItem($id: ID!) {
@@ -25,18 +27,24 @@ const UPDATE_INVENTORY_ITEM = gql`
   }
 `;
 
-export default function EditMaterialPage() {
-  const history = useHistory();
-  const { id } = useParams<{ id: string }>();
+interface EditMaterialProps {
+  itemId: string;
+  onClose: () => void;
+}
+
+export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
   const [itemDraft, setItemDraft] = useState<Partial<InventoryItemInput>>({});
 
   const query = useQuery(GET_INVENTORY_ITEM, {
-    fetchPolicy: "no-cache",
-    variables: { id },
+    variables: { id: itemId },
   });
 
   const [updateInventoryItem, mutation] = useMutation(UPDATE_INVENTORY_ITEM, {
-    variables: { id, item: itemDraft },
+    variables: { id: itemId, item: itemDraft },
+    refetchQueries: [
+      { query: GET_INVENTORY_ITEMS },
+      { query: GET_INVENTORY_ITEM, variables: { id: itemId } },
+    ],
   });
 
   // After the item has been fetched, fill in the draft
@@ -48,15 +56,14 @@ export default function EditMaterialPage() {
     });
   }, [query.data, setItemDraft]);
 
-  // Redirect to the inventory page upon successful mutation
+  // Close the modal upon successful mutation
   useEffect(() => {
-    if (mutation.data?.updateInventoryItem?.id)
-      history.push("/admin/inventory");
-  }, [mutation.data, history]);
+    if (mutation.data?.updateInventoryItem?.id) onClose();
+  }, [mutation.data]);
 
   return (
-    <RequestWrapper loading={query.loading} error={query.error}>
-      <MaterialEditor
+    <RequestWrapper loading={query.loading} error={query.error} minHeight={322}>
+      <MaterialModalContents
         isNewItem={false}
         itemDraft={itemDraft}
         setItemDraft={setItemDraft}

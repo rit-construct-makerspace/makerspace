@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { gql, useMutation } from "@apollo/client";
-import MaterialEditor, { InventoryItemInput } from "./MaterialEditor";
+import MaterialModalContents, {
+  InventoryItemInput,
+} from "./MaterialModalContents";
+import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
 
 const CREATE_INVENTORY_ITEM = gql`
   mutation CreateInventoryItem($item: InventoryItemInput) {
@@ -11,23 +14,30 @@ const CREATE_INVENTORY_ITEM = gql`
   }
 `;
 
-export default function NewMaterialPage() {
+interface NewMaterialProps {
+  onClose: () => void;
+}
+
+export default function NewMaterial({ onClose }: NewMaterialProps) {
   const history = useHistory();
 
   const [itemDraft, setItemDraft] = useState<Partial<InventoryItemInput>>({});
 
   const [createInventoryItem, { data, loading }] = useMutation(
     CREATE_INVENTORY_ITEM,
-    { variables: { item: itemDraft } }
+    {
+      variables: { item: itemDraft },
+      refetchQueries: [{ query: GET_INVENTORY_ITEMS }],
+    }
   );
 
-  // Redirect to the inventory page upon successful mutation
+  // Close the modal upon successful mutation
   useEffect(() => {
-    if (data?.createInventoryItem?.id) history.push("/admin/inventory");
+    if (data?.createInventoryItem?.id) onClose();
   }, [data, history]);
 
   return (
-    <MaterialEditor
+    <MaterialModalContents
       isNewItem={true}
       itemDraft={itemDraft}
       setItemDraft={setItemDraft}
