@@ -26,12 +26,12 @@ export async function up(knex: Knex): Promise<void> {
             return knex.schema.createTable('LabbiesForRooms', function(t) {
                 t.increments('id').primary();
                 t.integer("roomID").references('id').inTable('Rooms');
-                t.integer('labbiesID').references('id').inTable("Users");
+                t.integer('labbieID').references('id').inTable("Users");
             });
         }
     });
 
-    knex.schema.hasTable('UsersForRooms').then(function(exists) {
+    knex.schema.hasTable('UsersInRooms').then(function(exists) {
         if (!exists) {
             return knex.schema.createTable('UsersForRooms', function(t) {
                 t.increments('id').primary();
