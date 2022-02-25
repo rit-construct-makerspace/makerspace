@@ -25,7 +25,7 @@ export const AuditLogsTypeDefs = gql`
 
   input LogInput {
     timeDate: DateTime!
-    user: User!
+    userID: ID!
     eventType: EventType!
     description: String
   }

@@ -12,7 +12,6 @@ export function singleRoomToDomain(raw: any): Rooms | null {
     const value: Rooms = {
         id: raw.id,
         name: raw.name,
-        isOpen: raw.isOpen,
     }
     return value;
 }

@@ -4,9 +4,6 @@ import {singleRoomToDomain, roomsToDomain} from "../../mappers/rooms/roomMapper"
 
 export interface IRoomRepo {
     getRoomByID(logID: number): Promise<Rooms | null>;
-    getRoomByEquipment(equipmentID: number): Promise<Rooms | null>;
-    getRoomByLabbie(labbieID: number): Promise<Rooms | null>;
-    getRoomsByIfOpen(isOpen: boolean): Promise<Rooms[]>;
     getRooms(): Promise<Rooms[]>;
 
     addRoom(room: Rooms): Promise<Rooms | null>;
@@ -22,9 +19,6 @@ export interface IRoomRepo {
 
     addLabbieToRoom(roomID: number, labbieID: number): Promise<Rooms | null>;
     removeLabbieFromRoom(roomID: number, labbieID: number): Promise<Rooms | null>;
-
-    closeRoom(roomID: number): Promise<Rooms | null>;
-    openRoom(roomID: number): Promise<Rooms | null>;
 }
 
 export class RoomRepo implements IRoomRepo {
@@ -39,8 +33,7 @@ export class RoomRepo implements IRoomRepo {
         const knexResult = await this.queryBuilder
             .first(
                 "id",
-                "name",
-                "isOpen"
+                "name"
             )
             .from("Rooms")
             .where("id", roomID);
@@ -48,74 +41,135 @@ export class RoomRepo implements IRoomRepo {
         return singleRoomToDomain(knexResult);
     }
 
-    async getRoomByEquipment(equipmentID: number): Promise<Rooms | null> {
+    async getRooms(): Promise<Rooms[]> {
+        const knexResult = await this.queryBuilder("Rooms").select(
+            "Rooms.id",
+            "Rooms.name"
+        );
+        return roomsToDomain(knexResult)
+    }
 
-        const knexResult = await this.queryBuilder
-            .first(
-                "id",
-                "name",
-                "isOpen"
+    async addRoom(room: Rooms): Promise<Rooms | null> {
+        const newID = (
+            await this.queryBuilder("Rooms").insert(
+                {
+                    name: room.name
+                },
+                "id"
             )
-            .from("Rooms")
-            .where("id", null);
-
-        return singleRoomToDomain(knexResult);
+        )[0];
+        return await this.getRoomByID(newID);
     }
 
-    getRoomByLabbie(labbieID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
+    async removeRoom(roomID: number): Promise<void> {
+        await this.queryBuilder("Rooms").where({id: roomID}).del();
     }
 
-    getRoomsByIfOpen(isOpen: boolean): Promise<Rooms[]> {
-        return Promise.resolve([]);
+    async updateRoomName(roomID: number, name: string): Promise<Rooms | null> {
+        const updateName = await this.queryBuilder("Rooms")
+            .where({id: roomID})
+            .update({
+                name: name
+            });
+
+        return await this.getRoomByID(roomID);
     }
 
-    getRooms(): Promise<Rooms[]> {
-        return Promise.resolve([]);
+    async addEquipmentToRoom(roomID: number, equipmentID: number): Promise<Rooms | null> {
+        await this.queryBuilder("EquipmentForRooms").insert(
+            {
+                roomID: roomID,
+                equipmentID: equipmentID
+            },
+            "id"
+        );
+
+        const updateEquipRoom = await this.queryBuilder("Equipment")
+            .where({id: equipmentID})
+            .update({
+                roomID: roomID
+            });
+        return await this.getRoomByID(roomID);
     }
 
-    addEquipmentToRoom(roomID: number, equipmentID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
+    async removeEquipmentFromRoom(roomID: number, equipmentID: number): Promise<Rooms | null> {
+        await this.queryBuilder("EquipmentForRooms")
+            .where("roomID", "=", roomID)
+            .where("equipmentID", "=", equipmentID).del();
+
+        const updateEquipRoom = await this.queryBuilder("Equipment")
+            .where({id: equipmentID})
+            .update({
+                roomID: null
+            });
+        return await this.getRoomByID(roomID);
+
+        return await this.getRoomByID(roomID);
     }
 
-    addLabbieToRoom(roomID: number, labbieID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
+    async addLabbieToRoom(roomID: number, labbieID: number): Promise<Rooms | null> {
+        await this.queryBuilder("LabbiesForRooms").insert(
+            {
+                roomID: roomID,
+                labbieID: labbieID
+            },
+            "id"
+        );
+
+        const updateLabbieRoom = await this.queryBuilder("User")
+            .where({id: labbieID})
+            .update({
+                roomID: roomID,
+                monitoringRoomID: roomID
+            });
+        return await this.getRoomByID(roomID);
     }
 
-    addRoom(room: Rooms): Promise<Rooms | null> {
-        return Promise.resolve(null);
+    async removeLabbieFromRoom(roomID: number, labbieID: number): Promise<Rooms | null> {
+        await this.queryBuilder("LabbiesForRooms")
+            .where("roomID", "=", roomID)
+            .where("labbieID", "=", labbieID).del();
+
+        const updateLabbieRoom = await this.queryBuilder("User")
+            .where({id: labbieID})
+            .update({
+                roomID: null,
+                monitoringRoomID: null
+            });
+
+        return await this.getRoomByID(roomID);
     }
 
-    addUserToRoom(roomID: number, userID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
+    async addUserToRoom(roomID: number, userID: number): Promise<Rooms | null> {
+        await this.queryBuilder("UsersForRooms").insert(
+            {
+                roomID: roomID,
+                userID: userID
+            },
+            "id"
+        );
+
+        const updateLabbieRoom = await this.queryBuilder("User")
+            .where({id: userID})
+            .update({
+                roomID: roomID
+            });
+        return await this.getRoomByID(roomID);
     }
 
-    closeRoom(roomID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
+    async removeUserFromRoom(roomID: number, userID: number): Promise<Rooms | null> {
+        await this.queryBuilder("UsersForRooms")
+            .where("roomID", "=", roomID)
+            .where("userID", "=", userID).del();
+
+        const updateLabbieRoom = await this.queryBuilder("User")
+            .where({id: userID})
+            .update({
+                roomID: null
+            });
+
+        return await this.getRoomByID(roomID);
     }
 
-    openRoom(roomID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
-    }
-
-    removeEquipmentFromRoom(roomID: number, equipmentID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
-    }
-
-    removeLabbieFromRoom(roomID: number, labbieID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
-    }
-
-    removeRoom(roomID: number): Promise<void> {
-        return Promise.resolve(undefined);
-    }
-
-    removeUserFromRoom(roomID: number, userID: number): Promise<Rooms | null> {
-        return Promise.resolve(null);
-    }
-
-    updateRoomName(roomID: number, name: string): Promise<Rooms | null> {
-        return Promise.resolve(null);
-    }
 
 }

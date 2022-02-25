@@ -31,9 +31,9 @@ export class EquipmentRepository implements IEquipmentRepository {
       .first(
         "id",
         "name",
-        "room",
         "addedAt",
-        "inUse"
+        "inUse",
+        "room_id"
       )
       .from("Equipment")
       .where("id", id);
@@ -49,9 +49,9 @@ export class EquipmentRepository implements IEquipmentRepository {
       const knexResult = await this.queryBuilder("Equipment").select(
         "id",
         "name",
-        "room",
         "addedAt",
-        "inUse"
+        "inUse",
+        "room_id"
       );
       return equipmentToDomain(knexResult);
     }
@@ -93,8 +93,8 @@ export class EquipmentRepository implements IEquipmentRepository {
         .where("id", id)
         .update({
           name: equipment.name,
-          room: equipment.room,
-          inUse: equipment.inUse
+          inUse: equipment.inUse,
+          room_id: equipment.room_id
         }).then(async () => {
           await this.updateLabels(id, equipment.equipmentLabels);
         });
@@ -106,8 +106,8 @@ export class EquipmentRepository implements IEquipmentRepository {
         await this.queryBuilder("Equipment").insert(
           {
             name: equipment.name,
-            room: equipment.room,
-            inUse: equipment.inUse
+            inUse: equipment.inUse,
+            room_id: equipment.room_id
           },
           "id"
         )
