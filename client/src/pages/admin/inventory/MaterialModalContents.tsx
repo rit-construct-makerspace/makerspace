@@ -1,9 +1,13 @@
 import React, { ChangeEvent, useState } from "react";
-import Page from "../../Page";
-import { Button, InputAdornment, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  InputAdornment,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import DeleteMaterialButton from "./DeleteMaterialButton";
-import PageSectionHeader from "../../../common/PageSectionHeader";
 import HelpTooltip from "../../../common/HelpTooltip";
 import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
@@ -33,6 +37,7 @@ export interface InventoryItemInput {
   pluralUnit: string;
   count: number;
   pricePerUnit: number;
+  threshold: number;
 }
 
 interface MaterialPageProps {
@@ -43,7 +48,7 @@ interface MaterialPageProps {
   loading: boolean;
 }
 
-export default function MaterialEditor({
+export default function MaterialModalContents({
   isNewItem,
   itemDraft,
   setItemDraft,
@@ -98,20 +103,14 @@ export default function MaterialEditor({
     onSave();
   };
 
+  const title = `${isNewItem ? "New" : "Edit"} Material`;
+
   return (
-    <Page title={`${isNewItem ? "New" : "Edit"} Material`} maxWidth="800px">
-      {!isNewItem && (
-        <Stack direction="row" spacing={1} sx={{ mt: -2, mb: 4 }}>
-          <Button variant="outlined" startIcon={<HistoryIcon />}>
-            View Logs
-          </Button>
-          <DeleteMaterialButton />
-        </Stack>
-      )}
-
-      <PageSectionHeader top>Basic Information</PageSectionHeader>
-
-      <Stack direction="row" spacing={2} mt={2}>
+    <>
+      <Typography variant="h5" mb={2}>
+        {title}
+      </Typography>
+      <Stack direction="row" spacing={2}>
         <StyledMaterialImage
           alt="Material image"
           src="https://thediyplan.com/wp-content/uploads/2020/03/IMG_2897.jpg"
@@ -164,7 +163,13 @@ export default function MaterialEditor({
               spacing={1}
               sx={{ flex: 1 }}
             >
-              <TextField label="Threshold" type="number" sx={{ flex: 1 }} />
+              <TextField
+                label="Threshold"
+                type="number"
+                sx={{ flex: 1 }}
+                value={itemDraft.threshold ?? ""}
+                onChange={handleIntChange("threshold")}
+              />
               <HelpTooltip
                 title={
                   'If the count falls below this number, this item will appear in the "Running Low" section on the inventory page. Leave at 0 for no threshold.'
@@ -175,16 +180,28 @@ export default function MaterialEditor({
         </Stack>
       </Stack>
 
-      <LoadingButton
-        loading={loading}
-        size="large"
-        variant="contained"
-        startIcon={<SaveIcon />}
-        sx={{ mt: 4, alignSelf: "flex-end" }}
-        onClick={handleSaveClick}
-      >
-        Save
-      </LoadingButton>
-    </Page>
+      <Stack direction="row" justifyContent="space-between" mt={4}>
+        {!isNewItem && (
+          <Stack direction="row" spacing={2}>
+            <DeleteMaterialButton />
+
+            <Button variant="outlined" startIcon={<HistoryIcon />}>
+              View Logs
+            </Button>
+          </Stack>
+        )}
+
+        <LoadingButton
+          loading={loading}
+          size="large"
+          variant="contained"
+          startIcon={<SaveIcon />}
+          sx={{ ml: "auto" }}
+          onClick={handleSaveClick}
+        >
+          Save
+        </LoadingButton>
+      </Stack>
+    </>
   );
 }

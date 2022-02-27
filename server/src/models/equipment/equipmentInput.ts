@@ -1,6 +1,6 @@
 export interface EquipmentInput {
     name: string;
-    equipmentLabels: [number];
+    trainingModules: [number];
     addedAt: Date,
     inUse: boolean;
     roomID: number;

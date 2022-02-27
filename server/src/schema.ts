@@ -5,7 +5,7 @@ import { StoreFrontTypeDefs } from "./schemas/storeFrontSchema";
 import { ReservationsTypeDefs } from "./schemas/reservationsSchema";
 import { UsersTypeDefs } from "./schemas/usersSchema";
 import { HoldsTypeDefs } from "./schemas/holdsSchema";
-import { EquipmentTypeDefs } from "./schemas/machinesSchema";
+import { EquipmentTypeDefs } from "./schemas/equipmentSchema";
 import { DateTimeResolver, DateTimeTypeDefinition } from "graphql-scalars";
 import trainingResolvers from "./resolvers/trainingResolver";
 import storefrontResolvers from "./resolvers/storeFrontResolver";

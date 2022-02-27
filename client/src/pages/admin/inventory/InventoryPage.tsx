@@ -5,38 +5,44 @@ import SearchBar from "../../../common/SearchBar";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useHistory } from "react-router-dom";
 import InventoryRow from "../../../common/InventoryRow";
-import RunningLow from "./RunningLow";
 import CreateIcon from "@mui/icons-material/Create";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import InventoryItem from "../../../types/InventoryItem";
 import RequestWrapper from "../../../common/RequestWrapper";
+import MaterialModal from "./MaterialModal";
+import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
 
-const QUERY_INVENTORY_ITEMS = gql`
-  query getInventoryItems {
-    InventoryItems {
-      id
-      name
-      unit
-      pluralUnit
-      count
-      pricePerUnit
-    }
-  }
-`;
+function sortItemsByName(items: InventoryItem[]): InventoryItem[] {
+  return [...items].sort((a, b) => (a.name > b.name ? 1 : -1)) ?? [];
+}
 
 export default function InventoryPage() {
   const history = useHistory();
 
   const [searchText, setSearchText] = useState<string>("");
+  const [modalItemId, setModalItemId] = useState<string>("");
 
-  const { loading, error, data } = useQuery(QUERY_INVENTORY_ITEMS, {
-    fetchPolicy: "no-cache",
-  });
+  const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
+
+  const safeData = data?.InventoryItems ?? [];
+  const sortedItems = sortItemsByName(safeData);
+  const lowItems = sortedItems.filter((i) => i.count < i.threshold);
+  const matchingItems = sortedItems.filter((i) => i.name.includes(searchText));
 
   return (
     <RequestWrapper loading={loading} error={error}>
       <Page title="Inventory" maxWidth="1000px">
-        <RunningLow />
+        <PageSectionHeader top>Running Low</PageSectionHeader>
+
+        <Stack divider={<Divider flexItem />}>
+          {lowItems.map((item: InventoryItem) => (
+            <InventoryRow
+              item={item}
+              key={item.id}
+              onClick={() => history.push(`/admin/inventory/${item.id}`)}
+            />
+          ))}
+        </Stack>
 
         <PageSectionHeader>All Materials</PageSectionHeader>
 
@@ -49,7 +55,7 @@ export default function InventoryPage() {
           <Button
             variant="outlined"
             startIcon={<CreateIcon />}
-            onClick={() => history.push(`/admin/inventory/new`)}
+            onClick={() => setModalItemId("new")}
             sx={{ height: 40 }}
           >
             New material
@@ -57,16 +63,19 @@ export default function InventoryPage() {
         </Stack>
 
         <Stack divider={<Divider flexItem />} mt={2}>
-          {data?.InventoryItems?.filter((item: InventoryItem) =>
-            item.name.includes(searchText)
-          ).map((item: InventoryItem) => (
+          {matchingItems.map((item: InventoryItem) => (
             <InventoryRow
               item={item}
               key={item.id}
-              onClick={() => history.push(`/admin/inventory/${item.id}`)}
+              onClick={() => setModalItemId(item.id + "")}
             />
           ))}
         </Stack>
+
+        <MaterialModal
+          itemId={modalItemId}
+          onClose={() => setModalItemId("")}
+        />
       </Page>
     </RequestWrapper>
   );
