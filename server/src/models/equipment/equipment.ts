@@ -5,7 +5,7 @@ export interface Equipment {
     name: string;
     addedAt: Date,
     inUse: boolean;
-    room_id: number;
+    roomID: number;
 }
 
 
