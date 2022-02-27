@@ -3,25 +3,7 @@ import { Knex } from "knex";
 
 export async function up(knex: Knex): Promise<void> {
     
-    return knex.schema.hasTable('EquipmentLabels').then(function(exists) {
-        if (!exists) {
-            return knex.schema.createTable('EquipmentLabels', function(t) {
-                t.increments('id');
-                t.string('name', 50);
-              });
-        }
-    }).then(async () => {
-      // table that stores training modules attached to equipment labels
-      const exists = await knex.schema.hasTable('ModulesForLabels');
-      if (!exists) {
-        return knex.schema.createTable('ModulesForLabels', function (t) {
-          t.increments('id');
-          t.integer('equipmentLabelId').references('id').inTable('EquipmentLabels');
-          t.integer('trainingModuleId').references('id').inTable('TrainingModule');
-        });
-      }
-    }).then(async () => {
-      const exists = await knex.schema.hasTable('Equipment');
+    return knex.schema.hasTable('Equipment').then(function(exists) {
       if (!exists) {
         return knex.schema.createTable('Equipment', function (t) {
           t.increments('id');
@@ -32,12 +14,12 @@ export async function up(knex: Knex): Promise<void> {
         });
       }
     }).then(async () => {
-      const exists = await knex.schema.hasTable('LabelsForEquipment');
+      const exists = await knex.schema.hasTable('ModulesForEquipment');
       if (!exists) {
         return knex.schema.createTable('LabelsForEquipment', function (t) {
           t.increments('id');
           t.integer('equipmentId').references('id').inTable('Equipment');
-          t.integer('equipmentLabelId').references('id').inTable('EquipmentLabels');
+          t.integer('trainingModuleId').references('id').inTable('TrainingModule');
         });
       }
     }).then(async () => {
@@ -58,24 +40,14 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
 
-  return knex.schema.hasTable('EquipmentLabels').then(function(exists) {
-    if (exists) {
-      return knex.schema.dropTable('EquipmentLabels');
-    }
-  }).then(async () => {
-    const exists = await knex.schema.hasTable('ModulesForLabels');
-    if (exists) {
-      return knex.schema.dropTable('ModulesForLabels');
-    }
-  }).then(async () => {
-    const exists = await knex.schema.hasTable('Equipment');
+  return knex.schema.hasTable('Equipment').then(function(exists) {
     if (exists) {
       return knex.schema.dropTable('Equipment');
     }
   }).then(async () => {
-    const exists = await knex.schema.hasTable('LabelsForEquipment');
+    const exists = await knex.schema.hasTable('ModulesForEquipment');
     if (exists) {
-      return knex.schema.dropTable('LabelsForEquipment');
+      return knex.schema.dropTable('ModulesForEquipment');
     }
   }).then(async () => {
     knex.schema.hasTable('Reservations').then(function(exists) {

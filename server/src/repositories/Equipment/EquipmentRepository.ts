@@ -2,17 +2,17 @@ import { knex } from "../../db";
 import { Equipment } from "../../models/equipment/equipment";
 import { EquipmentInput } from "../../models/equipment/equipmentInput";
 import { equipmentToDomain, singleEquipmentToDomain } from "../../mappers/equipment/Equipment";
-import { EquipmentLabel } from "../../models/equipment/equipmentLabel";
-import { singleEquipmentLabelToDomain } from "../../mappers/equipment/EquipmentLabel";
+import { TrainingModule } from "../../models/training/trainingModule";
+import { singleTrainingModuleToDomain } from "../../mappers/training/TrainingModuleMapper";
 
 export interface IEquipmentRepository {
   getEquipmentById(id: number | string): Promise<Equipment | null>;
   getEquipments(): Promise<Equipment[]>;
   addEquipment(equipment: EquipmentInput): Promise<Equipment | null>;
-  getLabels(id: number): Promise<EquipmentLabel[] | null>;
-  addLabelsToEquipment(id: number, equipmentLabels: number[]): Promise<void>;
-  updateLabels(id: number, equipmentLabels: number[]): Promise<void>;
-  removeLabelsFromEquipment(id: number, equipmentLabels: number[]): Promise<void>;
+  getTrainingModules(id: number): Promise<TrainingModule[] | null>;
+  addTrainingModulesToEquipment(id: number, trainingModules: number[]): Promise<void>;
+  updateTrainingModules(id: number, trainingModules: number[]): Promise<void>;
+  removeTrainingModulesFromEquipment(id: number, trainingModules: number[]): Promise<void>;
   updateEquipment(id: number, equipment: EquipmentInput): Promise<Equipment | null>;
   removeEquipment(id: number): Promise<void>;
   
@@ -56,35 +56,35 @@ export class EquipmentRepository implements IEquipmentRepository {
       return equipmentToDomain(knexResult);
     }
 
-    public async getLabels(id: number): Promise<EquipmentLabel[] | null> {
-      const knexResult = await this.queryBuilder("LabelsForEquipment")
-        .leftJoin("EquipmentLabels", "EquipmentLabels.id", "=", "LabelsForEquipment.equipmentLabelId")
-        .select("EquipmentLabels.id", "EquipmentLabels.name")
-        .where("LabelsForEquipment.equipmentId", id);
-      const result = knexResult.map((i: any) => singleEquipmentLabelToDomain(i));
+    public async getTrainingModules(id: number): Promise<TrainingModule[] | null> {
+      const knexResult = await this.queryBuilder("ModulesForEquipment")
+        .leftJoin("TrainingModule", "TrainingModule.id", "=", "ModulesForEquipment.trainingModuleId")
+        .select("TrainingModule.id", "TrainingModule.name")
+        .where("ModulesForEquipment.equipmentId", id);
+      const result = knexResult.map((i: any) => singleTrainingModuleToDomain(i));
       if (result.length === 1 && result[0] === null) return null;
       return result;
     }
 
-    public async addLabelsToEquipment(id: number, equipmentLabels: number[]): Promise<void> {
-      await this.queryBuilder("LabelsForEquipment")
+    public async addTrainingModulesToEquipment(id: number, trainingModules: number[]): Promise<void> {
+      await this.queryBuilder("ModulesForEquipment")
         .insert(
-          equipmentLabels.map(equipmentLabel => 
-            ({ equipmentId: id, equipmentLabelId: equipmentLabel }))
+          trainingModules.map(trainingModule => 
+            ({ equipmentId: id, trainingModuleId: trainingModule }))
         );
     }
 
-    public async removeLabelsFromEquipment(id: number, equipmentLabels: number[]): Promise<void> {
-      await this.queryBuilder("LabelsForEquipment")
+    public async removeTrainingModulesFromEquipment(id: number, trainingModules: number[]): Promise<void> {
+      await this.queryBuilder("ModulesForEquipment")
         .where("equipmentId", "=", id)
-        .whereIn("equipmentLabelId", equipmentLabels)
+        .whereIn("trainingModuleId", trainingModules)
         .del();
     }
 
-    public async updateLabels(id: number, equipmentLabels: number[]): Promise<void> {
-      await this.queryBuilder("LabelsForEquipment").del().where("equipmentId", id);
-      if (equipmentLabels && equipmentLabels.length > 0) {
-        await this.addLabelsToEquipment(id, equipmentLabels);
+    public async updateTrainingModules(id: number, trainingModules: number[]): Promise<void> {
+      await this.queryBuilder("ModulesForEquipment").del().where("equipmentId", id);
+      if (trainingModules && trainingModules.length > 0) {
+        await this.addTrainingModulesToEquipment(id, trainingModules);
       }
     }
 
@@ -96,7 +96,7 @@ export class EquipmentRepository implements IEquipmentRepository {
           room: equipment.room,
           inUse: equipment.inUse
         }).then(async () => {
-          await this.updateLabels(id, equipment.equipmentLabels);
+          await this.updateTrainingModules(id, equipment.trainingModules);
         });
         return this.getEquipmentById(id);
     }
@@ -112,8 +112,8 @@ export class EquipmentRepository implements IEquipmentRepository {
           "id"
         )
       )[0];
-      if (equipment.equipmentLabels && equipment.equipmentLabels.length > 0)
-        await this.addLabelsToEquipment(newId, equipment.equipmentLabels);
+      if (equipment.trainingModules && equipment.trainingModules.length > 0)
+        await this.addTrainingModulesToEquipment(newId, equipment.trainingModules);
       return await this.getEquipmentById(newId);
     }
 }
