@@ -26,7 +26,7 @@ const RoomResolvers = {
             try {
                 const equip = await er.getEquipmentById(args.equipmentID)
                 if (equip) {
-                    return await rr.getRoomByID(equip.room_id)
+                    return await rr.getRoomByID(equip.roomID)
                 }
             } catch (e) {
                 console.log("Error:", e);
@@ -36,7 +36,7 @@ const RoomResolvers = {
             try {
                 const labbie = await ur.getUserByID(args.labbieID)
                 if (labbie) {
-                    return await rr.getRoomByID(labbie.room_id)
+                    return await rr.getRoomByID(labbie.roomID)
                 }
             } catch (e) {
                 console.log("Error:", e);

@@ -76,14 +76,6 @@ export class RoomRepo implements IRoomRepo {
     }
 
     async addEquipmentToRoom(roomID: number, equipmentID: number): Promise<Room | null> {
-        await this.queryBuilder("EquipmentForRooms").insert(
-            {
-                roomID: roomID,
-                equipmentID: equipmentID
-            },
-            "id"
-        );
-
         const updateEquipRoom = await this.queryBuilder("Equipment")
             .where({id: equipmentID})
             .update({
@@ -93,29 +85,15 @@ export class RoomRepo implements IRoomRepo {
     }
 
     async removeEquipmentFromRoom(roomID: number, equipmentID: number): Promise<Room | null> {
-        await this.queryBuilder("EquipmentForRooms")
-            .where("roomID", "=", roomID)
-            .where("equipmentID", "=", equipmentID).del();
-
         const updateEquipRoom = await this.queryBuilder("Equipment")
             .where({id: equipmentID})
             .update({
                 roomID: null
             });
         return await this.getRoomByID(roomID);
-
-        return await this.getRoomByID(roomID);
     }
 
     async addLabbieToRoom(roomID: number, labbieID: number): Promise<Room | null> {
-        await this.queryBuilder("LabbiesForRooms").insert(
-            {
-                roomID: roomID,
-                labbieID: labbieID
-            },
-            "id"
-        );
-
         const updateLabbieRoom = await this.queryBuilder("User")
             .where({id: labbieID})
             .update({
@@ -126,29 +104,16 @@ export class RoomRepo implements IRoomRepo {
     }
 
     async removeLabbieFromRoom(roomID: number, labbieID: number): Promise<Room | null> {
-        await this.queryBuilder("LabbiesForRooms")
-            .where("roomID", "=", roomID)
-            .where("labbieID", "=", labbieID).del();
-
         const updateLabbieRoom = await this.queryBuilder("User")
             .where({id: labbieID})
             .update({
                 roomID: null,
                 monitoringRoomID: null
             });
-
         return await this.getRoomByID(roomID);
     }
 
     async addUserToRoom(roomID: number, userID: number): Promise<Room | null> {
-        await this.queryBuilder("UsersForRooms").insert(
-            {
-                roomID: roomID,
-                userID: userID
-            },
-            "id"
-        );
-
         const updateLabbieRoom = await this.queryBuilder("User")
             .where({id: userID})
             .update({
@@ -158,16 +123,11 @@ export class RoomRepo implements IRoomRepo {
     }
 
     async removeUserFromRoom(roomID: number, userID: number): Promise<Room | null> {
-        await this.queryBuilder("UsersForRooms")
-            .where("roomID", "=", roomID)
-            .where("userID", "=", userID).del();
-
         const updateLabbieRoom = await this.queryBuilder("User")
             .where({id: userID})
             .update({
                 roomID: null
             });
-
         return await this.getRoomByID(roomID);
     }
 

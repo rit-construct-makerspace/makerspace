@@ -3,5 +3,5 @@ export interface EquipmentInput {
     equipmentLabels: [number];
     addedAt: Date,
     inUse: boolean;
-    room_id: number;
+    roomID: number;
 }
