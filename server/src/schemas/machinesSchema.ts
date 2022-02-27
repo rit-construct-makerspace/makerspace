@@ -1,7 +1,6 @@
 import { gql } from "apollo-server-express";
 
 export const EquipmentTypeDefs = gql`
-
   scalar DateTime
 
   type Equipment {
@@ -19,16 +18,6 @@ export const EquipmentTypeDefs = gql`
     trainingModules: [TrainingModule]
   }
 
-  type Reservation {
-    id: ID!
-    userId: User!
-    supervisorId: User!
-    equipmentId: Equipment!
-    createdAt: DateTime!
-    startTime: DateTime!
-    endTime: DateTime!
-  }
-
   input EquipmentInput {
     name: String!
     roomID: ID!
@@ -42,19 +31,9 @@ export const EquipmentTypeDefs = gql`
     trainingModules: [Int]
   }
 
-  input ReservationInput {    
-    userId: Int!
-    supervisorId: Int!
-    equipmentId: Int!
-    createdAt: DateTime
-    startTime: DateTime!
-    endTime: DateTime!
-  }
-
   type Query {
-      equipmentLabels: [EquipmentLabel]
-      equipment: [Equipment]
-      reservations: [Reservation]
+    equipmentLabels: [EquipmentLabel]
+    equipment: [Equipment]
   }
 
   type Mutation {
@@ -62,15 +41,17 @@ export const EquipmentTypeDefs = gql`
     updateEquipmentLabel(EquipmentLabel: EquipmentLabelInput): EquipmentLabel
     removeEquipmentLabel(EquipmentLabel: EquipmentLabelInput): EquipmentLabel
 
-    attachTrainingModuleToEquipmentLabel(EquipmentLabelId: ID!, trainingModule: ID!): EquipmentLabel
-    detachTrainingModuleFromEquipmentLabel(EquipmentLabelId: ID!, trainingModule: ID!): EquipmentLabel
+    attachTrainingModuleToEquipmentLabel(
+      EquipmentLabelId: ID!
+      trainingModule: ID!
+    ): EquipmentLabel
+    detachTrainingModuleFromEquipmentLabel(
+      EquipmentLabelId: ID!
+      trainingModule: ID!
+    ): EquipmentLabel
 
     addEquipment(Equipment: EquipmentInput): Equipment
     updateEquipment(Equipment: EquipmentInput): Equipment
     removeEquipment(EquipmentId: ID!): Equipment
-    
-    createReservation(reservation: ReservationInput): Reservation
-    updateReservation(reservation: ReservationInput): Reservation
-    removeReservation(reservationId: ID!): Reservation
   }
 `;

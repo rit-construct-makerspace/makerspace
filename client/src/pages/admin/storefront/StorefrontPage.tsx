@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Page from "../../Page";
 import { Button, Divider, Stack, Typography } from "@mui/material";
-import Inventory from "../../../test_data/Inventory";
 import InventoryRow from "../../../common/InventoryRow";
 import SearchBar from "../../../common/SearchBar";
 import InventoryItem from "../../../types/InventoryItem";
@@ -10,6 +9,8 @@ import { useImmer } from "use-immer";
 import ShoppingCart from "./ShoppingCart";
 import { v4 as uuidv4 } from "uuid";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { gql, useQuery } from "@apollo/client";
+import RequestWrapper from "../../../common/RequestWrapper";
 
 export interface ShoppingCartEntry {
   id: string;
@@ -21,11 +22,27 @@ function updateLocalStorage(cart: ShoppingCartEntry[] | null) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+const QUERY_INVENTORY_ITEMS = gql`
+  query getInventoryItems {
+    InventoryItems {
+      id
+      name
+      unit
+      pluralUnit
+      count
+      pricePerUnit
+    }
+  }
+`;
+
 export default function StorefrontPage() {
+  const { loading, error, data } = useQuery(QUERY_INVENTORY_ITEMS, {
+    fetchPolicy: "no-cache",
+  });
+
+  const [searchText, setSearchText] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
-  const [activeItem, setActiveItem] = useState<InventoryItem | undefined>(
-    undefined
-  );
+  const [activeItem, setActiveItem] = useState<InventoryItem | undefined>();
   const [addToCartCount, setAddToCartCount] = useState(0);
   const [shoppingCart, setShoppingCart] = useImmer<ShoppingCartEntry[]>([]);
 
@@ -79,55 +96,65 @@ export default function StorefrontPage() {
   };
 
   return (
-    <Page
-      title="Storefront"
-      topRightAddons={
-        <Button
-          variant="outlined"
-          startIcon={<OpenInNewIcon />}
-          href="/admin/storefront/preview"
-          target="_blank"
-        >
-          Customer view
-        </Button>
-      }
-    >
-      <ShoppingCart
-        entries={shoppingCart}
-        removeEntry={removeFromShoppingCart}
-        setEntryCount={setEntryCount}
-        emptyCart={emptyCart}
-      />
-
-      <Typography variant="h5" component="div" sx={{ mb: 2, mt: 8 }}>
-        Inventory
-      </Typography>
-
-      <SearchBar placeholder="Search inventory" sx={{ mb: 2 }} />
-
-      <Stack divider={<Divider flexItem />}>
-        {Inventory.map((item) => (
-          <InventoryRow
-            item={item}
-            key={item.id}
-            onClick={() => {
-              setShowModal(true);
-              setActiveItem(item);
-            }}
-          />
-        ))}
-      </Stack>
-
-      {activeItem && showModal && (
-        <AddToCartModal
-          open
-          count={addToCartCount}
-          setCount={setAddToCartCount}
-          addToCart={() => addToShoppingCart(activeItem, addToCartCount)}
-          onClose={() => setShowModal(false)}
-          item={activeItem}
+    <RequestWrapper loading={loading} error={error}>
+      <Page
+        title="Storefront"
+        maxWidth="800px"
+        topRightAddons={
+          <Button
+            variant="outlined"
+            startIcon={<OpenInNewIcon />}
+            href="/admin/storefront/preview"
+            target="_blank"
+          >
+            Customer view
+          </Button>
+        }
+      >
+        <ShoppingCart
+          entries={shoppingCart}
+          removeEntry={removeFromShoppingCart}
+          setEntryCount={setEntryCount}
+          emptyCart={emptyCart}
         />
-      )}
-    </Page>
+
+        <Typography variant="h5" component="div" sx={{ mb: 2, mt: 8 }}>
+          Inventory
+        </Typography>
+
+        <SearchBar
+          placeholder="Search inventory"
+          sx={{ mb: 2, alignSelf: "flex-start" }}
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+
+        <Stack divider={<Divider flexItem />}>
+          {data?.InventoryItems?.filter((item: InventoryItem) =>
+            item.name.includes(searchText)
+          ).map((item: InventoryItem) => (
+            <InventoryRow
+              item={item}
+              key={item.id}
+              onClick={() => {
+                setShowModal(true);
+                setActiveItem(item);
+              }}
+            />
+          ))}
+        </Stack>
+
+        {activeItem && showModal && (
+          <AddToCartModal
+            open
+            count={addToCartCount}
+            setCount={setAddToCartCount}
+            addToCart={() => addToShoppingCart(activeItem, addToCartCount)}
+            onClose={() => setShowModal(false)}
+            item={activeItem}
+          />
+        )}
+      </Page>
+    </RequestWrapper>
   );
 }

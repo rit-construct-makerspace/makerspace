@@ -16,7 +16,8 @@ export function singleInventoryItemtoDomain(raw: any): InventoryItem | null {
     unit: raw.unit,
     pluralUnit: raw.pluralUnit,
     count: raw.count,
-    pricePerUnit: raw.pricePerUnit
+    pricePerUnit: raw.pricePerUnit,
+    threshold: raw.threshold
   }
   return value;
 }

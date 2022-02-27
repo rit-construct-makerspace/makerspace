@@ -6,4 +6,5 @@ export interface InventoryItem {
     pluralUnit: string;
     count: number;
     pricePerUnit: number;
+    threshold: number;
 }
