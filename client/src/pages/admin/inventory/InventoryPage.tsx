@@ -24,8 +24,6 @@ export default function InventoryPage() {
 
   const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
 
-  console.log(data);
-
   const safeData = data?.InventoryItems ?? [];
   const sortedItems = sortItemsByName(safeData);
   const lowItems = sortedItems.filter((i) => i.count < i.threshold);
