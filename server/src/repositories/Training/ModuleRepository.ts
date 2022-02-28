@@ -26,6 +26,7 @@ export class ModuleRepo implements IModuleRepo {
       .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.question")
       .select("TrainingModule.id", "TrainingModule.name")
       .where("TrainingModule.id", moduleId);
+
     return ModuleMap.toDomain(knexResult)[0];
   }
 
@@ -53,35 +54,35 @@ export class ModuleRepo implements IModuleRepo {
     knex.transaction(async (trx: any) => {
       let transQuestionRepo = new QuestionRepo(trx);
       let transOptionRepo = new OptionRepo(trx);
-        for (let e of module.domainEvents) {
-          switch (e.name) {
-            case ModuleChanges.NAME_CHANGE:
-              await trx("TrainingModule").where({ id: module.id }).update({
-                name: e.param,
-              });
-              break;
-            case ModuleChanges.NEW_QUESTION:
-              transQuestionRepo.addQuestionToModule(module.id!, e.param);
-              break;
-            case ModuleChanges.DELETE_QUESTION:
-              transQuestionRepo.deleteQuestionById(e.param.id);
-              break;
-            case ModuleChanges.NEW_OPTION:
-              transOptionRepo.addOptionToQuestion(
-                e.param.question.id,
-                e.param.option
-              );
-              break;
-            case ModuleChanges.DELETE_OPTION:
-              transOptionRepo.deleteOptionById(e.param.option.id);
-              break;
-          }
+      for (let e of module.domainEvents) {
+        switch (e.name) {
+          case ModuleChanges.NAME_CHANGE:
+            await trx("TrainingModule").where({ id: module.id }).update({
+              name: e.param,
+            });
+            break;
+          case ModuleChanges.NEW_QUESTION:
+            transQuestionRepo.addQuestionToModule(module.id!, e.param);
+            break;
+          case ModuleChanges.DELETE_QUESTION:
+            transQuestionRepo.deleteQuestionById(e.param.id);
+            break;
+          case ModuleChanges.NEW_OPTION:
+            transOptionRepo.addOptionToQuestion(
+              e.param.question.id,
+              e.param.option
+            );
+            break;
+          case ModuleChanges.DELETE_OPTION:
+            transOptionRepo.deleteOptionById(e.param.option.id);
+            break;
         }
+      }
     });
   }
 
   public async deleteModuleById(moduleId: number): Promise<void> {
-      await knex("TrainingModule").where({ id: moduleId }).del();
+    await knex("TrainingModule").where({ id: moduleId }).del();
   }
 
   public async addModule(module: Module): Promise<Module> {
