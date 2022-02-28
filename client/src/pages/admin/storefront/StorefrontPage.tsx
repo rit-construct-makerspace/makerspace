@@ -9,8 +9,9 @@ import { useImmer } from "use-immer";
 import ShoppingCart from "./ShoppingCart";
 import { v4 as uuidv4 } from "uuid";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
+import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
 
 export interface ShoppingCartEntry {
   id: string;
@@ -22,23 +23,8 @@ function updateLocalStorage(cart: ShoppingCartEntry[] | null) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-const QUERY_INVENTORY_ITEMS = gql`
-  query getInventoryItems {
-    InventoryItems {
-      id
-      name
-      unit
-      pluralUnit
-      count
-      pricePerUnit
-    }
-  }
-`;
-
 export default function StorefrontPage() {
-  const { loading, error, data } = useQuery(QUERY_INVENTORY_ITEMS, {
-    fetchPolicy: "no-cache",
-  });
+  const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
 
   const [searchText, setSearchText] = useState<string>("");
   const [showModal, setShowModal] = useState(false);

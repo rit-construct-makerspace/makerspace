@@ -18,7 +18,6 @@ import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
-import MaterialPage from "./pages/admin/edit_material/MaterialPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -65,10 +64,6 @@ export default function Routes() {
 
             <Route path="/admin/training">
               <TrainingModulesPage />
-            </Route>
-
-            <Route path="/admin/inventory/:id">
-              <MaterialPage />
             </Route>
 
             <Route path="/admin/inventory">
