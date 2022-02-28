@@ -31,6 +31,7 @@ export const TrainingTypeDefs = gql`
 
   type Query {
     modules: [TrainingModule]
+    module(id: ID!): TrainingModule
   }
 
   input QuestionInput {
@@ -38,13 +39,13 @@ export const TrainingTypeDefs = gql`
     type: QuestionType!
   }
 
-  input QuestionOptionInput {    
+  input QuestionOptionInput {
     text: String!
     correct: Boolean!
   }
 
   type Mutation {
-    createModule(name: String): TrainingModule 
+    createModule(name: String): TrainingModule
     addQuestion(module_id: ID!, question: QuestionInput): Question
     addOption(question_id: ID!, option: QuestionOptionInput): QuestionOption
     updateModule(id: ID!, name: String): TrainingModule

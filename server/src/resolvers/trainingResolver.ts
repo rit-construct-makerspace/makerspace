@@ -7,12 +7,15 @@ const TrainingResolvers = {
   Query: {
     modules: async (_: any, args: any, context: any) => {
       try {
-        const mr = new ModuleRepo(); 
+        const mr = new ModuleRepo();
         return await mr.getModules();
       } catch (e) {
         console.log("Error:", e);
       }
     },
+
+    module: (_: any, args: { id: number }, context: any) =>
+      new ModuleRepo().getModuleById(args.id),
   },
 
   Mutation: {
@@ -27,7 +30,12 @@ const TrainingResolvers = {
     addQuestion: async (_: any, args: any) => {
       try {
         const qr = new QuestionRepo();
-        return await qr.addQuestionToModule(args.module_id, {text:args.question.text, type: args.question.type, options: [], id: undefined});
+        return await qr.addQuestionToModule(args.module_id, {
+          text: args.question.text,
+          type: args.question.type,
+          options: [],
+          id: undefined,
+        });
       } catch (e) {
         console.log("Error:", e);
       }
@@ -66,9 +74,13 @@ const TrainingResolvers = {
     updateOption: async (_: any, args: any) => {
       try {
         const or = new OptionRepo();
-        let opt = {id: args.id, text: args.option.text, correct: args.option.correct}
-        await or.updateOption(opt)
-        return opt
+        let opt = {
+          id: args.id,
+          text: args.option.text,
+          correct: args.option.correct,
+        };
+        await or.updateOption(opt);
+        return opt;
       } catch (e) {
         console.log("Error:", e);
       }
@@ -77,30 +89,29 @@ const TrainingResolvers = {
     deleteModule: async (_: any, args: any) => {
       try {
         const mr = new ModuleRepo();
-        await mr.deleteModuleById(args.id)
+        await mr.deleteModuleById(args.id);
       } catch (e) {
-        console.log("Error", e)
+        console.log("Error", e);
       }
     },
-    
+
     deleteQuestion: async (_: any, args: any) => {
       try {
         const qr = new QuestionRepo();
-        await qr.deleteQuestionById(args.id)
+        await qr.deleteQuestionById(args.id);
       } catch (e) {
-        console.log("Error", e)
+        console.log("Error", e);
       }
     },
 
     deleteOption: async (_: any, args: any) => {
       try {
         const or = new OptionRepo();
-        await or.deleteOptionById(args.id)
+        await or.deleteOptionById(args.id);
       } catch (e) {
-        console.log("Error", e)
+        console.log("Error", e);
       }
     },
-
   },
 };
 
