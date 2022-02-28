@@ -7,8 +7,9 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 export default function EditModulePage() {
   const [tabIndex, setTabIndex] = useState("questions-tab");
+
   return (
-    <Page title="Edit training module">
+    <Page title="Edit training module" maxWidth="800px">
       <Stack direction="row" justifyContent="space-between">
         <TextField
           label="Module title"
