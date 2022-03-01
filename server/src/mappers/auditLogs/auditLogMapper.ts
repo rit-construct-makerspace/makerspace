@@ -12,7 +12,7 @@ import { AuditLogs } from "../../models/auditLogs/auditLogs";
         const value: AuditLogs = {
             id: raw.id,
             timeDate: raw.timeDate,
-            user: raw.user,
+            userID: raw.userID,
             eventType: raw.eventType,
             description: raw.description
         }

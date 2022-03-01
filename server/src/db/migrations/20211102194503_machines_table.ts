@@ -8,9 +8,9 @@ export async function up(knex: Knex): Promise<void> {
         return knex.schema.createTable('Equipment', function (t) {
           t.increments('id');
           t.string('name', 50);
-          t.string('room', 5);
           t.timestamp('addedAt').defaultTo(knex.fn.now());
           t.boolean('inUse').defaultTo(false);
+          t.integer('roomID').references("id").inTable("Rooms");
         });
       }
     }).then(async () => {

@@ -6,7 +6,7 @@ import {singleLogToDomain, logsToDomain, logsToDomainByDate} from "../../mappers
 export interface IAuditLogRepo {
     getLogByID(logID: number): Promise<AuditLogs | null>;
     getLogsByEventType(eventType: EventType): Promise<AuditLogs[]>;
-    getLogsByUser(args: any): Promise<AuditLogs[]>;
+    getLogsByUser(userID: number): Promise<AuditLogs[]>;
     getLogsByDate(startDate: Date, endDate: Date): Promise<AuditLogs[]>
     getLogs(): Promise<AuditLogs[]>;
     addLog(log: AuditLogs): Promise<AuditLogs | null>;
@@ -26,7 +26,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
             .first(
                 "id",
                 "timeDate",
-                "user",
+                "userID",
                 "eventType",
                 "description"
             )
@@ -41,7 +41,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
             .first(
                 "id",
                 "timeDate",
-                "user",
+                "userID",
                 "eventType",
                 "description"
             )
@@ -51,18 +51,17 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         return logsToDomain(knexResult);
     }
 
-    //Waiting on User model to be implemented to update params
-    public async getLogsByUser(args: any): Promise<AuditLogs[]> {
+    public async getLogsByUser(userID: number): Promise<AuditLogs[]> {
         const knexResult = await this.queryBuilder
             .first(
                 "id",
                 "timeDate",
-                "user",
+                "userID",
                 "eventType",
                 "description"
             )
             .from("AuditLogs")
-            .where("user", args);
+            .where("user_id", userID);
 
         return logsToDomain(knexResult);
     }
@@ -71,7 +70,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         const knexResult = await this.queryBuilder("AuditLogs").select(
             "AuditLogs.id",
             "AuditLogs.timeDate",
-            "AuditLogs.user",
+            "AuditLogs.userID",
             "AuditLogs.eventType",
             "AuditLogs.description"
         );
@@ -82,7 +81,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         const knexResult = await this.queryBuilder("AuditLogs").select(
             "AuditLogs.id",
             "AuditLogs.timeDate",
-            "AuditLogs.user",
+            "AuditLogs.userID",
             "AuditLogs.eventType",
             "AuditLogs.description"
         );
@@ -93,7 +92,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         const newID = (
             await this.queryBuilder("AuditLogs").insert(
                 {
-                    user: log.user,
+                    userID: log.userID,
                     eventType: log.eventType,
                     description: log.description,
                 },
