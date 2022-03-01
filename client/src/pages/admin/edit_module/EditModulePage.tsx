@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Page from "../../Page";
 import QuizBuilder from "./quiz/QuizBuilder";
-import { Button, Stack, Tab, TextField } from "@mui/material";
+import { Stack, Tab, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import useTimedState from "../../../hooks/useTimedState";
 import SaveStatus from "./SaveStatus";
 import GET_MODULE from "../../../queries/getModule";
 import GET_TRAINING_MODULES from "../../../queries/getModules";
+
+const DELETE_CONFIRMATION_MESSAGE =
+  "Are you sure you wish to delete this module? This cannot be undone.";
 
 const RENAME_MODULE = gql`
   mutation RenameModule($id: ID!, $name: String!) {
@@ -20,13 +23,28 @@ const RENAME_MODULE = gql`
   }
 `;
 
+const DELETE_MODULE = gql`
+  mutation DeleteModule($id: ID!) {
+    deleteModule(id: $id) {
+      id
+    }
+  }
+`;
+
 export default function EditModulePage() {
   const { id } = useParams<{ id: string }>();
+  const history = useHistory();
+
   const [tabIndex, setTabIndex] = useState("questions-tab");
 
   const getModuleResult = useQuery(GET_MODULE, { variables: { id } });
 
   const [renameModule, renameModuleResult] = useMutation(RENAME_MODULE);
+
+  const [deleteModule, deleteModuleResult] = useMutation(DELETE_MODULE, {
+    variables: { id },
+    refetchQueries: [{ query: GET_TRAINING_MODULES }],
+  });
 
   const [name, setName, setNameSilently] = useTimedState<string>(
     "",
@@ -39,6 +57,12 @@ export default function EditModulePage() {
   );
 
   const [quizBuilderLoading, setQuizBuilderLoading] = useState<boolean>(false);
+
+  const handleDeleteModule = async () => {
+    if (!window.confirm(DELETE_CONFIRMATION_MESSAGE)) return;
+    await deleteModule();
+    history.push("/admin/training");
+  };
 
   useEffect(() => {
     const queriedTitle = getModuleResult.data?.module?.name;
@@ -58,9 +82,14 @@ export default function EditModulePage() {
             onChange={(e) => setName(e.target.value)}
             sx={{ width: 400 }}
           />
-          <Button startIcon={<DeleteIcon />} color="error">
+          <LoadingButton
+            loading={deleteModuleResult.loading}
+            startIcon={<DeleteIcon />}
+            color="error"
+            onClick={handleDeleteModule}
+          >
             Delete
-          </Button>
+          </LoadingButton>
         </Stack>
 
         <SaveStatus
