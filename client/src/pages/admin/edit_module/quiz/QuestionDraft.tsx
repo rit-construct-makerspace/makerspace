@@ -7,76 +7,57 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import { Option, Question, QuestionType } from "../../../../types/Quiz";
-import OptionDraft from "./OptionDraft";
-import QuizItemDraft from "./QuizItemDraft";
-import { v4 as uuidv4 } from "uuid";
-import produce, { Draft } from "immer";
-
-function updateOptions(draft: Draft<Question>, clickedOptionId: string) {
-  if (draft.questionType === QuestionType.Checkboxes) {
-    const clickedOptionIndex = draft.options.findIndex(
-      (option) => option.id === clickedOptionId
-    );
-
-    draft.options[clickedOptionIndex].correct =
-      !draft.options[clickedOptionIndex].correct;
-  }
-
-  if (draft.questionType === QuestionType.MultipleChoice) {
-    draft.options.forEach((o) => (o.correct = o.id === clickedOptionId));
-  }
-}
-
-// When switching from a checkboxes to multiple choice, we need to make sure
-// we aren't left with multiple correct options (there should only be one)
-function adjustOptionsToQuestionType(draft: Draft<Question>) {
-  if (draft.questionType === QuestionType.MultipleChoice) {
-    const firstCorrectOptionIndex = draft.options.findIndex((o) => o.correct);
-
-    draft.options.forEach(
-      (option, index) => (option.correct = index === firstCorrectOptionIndex)
-    );
-  }
-}
+import {
+  ModuleItem,
+  ModuleItemType,
+  QuestionOption,
+} from "../../../../types/Module";
+import QuestionOptionDraft from "./QuestionOptionDraft";
+import ModuleItemDraft from "./ModuleItemDraft";
+import useTimedState from "../../../../hooks/useTimedState";
 
 interface QuestionDraftProps {
   index: number;
-  question: Question;
-  updateQuestion: (updatedQuestion: Question) => void;
-  removeQuestion: () => void;
+  moduleItem: ModuleItem;
+  updateModuleItem: (text: string, type: ModuleItemType) => void;
+  deleteModuleItem: () => void;
+  addOption: () => void;
+  updateOption: (optionId: number, text: string, correct: boolean) => void;
+  deleteOption: (optionId: number) => void;
 }
 
 export default function QuestionDraft({
   index,
-  question,
-  updateQuestion,
-  removeQuestion,
+  moduleItem,
+  updateModuleItem,
+  deleteModuleItem,
+  addOption,
+  updateOption,
+  deleteOption,
 }: QuestionDraftProps) {
+  const [questionText, setQuestionText] = useTimedState(
+    moduleItem.text,
+    (latestText) => updateModuleItem(latestText, moduleItem.type)
+  );
+
   return (
-    <QuizItemDraft
+    <ModuleItemDraft
       index={index}
-      itemId={question.id}
-      onRemove={removeQuestion}
+      itemId={moduleItem.id}
+      onRemove={deleteModuleItem}
       extraActions={
         <Select
-          value={question.questionType}
+          value={moduleItem.type}
           size="small"
           sx={{ ml: "auto", mr: 1, width: 160 }}
-          onChange={(e) => {
-            const updatedQuestion = produce(question, (draft) => {
-              // @ts-ignore
-              draft.questionType = e.target.value;
-              adjustOptionsToQuestionType(draft);
-            });
-
-            updateQuestion(updatedQuestion);
-          }}
+          onChange={(e) =>
+            updateModuleItem(questionText, e.target.value as ModuleItemType)
+          }
         >
-          <MenuItem value={QuestionType.MultipleChoice}>
+          <MenuItem value={ModuleItemType.MultipleChoice}>
             Multiple choice
           </MenuItem>
-          <MenuItem value={QuestionType.Checkboxes}>Checkboxes</MenuItem>
+          <MenuItem value={ModuleItemType.Checkboxes}>Checkboxes</MenuItem>
         </Select>
       }
     >
@@ -86,64 +67,31 @@ export default function QuestionDraft({
           label="Question title"
           fullWidth
           variant="outlined"
-          value={question.title}
-          onChange={(e) =>
-            updateQuestion({ ...question, title: e.target.value })
-          }
+          value={questionText}
+          onChange={(e) => setQuestionText(e.target.value)}
         />
       </CardContent>
 
       <Stack spacing={1} px={1}>
-        {question.options.map((option) => (
-          <OptionDraft
+        {moduleItem.options.map((option: QuestionOption) => (
+          <QuestionOptionDraft
             key={option.id}
-            questionType={question.questionType}
+            moduleItemType={moduleItem.type}
             option={option}
-            onRemove={() => {
-              const updatedQuestion = produce(question, (draft) => {
-                const i = draft.options.findIndex((o) => o.id === option.id);
-                draft.options.splice(i, 1);
-              });
-
-              updateQuestion(updatedQuestion);
-            }}
-            onTextChange={(e) => {
-              const updatedQuestion = produce(question, (draft) => {
-                const i = draft.options.findIndex((o) => o.id === option.id);
-                draft.options[i].text = e.target.value;
-              });
-
-              updateQuestion(updatedQuestion);
-            }}
-            onToggleCorrect={() => {
-              const updatedQuestion = produce(question, (draft) => {
-                updateOptions(draft, option.id);
-              });
-
-              updateQuestion(updatedQuestion);
-            }}
+            onRemove={() => deleteOption(option.id)}
+            onTextChange={(updatedText) =>
+              updateOption(option.id, updatedText, option.correct)
+            }
+            onToggleCorrect={() =>
+              updateOption(option.id, option.text, !option.correct)
+            }
           />
         ))}
 
-        <Button
-          sx={{ mx: 1 }}
-          onClick={() => {
-            const newOption: Option = {
-              id: uuidv4(),
-              text: "",
-              correct: false,
-            };
-
-            const updatedQuestion = produce(question, (draft) => {
-              draft.options.push(newOption);
-            });
-
-            updateQuestion(updatedQuestion);
-          }}
-        >
+        <Button sx={{ mx: 1 }} onClick={addOption}>
           + Add option
         </Button>
       </Stack>
-    </QuizItemDraft>
+    </ModuleItemDraft>
   );
 }

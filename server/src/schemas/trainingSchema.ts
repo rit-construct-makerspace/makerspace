@@ -14,6 +14,9 @@ export const TrainingTypeDefs = gql`
   enum QuestionType {
     MULTIPLE_CHOICE
     CHECKBOXES
+    TEXT
+    YOUTUBE
+    IMAGE
   }
 
   type Question implements TrainingModuleItem {
@@ -29,7 +32,7 @@ export const TrainingTypeDefs = gql`
     correct: Boolean!
   }
 
-  type Query {
+  extend type Query {
     modules: [TrainingModule]
     module(id: ID!): TrainingModule
   }
@@ -44,7 +47,7 @@ export const TrainingTypeDefs = gql`
     correct: Boolean!
   }
 
-  type Mutation {
+  extend type Mutation {
     createModule(name: String): TrainingModule
     addQuestion(module_id: ID!, question: QuestionInput): Question
     addOption(question_id: ID!, option: QuestionOptionInput): QuestionOption

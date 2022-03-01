@@ -1,11 +1,11 @@
-import { ModuleRepo } from "../../repositories/Training/ModuleRepository";
+import * as ModuleRepo from "../../repositories/Training/ModuleRepository";
 import { AggregateRoot } from "../AggregateRoot";
 import { ModuleChanges } from "../events/DomainEvents";
 import { Option } from "./option";
 import { Question } from "./question";
 
 // follows aggreate root pattern. Idea is that you can make a number of
-// changes to a module instance (add options to questions, change name, etc.) 
+// changes to a module instance (add options to questions, change name, etc.)
 // and then save the changes in a single unit of work using the module repoe
 export class Module extends AggregateRoot {
   id: number | undefined;
@@ -20,9 +20,8 @@ export class Module extends AggregateRoot {
   }
 
   public static async create(name: string, items: Question[]): Promise<Module> {
-    let mr = new ModuleRepo();
     const module = new Module(name, items);
-    return await mr.addModule(module);
+    return await ModuleRepo.addModule(module);
   }
 
   public updateName(name: string) {

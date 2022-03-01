@@ -1,67 +1,54 @@
 import { knex } from "../../db";
 import { Question } from "../../models/training/question";
 import { QuestionMap } from "../../mappers/training/questionMapper";
-import { query } from "express";
 
-export interface IQuestionRepo {
-  getQuestionById(questionId: number | string): Promise<Question>;
-  getQuestionsByModule(moduleId: number | string): Promise<Question[]>;
-  addQuestionToModule(
-    moduleId: number | string,
-    question: Question
-  ): Promise<Question>;
-  deleteQuestionById(questionId: number | string): Promise<void>
+export async function getQuestion(
+  questionId: number | string
+): Promise<Question> {
+  const knexResult = await knex("Question")
+    .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.id")
+    .select(
+      "Question.id",
+      "Question.module",
+      "Question.questionType",
+      "Question.text"
+    )
+    .where("Question.id", questionId);
+  return QuestionMap.toDomain(knexResult)[0];
 }
 
-export class QuestionRepo implements IQuestionRepo {
+export async function getQuestionsByModule(
+  moduleId: number | string
+): Promise<Question[]> {
+  const knexResult = await knex("Question")
+    .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.id")
+    .select(
+      "Question.id",
+      "Question.module",
+      "Question.questionType",
+      "Question.text"
+    )
+    .where("Question.module", moduleId);
+  return QuestionMap.toDomain(knexResult);
+}
 
-  private queryBuilder
+export async function addQuestion(
+  moduleId: number | string,
+  question: Question
+): Promise<Question> {
+  const insert = await knex("Question").insert(
+    { module: moduleId, questionType: question.type, text: question.text },
+    "id"
+  );
+  return getQuestion(insert[0]);
+}
 
-  constructor(queryBuilder?: any) {
-    this.queryBuilder = queryBuilder || knex
-  }
+export async function updateQuestion(questionId: number, question: Question) {
+  await knex("Question")
+    .where({ id: questionId })
+    .update({ questionType: question.type, text: question.text });
+}
 
-  public async getQuestionById(questionId: number | string): Promise<Question> {
-    const knexResult = await this.queryBuilder("Question")
-      .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.id")
-      .select(
-        "Question.id",
-        "Question.module",
-        "Question.questionType",
-        "Question.text"
-      )
-      .where("Question.id", questionId);
-    return QuestionMap.toDomain(knexResult)[0];
-  }
-
-  public async getQuestionsByModule(
-    moduleId: number | string
-  ): Promise<Question[]> {
-    const knexResult = await this.queryBuilder("Question")
-      .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.id")
-      .select(
-        "Question.id",
-        "Question.module",
-        "Question.questionType",
-        "Question.text"
-      )
-      .where("Question.module", moduleId);
-    return QuestionMap.toDomain(knexResult);
-  }
-
-  public async addQuestionToModule(
-    moduleId: number | string,
-    question: Question
-  ): Promise<Question> {
-    const insert = await this.queryBuilder("Question").insert(
-      { module: moduleId, questionType: question.type, text: question.text },
-      "id"
-    );
-    return this.getQuestionById(insert[0]);
-  }
-
-  public async deleteQuestionById(questionId: number) {
-    await this.queryBuilder("Question").where({ id: questionId }).del();
-  }
-
+export async function deleteQuestion(questionId: number) {
+  await knex("Question").where({ id: questionId }).del();
 }

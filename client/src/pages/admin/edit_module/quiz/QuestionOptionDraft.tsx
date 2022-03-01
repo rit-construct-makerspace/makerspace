@@ -1,41 +1,47 @@
-import React, { ChangeEventHandler } from "react";
+import React from "react";
 import { IconButton, Stack, TextField } from "@mui/material";
-import { Option, QuestionType } from "../../../../types/Quiz";
+import { ModuleItemType, QuestionOption } from "../../../../types/Module";
 import CloseIcon from "@mui/icons-material/Close";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import useTimedState from "../../../../hooks/useTimedState";
 
 interface OptionDraftProps {
-  questionType: QuestionType;
-  option: Option;
+  moduleItemType: ModuleItemType;
+  option: QuestionOption;
   onRemove: () => void;
-  onTextChange: ChangeEventHandler<HTMLInputElement>;
+  onTextChange: (updatedText: string) => void;
   onToggleCorrect: () => void;
 }
 
-function getCorrectIcon(questionType: QuestionType, correct: boolean) {
-  if (questionType === QuestionType.MultipleChoice) {
+// Returns a circle for multiple choice, and a square for checkbox questions
+function getCorrectIcon(moduleItemType: ModuleItemType, correct: boolean) {
+  if (moduleItemType === ModuleItemType.MultipleChoice) {
     return correct ? <RadioButtonCheckedIcon /> : <RadioButtonUncheckedIcon />;
   }
 
-  if (questionType === QuestionType.Checkboxes) {
+  if (moduleItemType === ModuleItemType.Checkboxes) {
     return correct ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />;
   }
 }
 
-export default function OptionDraft({
-  questionType,
+export default function QuestionOptionDraft({
+  moduleItemType,
   option,
   onRemove,
   onTextChange,
   onToggleCorrect,
 }: OptionDraftProps) {
+  const [text, setText] = useTimedState<string>(option.text, (latestText) =>
+    onTextChange(latestText)
+  );
+
   return (
     <Stack direction="row" alignItems="center">
       <IconButton size="small" onClick={onToggleCorrect}>
-        {getCorrectIcon(questionType, option.correct)}
+        {getCorrectIcon(moduleItemType, option.correct)}
       </IconButton>
 
       <TextField
@@ -44,8 +50,8 @@ export default function OptionDraft({
         variant="standard"
         size="small"
         placeholder="Enter option text"
-        value={option.text}
-        onChange={onTextChange}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
         sx={{ mx: 1 }}
       />
 
