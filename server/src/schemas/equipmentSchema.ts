@@ -14,7 +14,7 @@ export const EquipmentTypeDefs = gql`
 
   input EquipmentInput {
     name: String!
-    roomID: ID!
+    roomID: Int!
     trainingModules: [Int]
     addedAt: DateTime
     inUse: Boolean = false

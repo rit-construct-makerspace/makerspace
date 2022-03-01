@@ -26,7 +26,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
             .first(
                 "id",
                 "timeDate",
-                "user_id",
+                "userID",
                 "eventType",
                 "description"
             )
@@ -41,7 +41,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
             .first(
                 "id",
                 "timeDate",
-                "user_id",
+                "userID",
                 "eventType",
                 "description"
             )
@@ -56,7 +56,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
             .first(
                 "id",
                 "timeDate",
-                "user_id",
+                "userID",
                 "eventType",
                 "description"
             )
@@ -70,7 +70,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         const knexResult = await this.queryBuilder("AuditLogs").select(
             "AuditLogs.id",
             "AuditLogs.timeDate",
-            "AuditLogs.user_id",
+            "AuditLogs.userID",
             "AuditLogs.eventType",
             "AuditLogs.description"
         );
@@ -81,7 +81,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         const knexResult = await this.queryBuilder("AuditLogs").select(
             "AuditLogs.id",
             "AuditLogs.timeDate",
-            "AuditLogs.user_id",
+            "AuditLogs.userID",
             "AuditLogs.eventType",
             "AuditLogs.description"
         );
@@ -92,7 +92,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         const newID = (
             await this.queryBuilder("AuditLogs").insert(
                 {
-                    user_id: log.userID,
+                    userID: log.userID,
                     eventType: log.eventType,
                     description: log.description,
                 },
