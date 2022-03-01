@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import useTimedState from "../../../hooks/useTimedState";
 import SaveStatus from "./SaveStatus";
 import GET_MODULE from "../../../queries/getModule";
+import GET_TRAINING_MODULES from "../../../queries/getModules";
 
 const RENAME_MODULE = gql`
   mutation RenameModule($id: ID!, $name: String!) {
@@ -30,7 +31,10 @@ export default function EditModulePage() {
   const [name, setName, setNameSilently] = useTimedState<string>(
     "",
     (latestName) => {
-      renameModule({ variables: { id, name: latestName } });
+      renameModule({
+        variables: { id, name: latestName },
+        refetchQueries: [{ query: GET_TRAINING_MODULES }],
+      });
     }
   );
 

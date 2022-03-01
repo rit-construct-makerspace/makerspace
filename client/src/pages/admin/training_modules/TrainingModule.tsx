@@ -3,16 +3,17 @@ import { CardActionArea, Stack, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 interface TrainingModuleProps {
+  id: number;
   title: string;
 }
 
-export default function TrainingModule({ title }: TrainingModuleProps) {
+export default function TrainingModule({ id, title }: TrainingModuleProps) {
   const history = useHistory();
 
   return (
     <CardActionArea
       sx={{ p: 1, pl: 2 }}
-      onClick={() => history.push("/quiz-builder")}
+      onClick={() => history.push("/admin/training/" + id)}
     >
       <Stack direction="row" alignItems="center" spacing={2}>
         <Typography
