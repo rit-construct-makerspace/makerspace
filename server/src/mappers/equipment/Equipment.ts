@@ -10,9 +10,9 @@ export function singleEquipmentToDomain(raw: any): Equipment | null {
   const value: Equipment = {
     id: raw.id,
     name: raw.name,
-    room: raw.room,
     addedAt: raw.addedAt,
-    inUse: raw.inUse
+    inUse: raw.inUse,
+    room_id: raw.room_id
   }
   return value;
 }

@@ -5,6 +5,7 @@ import { v4 as uuid } from "uuid";
 import assert from "assert";
 import fs from "fs";
 import express from "express";
+import { setupSerializeAndDeserialize, connectPassport, mockUser, MockStrategy } from "passport-mock-strategy";
 
 // for serializeUser, some dude on the defintlyTyped discord told me to override the global Express.User like:
 declare global {
@@ -17,7 +18,48 @@ declare global {
   }
 }
 
-export default function setupAuth(app: express.Application) {
+export function setupMockAuth(app: express.Application) {
+
+  app.use(
+    session({
+      genid: (req) => uuid(),
+      secret: 'mock-secret',
+    })
+  );
+
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // override values on this object to match what mock user you want
+  const customUserObject = {
+    id: '12345',
+    name: 'Adam Savage',
+    role: 'labbie'
+  }
+
+  passport.use(new MockStrategy({
+    // @ts-ignore
+    user: customUserObject
+  }));
+
+  app.get('/auth/mock',
+    passport.authenticate('mock'),
+    (req, res) => {
+      console.log('Mock Authenticating')
+      res.redirect('/')
+    });
+
+  passport.serializeUser(function (user, done) {
+    done(null, user);
+  });
+
+  passport.deserializeUser(function (user, done) {
+    // @ts-ignore
+    done(null, user);
+  });
+}
+
+export function setupAuth(app: express.Application) {
   const secret = process.env.SESSION_SECRET;
   const issuer = process.env.ISSUER;
   const callback = process.env.CALLBACK_URL;
@@ -68,7 +110,7 @@ export default function setupAuth(app: express.Application) {
   });
 
   passport.deserializeUser((nameID, done) => {
-    const matchingUser = { id: 1, username: "test user", nameID: "fdsfgsdfgsdfg" }; // fake user that everyone gets until we have a user repo and user type
+    const matchingUser = { id: 1, username: "test user", nameID: "fdsfgsdfgsdfg" }; // TODO: fake user that everyone gets until we have a user repo and user type
     done(null, matchingUser);
   });
 

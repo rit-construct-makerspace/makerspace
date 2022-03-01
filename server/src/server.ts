@@ -7,7 +7,7 @@ import cors from "cors";
 import { schema } from "./schema";
 import dotenv from "dotenv";
 import fs from "fs";
-import setupAuth from "./auth"
+import { setupMockAuth, setupAuth } from "./auth"
 
 
 dotenv.config({ path: __dirname + "/./../.env" });
@@ -16,8 +16,13 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 const corstOpts = cors();
 
+const MOCK_AUTH = process.env.MOCK_AUTH
+if (MOCK_AUTH === 'TRUE') {
+  setupMockAuth(app)
+} else {
+  setupAuth(app)
+}
 
-setupAuth(app)
 
 app.use(corstOpts);
 app.use(compression());
