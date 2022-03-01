@@ -51,7 +51,10 @@ export default function EditModulePage() {
     (latestName) => {
       renameModule({
         variables: { id, name: latestName },
-        refetchQueries: [{ query: GET_TRAINING_MODULES }],
+        refetchQueries: [
+          { query: GET_TRAINING_MODULES },
+          { query: GET_MODULE, variables: { id } },
+        ],
       });
     }
   );

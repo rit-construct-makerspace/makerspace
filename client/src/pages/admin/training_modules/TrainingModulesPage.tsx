@@ -51,7 +51,7 @@ export default function TrainingModulesPage() {
             onClick={handleNewModuleClicked}
             sx={{ height: 40 }}
           >
-            New material
+            New module
           </LoadingButton>
         </Stack>
 
