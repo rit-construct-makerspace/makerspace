@@ -3,7 +3,7 @@ import {EventType} from "./eventTypes";
 export interface AuditLogs {
     id: number;
     timeDate: Date ;
-    user: string;
+    userID: number;
     eventType: EventType;
     description: string;
 }

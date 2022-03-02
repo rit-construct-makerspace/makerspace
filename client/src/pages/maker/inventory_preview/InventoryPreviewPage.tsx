@@ -3,27 +3,13 @@ import Page from "../../Page";
 import { Divider, Stack } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
 import PreviewInventoryRow from "../../../common/PreviewInventoryRow";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
 import InventoryItem from "../../../types/InventoryItem";
-
-const QUERY_INVENTORY_ITEMS = gql`
-  query getInventoryItems {
-    InventoryItems {
-      id
-      name
-      unit
-      pluralUnit
-      count
-      pricePerUnit
-    }
-  }
-`;
+import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
 
 export default function InventoryPreviewPage() {
-  const { loading, error, data } = useQuery(QUERY_INVENTORY_ITEMS, {
-    fetchPolicy: "no-cache",
-  });
+  const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
 
   const [searchText, setSearchText] = useState<string>("");
 
