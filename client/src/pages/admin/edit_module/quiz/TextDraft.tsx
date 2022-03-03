@@ -1,32 +1,35 @@
 import React from "react";
-import QuizItemDraft from "./QuizItemDraft";
+import ModuleItemDraft from "./ModuleItemDraft";
 import { TextField } from "@mui/material";
-import { Text } from "../../../../types/Quiz";
+import { ModuleItem } from "../../../../types/Module";
+import useTimedState from "../../../../hooks/useTimedState";
 
 interface TextDraftProps {
   index: number;
-  text: Text;
-  updateText: (updatedText: Text) => void;
+  moduleItem: ModuleItem;
+  onChange: (updatedText: string) => void;
   onRemove: () => void;
 }
 
 export default function TextDraft({
   index,
-  text,
-  updateText,
+  moduleItem,
+  onChange,
   onRemove,
 }: TextDraftProps) {
+  const [text, setText] = useTimedState<string>(moduleItem.text, (latestText) =>
+    onChange(latestText)
+  );
+
   return (
-    <QuizItemDraft onRemove={onRemove} index={index} itemId={text.id}>
+    <ModuleItemDraft onRemove={onRemove} index={index} itemId={moduleItem.id}>
       <TextField
         multiline
         sx={{ m: 2 }}
         label="Text"
-        onChange={(e) => {
-          updateText({ ...text, text: e.target.value });
-        }}
-        value={text.text}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
       />
-    </QuizItemDraft>
+    </ModuleItemDraft>
   );
 }

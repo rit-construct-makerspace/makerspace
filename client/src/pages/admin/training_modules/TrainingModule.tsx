@@ -1,35 +1,19 @@
 import React from "react";
-import {
-  Button,
-  ButtonGroup,
-  CardActionArea,
-  Stack,
-  Typography,
-} from "@mui/material";
-import ContactSupportIcon from "@mui/icons-material/ContactSupport";
-import HandymanIcon from "@mui/icons-material/Handyman";
-import PeopleIcon from "@mui/icons-material/People";
+import { CardActionArea, Stack, Typography } from "@mui/material";
 import { useHistory } from "react-router-dom";
 
 interface TrainingModuleProps {
+  id: number;
   title: string;
-  questionCount: number;
-  equipmentCount: number;
-  makerCount: number;
 }
 
-export default function TrainingModule({
-  title,
-  questionCount,
-  equipmentCount,
-  makerCount,
-}: TrainingModuleProps) {
+export default function TrainingModule({ id, title }: TrainingModuleProps) {
   const history = useHistory();
 
   return (
     <CardActionArea
       sx={{ p: 1, pl: 2 }}
-      onClick={() => history.push("/quiz-builder")}
+      onClick={() => history.push("/admin/training/" + id)}
     >
       <Stack direction="row" alignItems="center" spacing={2}>
         <Typography
@@ -40,19 +24,6 @@ export default function TrainingModule({
         >
           {title}
         </Typography>
-
-        <ButtonGroup
-          size="small"
-          variant="text"
-          sx={{ maxWidth: 300 }}
-          fullWidth
-        >
-          <Button startIcon={<ContactSupportIcon />}>{questionCount}</Button>
-
-          <Button startIcon={<HandymanIcon />}>{equipmentCount}</Button>
-
-          <Button startIcon={<PeopleIcon />}>{makerCount}</Button>
-        </ButtonGroup>
       </Stack>
     </CardActionArea>
   );

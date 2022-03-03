@@ -38,10 +38,6 @@ export default function Routes() {
               <CreateReservationPage />
             </Route>
 
-            <Route path="/quiz-builder">
-              <EditModulePage />
-            </Route>
-
             <Route path="/maker/equipment">
               <EquipmentPage isAdmin={false} />
             </Route>
@@ -60,6 +56,10 @@ export default function Routes() {
 
             <Route path="/admin/equipment">
               <EquipmentPage isAdmin={true} />
+            </Route>
+
+            <Route path="/admin/training/:id">
+              <EditModulePage />
             </Route>
 
             <Route path="/admin/training">
