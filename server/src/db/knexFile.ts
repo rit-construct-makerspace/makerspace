@@ -24,7 +24,7 @@ module.exports = {
   pipeline: {
     client: "pg",
     connection: {
-      host: "postgres",
+      host: "localhost",
       user: process.env.POSTGRES_USER,
       database: process.env.POSTGRES_DB,
       password: process.env.POSTGRES_PASSWORD,
