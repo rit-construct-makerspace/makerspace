@@ -14,6 +14,7 @@ on:
   workflow_dispatch:
 
 env:
+  NODE_ENV: pipeline
   POSTGRES_USER: pg_user
   POSTGRES_PASSWORD: pg_password
   POSTGRES_DB: pg_db
