@@ -1,5 +1,3 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Frontend
 
 # Controls when the workflow will run
@@ -33,21 +31,13 @@ jobs:
           cache-dependency-path: client/package-lock.json
       
       - name: Install Node modules
-        run: |
-          cd client
-          npm i
+        run: cd client && npm i
       
       - name: Lint frontend
-        run: |
-          cd client
-          npm run lint
+        run: cd client && npm run lint
           
       - name: Type checking
-        run: |
-          cd client
-          npm run tsc
+        run: cd client && npm run tsc
 
       - name: Prettier format check
-        run: |
-          cd client
-          npm run prettier-check
+        run: cd client && npm run prettier-check
