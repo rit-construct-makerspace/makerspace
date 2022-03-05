@@ -1,4 +1,5 @@
 require("dotenv").config({ path: __dirname + "/./../../.env" });
+
 // Update with your config settings.
 module.exports = {
   development: {
