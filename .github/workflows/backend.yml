@@ -15,13 +15,13 @@ on:
 
 env:
   NODE_ENV: pipeline
-  POSTGRES_USER: pg_user
-  POSTGRES_PASSWORD: pg_password
-  POSTGRES_DB: pg_db
-  CALLBACK_URL: callback_url
-  ENTRY_POINT: entry_point
+  POSTGRES_USER: pguser
+  POSTGRES_PASSWORD: pgpassword
+  POSTGRES_DB: pgdb
+  CALLBACK_URL: callbackurl
+  ENTRY_POINT: entrypoint
   ISSUER: issuer
-  SESSION_SECRET: session_secret
+  SESSION_SECRET: sessionsecret
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
