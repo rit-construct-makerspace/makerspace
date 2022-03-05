@@ -31,7 +31,7 @@ jobs:
           cache-dependency-path: client/package-lock.json
       
       - name: Install Node modules
-        run: cd client && npm i
+        run: cd client && npm ci
       
       - name: Lint frontend
         run: cd client && npm run lint

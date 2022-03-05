@@ -41,7 +41,7 @@ jobs:
           cache-dependency-path: client/package-lock.json
 
       - name: Install Node modules
-        run: cd server && npm i
+        run: cd server && npm ci
 
       - name: Start Docker DB container
         run: cd server && docker-compose up -d db
