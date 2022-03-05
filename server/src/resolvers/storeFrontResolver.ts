@@ -1,6 +1,6 @@
-import { InventoryItemInput } from "../models/store/inventoryItemInput";
 import * as InventoryRepo from "../repositories/Store/inventoryRepository";
 import * as LabelRepo from "../repositories/Store/labelRepository";
+import { InventoryItemInput } from "../schemas/storeFrontSchema";
 
 const StorefrontResolvers = {
   Query: {

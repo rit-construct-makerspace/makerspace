@@ -1,10 +1,12 @@
 import { knex } from "../../db";
 import {
-  inventoryItemstoDomain,
-  singleInventoryItemtoDomain,
+  inventoryItemsToDomain,
+  singleInventoryItemToDomain,
 } from "../../mappers/store/InventoryItemMapper";
-import { InventoryItem } from "../../models/store/inventoryItem";
-import { InventoryItemInput } from "../../models/store/inventoryItemInput";
+import {
+  InventoryItem,
+  InventoryItemInput,
+} from "../../schemas/storeFrontSchema";
 
 export async function getLabels(itemId: number): Promise<string[] | null> {
   const knexResult = await knex("InventoryItemLabel")
@@ -27,7 +29,7 @@ export async function getItems(): Promise<InventoryItem[]> {
     "InventoryItem.pricePerUnit",
     "InventoryItem.threshold"
   );
-  return inventoryItemstoDomain(knexResult);
+  return inventoryItemsToDomain(knexResult);
 }
 
 export async function getItemById(
@@ -47,7 +49,7 @@ export async function getItemById(
     .from("InventoryItem")
     .where("id", itemId);
 
-  return singleInventoryItemtoDomain(knexResult);
+  return singleInventoryItemToDomain(knexResult);
 }
 
 export async function updateItemById(
