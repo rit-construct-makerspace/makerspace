@@ -1,10 +1,9 @@
 import { knex } from "../db";
-import { InventoryItemInput } from "../models/store/inventoryItemInput";
-import { InventoryRepository } from "../repositories/Store/inventoryRepository";
-import { LabelRepository } from "../repositories/Store/labelRepository";
+import { InventoryItemInput } from "../schemas/storeFrontSchema";
+import * as InventoryRepo from "../repositories/Store/inventoryRepository";
+import * as LabelRepo from "../repositories/Store/labelRepository";
 
 describe("InventoryRepository test set", () => {
-
   beforeAll(() => {
     return knex.migrate.latest();
     // we can here also seed our tables, if we have any seeding files
@@ -12,11 +11,7 @@ describe("InventoryRepository test set", () => {
 
   beforeEach(() => {
     // reset tables...
-    const tables = [
-      "InventoryItem",
-      "Label",
-      "InventoryItemLabel"
-    ];
+    const tables = ["InventoryItem", "Label", "InventoryItemLabel"];
     tables.forEach(async (t) => {
       await knex(t).del().where("id", "!=", "null");
     });
@@ -27,13 +22,11 @@ describe("InventoryRepository test set", () => {
   });
 
   test("getAllInventoryItems with no items", async () => {
-    let invenRepo = new InventoryRepository();
-    let items = await invenRepo.getItems();
+    let items = await InventoryRepo.getItems();
     expect(items.length).toBe(0);
   });
 
   test("getAllInventoryItems with one item", async () => {
-    let invenRepo = new InventoryRepository();
     let item = {
       id: 0,
       count: 10,
@@ -43,10 +36,10 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
-      threshold: 0
+      threshold: 0,
     };
-    await invenRepo.addItem(item);
-    let items = await invenRepo.getItems();
+    await InventoryRepo.addItem(item);
+    let items = await InventoryRepo.getItems();
     expect(items.length).toBe(1);
     expect(items[0].name).toBe(item.name);
     expect(items[0].count).toBe(item.count);
@@ -58,7 +51,6 @@ describe("InventoryRepository test set", () => {
   });
 
   test("getAllInventoryItems with three items", async () => {
-    let invenRepo = new InventoryRepository();
     let item = {
       id: 0,
       count: 10,
@@ -68,23 +60,21 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
-      threshold: 0
+      threshold: 0,
     };
-    await invenRepo.addItem(item);
-    await invenRepo.addItem(item);
-    await invenRepo.addItem(item);
-    let items = await invenRepo.getItems();
+    await InventoryRepo.addItem(item);
+    await InventoryRepo.addItem(item);
+    await InventoryRepo.addItem(item);
+    let items = await InventoryRepo.getItems();
     expect(items.length).toBe(3);
   });
 
   test("getInventoryItemsById with no items", async () => {
-    let invenRepo = new InventoryRepository();
-    let item = await invenRepo.getItemById(0);
+    let item = await InventoryRepo.getItemById(0);
     expect(item).toBe(null);
   });
 
   test("updateItemById", async () => {
-    let invenRepo = new InventoryRepository();
     let item: InventoryItemInput = {
       count: 10,
       image: "url",
@@ -93,14 +83,14 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
-      threshold: 0
+      threshold: 0,
     };
-    let itemOutput = await invenRepo.addItem(item);
+    let itemOutput = await InventoryRepo.addItem(item);
     if (itemOutput !== null) {
       item.count = 50;
       item.image = "test";
       item.name = "testtest";
-      let final = await invenRepo.updateItemById(itemOutput.id, item);
+      let final = await InventoryRepo.updateItemById(itemOutput.id, item);
       expect(final?.count).toBe(50);
       expect(final?.image).toBe("test");
       expect(final?.name).toBe("testtest");
@@ -110,7 +100,6 @@ describe("InventoryRepository test set", () => {
   });
 
   test("deleteItemById", async () => {
-    let invenRepo = new InventoryRepository();
     let item1: InventoryItemInput = {
       count: 10,
       image: "url",
@@ -119,7 +108,7 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
-      threshold: 0
+      threshold: 0,
     };
     let item2: InventoryItemInput = {
       count: 11,
@@ -129,13 +118,13 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet2",
       pricePerUnit: 5.52,
       unit: "foot2",
-      threshold: 0
+      threshold: 0,
     };
-    let item1Output = await invenRepo.addItem(item1);
-    let item2Output = await invenRepo.addItem(item2);
+    let item1Output = await InventoryRepo.addItem(item1);
+    let item2Output = await InventoryRepo.addItem(item2);
     if (item1Output !== null) {
-      let final = await invenRepo.deleteItemById(item1Output.id);
-      let items = await invenRepo.getItems();
+      let final = await InventoryRepo.deleteItemById(item1Output.id);
+      let items = await InventoryRepo.getItems();
       expect(items.length).toBe(1);
       expect(items[0].id).toBe(item2Output?.id);
     } else {
@@ -144,10 +133,8 @@ describe("InventoryRepository test set", () => {
   });
 
   test("addLabels", async () => {
-    let invenRepo = new InventoryRepository();
-    let labelRepo = new LabelRepository();
-    await labelRepo.addLabel("Test-label");
-    await labelRepo.addLabel("Test-label2");
+    await LabelRepo.addLabel("Test-label");
+    await LabelRepo.addLabel("Test-label2");
     let item1: InventoryItemInput = {
       count: 10,
       image: "url",
@@ -156,43 +143,44 @@ describe("InventoryRepository test set", () => {
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
-      threshold: 0
+      threshold: 0,
     };
-    let item1Output = await invenRepo.addItem(item1);
+    let item1Output = await InventoryRepo.addItem(item1);
     if (item1Output !== null) {
-      await invenRepo.addLabels(item1Output.id, ["Test-label2"]);
-      let labels : string[] | null = await invenRepo.getLabels(item1Output.id);
-      expect(labels).toContain('Test-label2');
-      expect(labels).toContain('Test-label'); 
+      await InventoryRepo.addLabels(item1Output.id, ["Test-label2"]);
+      let labels: string[] | null = await InventoryRepo.getLabels(
+        item1Output.id
+      );
+      expect(labels).toContain("Test-label2");
+      expect(labels).toContain("Test-label");
     } else {
       fail("addItem returned null");
     }
   });
 
   test("removeLabels", async () => {
-    let invenRepo = new InventoryRepository();
-    let labelRepo = new LabelRepository();
-    await labelRepo.addLabel("Test-label");
-    await labelRepo.addLabel("Test-label2");
+    await LabelRepo.addLabel("Test-label");
+    await LabelRepo.addLabel("Test-label2");
     let item1: InventoryItemInput = {
       count: 10,
       image: "url",
-      labels: ["Test-label","Test-label2"],
+      labels: ["Test-label", "Test-label2"],
       name: "test",
       pluralUnit: "feet",
       pricePerUnit: 5.5,
       unit: "foot",
-      threshold: 0
+      threshold: 0,
     };
-    let item1Output = await invenRepo.addItem(item1);
+    let item1Output = await InventoryRepo.addItem(item1);
     if (item1Output !== null) {
-      await invenRepo.removeLabels(item1Output.id, ["Test-label2"]);
-      let labels : string[] | null = await invenRepo.getLabels(item1Output.id);
-      expect(labels).not.toContain('Test-label2');
-      expect(labels).toContain('Test-label'); 
+      await InventoryRepo.removeLabels(item1Output.id, ["Test-label2"]);
+      let labels: string[] | null = await InventoryRepo.getLabels(
+        item1Output.id
+      );
+      expect(labels).not.toContain("Test-label2");
+      expect(labels).toContain("Test-label");
     } else {
       fail("addItem returned null");
     }
-  })
-
+  });
 });
