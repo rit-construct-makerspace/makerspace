@@ -9,8 +9,7 @@ export async function up(knex: Knex): Promise<void> {
           t.increments('id');
           t.string('name', 50);
           t.timestamp('addedAt').defaultTo(knex.fn.now());
-          t.boolean('inUse').defaultTo(false);
-          t.integer('roomID').references("id").inTable("Rooms");
+          t.boolean('inUse').defaultTo(false);          
         });
       }
     }).then(async () => {
