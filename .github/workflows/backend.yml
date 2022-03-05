@@ -36,8 +36,8 @@ jobs:
       postgres:
         # Docker Hub image
         image: postgres
-        # Provide the password for postgres
         env:
+          POSTGRES_USER: pguser
           POSTGRES_PASSWORD: pgpassword
         # Set health checks to wait until postgres has started
         options: >-
