@@ -13,6 +13,11 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+env:
+  POSTGRES_USER: pguser
+  POSTGRES_PASSWORD: pgpassword
+  POSTGRES_DB: pgdb
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -26,10 +31,6 @@ jobs:
       postgres:
         # Docker Hub image
         image: postgres
-        env:
-          POSTGRES_USER: pguser
-          POSTGRES_PASSWORD: pgpassword
-          POSTGRES_DB: pgdb
         # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
@@ -55,8 +56,3 @@ jobs:
 
       - name: Run Knex migrations
         run: cd server && npm run knex:migrate:latest
-        env:
-          NODE_ENV: pipeline
-          POSTGRES_USER: pguser
-          POSTGRES_PASSWORD: pgpassword
-          POSTGRES_DB: pgdb
