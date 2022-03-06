@@ -6,17 +6,17 @@ import { ReservationsTypeDefs } from "./schemas/reservationsSchema";
 import { UsersTypeDefs } from "./schemas/usersSchema";
 import { HoldsTypeDefs } from "./schemas/holdsSchema";
 import { EquipmentTypeDefs } from "./schemas/equipmentSchema";
-import { RoomTypeDefs } from "./schemas/roomsSchema"
+import { RoomTypeDefs } from "./schemas/roomsSchema";
 import { DateTimeResolver, DateTimeTypeDefinition } from "graphql-scalars";
 import trainingResolvers from "./resolvers/trainingResolver";
 import storefrontResolvers from "./resolvers/storeFrontResolver";
+import roomsResolver from "./resolvers/roomsResolver";
+import EquipmentResolvers from "./resolvers/equipmentResolver";
 
 // for custom scalars such as Date
 const resolveFunctions = {
   DateTime: DateTimeResolver,
 };
-
-const resolvers = [trainingResolvers, storefrontResolvers, resolveFunctions];
 
 export const schema = makeExecutableSchema({
   typeDefs: [
@@ -27,7 +27,13 @@ export const schema = makeExecutableSchema({
     StoreFrontTypeDefs,
     ReservationsTypeDefs,
     DateTimeTypeDefinition,
-    RoomTypeDefs
+    RoomTypeDefs,
   ],
-  resolvers: mergeResolvers(resolvers),
+  resolvers: mergeResolvers([
+    resolveFunctions,
+    EquipmentResolvers,
+    trainingResolvers,
+    storefrontResolvers,
+    roomsResolver,
+  ]),
 });

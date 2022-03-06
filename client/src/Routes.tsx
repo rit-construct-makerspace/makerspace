@@ -50,7 +50,7 @@ export default function Routes() {
               <InventoryPreviewPage />
             </Route>
 
-            <Route path="/admin/edit-equipment">
+            <Route path="/admin/equipment/:id">
               <EditEquipmentPage />
             </Route>
 

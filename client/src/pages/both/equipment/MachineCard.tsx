@@ -35,7 +35,6 @@ export default function MachineCard({ name, category, to }: MachineCardProps) {
             >
               {name}
             </Typography>
-            <Typography color="text.secondary">{category}</Typography>
           </CardContent>
         </CardActionArea>
       </Card>
