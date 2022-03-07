@@ -30,6 +30,7 @@ export default function RoomCard({ room, monitor }: RoomCardProps) {
           <Typography variant="h6" component="div" mb={1}>
             {room.name}
           </Typography>
+
           {monitor ? (
             <Stack direction="row">
               <Avatar
