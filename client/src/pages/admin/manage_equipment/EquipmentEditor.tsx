@@ -10,7 +10,7 @@ import GET_TRAINING_MODULES from "../../../queries/getModules";
 import RequestWrapper from "../../../common/RequestWrapper";
 import styled from "styled-components";
 import GET_ROOMS from "../../../queries/getRooms";
-import { EquipmentInput, NameAndID } from "./EditEquipmentPage";
+import { EquipmentInput, NameAndID } from "./ManageEquipmentPage";
 import AttachedModule from "./AttachedModule";
 
 const StyledMachineImage = styled.img`
@@ -35,12 +35,10 @@ export default function EquipmentEditor({
   const getRoomsResult = useQuery(GET_ROOMS);
   const getModulesResult = useQuery(GET_TRAINING_MODULES);
 
-  console.log(getRoomsResult.data);
-
   const getModuleOptions = (): NameAndID[] => {
     if (!getModulesResult.data) return [];
 
-    const attachedIDs = equipment.modules.map((m) => m.id);
+    const attachedIDs = equipment.trainingModules.map((m) => m.id);
 
     return getModulesResult.data.modules.filter(
       (m: NameAndID) => !attachedIDs.includes(m.id)
@@ -63,14 +61,14 @@ export default function EquipmentEditor({
     if (!value) return;
     setEquipment({
       ...equipment,
-      modules: [...equipment.modules, value],
+      trainingModules: [...equipment.trainingModules, value],
     });
   };
 
   const handleModuleRemoved = (id: number) => () => {
     setEquipment({
       ...equipment,
-      modules: equipment.modules.filter((e) => e.id !== id),
+      trainingModules: equipment.trainingModules.filter((e) => e.id !== id),
     });
   };
 
@@ -136,7 +134,7 @@ export default function EquipmentEditor({
         <PageSectionHeader>Training Modules</PageSectionHeader>
 
         <Stack divider={<Divider flexItem />} spacing={1}>
-          {equipment.modules.map((m) => (
+          {equipment.trainingModules.map((m) => (
             <AttachedModule
               module={m}
               key={m.id}
@@ -146,7 +144,7 @@ export default function EquipmentEditor({
         </Stack>
 
         <Autocomplete
-          key={equipment.modules.length}
+          key={equipment.trainingModules.length}
           renderInput={(params) => (
             <TextField {...params} label="Attach module" />
           )}

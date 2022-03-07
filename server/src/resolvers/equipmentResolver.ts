@@ -1,6 +1,8 @@
 import { EquipmentInput } from "../models/equipment/equipmentInput";
 import { EquipmentRepository } from "../repositories/Equipment/EquipmentRepository";
 import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
+import { Equipment } from "../models/equipment/equipment";
+import { RoomRepo } from "../repositories/Rooms/RoomRepository";
 
 const equipmentRepo = new EquipmentRepository();
 const reservationRepo = new ReservationRepository();
@@ -11,8 +13,8 @@ const EquipmentResolvers = {
       return await equipmentRepo.getEquipments();
     },
 
-    equipment: async (_: any, args: { Id: number }, context: any) => {
-      return await equipmentRepo.getEquipmentById(args.Id);
+    equipment: async (_: any, args: { id: number }, context: any) => {
+      return await equipmentRepo.getEquipmentById(args.id);
     },
 
     reservations: async (_: any, args: { Id: number }, context: any) => {
@@ -33,7 +35,11 @@ const EquipmentResolvers = {
   },
 
   Equipment: {
-    trainingModules: (parent: any) => {
+    room: (parent: Equipment) => {
+      return new RoomRepo().getRoomByID(parent.roomID);
+    },
+
+    trainingModules: (parent: Equipment) => {
       return equipmentRepo.getTrainingModules(parent.id);
     },
   },
