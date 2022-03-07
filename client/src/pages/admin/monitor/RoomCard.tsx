@@ -1,5 +1,13 @@
 import React from "react";
-import { Avatar, Card, CardActionArea, CardContent, CardMedia, Stack, Typography, } from "@mui/material";
+import {
+  Avatar,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Person from "../../../types/Person";
 import { useHistory } from "react-router-dom";
 import Room from "../../../types/Room";
