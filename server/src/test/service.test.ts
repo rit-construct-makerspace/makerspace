@@ -1,4 +1,4 @@
-import { Module } from "../models/training/module";
+import { TrainingModule } from "../schemas/trainingSchema";
 import { knex } from "../db";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 
@@ -13,8 +13,7 @@ describe("Example test set", () => {
   });
 
   test("example test", async () => {
-    let m1 = new Module("test", []);
-    await ModuleRepo.addModule(m1);
+    await ModuleRepo.addModule("test");
     let mods = await ModuleRepo.getModules();
     expect(mods.length).toBe(1);
   });

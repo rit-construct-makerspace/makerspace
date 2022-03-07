@@ -1,63 +1,46 @@
 import { knex } from "../../db";
-import { OptionMap } from "../../mappers/training/optionMapper";
-import { Option } from "../../models/training/option";
+import * as OptionMap from "../../mappers/training/optionMapper";
+import { Option } from "../../schemas/trainingSchema";
 
-export interface IOptionRepo {
-  getOptionById(questionId: number | string): Promise<Option>;
-  getOptionsByQuestion(questionId: number | string): Promise<Option[]>;
-  addOptionToQuestion(
-    questionId: number | string,
-    option: Option
-  ): Promise<Option>;
-  deleteOptionById(optionId: number): Promise<void>;
+
+export async function getOptionById(id: number): Promise<Option | null> {
+  const knexResult = await knex("QuestionOption")
+    .select("id", "question", "text", "correct")
+    .where("id", id);
+  return OptionMap.singleOptionToDomain(knexResult);
 }
 
-export class OptionRepo implements IOptionRepo {
-  private queryBuilder;
-
-  constructor(queryBuilder?: any) {
-    this.queryBuilder = queryBuilder || knex;
-  }
-
-  public async getOptionById(questionId: number | string): Promise<Option> {
-    const knexResult = await this.queryBuilder("QuestionOption")
-      .select("id", "question", "text", "correct")
-      .where("id", questionId);
-    return OptionMap.toDomain(knexResult)[0];
-  }
-
-  public async getOptionsByQuestion(
-    questionId: number | string
-  ): Promise<Option[]> {
-    const knexResult = await this.queryBuilder("QuestionOption")
-      .select("id", "question", "text", "correct")
-      .where("question", questionId);
-    return OptionMap.toDomain(knexResult);
-  }
-
-  public async addOptionToQuestion(
-    questionId: number | string,
-    option: Option
-  ): Promise<Option> {
-    const insert = await this.queryBuilder("QuestionOption").insert(
-      { question: questionId, text: option.text, correct: option.correct },
-      "id"
-    );
-    return this.getOptionById(insert[0]);
-  }
-
-  public async updateOption(option: Option): Promise<void> {
-    const update = await this.queryBuilder("QuestionOption")
-      .where({ id: option.id })
-      .update({
-        correct: option.correct,
-        text: option.text,
-      });
-    return update;
-  }
-
-  public async deleteOptionById(optionId: number): Promise<void> {
-    await this.queryBuilder("QuestionOption").where({ id: optionId }).del();
-  }
-
+export async function getOptionsByQuestion(
+  questionId: number
+): Promise<Option[]> {
+  const knexResult = await knex("QuestionOption")
+    .select("id", "question", "text", "correct")
+    .where("question", questionId);
+  return OptionMap.optionsToDomain(knexResult);
 }
+
+export async function addOptionToQuestion(
+  id: number,
+  option: Option
+): Promise<Option | null> {
+  const insert = await knex("QuestionOption").insert(
+    { question: id, text: option.text, correct: option.correct },
+    "id"
+  );
+  return getOptionById(insert[0]);
+}
+
+export async function updateOption(option: Option): Promise<void> {
+  const update = await knex("QuestionOption")
+    .where({ id: option.id })
+    .update({
+      correct: option.correct,
+      text: option.text,
+    });
+  return update;
+}
+
+export async function deleteOptionById(id: number): Promise<void> {
+  await knex("QuestionOption").where({ id: id }).del();
+}
+

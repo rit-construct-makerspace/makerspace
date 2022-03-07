@@ -2,7 +2,7 @@ import { knex } from "../../db";
 import { Equipment } from "../../models/equipment/equipment";
 import { EquipmentInput } from "../../models/equipment/equipmentInput";
 import { equipmentToDomain, singleEquipmentToDomain } from "../../mappers/equipment/Equipment";
-import { TrainingModule } from "../../models/training/trainingModule";
+import { TrainingModule } from "../../schemas/trainingSchema";
 import { singleTrainingModuleToDomain } from "../../mappers/training/TrainingModuleMapper";
 
 export interface IEquipmentRepository {

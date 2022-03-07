@@ -1,30 +1,19 @@
-import { Question } from "../../models/training/question";
+import { Question } from "../../schemas/trainingSchema";
 
-export class QuestionMap {
-  public static toDomain(raw: any): Question[] {
-    let arr: Question[] = [];
-    raw.forEach((i: any) => {
-      if (!arr.some((question) => question.id === i.id))
-        arr.push({ id: i.id, text: i.text, type: i.type, options: [] });
-      if (i.option_id !== null) {
-        let index: number = arr.findIndex((x) => (x.id = i.id));
-        arr[index].options.push({
-          id: i.option_id,
-          text: i.text,
-          correct: i.correct,
-        });
-      }
-    });
-    return arr; // a bit awkward that this returns an array vs single object
+
+export function QuestionsToDomain(raw: any): Question[] {
+  return raw.map((i: any) => singleQuestionToDomain(i));
+}
+
+export function singleQuestionToDomain(raw: any): Question | null {
+  if (raw === undefined || raw === null) return null;
+  if (Array.isArray(raw)) {
+    raw = raw[0]
   }
-
-  public static toPersistence(question: Question): any {
-    return {
-      id: question.id,      
-      text: question.text,
-      type: question.type,
-      options: question.options, // convert me too plz
-    };
+  const value: Question = {
+    id: raw.id,
+    type: raw.questionType,
+    text: raw.text,
   }
-
+  return value;
 }

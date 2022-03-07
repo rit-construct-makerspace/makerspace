@@ -1,41 +1,39 @@
 import { knex } from "../../db";
-import { Question } from "../../models/training/question";
-import { QuestionMap } from "../../mappers/training/questionMapper";
+import { Question } from "../../schemas/trainingSchema";
+import * as QuestionMap from "../../mappers/training/questionMapper";
 
 export async function getQuestion(
   questionId: number | string
-): Promise<Question> {
+): Promise<Question | null> {
   const knexResult = await knex("Question")
-    .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.id")
     .select(
-      "Question.id",
-      "Question.module",
-      "Question.questionType",
-      "Question.text"
+      "id",
+      "module",
+      "questionType",
+      "text"
     )
-    .where("Question.id", questionId);
-  return QuestionMap.toDomain(knexResult)[0];
+    .where("id", questionId);
+  return QuestionMap.singleQuestionToDomain(knexResult);
 }
 
 export async function getQuestionsByModule(
   moduleId: number | string
 ): Promise<Question[]> {
   const knexResult = await knex("Question")
-    .leftJoin("QuestionOption", "Question.id", "=", "QuestionOption.id")
     .select(
-      "Question.id",
-      "Question.module",
-      "Question.questionType",
-      "Question.text"
+      "id",
+      "module",
+      "questionType",
+      "text"
     )
-    .where("Question.module", moduleId);
-  return QuestionMap.toDomain(knexResult);
+    .where("module", moduleId);
+  return QuestionMap.QuestionsToDomain(knexResult);
 }
 
 export async function addQuestion(
   moduleId: number | string,
   question: Question
-): Promise<Question> {
+): Promise<Question | null> {
   const insert = await knex("Question").insert(
     { module: moduleId, questionType: question.type, text: question.text },
     "id"
@@ -43,12 +41,12 @@ export async function addQuestion(
   return getQuestion(insert[0]);
 }
 
-export async function updateQuestion(questionId: number, question: Question) {
+export async function updateQuestion(id: number, question: Question) {
   await knex("Question")
-    .where({ id: questionId })
+    .where({ id: id })
     .update({ questionType: question.type, text: question.text });
 }
 
-export async function deleteQuestion(questionId: number) {
-  await knex("Question").where({ id: questionId }).del();
+export async function deleteQuestion(id: number) {
+  await knex("Question").where({ id: id }).del();
 }

@@ -1,6 +1,5 @@
-import { Module } from "../models/training/module";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import { OptionRepo } from "../repositories/Training/optionRepo";
+import * as OptionRepo from "../repositories/Training/optionRepo";
 import * as QuestionRepo from "../repositories/Training/questionRepo";
 
 const TrainingResolvers = {
@@ -13,18 +12,30 @@ const TrainingResolvers = {
       ModuleRepo.getModuleById(args.id),
   },
 
+  TrainingModule: {
+    items: (parent: any) => {
+      return QuestionRepo.getQuestionsByModule(parent.id);
+    },
+  },
+
+  Question: {
+    options: (parent: any) => {
+      return OptionRepo.getOptionsByQuestion(parent.id);
+    },
+  },
+
   Mutation: {
     /*
     Modules
      */
 
-    createModule: async (_: any, args: any) =>
-      await Module.create(args.name, []),
+    createModule: async (_: any, args: any) => {
+      const mod = await ModuleRepo.addModule(args.name);
+      return mod;
+    },
 
     updateModule: async (_: any, args: any) => {
-      const mod = await ModuleRepo.getModuleById(args.id);
-      mod.updateName(args.name);
-      await ModuleRepo.save(mod);
+      const mod = await ModuleRepo.updateName(args.id, args.name);
       return mod;
     },
 
@@ -42,7 +53,6 @@ const TrainingResolvers = {
       QuestionRepo.addQuestion(args.module_id, {
         text: args.question.text,
         type: args.question.type,
-        options: [],
         id: undefined,
       }),
 
@@ -58,24 +68,21 @@ const TrainingResolvers = {
      */
 
     addOption: async (_: any, args: any) => {
-      const or = new OptionRepo();
-      return or.addOptionToQuestion(args.question_id, args.option);
+      return OptionRepo.addOptionToQuestion(args.question_id, args.option);
     },
 
     updateOption: async (_: any, args: any) => {
-      const or = new OptionRepo();
       let opt = {
         id: args.id,
         text: args.option.text,
         correct: args.option.correct,
       };
-      await or.updateOption(opt);
+      await OptionRepo.updateOption(opt);
       return opt;
     },
 
     deleteOption: async (_: any, args: { id: number }) => {
-      const or = new OptionRepo();
-      await or.deleteOptionById(args.id);
+      await OptionRepo.deleteOptionById(args.id);
     },
   },
 };

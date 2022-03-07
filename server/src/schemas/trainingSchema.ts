@@ -1,5 +1,28 @@
 import { gql } from "apollo-server-express";
 
+export interface TrainingModule {
+  id: number;
+  name: string;
+}
+
+export enum QuestionType {
+  MULTIPLE_CHOICE,
+  CHECKBOXES
+}
+
+export interface Question {
+  id: number | undefined;
+  text: string;
+  type: QuestionType;
+}
+
+export interface Option {
+  id: number;
+  text: string;
+  correct: boolean;
+}
+
+
 export const TrainingTypeDefs = gql`
   type TrainingModule {
     id: ID!
@@ -9,6 +32,7 @@ export const TrainingTypeDefs = gql`
 
   interface TrainingModuleItem {
     id: ID!
+    order: Int
   }
 
   enum QuestionType {
@@ -24,6 +48,7 @@ export const TrainingTypeDefs = gql`
     text: String!
     type: QuestionType!
     options: [QuestionOption]!
+    order: Int
   }
 
   type QuestionOption {
