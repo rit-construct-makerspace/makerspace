@@ -3,7 +3,6 @@ import Page from "../../Page";
 import { Autocomplete, Button, Divider, Stack, TextField } from "@mui/material";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import HistoryIcon from "@mui/icons-material/History";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useQuery } from "@apollo/client";
 import GET_TRAINING_MODULES from "../../../queries/getModules";
@@ -12,6 +11,7 @@ import styled from "styled-components";
 import GET_ROOMS from "../../../queries/getRooms";
 import { EquipmentInput, NameAndID } from "./ManageEquipmentPage";
 import AttachedModule from "./AttachedModule";
+import DeleteEquipmentButton from "./DeleteEquipmentButton";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -89,13 +89,7 @@ export default function EquipmentEditor({
             <Button variant="outlined" startIcon={<HistoryIcon />}>
               View Logs
             </Button>
-            <Button
-              variant="outlined"
-              startIcon={<DeleteOutlineIcon />}
-              color="error"
-            >
-              Delete
-            </Button>
+            <DeleteEquipmentButton />
           </Stack>
         )}
 

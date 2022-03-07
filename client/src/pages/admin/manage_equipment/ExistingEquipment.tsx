@@ -66,7 +66,7 @@ export default function ExistingEquipment({
     if (!queriedEquipment) return;
 
     setEquipment(queriedEquipment);
-  }, [getEquipmentResult.data]);
+  }, [getEquipmentResult.data, setEquipment]);
 
   return (
     <RequestWrapper
