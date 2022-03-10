@@ -1,13 +1,13 @@
-import { User } from "../../models/users/user";
+import { User } from "../../schemas/usersSchema";
 
 export function usersToDomain(raw: any): User[] {
   return raw.map((i: any) => singleUserToDomain(i));
-
 }
 
 export function singleUserToDomain(raw: any): User | null {
-  if (raw === undefined || raw === null) return null;
-  const value: User= {
+  if (!raw) return null;
+
+  return {
     id: raw.id,
     firstName: raw.firstName,
     lastName: raw.lastName,
@@ -16,12 +16,10 @@ export function singleUserToDomain(raw: any): User | null {
     privilege: raw.privilege,
     registrationDate: raw.registrationDate,
     holds: raw.holds,
-    trainingModules: raw.trainingModules,
-    year: raw.year,
+    completedModules: raw.trainingModules,
+    expectedGraduation: raw.expectedGraduation,
     college: raw.college,
     major: raw.major,
-    aboutMe: raw.aboutMe,
-    roomID: raw.roomID
-  }
-  return value;
+    roomID: raw.roomID,
+  };
 }

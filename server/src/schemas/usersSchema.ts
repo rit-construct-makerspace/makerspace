@@ -1,8 +1,44 @@
 import { gql } from "apollo-server-express";
+import { TrainingModule } from "../models/training/trainingModule";
+import { Hold } from "./holdsSchema";
+
+export enum Privilege {
+  MAKER,
+  LABBIE,
+  ADMIN,
+}
+
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isStudent: boolean;
+  privilege: Privilege;
+  registrationDate: Date;
+  holds: [Hold];
+  completedModules: [TrainingModule];
+  expectedGraduation: string;
+  college: string;
+  major: string;
+  roomID: number;
+}
+
+export interface StudentUserInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  expectedGraduation: string;
+  college: string;
+  major: string;
+}
 
 export const UsersTypeDefs = gql`
-
-  scalar DateTime
+  enum Privilege {
+    MAKER
+    LABBIE
+    ADMIN
+  }
 
   type User {
     id: ID!
@@ -14,10 +50,9 @@ export const UsersTypeDefs = gql`
     registrationDate: DateTime!
     holds: [Hold]
     trainingModules: [TrainingModule]
-    year: Int
+    expectedGraduation: String
     college: String
     major: String
-    aboutMe: String
     room: Room
     roomMonitoring: Room
   }
@@ -26,9 +61,7 @@ export const UsersTypeDefs = gql`
     firstName: String!
     lastName: String!
     email: String!
-    isStudent: Boolean!
-    privilege: Privilege!
-    year: Int!
+    expectedGraduation: String!
     college: String!
     major: String!
   }
@@ -37,16 +70,14 @@ export const UsersTypeDefs = gql`
     firstName: String!
     lastName: String!
     email: String!
-    isStudent: Boolean!
-    privilege: Privilege!
   }
 
-
-  type Query {
-    user: User
+  extend type Query {
+    users: [User]
+    user(id: ID!): User
   }
 
-  type Mutation {
+  extend type Mutation {
     createStudentUser(user: StudentUserInput): User
     createFacultyUser(user: FacultyUserInput): User
 
@@ -58,7 +89,5 @@ export const UsersTypeDefs = gql`
 
     addHold(userID: ID!, hold: HoldInput): User
     removeHold(userID: ID!, hold: HoldInput): User
-
-    updateAboutMe(userID: ID!, aboutMe: String): User
   }
 `;
