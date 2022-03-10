@@ -20,7 +20,7 @@ const AuditLogResolvers = {
         },
         auditLogsByUser: async (_: any, args: any, context: any) => {
             try {
-                return await alr.getLogsByEventType(args.user);
+                return await alr.getLogsByUser(args.userID);
             } catch (e) {
                 console.log("Error:", e);
             }

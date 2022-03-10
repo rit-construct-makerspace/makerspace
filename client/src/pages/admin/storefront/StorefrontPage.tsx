@@ -9,9 +9,17 @@ import { useImmer } from "use-immer";
 import ShoppingCart from "./ShoppingCart";
 import { v4 as uuidv4 } from "uuid";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import { useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
 import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
+
+const REMOVE_INVENTORY_ITEM_AMOUNT = gql`
+  mutation RemoveInventoryItemAmount($itemID: ID!, $amountToRemove: Int!) {
+    removeItemAmount(itemId: $itemID, count: $amountToRemove) {
+      id
+    }
+  }
+`;
 
 export interface ShoppingCartEntry {
   id: string;
@@ -25,6 +33,10 @@ function updateLocalStorage(cart: ShoppingCartEntry[] | null) {
 
 export default function StorefrontPage() {
   const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
+
+  const [removeItemAmount] = useMutation(REMOVE_INVENTORY_ITEM_AMOUNT, {
+    refetchQueries: [{ query: GET_INVENTORY_ITEMS }],
+  });
 
   const [searchText, setSearchText] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
@@ -76,7 +88,19 @@ export default function StorefrontPage() {
       updateLocalStorage(draft);
     });
 
-  const emptyCart = () => {
+  const handleCheckout = async () => {
+    // Calling a mutation for each item in the cart
+    // Probably better to just create a mutation that
+    // can handle multiple item count adjustments at once
+    for (let i = 0; i < shoppingCart.length; i++) {
+      await removeItemAmount({
+        variables: {
+          itemID: shoppingCart[i].item.id,
+          amountToRemove: shoppingCart[i].count,
+        },
+      });
+    }
+
     setShoppingCart(() => []);
     updateLocalStorage([]);
   };
@@ -101,7 +125,7 @@ export default function StorefrontPage() {
           entries={shoppingCart}
           removeEntry={removeFromShoppingCart}
           setEntryCount={setEntryCount}
-          emptyCart={emptyCart}
+          emptyCart={handleCheckout}
         />
 
         <Typography variant="h5" component="div" sx={{ mb: 2, mt: 8 }}>

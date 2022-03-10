@@ -1,12 +1,10 @@
 import { gql } from "apollo-server-express";
 
 export const EquipmentTypeDefs = gql`
-  scalar DateTime
-
   type Equipment {
     id: ID!
     name: String!
-    room: String!
+    room: Room!
     trainingModules: [TrainingModule]
     addedAt: DateTime!
     inUse: Boolean!
@@ -14,20 +12,21 @@ export const EquipmentTypeDefs = gql`
 
   input EquipmentInput {
     name: String!
-    room: String!
-    trainingModules: [Int]
+    roomID: ID!
+    trainingModules: [ID]
     addedAt: DateTime
     inUse: Boolean = false
   }
 
-  type Query {
-      equipment: [Equipment]
-      trainingModulesByEquipment: [TrainingModule]
+  extend type Query {
+    equipment(id: ID!): Equipment
+    equipments: [Equipment]
+    trainingModulesByEquipment: [TrainingModule]
   }
 
-  type Mutation {
-    addEquipment(Equipment: EquipmentInput): Equipment
-    updateEquipment(Equipment: EquipmentInput): Equipment
-    removeEquipment(EquipmentId: ID!): Equipment
+  extend type Mutation {
+    addEquipment(equipment: EquipmentInput): Equipment
+    updateEquipment(id: ID!, equipment: EquipmentInput): Equipment
+    removeEquipment(id: ID!): Equipment
   }
 `;

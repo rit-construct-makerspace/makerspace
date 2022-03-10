@@ -16,5 +16,5 @@ export interface User{
     college: string
     major: string
     aboutMe: string
-    roomID: number
+    roomID: number;
 }

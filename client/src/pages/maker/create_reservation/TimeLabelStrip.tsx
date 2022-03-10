@@ -4,7 +4,7 @@ import styled from "styled-components";
 const StyledDiv = styled.div<{ marginTop: number }>`
   margin-top: ${(props) => props.marginTop}px;
   margin-right: 10px;
-  color: ${({ theme }) => theme.palette.text.secondary};
+  color: ${({ theme }) => theme.palette.moduleItem.secondary};
 
   .time-label {
     height: 40px;

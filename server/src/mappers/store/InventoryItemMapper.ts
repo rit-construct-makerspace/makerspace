@@ -1,15 +1,15 @@
-import { InventoryItem } from "../../models/store/inventoryItem";
+import { InventoryItem } from "../../schemas/storeFrontSchema";
 
-export function inventoryItemstoDomain(raw: any): InventoryItem[] {
-  const result = raw.map((i: any) => {
-    return singleInventoryItemtoDomain(i);
-  })
-  return result;
+export function inventoryItemsToDomain(raw: any): InventoryItem[] {
+  return raw.map((i: any) => {
+    return singleInventoryItemToDomain(i);
+  });
 }
 
-export function singleInventoryItemtoDomain(raw: any): InventoryItem | null {
-  if (raw === undefined || raw === null) return null;
-  const value: InventoryItem = {
+export function singleInventoryItemToDomain(raw: any): InventoryItem | null {
+  if (!raw) return null;
+
+  return {
     id: raw.id,
     image: raw.image,
     name: raw.name,
@@ -17,8 +17,6 @@ export function singleInventoryItemtoDomain(raw: any): InventoryItem | null {
     pluralUnit: raw.pluralUnit,
     count: raw.count,
     pricePerUnit: raw.pricePerUnit,
-    threshold: raw.threshold
-  }
-  return value;
+    threshold: raw.threshold,
+  };
 }
-
