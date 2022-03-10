@@ -1,4 +1,4 @@
-import { StudentUserInput, User } from "../../schemas/usersSchema";
+import { Privilege, StudentUserInput, User } from "../../schemas/usersSchema";
 import { knex } from "../../db";
 import {
   singleUserToDomain,
@@ -55,6 +55,11 @@ export async function createStudentUser(studentUserInput: StudentUserInput) {
 
 export function updateUser(args: any) {
   throw new Error("Method not implemented.");
+}
+
+export async function setPrivilege(userID: number, privilege: Privilege) {
+  await knex("Users").where({ id: userID }).update({ privilege });
+  return getUserByID(userID);
 }
 
 export function addTrainingToUser(userID: number, trainingModuleID: number) {
