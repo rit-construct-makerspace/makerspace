@@ -1,5 +1,6 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
 import { Privilege, StudentUserInput } from "../schemas/usersSchema";
+import { createHash } from "crypto";
 
 //TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
@@ -15,7 +16,14 @@ const UsersResolvers = {
 
   Mutation: {
     createStudentUser: async (_: any, { user }: { user: StudentUserInput }) => {
-      return await UserRepo.createStudentUser(user);
+      const hashedUniversityID = createHash("sha256")
+        .update(user.universityID)
+        .digest("hex");
+
+      return await UserRepo.createStudentUser({
+        ...user,
+        universityID: hashedUniversityID,
+      });
     },
 
     createFacultyUser: async (_: any, args: any) => {
