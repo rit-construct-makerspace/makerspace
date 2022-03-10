@@ -15,6 +15,7 @@ get users by module
 export async function getUsers(): Promise<User[]> {
   const knexResult = await knex("Users").select(
     "Users.id",
+    "Users.universityID",
     "Users.firstName",
     "Users.lastName",
     "Users.email",
@@ -33,6 +34,7 @@ export async function getUserByID(userID: number): Promise<User | null> {
   const knexResult = await knex("Users")
     .first(
       "Users.id",
+      "Users.universityID",
       "Users.firstName",
       "Users.lastName",
       "Users.email",

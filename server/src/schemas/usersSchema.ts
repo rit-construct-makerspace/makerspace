@@ -10,6 +10,7 @@ export enum Privilege {
 
 export interface User {
   id: number;
+  universityID: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -25,6 +26,7 @@ export interface User {
 }
 
 export interface StudentUserInput {
+  universityID: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -55,9 +57,18 @@ export const UsersTypeDefs = gql`
     major: String
     room: Room
     roomMonitoring: Room
+
+    """
+    The nine digit number encoded in the mag strip of RIT ID cards.
+    Can also be found on the eServices and/or myRIT portals.
+    Sensitive information. Stored as a SHA256 hash in the database.
+    Not to be confused with RIT usernames (ie. abc1234)
+    """
+    universityID: String!
   }
 
   input StudentUserInput {
+    universityID: String!
     firstName: String!
     lastName: String!
     email: String!
