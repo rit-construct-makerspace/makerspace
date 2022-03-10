@@ -6,7 +6,7 @@ import LeftNav from "./left_nav/LeftNav";
 import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
-import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
+import ManageEquipmentPage from "./pages/admin/manage_equipment/ManageEquipmentPage";
 import TrainingModulesPage from "./pages/admin/training_modules/TrainingModulesPage";
 import InventoryPage from "./pages/admin/inventory/InventoryPage";
 import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
@@ -38,10 +38,6 @@ export default function Routes() {
               <CreateReservationPage />
             </Route>
 
-            <Route path="/quiz-builder">
-              <EditModulePage />
-            </Route>
-
             <Route path="/maker/equipment">
               <EquipmentPage isAdmin={false} />
             </Route>
@@ -54,12 +50,16 @@ export default function Routes() {
               <InventoryPreviewPage />
             </Route>
 
-            <Route path="/admin/edit-equipment">
-              <EditEquipmentPage />
+            <Route path="/admin/equipment/:id">
+              <ManageEquipmentPage />
             </Route>
 
             <Route path="/admin/equipment">
               <EquipmentPage isAdmin={true} />
+            </Route>
+
+            <Route path="/admin/training/:id">
+              <EditModulePage />
             </Route>
 
             <Route path="/admin/training">

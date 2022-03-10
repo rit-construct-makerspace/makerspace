@@ -18,6 +18,8 @@ export const UsersTypeDefs = gql`
     college: String
     major: String
     aboutMe: String
+    room: Room
+    roomMonitoring: Room
   }
 
   input StudentUserInput {

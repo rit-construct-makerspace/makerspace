@@ -1,5 +1,27 @@
 import { gql } from "apollo-server-express";
 
+export interface InventoryItem {
+  id: number;
+  image: string;
+  name: string;
+  unit: string;
+  pluralUnit: string;
+  count: number;
+  pricePerUnit: number;
+  threshold: number;
+}
+
+export interface InventoryItemInput {
+  image: string;
+  name: string;
+  labels: string[];
+  unit: string;
+  pluralUnit: string;
+  count: number;
+  pricePerUnit: number;
+  threshold: number;
+}
+
 export const StoreFrontTypeDefs = gql`
   type InventoryItem {
     id: ID!
