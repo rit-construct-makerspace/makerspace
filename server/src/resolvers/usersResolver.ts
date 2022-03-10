@@ -15,18 +15,18 @@ const UsersResolvers = {
     },
 
     Mutation: {
-        addStudentUser: async (_: any, args: any) => {
+        createStudentUser: async (_: any, args: any) => {
           try {
             const ur = new UserRepository();
-            return await ur.addUser(args)
+            return await ur.createUser(args)
           } catch (e) {
             console.log("Error", e)
           }
         },
-        addFacultyUser: async (_: any, args: any) => {
+        createFacultyUser: async (_: any, args: any) => {
           try {
             const ur = new UserRepository();
-            return await ur.addUser(args)
+            return await ur.createUser(args)
           } catch (e) {
             console.log("Error", e)
           }
@@ -53,7 +53,7 @@ const UsersResolvers = {
         addTraining: async (_: any, args: any) => {
           try {
             const ur = new UserRepository();
-            await ur.addTrainingToUser(args)
+            await ur.addTrainingToUser(args.userID, args.trainingModuleID)
           } catch (e) {
             console.log("Error", e)
           }
@@ -62,7 +62,7 @@ const UsersResolvers = {
         removeTraining: async (_: any, args: any) => {
           try {
             const ur = new UserRepository();
-            await ur.removeTrainingFromUser(args)
+            await ur.removeTrainingFromUser(args.userID, args.trainingModuleID)
           } catch (e) {
             console.log("Error", e)
           }
@@ -71,7 +71,7 @@ const UsersResolvers = {
         addHold: async (_: any, args: any) => {
           try {
             const ur = new UserRepository();
-            await ur.addTrainingToUser(args)
+            await ur.addHoldToUser(args.userID, args.holdID)
           } catch (e) {
             console.log("Error", e)
           }
@@ -80,16 +80,16 @@ const UsersResolvers = {
         removeHold: async (_: any, args: any) => {
           try {
             const ur = new UserRepository();
-            await ur.addTrainingToUser(args)
+            await ur.removeHoldFromUser(args.userID, args.holdID)
           } catch (e) {
             console.log("Error", e)
           }
         },
 
-        addDescription: async (_: any, args: any) => {
+        updateAboutMe: async (_: any, args: any) => {
           try {
             const ur = new UserRepository();
-            await ur.addDescriptionToUser(args)
+            await ur.updateAboutMe(args.userID, args.aboutMe)
           } catch (e) {
             console.log("Error", e)
           }

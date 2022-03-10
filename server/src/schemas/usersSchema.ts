@@ -1,5 +1,4 @@
 import { gql } from "apollo-server-express";
-import { HoldsTypeDefs } from "./holdsSchema";
 
 export const UsersTypeDefs = gql`
 
@@ -21,12 +20,6 @@ export const UsersTypeDefs = gql`
     aboutMe: String
     room: Room
     roomMonitoring: Room
-  }
-
-  enum Privilege{
-    MAKER
-    LABBIE
-    ADMIN
   }
 
   input StudentUserInput {
@@ -54,8 +47,8 @@ export const UsersTypeDefs = gql`
   }
 
   type Mutation {
-    addStudentUser(user: StudentUserInput): User
-    addFacultyUser(user: FacultyUserInput): User
+    createStudentUser(user: StudentUserInput): User
+    createFacultyUser(user: FacultyUserInput): User
 
     updateStudentUser(user: StudentUserInput): User
     updateFacultyUser(user: FacultyUserInput): User
@@ -66,7 +59,6 @@ export const UsersTypeDefs = gql`
     addHold(userID: ID!, hold: HoldInput): User
     removeHold(userID: ID!, hold: HoldInput): User
 
-    addDescription(userID: ID!, description: String): User
-
+    updateAboutMe(userID: ID!, aboutMe: String): User
   }
 `;
