@@ -1,5 +1,9 @@
-import { TrainingModule } from "../../models/training/trainingModule";
-import { User } from "../../models/users/user";
+import { StudentUserInput, User } from "../../schemas/usersSchema";
+import { knex } from "../../db";
+import {
+  singleUserToDomain,
+  usersToDomain,
+} from "../../mappers/users/userMapper";
 
 /*
 todo
@@ -8,42 +12,66 @@ search/get users by name
 get users by module
 */
 
-export interface IUserRepo {
-  getUserById(userID: number): Promise<User>;
-  createUser(args: any): Promise<User>;
-  updateUser(args: any): Promise<User>;
-  addTrainingToUser(userID: number, trainingModuleID: number): Promise<User>;
-  removeTrainingFromUser(userID: number, trainingModuleID: number): Promise<void>;
-  addHoldToUser(userID: number, holdID: number): Promise<User>;
-  removeHoldFromUser(userID: number, holdID: number): Promise<void>;
-  updateAboutMe(userID: number, aboutMe: String): Promise<User>;
+export async function getUsers(): Promise<User[]> {
+  const knexResult = await knex("Users").select(
+    "Users.id",
+    "Users.firstName",
+    "Users.lastName",
+    "Users.email",
+    "Users.isStudent",
+    "Users.privilege",
+    "Users.registrationDate",
+    "Users.expectedGraduation",
+    "Users.college",
+    "Users.major"
+  );
 
+  return usersToDomain(knexResult);
 }
 
-export class UserRepository{
-  getUserByID(userID: number): Promise<User> {
-    throw new Error("Method not implemented.");
-  }
-  createUser(args: any) {
-    throw new Error("Method not implemented.");
-  }
-  updateUser(args: any) {
-    throw new Error("Method not implemented.");
-  }
-  addTrainingToUser(userID: number, trainingModuleID: number) {
-    throw new Error("Method not implemented.");
-  }
-  removeTrainingFromUser(userID: number, trainingModuleID: number) {
-    throw new Error("Method not implemented.");
-  }
-  addHoldToUser(userID: number, holdID: number){
-    throw new Error("Method not implemented.");
-  }
-  removeHoldFromUser(userID: number, holdID: number){
-    throw new Error("Method not implemented.");
-  }
-  updateAboutMe(userID: number, aboutMe: String) {
-    throw new Error("Method not implemented.");
-  }
-    
+export async function getUserByID(userID: number): Promise<User | null> {
+  const knexResult = await knex("Users")
+    .first(
+      "Users.id",
+      "Users.firstName",
+      "Users.lastName",
+      "Users.email",
+      "Users.isStudent",
+      "Users.privilege",
+      "Users.registrationDate",
+      "Users.expectedGraduation",
+      "Users.college",
+      "Users.major"
+    )
+    .where("id", userID);
+
+  return singleUserToDomain(knexResult);
+}
+
+export async function createStudentUser(studentUserInput: StudentUserInput) {
+  const [newID] = await knex("Users").insert(studentUserInput, "id");
+  return await getUserByID(newID);
+}
+
+export function updateUser(args: any) {
+  throw new Error("Method not implemented.");
+}
+
+export function addTrainingToUser(userID: number, trainingModuleID: number) {
+  throw new Error("Method not implemented.");
+}
+
+export function removeTrainingFromUser(
+  userID: number,
+  trainingModuleID: number
+) {
+  throw new Error("Method not implemented.");
+}
+
+export function addHoldToUser(userID: number, holdID: number) {
+  throw new Error("Method not implemented.");
+}
+
+export function removeHoldFromUser(userID: number, holdID: number) {
+  throw new Error("Method not implemented.");
 }
