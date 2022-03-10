@@ -1,5 +1,5 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
-import { StudentUserInput } from "../schemas/usersSchema";
+import { Privilege, StudentUserInput } from "../schemas/usersSchema";
 
 //TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
@@ -28,6 +28,13 @@ const UsersResolvers = {
 
     updateStudentUser: async (_: any, args: any) => {
       await UserRepo.updateUser(args);
+    },
+
+    setPrivilege: async (
+      _: any,
+      { userID, privilege }: { userID: number; privilege: Privilege }
+    ) => {
+      return await UserRepo.setPrivilege(userID, privilege);
     },
 
     addTraining: async (_: any, args: any) => {

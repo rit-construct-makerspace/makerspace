@@ -84,6 +84,8 @@ export const UsersTypeDefs = gql`
     updateStudentUser(user: StudentUserInput): User
     updateFacultyUser(user: FacultyUserInput): User
 
+    setPrivilege(userID: ID!, privilege: Privilege): User
+
     addTraining(userID: ID!, moduleID: ID!): User
     removeTraining(userID: ID!, moduleID: ID!): User
 
