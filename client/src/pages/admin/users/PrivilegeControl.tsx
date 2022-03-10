@@ -5,33 +5,47 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
+  Typography,
 } from "@mui/material";
-import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import User from "../../../types/User";
+import Privilege from "../../../types/Privilege";
 
 interface PrivilegeControlProps {
-  user: User;
+  privilege: Privilege;
 }
 
-export default function PrivilegeControl({ user }: PrivilegeControlProps) {
+export default function PrivilegeControl({ privilege }: PrivilegeControlProps) {
   const { user: currentUser } = useCurrentUser();
 
   const isAdmin = currentUser.role === "Admin";
 
   return (
     <>
-      <PageSectionHeader>Access Level</PageSectionHeader>
+      <Typography variant="h6" component="div" mt={6}>
+        Access Level
+      </Typography>
       <FormControl disabled={!isAdmin}>
         <RadioGroup
           row
           aria-labelledby="privilege-level"
           name="privilege-level"
-          value={user.role}
+          value={privilege}
         >
-          <FormControlLabel value="Maker" control={<Radio />} label="Maker" />
-          <FormControlLabel value="Labbie" control={<Radio />} label="Labbie" />
-          <FormControlLabel value="Admin" control={<Radio />} label="Admin" />
+          <FormControlLabel
+            value={Privilege.MAKER}
+            control={<Radio />}
+            label="Maker"
+          />
+          <FormControlLabel
+            value={Privilege.LABBIE}
+            control={<Radio />}
+            label="Labbie"
+          />
+          <FormControlLabel
+            value={Privilege.ADMIN}
+            control={<Radio />}
+            label="Admin"
+          />
         </RadioGroup>
       </FormControl>
       {!isAdmin && (

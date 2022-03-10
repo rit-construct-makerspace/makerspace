@@ -1,22 +1,17 @@
 import React from "react";
 import { Avatar, Card, CardActionArea, Stack, Typography } from "@mui/material";
-import { useHistory } from "react-router-dom";
 import { PartialUser } from "../../../queries/getUsers";
 import PrivilegeChip from "./PrivilegeChip";
 
 interface UserCardProps {
   user: PartialUser;
+  onClick: () => void;
 }
 
-export default function UserCard({ user }: UserCardProps) {
-  const history = useHistory();
-
+export default function UserCard({ user, onClick }: UserCardProps) {
   return (
     <Card elevation={2} sx={{ mr: 2, mb: 2 }}>
-      <CardActionArea
-        sx={{ p: 2, height: "100%" }}
-        onClick={() => history.push(`/admin/manage-user?user-id=${user.id}`)}
-      >
+      <CardActionArea sx={{ p: 2, height: "100%" }} onClick={onClick}>
         <Stack alignItems="center" spacing={1.5} height="100%">
           <Avatar
             alt=""
