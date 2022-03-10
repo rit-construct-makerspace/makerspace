@@ -20,7 +20,8 @@ export function singleUserToDomain(raw: any): User | null {
     year: raw.year,
     college: raw.college,
     major: raw.major,
-    aboutMe: raw.aboutMe
+    aboutMe: raw.aboutMe,
+    roomID: raw.roomID
   }
   return value;
 }
