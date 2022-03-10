@@ -19,7 +19,7 @@ const StyledInfo = styled.div`
   row-gap: 32px;
 `;
 
-const GET_USER = gql`
+export const GET_USER = gql`
   query GetUser($id: ID!) {
     user(id: $id) {
       id
@@ -85,7 +85,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               <InfoBlob label="College" value={user.college} />
             </StyledInfo>
 
-            <PrivilegeControl privilege={user.privilege} />
+            <PrivilegeControl userID={user.id} privilege={user.privilege} />
 
             <Typography variant="h6" component="div" mt={6} mb={1}>
               Account Holds
