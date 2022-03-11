@@ -5,7 +5,7 @@ import { v4 as uuid } from "uuid";
 import assert from "assert";
 import fs from "fs";
 import express from "express";
-import { setupSerializeAndDeserialize, connectPassport, mockUser, MockStrategy } from "passport-mock-strategy";
+import { MockStrategy, } from "passport-mock-strategy";
 
 // for serializeUser, some dude on the defintlyTyped discord told me to override the global Express.User like:
 declare global {
@@ -19,11 +19,10 @@ declare global {
 }
 
 export function setupMockAuth(app: express.Application) {
-
   app.use(
     session({
       genid: (req) => uuid(),
-      secret: 'mock-secret',
+      secret: "mock-secret",
     })
   );
 
@@ -32,22 +31,22 @@ export function setupMockAuth(app: express.Application) {
 
   // override values on this object to match what mock user you want
   const customUserObject = {
-    id: '12345',
-    name: 'Adam Savage',
-    role: 'labbie'
-  }
+    id: "12345",
+    name: "Adam Savage",
+    role: "labbie",
+  };
 
-  passport.use(new MockStrategy({
-    // @ts-ignore
-    user: customUserObject
-  }));
+  passport.use(
+    new MockStrategy({
+      // @ts-ignore
+      user: customUserObject,
+    })
+  );
 
-  app.get('/auth/mock',
-    passport.authenticate('mock'),
-    (req, res) => {
-      console.log('Mock Authenticating')
-      res.redirect('/')
-    });
+  app.get("/auth/mock", passport.authenticate("mock"), (req, res) => {
+    console.log("Mock Authenticating");
+    res.redirect("/");
+  });
 
   passport.serializeUser(function (user, done) {
     done(null, user);
@@ -76,7 +75,7 @@ export function setupAuth(app: express.Application) {
       secret: secret,
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: true }  // this will make cookies send only over https
+      cookie: { secure: true }, // this will make cookies send only over https
     })
   );
 
@@ -91,6 +90,7 @@ export function setupAuth(app: express.Application) {
     cert: fs.readFileSync(process.cwd() + "/cert/idp_cert.pem", "utf8"),
     validateInResponseTo: false,
     disableRequestedAuthnContext: true,
+    acceptedClockSkewMs: -1, // SAML assertion not yet valid fix
   };
 
   const samlStrategy = new SamlStrategy(
@@ -110,7 +110,11 @@ export function setupAuth(app: express.Application) {
   });
 
   passport.deserializeUser((nameID, done) => {
-    const matchingUser = { id: 1, username: "test user", nameID: "fdsfgsdfgsdfg" }; // TODO: fake user that everyone gets until we have a user repo and user type
+    const matchingUser = {
+      id: 1,
+      username: "test user",
+      nameID: "fdsfgsdfgsdfg",
+    }; // TODO: fake user that everyone gets until we have a user repo and user type
     done(null, matchingUser);
   });
 
@@ -149,4 +153,4 @@ export function setupAuth(app: express.Application) {
         )
       );
   });
-};
+}
