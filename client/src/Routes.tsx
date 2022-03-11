@@ -14,7 +14,6 @@ import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
 import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
-import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
@@ -88,10 +87,6 @@ export default function Routes() {
 
             <Route path="/admin/people">
               <UsersPage />
-            </Route>
-
-            <Route path="/admin/manage-user">
-              <ManageUserPage />
             </Route>
 
             <Route path="/admin/audit">
