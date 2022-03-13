@@ -1,7 +1,11 @@
 import { gql } from "apollo-server-express";
 
-export const HoldsTypeDefs = gql`
+export interface Hold {
+  id: number;
+  description: String;
+}
 
+export const HoldsTypeDefs = gql`
   enum HoldType {
     INCOMPLETE_TRAINING
     SAFETY_VIOLATION
@@ -29,6 +33,6 @@ export const HoldsTypeDefs = gql`
   }
 
   type Query {
-      holds: [Hold]
+    holds: [Hold]
   }
 `;

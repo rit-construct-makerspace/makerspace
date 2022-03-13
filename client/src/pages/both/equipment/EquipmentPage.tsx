@@ -1,55 +1,13 @@
 import React from "react";
-import {
-  Button,
-  Checkbox,
-  Divider,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  Stack,
-} from "@mui/material";
+import { Button, Grid, Stack } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import MachineCard from "./MachineCard";
+import EquipmentCard from "./EquipmentCard";
 import { useHistory } from "react-router-dom";
-
-const Categories = [
-  {
-    label: "Wood",
-    count: 15,
-  },
-  {
-    label: "CNC Machining",
-    count: 11,
-  },
-  {
-    label: "Post Processing",
-    count: 11,
-  },
-  {
-    label: "Pre Processing",
-    count: 9,
-  },
-  {
-    label: "Plastics",
-    count: 8,
-  },
-];
-
-interface FilterCheckboxProps {
-  label: string;
-  count: number;
-}
-
-function FilterCheckbox({ label, count }: FilterCheckboxProps) {
-  return (
-    <FormControlLabel
-      control={<Checkbox size="small" sx={{ my: -0.5 }} />}
-      label={`${label} (${count})`}
-      sx={{ color: "text.secondary" }}
-    />
-  );
-}
+import { useQuery } from "@apollo/client";
+import GET_EQUIPMENTS from "../../../queries/getEquipments";
+import { NameAndID } from "../../admin/manage_equipment/ManageEquipmentPage";
+import RequestWrapper from "../../../common/RequestWrapper";
 
 interface MakerEquipmentPageProps {
   isAdmin: boolean;
@@ -58,58 +16,34 @@ interface MakerEquipmentPageProps {
 export default function EquipmentPage({ isAdmin }: MakerEquipmentPageProps) {
   const history = useHistory();
 
-  const machineCardLink = isAdmin
-    ? "/admin/edit-equipment"
-    : "/create-reservation";
+  const getEquipmentsResult = useQuery(GET_EQUIPMENTS);
+
+  const url = isAdmin ? "/admin/equipment/" : "/create-reservation/";
 
   return (
-    <Page title="Equipment">
-      <Stack direction="row" spacing={2}>
-        <SearchBar placeholder="Search equipment" />
-        {isAdmin && (
-          <Button
-            variant="contained"
-            onClick={() => history.push("/admin/edit-equipment")}
-          >
-            + Add Equipment
-          </Button>
-        )}
-      </Stack>
+    <RequestWrapper
+      loading={getEquipmentsResult.loading}
+      error={getEquipmentsResult.error}
+    >
+      <Page title="Equipment">
+        <Stack direction="row" spacing={2}>
+          <SearchBar placeholder="Search equipment" />
+          {isAdmin && (
+            <Button
+              variant="contained"
+              onClick={() => history.push("/admin/equipment/new")}
+            >
+              + Add Equipment
+            </Button>
+          )}
+        </Stack>
 
-      <Stack
-        direction="row"
-        divider={<Divider orientation="vertical" flexItem />}
-        paddingTop={2}
-      >
-        <FormGroup sx={{ flexShrink: 0 }}>
-          {Categories.map((category) => (
-            <FilterCheckbox label={category.label} count={category.count} />
+        <Grid container spacing={2} mt={2}>
+          {getEquipmentsResult.data?.equipments.map((e: NameAndID) => (
+            <EquipmentCard key={e.id} name={e.name} to={url + e.id} />
           ))}
-        </FormGroup>
-
-        <Grid container paddingX={2} spacing={2}>
-          <MachineCard
-            name={"ROBOTEC 1325"}
-            category={"CNC Machining"}
-            to={machineCardLink}
-          />
-          <MachineCard
-            name={"ROBOTEC 1325"}
-            category={"CNC Machining"}
-            to={machineCardLink}
-          />
-          <MachineCard
-            name={"ROBOTEC 1325"}
-            category={"CNC Machining"}
-            to={machineCardLink}
-          />
-          <MachineCard
-            name={"ROBOTEC 1325"}
-            category={"CNC Machining"}
-            to={machineCardLink}
-          />
         </Grid>
-      </Stack>
-    </Page>
+      </Page>
+    </RequestWrapper>
   );
 }

@@ -1,15 +1,21 @@
 import { Knex } from "knex";
 
-
 export async function up(knex: Knex): Promise<void> {
+  knex.schema.hasTable("Equipment").then(function (exists) {
+    if (!exists) return;
+
     return knex.schema.alterTable("Equipment", function (t) {
-        t.integer("roomID").references("id").inTable("Rooms").nullable().defaultTo(null);
+      t.integer("roomID").references("id").inTable("Rooms");
     });
+  });
 }
 
 export async function down(knex: Knex): Promise<void> {
-    return knex.schema.alterTable("Equipment", function (t) {
-        t.dropColumn("roomID");
-    });
-}
+  knex.schema.hasTable("Users").then(function (exists) {
+    if (!exists) return;
 
+    return knex.schema.alterTable("users", function (t) {
+      t.dropColumn("roomID");
+    });
+  });
+}

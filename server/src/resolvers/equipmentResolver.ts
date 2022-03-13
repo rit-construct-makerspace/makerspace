@@ -1,20 +1,20 @@
 import { EquipmentInput } from "../models/equipment/equipmentInput";
-import { ReservationInput } from "../models/equipment/reservationInput";
 import { EquipmentRepository } from "../repositories/Equipment/EquipmentRepository";
 import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
+import { Equipment } from "../models/equipment/equipment";
+import { RoomRepo } from "../repositories/Rooms/RoomRepository";
 
 const equipmentRepo = new EquipmentRepository();
 const reservationRepo = new ReservationRepository();
 
 const EquipmentResolvers = {
-
   Query: {
     equipments: async (_: any, args: any, context: any) => {
       return await equipmentRepo.getEquipments();
     },
 
-    equipment: async (_: any, args: { Id: number }, context: any) => {
-      return await equipmentRepo.getEquipmentById(args.Id);
+    equipment: async (_: any, args: { id: number }, context: any) => {
+      return await equipmentRepo.getEquipmentById(args.id);
     },
 
     reservations: async (_: any, args: { Id: number }, context: any) => {
@@ -25,43 +25,40 @@ const EquipmentResolvers = {
       return await reservationRepo.getReservationById(args.Id);
     },
 
-    trainingModulesByEquipment: async (_: any, args: { Id: number }, context: any) => {
+    trainingModulesByEquipment: async (
+      _: any,
+      args: { Id: number },
+      context: any
+    ) => {
       return await equipmentRepo.getTrainingModules(args.Id);
-    }
+    },
   },
 
   Equipment: {
-    trainingModules: (parent: any) => {
+    room: (parent: Equipment) => {
+      return new RoomRepo().getRoomByID(parent.roomID);
+    },
+
+    trainingModules: (parent: Equipment) => {
       return equipmentRepo.getTrainingModules(parent.id);
-    }
+    },
   },
 
   Mutation: {
-
     addEquipment: async (_: any, args: { equipment: EquipmentInput }) => {
       return await equipmentRepo.addEquipment(args.equipment);
     },
 
-    updateEquipment: async (_: any, args: { id: number, equipment: EquipmentInput }) => {
+    updateEquipment: async (
+      _: any,
+      args: { id: number; equipment: EquipmentInput }
+    ) => {
       return await equipmentRepo.updateEquipment(args.id, args.equipment);
     },
 
     removeEquipment: async (_: any, args: { id: number }) => {
       return await equipmentRepo.removeEquipment(args.id);
     },
-
-    addReservation: async (_: any, args: { reservation: ReservationInput }) => {
-      return await reservationRepo.addReservation(args.reservation);
-    },
-
-    updateReservation: async (_: any, args: { id: number, reservation: ReservationInput }) => {
-      return await reservationRepo.updateReservation(args.id, args.reservation);
-    },
-
-    removeReservation: async (_: any, args: { id: number }) => {
-      return await reservationRepo.removeReservation(args.id);
-    }
-
   },
 };
 
