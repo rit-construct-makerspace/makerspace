@@ -1,17 +1,16 @@
-import {Room} from "../../models/rooms/room";
+import { Room } from "../../models/rooms/room";
 
 export function roomsToDomain(raw: any): Room[] {
-    const result = raw.map((i: any) => {
-        return singleRoomToDomain(i);
-    })
-    return result;
+  return raw.map((i: any) => {
+    return singleRoomToDomain(i);
+  });
 }
 
 export function singleRoomToDomain(raw: any): Room | null {
-    if (raw === undefined || raw === null) return null;
-    const value: Room = {
-        id: raw.id,
-        name: raw.name,
-    }
-    return value;
+  if (!raw) return null;
+
+  return {
+    id: parseInt(raw.id),
+    name: raw.name,
+  };
 }

@@ -60,7 +60,7 @@ export default function TrainingModulesPage() {
           sx={{ width: "100%", mt: 2 }}
           divider={<Divider flexItem />}
         >
-          {getModuleResults.data?.modules?.map(
+          {getModuleResults.data?.trainingModules?.map(
             (m: { id: number; name: string }) => (
               <TrainingModule key={m.id} id={m.id} title={m.name} />
             )

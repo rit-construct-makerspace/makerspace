@@ -1,102 +1,66 @@
-import {UserRepository} from "../repositories/Users/UserRepository";
+import * as UserRepo from "../repositories/Users/UserRepository";
+import { Privilege, StudentUserInput } from "../schemas/usersSchema";
+import { createHash } from "crypto";
 
 //TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
-    Query: {
-      user: async (_: any, args: any, context: any) => {
-        try {
-          const ur = new UserRepository();
-          return await ur.getUserByID(args.id);
-          //multiple users?
-        } catch (e) {
-          console.log("Error:", e);
-        }
-      },
+  Query: {
+    users: async () => {
+      return await UserRepo.getUsers();
     },
 
-    Mutation: {
-        addStudentUser: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            return await ur.addUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        },
-        addFacultyUser: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            return await ur.addUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        },
+    user: async (_: any, args: { id: number }) => {
+      return await UserRepo.getUserByID(args.id);
+    },
+  },
 
-        updateFacultyUser: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            await ur.updateUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        },
+  Mutation: {
+    createStudentUser: async (_: any, { user }: { user: StudentUserInput }) => {
+      const hashedUniversityID = createHash("sha256")
+        .update(user.universityID)
+        .digest("hex");
 
-        updateStudentUser: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            await ur.updateUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        },
-    
-        addTraining: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            await ur.addTrainingToUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        },
+      return await UserRepo.createStudentUser({
+        ...user,
+        universityID: hashedUniversityID,
+      });
+    },
 
-        removeTraining: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            await ur.removeTrainingFromUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        },
+    createFacultyUser: async (_: any, args: any) => {
+      return UserRepo.createStudentUser(args);
+    },
 
-        addHold: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            await ur.addTrainingToUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        },
+    updateFacultyUser: async (_: any, args: any) => {
+      await UserRepo.updateUser(args);
+    },
 
-        removeHold: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            await ur.addTrainingToUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        },
+    updateStudentUser: async (_: any, args: any) => {
+      await UserRepo.updateUser(args);
+    },
 
-        addDescription: async (_: any, args: any) => {
-          try {
-            const ur = new UserRepository();
-            await ur.addDescriptionToUser(args)
-          } catch (e) {
-            console.log("Error", e)
-          }
-        }
-      }
-        
-        
+    setPrivilege: async (
+      _: any,
+      { userID, privilege }: { userID: number; privilege: Privilege }
+    ) => {
+      return await UserRepo.setPrivilege(userID, privilege);
+    },
+
+    addTraining: async (_: any, args: any) => {
+      await UserRepo.addTrainingToUser(args.userID, args.trainingModuleID);
+    },
+
+    removeTraining: async (_: any, args: any) => {
+      await UserRepo.removeTrainingFromUser(args.userID, args.trainingModuleID);
+    },
+
+    addHold: async (_: any, args: any) => {
+      await UserRepo.addHoldToUser(args.userID, args.holdID);
+    },
+
+    removeHold: async (_: any, args: any) => {
+      await UserRepo.removeHoldFromUser(args.userID, args.holdID);
+    },
+  },
 };
 
 export default UsersResolvers;

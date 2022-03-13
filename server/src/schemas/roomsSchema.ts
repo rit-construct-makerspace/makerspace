@@ -1,7 +1,6 @@
 import { gql } from "apollo-server-express";
 
 export const RoomTypeDefs = gql`
-
   type Room {
     id: ID!
     name: String!
@@ -13,7 +12,7 @@ export const RoomTypeDefs = gql`
   input RoomInput {
     name: String!
   }
-  
+
   type Query {
     rooms: [Room]
     room(roomID: ID!): Room
@@ -24,15 +23,15 @@ export const RoomTypeDefs = gql`
   type Mutation {
     addRoom(room: RoomInput): Room
     removeRoom(roomID: ID!): Room
-    
+
     updateRoomName(roomID: ID!, name: String): Room
-    
+
     addEquipmentToRoom(roomID: ID!, equipmentID: ID!): Room
     removeEquipmentFromRoom(roomID: ID!, equipmentID: ID!): Room
-    
+
     addUserToRoom(roomID: ID!, userID: ID!): Room
     removeUserFromRoom(roomID: ID!, userID: ID!): Room
-    
+
     addLabbieToMonitorRoom(roomID: ID!, labbieID: ID!): Room
     removeLabbieFromMonitorRoom(roomID: ID!, labbieID: ID!): Room
   }

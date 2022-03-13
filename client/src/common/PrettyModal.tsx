@@ -24,6 +24,8 @@ export default function PrettyModal({
           transform: "translate(-50%, -50%)",
           width,
           boxShadow: 24,
+          maxHeight: "calc(100vh - 64px)",
+          overflowY: "auto",
           p: 4,
         }}
       >

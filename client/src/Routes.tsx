@@ -6,7 +6,7 @@ import LeftNav from "./left_nav/LeftNav";
 import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
-import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
+import ManageEquipmentPage from "./pages/admin/manage_equipment/ManageEquipmentPage";
 import TrainingModulesPage from "./pages/admin/training_modules/TrainingModulesPage";
 import InventoryPage from "./pages/admin/inventory/InventoryPage";
 import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
@@ -14,7 +14,6 @@ import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
 import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
-import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
@@ -50,8 +49,8 @@ export default function Routes() {
               <InventoryPreviewPage />
             </Route>
 
-            <Route path="/admin/edit-equipment">
-              <EditEquipmentPage />
+            <Route path="/admin/equipment/:id">
+              <ManageEquipmentPage />
             </Route>
 
             <Route path="/admin/equipment">
@@ -88,10 +87,6 @@ export default function Routes() {
 
             <Route path="/admin/people">
               <UsersPage />
-            </Route>
-
-            <Route path="/admin/manage-user">
-              <ManageUserPage />
             </Route>
 
             <Route path="/admin/audit">
