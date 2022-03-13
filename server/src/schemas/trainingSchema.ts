@@ -12,8 +12,10 @@ export enum QuestionType {
 
 export interface Question {
   id: number | undefined;
+  moduleId?: number;
   text: string;
   type: QuestionType;
+  order: number;
 }
 
 export interface Option {
@@ -65,6 +67,7 @@ export const TrainingTypeDefs = gql`
   input QuestionInput {
     text: String!
     type: QuestionType!
+    order: Int
   }
 
   input QuestionOptionInput {

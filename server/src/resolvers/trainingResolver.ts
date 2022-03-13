@@ -49,19 +49,19 @@ const TrainingResolvers = {
       questions. They can be also be text, YouTube embeds, or image URLs.
      */
 
-    addQuestion: (_: any, args: any) =>
-      QuestionRepo.addQuestion(args.module_id, {
+    addQuestion: async (_: any, args: any) =>
+      await QuestionRepo.addQuestion(args.module_id, {
         text: args.question.text,
-        type: args.question.type,
-        id: undefined,
+        type: args.question.type
       }),
 
-    updateQuestion: (_: any, args: any) =>
-      QuestionRepo.updateQuestion(args.id, args.question),
-
-    deleteQuestion: async (_: any, args: { id: number }) => {
-      await QuestionRepo.deleteQuestion(args.id);
+    updateQuestion: async (_: any, args: any) => {
+      await QuestionRepo.updateQuestion(args.id, args.question)
+      return await QuestionRepo.getQuestion(args.id)
     },
+
+    deleteQuestion: async (_: any, args: { id: number }) =>
+      await QuestionRepo.deleteQuestion(args.id),
 
     /*
     Question Options

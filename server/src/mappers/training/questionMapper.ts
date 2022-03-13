@@ -12,8 +12,10 @@ export function singleQuestionToDomain(raw: any): Question | null {
   }
   const value: Question = {
     id: raw.id,
+    moduleId: raw.module,
     type: raw.questionType,
     text: raw.text,
+    order: raw.order
   }
   return value;
 }

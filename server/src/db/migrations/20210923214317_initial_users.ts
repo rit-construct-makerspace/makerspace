@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     knex.schema.hasTable('Users').then(function(exists) {
         if (!exists) {
           return knex.schema.createTable('Users', function(t) {
-            t.increments('id');
+            t.increments('id').primary();
             t.string('first_name', 100);
             t.string('last_name', 100);
             t.text('email').unique();

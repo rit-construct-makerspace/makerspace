@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
     return knex.schema.hasTable('Equipment').then(function(exists) {
       if (!exists) {
         return knex.schema.createTable('Equipment', function (t) {
-          t.increments('id');
+          t.increments('id').primary();
           t.string('name', 50);
           t.timestamp('addedAt').defaultTo(knex.fn.now());
           t.boolean('inUse').defaultTo(false);          
@@ -16,7 +16,7 @@ export async function up(knex: Knex): Promise<void> {
       const exists = await knex.schema.hasTable('ModulesForEquipment');
       if (!exists) {
         return knex.schema.createTable('LabelsForEquipment', function (t) {
-          t.increments('id');
+          t.increments('id').primary();
           t.integer('equipmentId').references('id').inTable('Equipment');
           t.integer('trainingModuleId').references('id').inTable('TrainingModule');
         });
@@ -25,7 +25,7 @@ export async function up(knex: Knex): Promise<void> {
       const exists = await knex.schema.hasTable('Reservations');
       if (!exists) {
         return knex.schema.createTable('Reservations', function (t) {
-          t.increments('id');
+          t.increments('id').primary();
           t.integer('userId').references('id').inTable('Users');
           t.integer('equipmentId').references('id').inTable('Equipment');
           t.timestamp('createdAt').defaultTo(knex.fn.now());
