@@ -43,7 +43,7 @@ const AuditLogResolvers = {
 
     Mutation: {
 
-        addLog: async (_: any, args: any) => {
+        addLog: async (args: any) => {
             try {
                 return await alr.addLog(args.log);
             } catch (e) {
