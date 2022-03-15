@@ -19,6 +19,7 @@ export const AuditLogsTypeDefs = gql`
     TRAINING_MANAGEMENT
     EQUIPMENT_MANAGEMENT
     USER_MANAGEMENT
+    ROOM_MANAGEMENT
   }
 
   input LogInput {

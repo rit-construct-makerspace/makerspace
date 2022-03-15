@@ -2,6 +2,9 @@ import { Module } from "../models/training/module";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import { OptionRepo } from "../repositories/Training/optionRepo";
 import * as QuestionRepo from "../repositories/Training/questionRepo";
+import {AuditLogsInput} from "../models/auditLogs/auditLogsInput";
+import {EventType} from "../models/auditLogs/eventTypes";
+import AuditLogResolvers from "./auditLogsResolver";
 
 const TrainingResolvers = {
   Query: {
@@ -18,10 +21,25 @@ const TrainingResolvers = {
     Modules
      */
 
-    createModule: async (_: any, args: any) =>
-      await Module.create(args.name, []),
+    createModule: async (_: any, args: any) => {
+      let logInput: AuditLogsInput = {
+        userID: 0,
+        eventType: EventType.TRAINING_MANAGEMENT,
+        description: "Added training modules"
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
+
+      await Module.create(args.name, []);
+    },
 
     updateModule: async (_: any, args: any) => {
+      let logInput: AuditLogsInput = {
+        userID: 0,
+        eventType: EventType.TRAINING_MANAGEMENT,
+        description: "Updated training modules"
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
+
       const mod = await ModuleRepo.getModuleById(args.id);
       mod.updateName(args.name);
       await ModuleRepo.save(mod);
@@ -29,6 +47,13 @@ const TrainingResolvers = {
     },
 
     deleteModule: async (_: any, args: { id: number }) => {
+      let logInput: AuditLogsInput = {
+        userID: 0,
+        eventType: EventType.TRAINING_MANAGEMENT,
+        description: "Removed training modules"
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
+
       await ModuleRepo.deleteModuleById(args.id);
     },
 

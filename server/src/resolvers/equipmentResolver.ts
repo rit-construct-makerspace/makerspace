@@ -3,6 +3,9 @@ import { EquipmentRepository } from "../repositories/Equipment/EquipmentReposito
 import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
 import { Equipment } from "../models/equipment/equipment";
 import { RoomRepo } from "../repositories/Rooms/RoomRepository";
+import {AuditLogsInput} from "../models/auditLogs/auditLogsInput";
+import {EventType} from "../models/auditLogs/eventTypes";
+import AuditLogResolvers from "./auditLogsResolver";
 
 const equipmentRepo = new EquipmentRepository();
 const reservationRepo = new ReservationRepository();
@@ -45,7 +48,14 @@ const EquipmentResolvers = {
   },
 
   Mutation: {
-    addEquipment: async (_: any, args: { equipment: EquipmentInput }) => {
+    addEquipment: async (_: any, args: { equipment: EquipmentInput }, context: any) => {
+      let logInput: AuditLogsInput = {
+        userID: 0,
+        eventType: EventType.EQUIPMENT_MANAGEMENT,
+        description: "Added new equipment " + args.equipment.name
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
+
       return await equipmentRepo.addEquipment(args.equipment);
     },
 
@@ -53,10 +63,24 @@ const EquipmentResolvers = {
       _: any,
       args: { id: number; equipment: EquipmentInput }
     ) => {
+      let logInput: AuditLogsInput = {
+        userID: 0,
+        eventType: EventType.EQUIPMENT_MANAGEMENT,
+        description: "Updated equipment " + args.equipment.name
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
+
       return await equipmentRepo.updateEquipment(args.id, args.equipment);
     },
 
     removeEquipment: async (_: any, args: { id: number }) => {
+      let logInput: AuditLogsInput = {
+        userID: 0,
+        eventType: EventType.EQUIPMENT_MANAGEMENT,
+        description: "Removed equipment #" + args.id
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
+
       return await equipmentRepo.removeEquipment(args.id);
     },
   },

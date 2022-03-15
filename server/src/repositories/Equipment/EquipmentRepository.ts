@@ -52,14 +52,6 @@ export class EquipmentRepository implements IEquipmentRepository {
       .where({ equipmentId: id })
       .del();
     await this.queryBuilder("Equipment").where({ id: id }).del();
-
-    let logInput: AuditLogsInput = {
-      userID: 0,
-      eventType: EventType.EQUIPMENT_MANAGEMENT,
-      description: "Removed equipment #" + id
-    }
-    await AuditLogResolvers.Mutation.addLog(logInput);
-
   }
 
   public async getEquipments(): Promise<Equipment[]> {
@@ -100,14 +92,6 @@ export class EquipmentRepository implements IEquipmentRepository {
         trainingModuleId: trainingModule,
       }))
     );
-
-    let logInput: AuditLogsInput = {
-      userID: 0,
-      eventType: EventType.TRAINING_MANAGEMENT,
-      description: "Added training modules"
-    }
-    await AuditLogResolvers.Mutation.addLog(logInput);
-
   }
 
   public async removeTrainingModulesFromEquipment(
@@ -118,14 +102,6 @@ export class EquipmentRepository implements IEquipmentRepository {
       .where("equipmentId", "=", id)
       .whereIn("trainingModuleId", trainingModules)
       .del();
-
-    let logInput: AuditLogsInput = {
-      userID: 0,
-      eventType: EventType.TRAINING_MANAGEMENT,
-      description: "Removed training modules"
-    }
-    await AuditLogResolvers.Mutation.addLog(logInput);
-
   }
 
   public async updateTrainingModules(
@@ -138,14 +114,6 @@ export class EquipmentRepository implements IEquipmentRepository {
     if (trainingModules && trainingModules.length > 0) {
       await this.addTrainingModulesToEquipment(id, trainingModules);
     }
-
-    let logInput: AuditLogsInput = {
-      userID: 0,
-      eventType: EventType.TRAINING_MANAGEMENT,
-      description: "Updated training modules"
-    }
-    await AuditLogResolvers.Mutation.addLog(logInput);
-
   }
 
   public async updateEquipment(
@@ -162,13 +130,6 @@ export class EquipmentRepository implements IEquipmentRepository {
       .then(async () => {
         await this.updateTrainingModules(id, equipment.trainingModules);
       });
-
-    let logInput: AuditLogsInput = {
-      userID: 0,
-      eventType: EventType.EQUIPMENT_MANAGEMENT,
-      description: "Updated equipment " + equipment.name
-    }
-    await AuditLogResolvers.Mutation.addLog(logInput);
 
     return this.getEquipmentById(id);
   }
@@ -191,13 +152,6 @@ export class EquipmentRepository implements IEquipmentRepository {
         newId,
         equipment.trainingModules
       );
-
-    let logInput: AuditLogsInput = {
-      userID: 0,
-      eventType: EventType.EQUIPMENT_MANAGEMENT,
-      description: "Add new equipment " + equipment.name
-    }
-    await AuditLogResolvers.Mutation.addLog(logInput);
 
     return await this.getEquipmentById(newId);
   }
