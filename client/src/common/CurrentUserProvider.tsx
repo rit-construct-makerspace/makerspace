@@ -1,5 +1,14 @@
 import React, { createContext, ReactNode, useContext } from "react";
 import User from "../types/User";
+import { gql, useQuery } from "@apollo/client";
+
+const GET_CURRENT_USER = gql`
+  query GetCurrentUser {
+    currentUser {
+      id
+    }
+  }
+`;
 
 const CurrentUserContext = createContext<{ user: User } | undefined>(undefined);
 
@@ -18,6 +27,10 @@ export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
       role: "Admin",
     },
   };
+
+  const { loading, error, data } = useQuery(GET_CURRENT_USER);
+
+  console.log(data);
 
   return (
     <CurrentUserContext.Provider value={value}>

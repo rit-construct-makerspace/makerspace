@@ -86,6 +86,7 @@ export const UsersTypeDefs = gql`
   extend type Query {
     users: [User]
     user(id: ID!): User
+    currentUser: User
   }
 
   extend type Mutation {

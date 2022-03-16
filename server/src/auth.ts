@@ -5,7 +5,7 @@ import { v4 as uuid } from "uuid";
 import assert from "assert";
 import fs from "fs";
 import express from "express";
-import { MockStrategy, } from "passport-mock-strategy";
+import { MockStrategy } from "passport-mock-strategy";
 
 // for serializeUser, some dude on the defintlyTyped discord told me to override the global Express.User like:
 declare global {
@@ -59,15 +59,22 @@ export function setupMockAuth(app: express.Application) {
 }
 
 export function setupAuth(app: express.Application) {
+  if (process.env.MOCK_AUTH === "TRUE") {
+    setupMockAuth(app);
+    return;
+  }
+
   const secret = process.env.SESSION_SECRET;
   const issuer = process.env.ISSUER;
   const callback = process.env.CALLBACK_URL;
   const entryPoint = process.env.ENTRY_POINT;
+  const reactAppUrl = process.env.REACT_APP_URL;
 
   assert(secret, "SESSION_SECRET env value is null");
   assert(issuer, "ISSUER env value is null");
   assert(callback, "CALLBACK_URL env value is null");
   assert(entryPoint, "ENTRY_POINT env value is null");
+  assert(reactAppUrl, "REACT_APP_URL env value is null");
 
   app.use(
     session({
@@ -90,7 +97,7 @@ export function setupAuth(app: express.Application) {
     cert: fs.readFileSync(process.cwd() + "/cert/idp_cert.pem", "utf8"),
     validateInResponseTo: false,
     disableRequestedAuthnContext: true,
-    acceptedClockSkewMs: -1, // SAML assertion not yet valid fix
+    acceptedClockSkewMs: -1, // "SAML assertion not yet valid" fix
   };
 
   const samlStrategy = new SamlStrategy(
@@ -110,11 +117,12 @@ export function setupAuth(app: express.Application) {
   });
 
   passport.deserializeUser((nameID, done) => {
+    console.log("deserializing user");
     const matchingUser = {
       id: 1,
       username: "test user",
       nameID: "fdsfgsdfgsdfg",
-    }; // TODO: fake user that everyone gets until we have a user repo and user type
+    };
     done(null, matchingUser);
   });
 
@@ -125,18 +133,18 @@ export function setupAuth(app: express.Application) {
 
   app.get(
     "/login",
-    passport.authenticate("saml", { failureRedirect: "/login/fail" }),
-    function (req, res) {
-      res.redirect("/");
-    }
+    passport.authenticate("saml", {
+      successRedirect: reactAppUrl,
+      failureRedirect: "/login/fail",
+    })
   );
 
   app.post(
     "/login/callback",
-    passport.authenticate("saml", { failureRedirect: "/login/fail" }),
-    function (req, res) {
-      res.redirect("/");
-    }
+    passport.authenticate("saml", {
+      successRedirect: reactAppUrl,
+      failureRedirect: "/login/fail",
+    })
   );
 
   app.get("/login/fail", function (req, res) {

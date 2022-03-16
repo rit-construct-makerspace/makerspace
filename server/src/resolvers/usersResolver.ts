@@ -12,6 +12,11 @@ const UsersResolvers = {
     user: async (_: any, args: { id: number }) => {
       return await UserRepo.getUserByID(args.id);
     },
+
+    currentUser: async (parent: any, args: any, context: any) => {
+      console.log(context.getUser());
+      return null;
+    },
   },
 
   Mutation: {
