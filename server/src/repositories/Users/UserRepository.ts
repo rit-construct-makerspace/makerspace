@@ -13,45 +13,31 @@ get users by module
 */
 
 export async function getUsers(): Promise<User[]> {
-  const knexResult = await knex("Users").select(
-    "Users.id",
-    "Users.universityID",
-    "Users.firstName",
-    "Users.lastName",
-    "Users.email",
-    "Users.isStudent",
-    "Users.privilege",
-    "Users.registrationDate",
-    "Users.expectedGraduation",
-    "Users.college",
-    "Users.major"
-  );
-
+  const knexResult = await knex("Users").select();
   return usersToDomain(knexResult);
 }
 
 export async function getUserByID(userID: number): Promise<User | null> {
-  const knexResult = await knex("Users")
-    .first(
-      "Users.id",
-      "Users.universityID",
-      "Users.firstName",
-      "Users.lastName",
-      "Users.email",
-      "Users.isStudent",
-      "Users.privilege",
-      "Users.registrationDate",
-      "Users.expectedGraduation",
-      "Users.college",
-      "Users.major"
-    )
-    .where("id", userID);
-
+  const knexResult = await knex("Users").first().where("id", userID);
   return singleUserToDomain(knexResult);
 }
 
-export async function createStudentUser(studentUserInput: StudentUserInput) {
-  const [newID] = await knex("Users").insert(studentUserInput, "id");
+export async function getUserByRitUsername(
+  ritUsername: string
+): Promise<User | null> {
+  const knexResult = await knex("Users")
+    .first()
+    .where("ritUsername", ritUsername);
+  return singleUserToDomain(knexResult);
+}
+
+export async function createUser(user: {
+  firstName: string;
+  lastName: string;
+  ritUsername: string;
+  email: string;
+}) {
+  const [newID] = await knex("Users").insert(user, "id");
   return await getUserByID(newID);
 }
 

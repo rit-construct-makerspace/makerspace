@@ -1,40 +1,39 @@
-import React, { createContext, ReactNode, useContext } from "react";
-import User from "../types/User";
+import React, { createContext, ReactElement, useContext } from "react";
 import { gql, useQuery } from "@apollo/client";
+import { PartialUser } from "../queries/getUsers";
+import RequestWrapper2 from "./RequestWrapper2";
+
+const loginUrl =
+  process.env.REACT_APP_LOGIN_URL ?? "https://localhost:3000/login";
 
 const GET_CURRENT_USER = gql`
   query GetCurrentUser {
     currentUser {
       id
+      firstName
+      lastName
+      privilege
     }
   }
 `;
 
-const CurrentUserContext = createContext<{ user: User } | undefined>(undefined);
+const CurrentUserContext = createContext<PartialUser | undefined>(undefined);
 
 interface CurrentUserProviderProps {
-  children: ReactNode;
+  children: ReactElement;
 }
 
 export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
-  // TODO: remove hardcoded test data
-  const value = {
-    user: {
-      id: 12345,
-      name: "Jack Loggedin",
-      image:
-        "https://t3.ftcdn.net/jpg/02/99/04/20/240_F_299042079_vGBD7wIlSeNl7vOevWHiL93G4koMM967.jpg",
-      role: "Admin",
-    },
-  };
+  const result = useQuery(GET_CURRENT_USER);
 
-  const { loading, error, data } = useQuery(GET_CURRENT_USER);
-
-  console.log(data);
+  // If the current user is null, we need to redirect to SSO login
+  if (!result.loading && !result.data.currentUser) {
+    window.location.replace(loginUrl);
+  }
 
   return (
-    <CurrentUserContext.Provider value={value}>
-      {children}
+    <CurrentUserContext.Provider value={result.data?.currentUser}>
+      <RequestWrapper2 result={result} render={() => children} />
     </CurrentUserContext.Provider>
   );
 }

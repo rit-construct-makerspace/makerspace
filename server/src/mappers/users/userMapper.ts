@@ -10,6 +10,7 @@ export function singleUserToDomain(raw: any): User | null {
   return {
     id: raw.id,
     universityID: raw.universityID,
+    ritUsername: raw.ritUsername,
     firstName: raw.firstName,
     lastName: raw.lastName,
     email: raw.email,

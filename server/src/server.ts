@@ -8,6 +8,12 @@ import { schema } from "./schema";
 import dotenv from "dotenv";
 import fs from "fs";
 import { setupAuth } from "./auth";
+import { User } from "./schemas/usersSchema";
+
+export interface ApolloContext {
+  getUser: () => User | undefined;
+  logout: () => void;
+}
 
 const CORS_CONFIG = {
   origin: "https://localhost:3001",

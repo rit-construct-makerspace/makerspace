@@ -11,6 +11,7 @@ export enum Privilege {
 export interface User {
   id: number;
   universityID: string;
+  ritUsername: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -59,6 +60,13 @@ export const UsersTypeDefs = gql`
     roomMonitoring: Room
 
     """
+    The number-letter combination that is attached to your RIT email
+    (ie. abc1234). Not sensitive info. Stored plainly.
+    Not to be confused with the universityID.
+    """
+    ritUsername: String!
+
+    """
     The nine digit number encoded in the mag strip of RIT ID cards.
     Can also be found on the eServices and/or myRIT portals.
     Sensitive information. Stored as a SHA256 hash in the database.
@@ -69,6 +77,7 @@ export const UsersTypeDefs = gql`
 
   input StudentUserInput {
     universityID: String!
+    ritUsername: String!
     firstName: String!
     lastName: String!
     email: String!
@@ -90,9 +99,6 @@ export const UsersTypeDefs = gql`
   }
 
   extend type Mutation {
-    createStudentUser(user: StudentUserInput): User
-    createFacultyUser(user: FacultyUserInput): User
-
     updateStudentUser(user: StudentUserInput): User
     updateFacultyUser(user: FacultyUserInput): User
 

@@ -6,16 +6,27 @@ import assert from "assert";
 import fs from "fs";
 import express from "express";
 import { MockStrategy } from "passport-mock-strategy";
+import {
+  createUser,
+  getUserByRitUsername,
+} from "./repositories/Users/UserRepository";
 
-// for serializeUser, some dude on the defintlyTyped discord told me to override the global Express.User like:
-declare global {
-  namespace Express {
-    interface User {
-      nameID: string;
-      id: number;
-      username: string;
-    }
-  }
+interface RitSsoUser {
+  firstName: string;
+  lastName: string;
+  email: string;
+  ritUsername: string;
+}
+
+// Map the test users from samltest.id to match
+// the format that RIT SSO will give us.
+function mapSamlTestToRit(testUser: any): RitSsoUser {
+  return {
+    firstName: testUser["urn:oid:2.5.4.42"],
+    lastName: testUser["urn:oid:2.5.4.4"],
+    email: testUser.email,
+    ritUsername: testUser.email.split("@")[0],
+  };
 }
 
 export function setupMockAuth(app: express.Application) {
@@ -111,19 +122,20 @@ export function setupAuth(app: express.Application) {
   /* @ts-ignore */
   passport.use(samlStrategy);
 
-  passport.serializeUser((user, done) => {
-    console.log(user);
-    done(null, user.nameID);
+  passport.serializeUser(async (user: any, done) => {
+    const ritUser =
+      process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user;
+
+    // Create user in our database if they don't exist
+    const existingUser = await getUserByRitUsername(ritUser.ritUsername);
+    if (!existingUser) await createUser(ritUser);
+
+    done(null, ritUser.ritUsername);
   });
 
-  passport.deserializeUser((nameID, done) => {
-    console.log("deserializing user");
-    const matchingUser = {
-      id: 1,
-      username: "test user",
-      nameID: "fdsfgsdfgsdfg",
-    };
-    done(null, matchingUser);
+  passport.deserializeUser(async (username: string, done) => {
+    const user = await getUserByRitUsername(username);
+    done(null, user);
   });
 
   app.use(passport.initialize());
@@ -131,21 +143,14 @@ export function setupAuth(app: express.Application) {
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  app.get(
-    "/login",
-    passport.authenticate("saml", {
-      successRedirect: reactAppUrl,
-      failureRedirect: "/login/fail",
-    })
-  );
+  const authenticate = passport.authenticate("saml", {
+    successRedirect: reactAppUrl,
+    failureRedirect: "/login/fail",
+  });
 
-  app.post(
-    "/login/callback",
-    passport.authenticate("saml", {
-      successRedirect: reactAppUrl,
-      failureRedirect: "/login/fail",
-    })
-  );
+  app.get("/login", authenticate);
+
+  app.post("/login/callback", authenticate);
 
   app.get("/login/fail", function (req, res) {
     res.status(401).send("Login failed");

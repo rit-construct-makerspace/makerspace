@@ -30,10 +30,10 @@ export default function PrivilegeControl({
   userID,
   privilege,
 }: PrivilegeControlProps) {
-  const { user: currentUser } = useCurrentUser();
+  const currentUser = useCurrentUser();
   const [setPrivilege, setPrivilegeResult] = useMutation(SET_PRIVILEGE);
 
-  const isAdmin = currentUser.role === "Admin";
+  const isAdmin = currentUser.privilege === Privilege.ADMIN;
 
   const handlePrivilegeChanged = (
     event: ChangeEvent<HTMLInputElement>,
