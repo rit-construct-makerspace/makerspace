@@ -1,12 +1,12 @@
-import { knex } from "../../db";
-import { Equipment } from "../../models/equipment/equipment";
-import { EquipmentInput } from "../../models/equipment/equipmentInput";
-import {
-  equipmentToDomain,
-  singleEquipmentToDomain,
-} from "../../mappers/equipment/Equipment";
-import { TrainingModule } from "../../models/training/trainingModule";
-import { singleTrainingModuleToDomain } from "../../mappers/training/TrainingModuleMapper";
+import {knex} from "../../db";
+import {Equipment} from "../../models/equipment/equipment";
+import {EquipmentInput} from "../../models/equipment/equipmentInput";
+import {equipmentToDomain, singleEquipmentToDomain,} from "../../mappers/equipment/Equipment";
+import {TrainingModule} from "../../models/training/trainingModule";
+import {singleTrainingModuleToDomain} from "../../mappers/training/TrainingModuleMapper";
+import {AuditLogsInput} from "../../models/auditLogs/auditLogsInput";
+import {EventType} from "../../models/auditLogs/eventTypes";
+import AuditLogResolvers from "../../resolvers/auditLogsResolver";
 
 export interface IEquipmentRepository {
   getEquipmentById(id: number | string): Promise<Equipment | null>;
@@ -130,6 +130,7 @@ export class EquipmentRepository implements IEquipmentRepository {
       .then(async () => {
         await this.updateTrainingModules(id, equipment.trainingModules);
       });
+
     return this.getEquipmentById(id);
   }
 
@@ -151,6 +152,7 @@ export class EquipmentRepository implements IEquipmentRepository {
         newId,
         equipment.trainingModules
       );
+
     return await this.getEquipmentById(newId);
   }
 }

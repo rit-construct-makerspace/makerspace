@@ -19,10 +19,10 @@ export const AuditLogsTypeDefs = gql`
     TRAINING_MANAGEMENT
     EQUIPMENT_MANAGEMENT
     USER_MANAGEMENT
+    ROOM_MANAGEMENT
   }
 
   input LogInput {
-    timeDate: DateTime!
     userID: Int!
     eventType: EventType!
     description: String

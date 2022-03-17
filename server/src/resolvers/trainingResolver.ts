@@ -2,6 +2,9 @@ import { Module } from "../models/training/module";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import { OptionRepo } from "../repositories/Training/optionRepo";
 import * as QuestionRepo from "../repositories/Training/questionRepo";
+import {AuditLogsInput} from "../models/auditLogs/auditLogsInput";
+import {EventType} from "../models/auditLogs/eventTypes";
+import AuditLogResolvers from "./auditLogsResolver";
 
 const TrainingResolvers = {
   Query: {
@@ -18,17 +21,39 @@ const TrainingResolvers = {
     Modules
      */
 
-    createModule: async (_: any, args: any) =>
-      await Module.create(args.name, []),
+    createModule: async (_: any, args: any, context: any) => {
+      let logInput: AuditLogsInput = {
+        userID: context.getUser().id,
+        eventType: EventType.TRAINING_MANAGEMENT,
+        description: "Added training modules"
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
 
-    updateModule: async (_: any, args: any) => {
+      await Module.create(args.name, []);
+    },
+
+    updateModule: async (_: any, args: any, context: any) => {
+      let logInput: AuditLogsInput = {
+        userID: context.getUser().id,
+        eventType: EventType.TRAINING_MANAGEMENT,
+        description: "Updated training modules"
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
+
       const mod = await ModuleRepo.getModuleById(args.id);
       mod.updateName(args.name);
       await ModuleRepo.save(mod);
       return mod;
     },
 
-    deleteModule: async (_: any, args: { id: number }) => {
+    deleteModule: async (_: any, args: { id: number }, context: any) => {
+      let logInput: AuditLogsInput = {
+        userID: context.getUser().id,
+        eventType: EventType.TRAINING_MANAGEMENT,
+        description: "Removed training modules"
+      }
+      await AuditLogResolvers.Mutation.addLog(logInput);
+
       await ModuleRepo.deleteModuleById(args.id);
     },
 
@@ -62,7 +87,7 @@ const TrainingResolvers = {
       return or.addOptionToQuestion(args.question_id, args.option);
     },
 
-    updateOption: async (_: any, args: any) => {
+    updateOption: async (_: any, args: any, ) => {
       const or = new OptionRepo();
       let opt = {
         id: args.id,

@@ -1,4 +1,5 @@
 import {AuditLogs} from "../../models/auditLogs/auditLogs";
+import {AuditLogsInput} from "../../models/auditLogs/auditLogsInput";
 import {EventType} from "../../models/auditLogs/eventTypes";
 import { knex } from "../../db";
 import {singleLogToDomain, logsToDomain, logsToDomainByDate} from "../../mappers/auditLogs/auditLogMapper";
@@ -9,7 +10,7 @@ export interface IAuditLogRepo {
     getLogsByUser(userID: number): Promise<AuditLogs[]>;
     getLogsByDate(startDate: Date, endDate: Date): Promise<AuditLogs[]>
     getLogs(): Promise<AuditLogs[]>;
-    addLog(log: AuditLogs): Promise<AuditLogs | null>;
+    addLog(log: AuditLogsInput): Promise<AuditLogs | null>;
     modifyLogDescription(logID: number, description: string): Promise<AuditLogs | null>;
     deleteLog(logID: number): Promise<void>;
 }
@@ -88,7 +89,7 @@ export  class  AuditLogRepo implements IAuditLogRepo {
         return logsToDomain(knexResult);
     }
 
-    public async addLog(log: AuditLogs): Promise<AuditLogs | null> {
+    public async addLog(log: AuditLogsInput): Promise<AuditLogs | null> {
         const newID = (
             await this.queryBuilder("AuditLogs").insert(
                 {
