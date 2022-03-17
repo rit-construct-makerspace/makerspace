@@ -27,9 +27,9 @@ const StorefrontResolvers = {
   },
 
   Mutation: {
-    createInventoryItem: async (_: any, args: { item: InventoryItemInput }) => {
+    createInventoryItem: async (_: any, args: { item: InventoryItemInput }, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.INVENTORY_MANAGEMENT,
         description: "Created new inventory item " + args.item.name
       }
@@ -40,10 +40,10 @@ const StorefrontResolvers = {
 
     updateInventoryItem: async (
       _: any,
-      args: { itemId: number; item: InventoryItemInput }
+      args: { itemId: number; item: InventoryItemInput }, context: any
     ) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.INVENTORY_MANAGEMENT,
         description: "Updated inventory item " + args.item.name
       }
@@ -52,9 +52,9 @@ const StorefrontResolvers = {
       return await InventoryRepo.updateItemById(args.itemId, args.item);
     },
 
-    addItemAmount: async (_: any, args: { itemId: number; count: number }) => {
+    addItemAmount: async (_: any, args: { itemId: number; count: number }, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.INVENTORY_MANAGEMENT,
         description: "Added " + args.count + " units of item #" + args.itemId
       }
@@ -65,10 +65,10 @@ const StorefrontResolvers = {
 
     removeItemAmount: async (
       _: any,
-      args: { itemId: number; count: number }
+      args: { itemId: number; count: number }, context: any
     ) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.INVENTORY_MANAGEMENT,
         description: "Removed " + args.count + " units of item #" + args.itemId
       }
@@ -77,9 +77,9 @@ const StorefrontResolvers = {
       return InventoryRepo.addItemAmount(args.itemId, args.count * -1);
     },
 
-    deleteInventoryItem: async (_: any, args: { itemId: number }) => {
+    deleteInventoryItem: async (_: any, args: { itemId: number }, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.INVENTORY_MANAGEMENT,
         description: "Removed inventory item #" + args.itemId
       }
@@ -88,9 +88,9 @@ const StorefrontResolvers = {
       return InventoryRepo.deleteItemById(args.itemId);
     },
 
-    createLabel: async (_: any, args: { label: string }) => {
+    createLabel: async (_: any, args: { label: string }, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.INVENTORY_MANAGEMENT,
         description: "Created item label " + args.label
       }
@@ -99,9 +99,9 @@ const StorefrontResolvers = {
       await LabelRepo.addLabel(args.label);
     },
 
-    deleteLabel: async (_: any, args: { label: string }) => {
+    deleteLabel: async (_: any, args: { label: string }, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.INVENTORY_MANAGEMENT,
         description: "Removed item label " + args.label
       }

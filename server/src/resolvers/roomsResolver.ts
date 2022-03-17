@@ -33,9 +33,9 @@ const RoomResolvers = {
   },
 
   Mutation: {
-    addRoom: async (_: any, args: any) => {
+    addRoom: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.ROOM_MANAGEMENT,
         description: "Added new room " + args.room.name
       }
@@ -44,9 +44,9 @@ const RoomResolvers = {
       return await rr.addRoom(args.room);
     },
 
-    removeRoom: async (_: any, args: any) => {
+    removeRoom: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.ROOM_MANAGEMENT,
         description: "Removed room #" + args.id
       }
@@ -55,9 +55,9 @@ const RoomResolvers = {
       return await rr.removeRoom(args.id);
     },
 
-    updateRoomName: async (_: any, args: any) => {
+    updateRoomName: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.ROOM_MANAGEMENT,
         description: "Update room #" + args.id + " to " + args.name
       }
@@ -66,9 +66,9 @@ const RoomResolvers = {
       return await rr.updateRoomName(args.id, args.name);
     },
 
-    addEquipmentToRoom: async (_: any, args: any) => {
+    addEquipmentToRoom: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.EQUIPMENT_MANAGEMENT,
         description: "Added equipment #" + args.equipmentID + " to room #" + args.roomID
       }
@@ -77,9 +77,9 @@ const RoomResolvers = {
       return await rr.addEquipmentToRoom(args.roomID, args.equipmentID);
     },
 
-    removeEquipmentFromRoom: async (_: any, args: any) => {
+    removeEquipmentFromRoom: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.EQUIPMENT_MANAGEMENT,
         description: "Removed equipment #" + args.equipmentID + " from room #" + args.roomID
       }
@@ -88,9 +88,9 @@ const RoomResolvers = {
       return await rr.removeEquipmentFromRoom(args.roomID, args.equipmentID);
     },
 
-    addLabbieToMonitorRoom: async (_: any, args: any) => {
+    addLabbieToMonitorRoom: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Added Labbie #" + args.labbieID + " to monitor room #" + args.roomID
       }
@@ -99,9 +99,9 @@ const RoomResolvers = {
       return await rr.addLabbieToRoom(args.roomID, args.labbieID);
     },
 
-    removeLabbieFromMonitorRoom: async (_: any, args: any) => {
+    removeLabbieFromMonitorRoom: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Removed Labbie #" + args.labbieID + " from monitoring room #" + args.roomID
       }
@@ -110,9 +110,9 @@ const RoomResolvers = {
       return await rr.removeLabbieFromRoom(args.roomID, args.labbieID);
     },
 
-    addUserToRoom: async (_: any, args: any) => {
+    addUserToRoom: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Added User #" + args.labbieID + " to room #" + args.roomID
       }
@@ -121,9 +121,9 @@ const RoomResolvers = {
       return await rr.addUserToRoom(args.roomID, args.userID);
     },
 
-    removeUserFromRoom: async (_: any, args: any) => {
+    removeUserFromRoom: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Removed User #" + args.labbieID + " from room #" + args.roomID
       }

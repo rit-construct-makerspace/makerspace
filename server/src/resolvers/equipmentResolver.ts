@@ -50,7 +50,7 @@ const EquipmentResolvers = {
   Mutation: {
     addEquipment: async (_: any, args: { equipment: EquipmentInput }, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.EQUIPMENT_MANAGEMENT,
         description: "Added new equipment " + args.equipment.name
       }
@@ -61,10 +61,10 @@ const EquipmentResolvers = {
 
     updateEquipment: async (
       _: any,
-      args: { id: number; equipment: EquipmentInput }
+      args: { id: number; equipment: EquipmentInput }, context: any
     ) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.EQUIPMENT_MANAGEMENT,
         description: "Updated equipment " + args.equipment.name
       }
@@ -73,9 +73,9 @@ const EquipmentResolvers = {
       return await equipmentRepo.updateEquipment(args.id, args.equipment);
     },
 
-    removeEquipment: async (_: any, args: { id: number }) => {
+    removeEquipment: async (_: any, args: { id: number },  context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.EQUIPMENT_MANAGEMENT,
         description: "Removed equipment #" + args.id
       }

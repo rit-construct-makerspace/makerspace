@@ -21,9 +21,9 @@ const TrainingResolvers = {
     Modules
      */
 
-    createModule: async (_: any, args: any) => {
+    createModule: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.TRAINING_MANAGEMENT,
         description: "Added training modules"
       }
@@ -32,9 +32,9 @@ const TrainingResolvers = {
       await Module.create(args.name, []);
     },
 
-    updateModule: async (_: any, args: any) => {
+    updateModule: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.TRAINING_MANAGEMENT,
         description: "Updated training modules"
       }
@@ -46,9 +46,9 @@ const TrainingResolvers = {
       return mod;
     },
 
-    deleteModule: async (_: any, args: { id: number }) => {
+    deleteModule: async (_: any, args: { id: number }, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.TRAINING_MANAGEMENT,
         description: "Removed training modules"
       }
@@ -87,7 +87,7 @@ const TrainingResolvers = {
       return or.addOptionToQuestion(args.question_id, args.option);
     },
 
-    updateOption: async (_: any, args: any) => {
+    updateOption: async (_: any, args: any, ) => {
       const or = new OptionRepo();
       let opt = {
         id: args.id,

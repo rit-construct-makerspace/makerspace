@@ -18,9 +18,9 @@ const UsersResolvers = {
   },
 
   Mutation: {
-    createStudentUser: async (_: any, { user }: { user: StudentUserInput }) => {
+    createStudentUser: async (_: any, { user }: { user: StudentUserInput }, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Created new student user " + user.firstName + " " + user.lastName
       }
@@ -36,9 +36,9 @@ const UsersResolvers = {
       });
     },
 
-    createFacultyUser: async (_: any, args: any) => {
+    createFacultyUser: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Created new faculty user " + args.user.name
       }
@@ -47,9 +47,9 @@ const UsersResolvers = {
       return UserRepo.createStudentUser(args);
     },
 
-    updateFacultyUser: async (_: any, args: any) => {
+    updateFacultyUser: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Updated faculty user " + args.user.name
       }
@@ -58,9 +58,9 @@ const UsersResolvers = {
       await UserRepo.updateUser(args);
     },
 
-    updateStudentUser: async (_: any, args: any) => {
+    updateStudentUser: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Updated student user " + args.user.name
       }
@@ -71,10 +71,10 @@ const UsersResolvers = {
 
     setPrivilege: async (
       _: any,
-      { userID, privilege }: { userID: number; privilege: Privilege }
+      { userID, privilege }: { userID: number; privilege: Privilege}, context: any
     ) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Set privilege level of user #" + userID + " to " + privilege
       }
@@ -83,9 +83,9 @@ const UsersResolvers = {
       return await UserRepo.setPrivilege(userID, privilege);
     },
 
-    addTraining: async (_: any, args: any) => {
+    addTraining: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Added training to user #" + args.userID
       }
@@ -94,9 +94,9 @@ const UsersResolvers = {
       await UserRepo.addTrainingToUser(args.userID, args.trainingModuleID);
     },
 
-    removeTraining: async (_: any, args: any) => {
+    removeTraining: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Removed training from user #" + args.userID
       }
@@ -105,9 +105,9 @@ const UsersResolvers = {
       await UserRepo.removeTrainingFromUser(args.userID, args.trainingModuleID);
     },
 
-    addHold: async (_: any, args: any) => {
+    addHold: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Added a hold to user #" + args.userID
       }
@@ -116,9 +116,9 @@ const UsersResolvers = {
       await UserRepo.addHoldToUser(args.userID, args.holdID);
     },
 
-    removeHold: async (_: any, args: any) => {
+    removeHold: async (_: any, args: any, context: any) => {
       let logInput: AuditLogsInput = {
-        userID: 0,
+        userID: context.getUser().id,
         eventType: EventType.USER_MANAGEMENT,
         description: "Removed hold from user #" + args.userID
       }
