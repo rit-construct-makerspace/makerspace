@@ -22,8 +22,9 @@ export interface User {
   completedModules: [TrainingModule];
   expectedGraduation: string;
   college: string;
-  major: string;
   roomID: number;
+  pronouns: string;
+  setupComplete: boolean;
 }
 
 export interface StudentUserInput {
@@ -47,6 +48,7 @@ export const UsersTypeDefs = gql`
     id: ID!
     firstName: String!
     lastName: String!
+    pronouns: String
     email: String!
     isStudent: Boolean!
     privilege: Privilege!
@@ -55,7 +57,6 @@ export const UsersTypeDefs = gql`
     trainingModules: [TrainingModule]
     expectedGraduation: String
     college: String
-    major: String
     room: Room
     roomMonitoring: Room
 
@@ -73,6 +74,11 @@ export const UsersTypeDefs = gql`
     Not to be confused with RIT usernames (ie. abc1234)
     """
     universityID: String!
+
+    """
+    Has the user completed the signup form?
+    """
+    setupComplete: Boolean
   }
 
   input StudentUserInput {
@@ -99,8 +105,12 @@ export const UsersTypeDefs = gql`
   }
 
   extend type Mutation {
-    updateStudentUser(user: StudentUserInput): User
-    updateFacultyUser(user: FacultyUserInput): User
+    updateStudentProfile(
+      userID: ID!
+      pronouns: String
+      college: String
+      expectedGraduation: String
+    ): User
 
     setPrivilege(userID: ID!, privilege: Privilege): User
 

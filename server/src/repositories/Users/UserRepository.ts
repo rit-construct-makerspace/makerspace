@@ -1,4 +1,4 @@
-import { Privilege, StudentUserInput, User } from "../../schemas/usersSchema";
+import { Privilege, User } from "../../schemas/usersSchema";
 import { knex } from "../../db";
 import {
   singleUserToDomain,
@@ -41,8 +41,19 @@ export async function createUser(user: {
   return await getUserByID(newID);
 }
 
-export function updateUser(args: any) {
-  throw new Error("Method not implemented.");
+export async function updateStudentProfile(args: {
+  userID: number;
+  pronouns: string;
+  college: string;
+  expectedGraduation: string;
+}): Promise<User | null> {
+  const { userID, pronouns, college, expectedGraduation } = args;
+
+  await knex("Users")
+    .where({ id: userID })
+    .update({ pronouns, college, expectedGraduation, setupComplete: true });
+
+  return getUserByID(userID);
 }
 
 export async function setPrivilege(userID: number, privilege: Privilege) {
