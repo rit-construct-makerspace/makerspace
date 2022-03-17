@@ -12,7 +12,9 @@ const GET_CURRENT_USER = gql`
       id
       firstName
       lastName
+      email
       privilege
+      setupComplete
     }
   }
 `;
@@ -26,9 +28,19 @@ interface CurrentUserProviderProps {
 export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
   const result = useQuery(GET_CURRENT_USER);
 
-  // If the current user is null, we need to redirect to SSO login
+  // If the current user is null, redirect to SSO login
   if (!result.loading && !result.data.currentUser) {
     window.location.replace(loginUrl);
+  }
+
+  // If the user exists but setupComplete is false,
+  // redirect to them to the signup form
+  if (
+    result.data?.currentUser &&
+    !result.data.currentUser.setupComplete &&
+    !window.location.href.includes("/signup")
+  ) {
+    window.location.replace("/signup");
   }
 
   return (

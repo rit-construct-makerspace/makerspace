@@ -2,7 +2,6 @@ import * as UserRepo from "../repositories/Users/UserRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { ApolloContext } from "../server";
 
-//TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
   Query: {
     users: async () => {
@@ -19,12 +18,16 @@ const UsersResolvers = {
   },
 
   Mutation: {
-    updateFacultyUser: async (parent: any, args: any) => {
-      await UserRepo.updateUser(args);
-    },
-
-    updateStudentUser: async (parent: any, args: any) => {
-      await UserRepo.updateUser(args);
+    updateStudentProfile: async (
+      parent: any,
+      args: {
+        userID: number;
+        pronouns: string;
+        college: string;
+        expectedGraduation: string;
+      }
+    ) => {
+      return await UserRepo.updateStudentProfile(args);
     },
 
     setPrivilege: async (

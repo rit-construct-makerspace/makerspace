@@ -80,7 +80,7 @@ export default function PrivilegeControl({
         </RadioGroup>
       </FormControl>
       {!isAdmin && (
-        <Alert severity="info" sx={{ width: "max-content", mt: 2 }}>
+        <Alert severity="info" sx={{ width: "max-content", mt: 1 }}>
           You do not have permission to change this.
         </Alert>
       )}
