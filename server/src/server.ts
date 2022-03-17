@@ -7,59 +7,62 @@ import cors from "cors";
 import { schema } from "./schema";
 import dotenv from "dotenv";
 import fs from "fs";
-import { setupMockAuth, setupAuth } from "./auth"
+import { setupAuth } from "./auth";
+import { User } from "./schemas/usersSchema";
 
-
-dotenv.config({ path: __dirname + "/./../.env" });
-
-const PORT = process.env.PORT || 3000;
-const app = express();
-const corstOpts = cors();
-
-const MOCK_AUTH = process.env.MOCK_AUTH
-if (MOCK_AUTH === 'TRUE') {
-  setupMockAuth(app)
-} else {
-  setupAuth(app)
+export interface ApolloContext {
+  getUser: () => User | undefined;
+  logout: () => void;
 }
 
+const CORS_CONFIG = {
+  origin: "https://localhost:3001",
+  credentials: true,
+};
 
-app.use(corstOpts);
-app.use(compression());
+async function startServer() {
+  dotenv.config({ path: __dirname + "/./../.env" });
 
-const server = new ApolloServer({
-  schema,
-  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-  context: ({ req }) => ({
-    getUser: () => req.user,
-    logout: () => req.logout(),
-  }),
-});
+  const app = express();
 
-(async function startServer() {
+  app.use(cors(CORS_CONFIG));
+
+  app.use(compression());
+
+  setupAuth(app);
+
+  const server = new ApolloServer({
+    schema,
+    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+    context: ({ req }) => ({
+      getUser: () => req.user,
+      logout: () => req.logout(),
+    }),
+  });
+
   await server.start();
-  server.applyMiddleware({ app, path: "/graphql" });
-})();
 
-let options = {};
+  server.applyMiddleware({
+    app,
+    path: "/graphql",
+    cors: CORS_CONFIG,
+  });
 
-// attempt to start with https, switch to http on failure
-try {
-  options = {
-    key: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
-    cert: fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8"),
-  };
-  const httpsServer = createServer(options, app);
+  const httpsServer = createServer(
+    {
+      key: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
+      cert: fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8"),
+    },
+    app
+  );
+
+  const PORT = process.env.PORT || 3000;
+
   httpsServer.listen({ port: PORT }, (): void =>
     console.log(
-      `🚀GraphQL-Server is running on https://localhost:${PORT}/graphql`
-    )
-  );
-} catch (e) {
-  const httpServer = createServer(app);
-  httpServer.listen({ port: PORT }, (): void =>
-    console.log(
-      `🚀GraphQL-Server is running on http://localhost:${PORT}/graphql`
+      `🚀 GraphQL-Server is running on https://localhost:${PORT}/graphql`
     )
   );
 }
+
+startServer();

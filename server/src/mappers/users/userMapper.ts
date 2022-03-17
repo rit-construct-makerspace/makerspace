@@ -10,6 +10,7 @@ export function singleUserToDomain(raw: any): User | null {
   return {
     id: raw.id,
     universityID: raw.universityID,
+    ritUsername: raw.ritUsername,
     firstName: raw.firstName,
     lastName: raw.lastName,
     email: raw.email,
@@ -20,7 +21,8 @@ export function singleUserToDomain(raw: any): User | null {
     completedModules: raw.trainingModules,
     expectedGraduation: raw.expectedGraduation,
     college: raw.college,
-    major: raw.major,
     roomID: raw.roomID,
+    pronouns: raw.pronouns,
+    setupComplete: raw.setupComplete,
   };
 }

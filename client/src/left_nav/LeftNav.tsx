@@ -16,6 +16,8 @@ import NavLink from "./NavLink";
 import LogoSvg from "../assets/logo.svg";
 import styled from "styled-components";
 import MonitorIcon from "@mui/icons-material/Monitor";
+import { useCurrentUser } from "../common/CurrentUserProvider";
+import Privilege from "../types/Privilege";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -24,6 +26,9 @@ const StyledLogo = styled.img`
 const drawerWidth = 250;
 
 export default function LeftNav() {
+  const currentUser = useCurrentUser();
+  const isMaker = currentUser.privilege === Privilege.MAKER;
+
   return (
     <Drawer
       sx={{
@@ -41,11 +46,11 @@ export default function LeftNav() {
 
       <Stack direction="row" alignItems="center" spacing={2} padding={2}>
         <Avatar
-          alt="matt"
-          src="https://avatars.githubusercontent.com/u/20482179?v=4"
+          alt="Profile picture"
+          src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
         />
         <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-          Matt Galan
+          {`${currentUser.firstName} ${currentUser.lastName}`}
         </Typography>
       </Stack>
 
@@ -56,7 +61,7 @@ export default function LeftNav() {
       {/*</Stack>*/}
 
       <List component="nav">
-        <Divider textAlign="left">MAKER</Divider>
+        {!isMaker && <Divider textAlign="left">MAKER</Divider>}
         <NavLink
           to="/maker/equipment"
           primary="Equipment"
@@ -73,46 +78,49 @@ export default function LeftNav() {
           icon={<InventoryIcon />}
         />
       </List>
-      <List component="nav">
-        <Divider textAlign="left">ADMIN</Divider>
-        <NavLink
-          to="/admin/equipment"
-          primary="Equipment"
-          icon={<HandymanIcon />}
-        />
-        <NavLink
-          to="/admin/training"
-          primary="Training"
-          icon={<SchoolIcon />}
-        />
-        <NavLink
-          to="/admin/inventory"
-          primary="Inventory"
-          icon={<InventoryIcon />}
-        />
-        <NavLink
-          to="/admin/reservations"
-          primary="Reservations"
-          icon={<EventIcon />}
-          notificationCount={1}
-        />
-        <NavLink
-          to="/admin/monitor/select-room"
-          primary="Monitor"
-          icon={<MonitorIcon />}
-        />
-        <NavLink
-          to="/admin/storefront"
-          primary="Storefront"
-          icon={<StorefrontIcon />}
-        />
-        <NavLink to="/admin/people" primary="People" icon={<PeopleIcon />} />
-        <NavLink
-          to="/admin/audit"
-          primary="Audit Logs"
-          icon={<HistoryIcon />}
-        />
-      </List>
+
+      {!isMaker && (
+        <List component="nav">
+          <Divider textAlign="left">ADMIN</Divider>
+          <NavLink
+            to="/admin/equipment"
+            primary="Equipment"
+            icon={<HandymanIcon />}
+          />
+          <NavLink
+            to="/admin/training"
+            primary="Training"
+            icon={<SchoolIcon />}
+          />
+          <NavLink
+            to="/admin/inventory"
+            primary="Inventory"
+            icon={<InventoryIcon />}
+          />
+          <NavLink
+            to="/admin/reservations"
+            primary="Reservations"
+            icon={<EventIcon />}
+            notificationCount={1}
+          />
+          <NavLink
+            to="/admin/monitor/select-room"
+            primary="Monitor"
+            icon={<MonitorIcon />}
+          />
+          <NavLink
+            to="/admin/storefront"
+            primary="Storefront"
+            icon={<StorefrontIcon />}
+          />
+          <NavLink to="/admin/people" primary="People" icon={<PeopleIcon />} />
+          <NavLink
+            to="/admin/audit"
+            primary="Audit Logs"
+            icon={<HistoryIcon />}
+          />
+        </List>
+      )}
     </Drawer>
   );
 }

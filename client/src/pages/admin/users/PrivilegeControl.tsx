@@ -30,10 +30,10 @@ export default function PrivilegeControl({
   userID,
   privilege,
 }: PrivilegeControlProps) {
-  const { user: currentUser } = useCurrentUser();
+  const currentUser = useCurrentUser();
   const [setPrivilege, setPrivilegeResult] = useMutation(SET_PRIVILEGE);
 
-  const isAdmin = currentUser.role === "Admin";
+  const isAdmin = currentUser.privilege === Privilege.ADMIN;
 
   const handlePrivilegeChanged = (
     event: ChangeEvent<HTMLInputElement>,
@@ -80,7 +80,7 @@ export default function PrivilegeControl({
         </RadioGroup>
       </FormControl>
       {!isAdmin && (
-        <Alert severity="info" sx={{ width: "max-content", mt: 2 }}>
+        <Alert severity="info" sx={{ width: "max-content", mt: 1 }}>
           You do not have permission to change this.
         </Alert>
       )}
