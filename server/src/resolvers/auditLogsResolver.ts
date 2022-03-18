@@ -15,8 +15,9 @@ const AuditLogResolvers = {
 
       const startDate = args.startDate ?? "2020-01-01";
       const stopDate = args.stopDate ?? "2200-01-01";
+      const searchText = args.searchText ?? "";
 
-      return await AuditLogRepo.getLogs(startDate, stopDate, args.searchText);
+      return await AuditLogRepo.getLogs(startDate, stopDate, searchText);
     },
   },
 };

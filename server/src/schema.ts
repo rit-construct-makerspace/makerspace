@@ -8,11 +8,13 @@ import { HoldsTypeDefs } from "./schemas/holdsSchema";
 import { EquipmentTypeDefs } from "./schemas/equipmentSchema";
 import { RoomTypeDefs } from "./schemas/roomsSchema";
 import { DateTimeResolver, DateTimeTypeDefinition } from "graphql-scalars";
+import { AuditLogsTypeDefs } from "./schemas/auditLogsSchema";
 import trainingResolvers from "./resolvers/trainingResolver";
 import storefrontResolvers from "./resolvers/storeFrontResolver";
 import roomsResolver from "./resolvers/roomsResolver";
 import EquipmentResolvers from "./resolvers/equipmentResolver";
 import usersResolver from "./resolvers/usersResolver";
+import auditLogsResolver from "./resolvers/auditLogsResolver";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -29,6 +31,7 @@ export const schema = makeExecutableSchema({
     ReservationsTypeDefs,
     DateTimeTypeDefinition,
     RoomTypeDefs,
+    AuditLogsTypeDefs,
   ],
   resolvers: mergeResolvers([
     resolveFunctions,
@@ -37,5 +40,6 @@ export const schema = makeExecutableSchema({
     storefrontResolvers,
     roomsResolver,
     usersResolver,
+    auditLogsResolver,
   ]),
 });

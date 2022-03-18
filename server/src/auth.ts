@@ -130,8 +130,7 @@ export function setupAuth(app: express.Application) {
     // Create user in our database if they don't exist
     const existingUser = await getUserByRitUsername(ritUser.ritUsername);
     if (!existingUser) {
-      const newUser = await createUser(ritUser);
-      await createLog(`user:${newUser?.id} signed in for the first time!`);
+      await createUser(ritUser);
     }
 
     done(null, ritUser.ritUsername);

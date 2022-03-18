@@ -1,7 +1,12 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
-import { Privilege } from "../schemas/usersSchema";
+import { Privilege, User } from "../schemas/usersSchema";
 import { ApolloContext } from "../server";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
+import assert from "assert";
+
+export function getUsersFullName(user: User) {
+  return `${user.firstName} ${user.lastName}`;
+}
 
 //TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
@@ -37,11 +42,16 @@ const UsersResolvers = {
       { userID, privilege }: { userID: number; privilege: Privilege },
       context: ApolloContext
     ) => {
-      await createLog(
-        `user:${context.user?.id} set user:${userID}'s access level to ${privilege}.`
-      );
+      assert(context.user);
 
-      return await UserRepo.setPrivilege(userID, privilege);
+      const userSubject = await UserRepo.setPrivilege(userID, privilege);
+      assert(userSubject);
+
+      await createLog(
+        `{user} set {user}'s access level to ${privilege}.`,
+        { id: context.user.id, label: getUsersFullName(context.user) },
+        { id: userSubject.id, label: getUsersFullName(userSubject) }
+      );
     },
 
     addTraining: async (_: any, args: any, context: any) => {

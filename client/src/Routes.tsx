@@ -94,7 +94,7 @@ export default function Routes() {
               <UsersPage />
             </Route>
 
-            <Route path="/admin/audit">
+            <Route path="/admin/history">
               <AuditLogsPage />
             </Route>
           </Switch>

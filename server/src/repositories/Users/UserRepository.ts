@@ -5,6 +5,8 @@ import {
   usersToDomain,
 } from "../../mappers/users/userMapper";
 import { createLog } from "../AuditLogs/AuditLogRepository";
+import assert from "assert";
+import { getUsersFullName } from "../../resolvers/usersResolver";
 
 /*
 todo
@@ -50,10 +52,16 @@ export async function updateStudentProfile(args: {
 }): Promise<User | null> {
   const { userID, pronouns, college, expectedGraduation } = args;
 
-  const alreadySetup = (await getUserByID(userID))?.setupComplete;
+  const user = await getUserByID(userID);
+  assert(user);
+
+  const alreadySetup = user.setupComplete;
 
   if (!alreadySetup) {
-    await createLog(`user:${userID} completed the signup form.`);
+    await createLog("{user} has joined The Construct!", {
+      id: userID,
+      label: getUsersFullName(user),
+    });
   }
 
   await knex("Users")

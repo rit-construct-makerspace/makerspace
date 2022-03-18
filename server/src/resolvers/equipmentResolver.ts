@@ -51,13 +51,7 @@ const EquipmentResolvers = {
       args: { equipment: EquipmentInput },
       context: any
     ) => {
-      const equipment = await equipmentRepo.addEquipment(args.equipment);
-
-      await createLog(
-        `user:${context.user.userID} added the equipment:${equipment?.id} equipment.`
-      );
-
-      return equipment;
+      return await equipmentRepo.addEquipment(args.equipment);
     },
 
     updateEquipment: async (
@@ -65,18 +59,10 @@ const EquipmentResolvers = {
       args: { id: number; equipment: EquipmentInput },
       context: any
     ) => {
-      await createLog(
-        `user:${context.user.userID} updated the equipment:${args.id} equipment.`
-      );
-
       return await equipmentRepo.updateEquipment(args.id, args.equipment);
     },
 
     removeEquipment: async (_: any, args: { id: number }, context: any) => {
-      await createLog(
-        `user:${context.user.userID} removed the equipment:${args.id} equipment.`
-      );
-
       return await equipmentRepo.removeEquipment(args.id);
     },
   },

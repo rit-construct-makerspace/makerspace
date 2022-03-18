@@ -115,8 +115,8 @@ export default function LeftNav() {
           />
           <NavLink to="/admin/people" primary="People" icon={<PeopleIcon />} />
           <NavLink
-            to="/admin/audit"
-            primary="Audit Logs"
+            to="/admin/history"
+            primary="History"
             icon={<HistoryIcon />}
           />
         </List>
