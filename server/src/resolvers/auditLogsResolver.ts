@@ -1,73 +1,24 @@
-import {AuditLogRepo} from "../repositories/AuditLogs/AuditLogRepository";
-
-const alr = new AuditLogRepo();
+import * as AuditLogRepo from "../repositories/AuditLogs/AuditLogRepository";
+import { ApolloContext } from "../server";
+import { Privilege } from "../schemas/usersSchema";
 
 const AuditLogResolvers = {
-    Query: {
-        auditLogs: async (_: any, args: any, context: any) => {
-            try {
-                return await alr.getLogs();
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        },
-        auditLog: async (_: any, args: any, context: any) => {
-            try {
-                return await alr.getLogByID(args.id);
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        },
-        auditLogsByUser: async (_: any, args: any, context: any) => {
-            try {
-                return await alr.getLogsByUser(args.userID);
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        },
-        auditLogsByEventType: async (_: any, args: any, context: any) => {
-            try {
-                return await alr.getLogsByEventType(args.eventType);
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        },
-        auditLogsByDate: async (_: any, args: any, context: any) => {
-            try {
-                return await alr.getLogsByDate(args.startDate, args.endDate);
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        },
+  Query: {
+    auditLogs: async (
+      parent: any,
+      args: { startDate: string; stopDate: string; searchText: string },
+      context: ApolloContext
+    ) => {
+      if (!context.userHasPrivilege(Privilege.LABBIE, Privilege.ADMIN)) {
+        return null;
+      }
+
+      const startDate = args.startDate ?? "2020-01-01";
+      const stopDate = args.stopDate ?? "2200-01-01";
+
+      return await AuditLogRepo.getLogs(startDate, stopDate, args.searchText);
     },
-
-    Mutation: {
-
-        addLog: async (args: any) => {
-            try {
-                return await alr.addLog(args.log);
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        },
-
-        modifyLogDescription: async (_: any, args: any) => {
-            try {
-                return await alr.modifyLogDescription(args.logID, args.description);
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        },
-
-        deleteLog: async (_: any, args: any) => {
-            try {
-                return await alr.deleteLog(args.logID);
-            } catch (e) {
-                console.log("Error:", e);
-            }
-        },
-
-    },
+  },
 };
 
 export default AuditLogResolvers;

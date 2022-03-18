@@ -4,6 +4,7 @@ import {
   singleUserToDomain,
   usersToDomain,
 } from "../../mappers/users/userMapper";
+import { createLog } from "../AuditLogs/AuditLogRepository";
 
 /*
 todo
@@ -48,6 +49,12 @@ export async function updateStudentProfile(args: {
   expectedGraduation: string;
 }): Promise<User | null> {
   const { userID, pronouns, college, expectedGraduation } = args;
+
+  const alreadySetup = (await getUserByID(userID))?.setupComplete;
+
+  if (!alreadySetup) {
+    await createLog(`user:${userID} completed the signup form.`);
+  }
 
   await knex("Users")
     .where({ id: userID })

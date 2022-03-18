@@ -10,6 +10,7 @@ import {
   createUser,
   getUserByRitUsername,
 } from "./repositories/Users/UserRepository";
+import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
 
 interface RitSsoUser {
   firstName: string;
@@ -128,7 +129,10 @@ export function setupAuth(app: express.Application) {
 
     // Create user in our database if they don't exist
     const existingUser = await getUserByRitUsername(ritUser.ritUsername);
-    if (!existingUser) await createUser(ritUser);
+    if (!existingUser) {
+      const newUser = await createUser(ritUser);
+      await createLog(`user:${newUser?.id} signed in for the first time!`);
+    }
 
     done(null, ritUser.ritUsername);
   });

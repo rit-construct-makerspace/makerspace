@@ -3,9 +3,7 @@ import { EquipmentRepository } from "../repositories/Equipment/EquipmentReposito
 import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
 import { Equipment } from "../models/equipment/equipment";
 import { RoomRepo } from "../repositories/Rooms/RoomRepository";
-import {AuditLogsInput} from "../models/auditLogs/auditLogsInput";
-import {EventType} from "../models/auditLogs/eventTypes";
-import AuditLogResolvers from "./auditLogsResolver";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 
 const equipmentRepo = new EquipmentRepository();
 const reservationRepo = new ReservationRepository();
@@ -48,38 +46,36 @@ const EquipmentResolvers = {
   },
 
   Mutation: {
-    addEquipment: async (_: any, args: { equipment: EquipmentInput }, context: any) => {
-      let logInput: AuditLogsInput = {
-        userID: context.getUser().id,
-        eventType: EventType.EQUIPMENT_MANAGEMENT,
-        description: "Added new equipment " + args.equipment.name
-      }
-      await AuditLogResolvers.Mutation.addLog(logInput);
+    addEquipment: async (
+      _: any,
+      args: { equipment: EquipmentInput },
+      context: any
+    ) => {
+      const equipment = await equipmentRepo.addEquipment(args.equipment);
 
-      return await equipmentRepo.addEquipment(args.equipment);
+      await createLog(
+        `user:${context.user.userID} added the equipment:${equipment?.id} equipment.`
+      );
+
+      return equipment;
     },
 
     updateEquipment: async (
       _: any,
-      args: { id: number; equipment: EquipmentInput }, context: any
+      args: { id: number; equipment: EquipmentInput },
+      context: any
     ) => {
-      let logInput: AuditLogsInput = {
-        userID: context.getUser().id,
-        eventType: EventType.EQUIPMENT_MANAGEMENT,
-        description: "Updated equipment " + args.equipment.name
-      }
-      await AuditLogResolvers.Mutation.addLog(logInput);
+      await createLog(
+        `user:${context.user.userID} updated the equipment:${args.id} equipment.`
+      );
 
       return await equipmentRepo.updateEquipment(args.id, args.equipment);
     },
 
-    removeEquipment: async (_: any, args: { id: number },  context: any) => {
-      let logInput: AuditLogsInput = {
-        userID: context.getUser().id,
-        eventType: EventType.EQUIPMENT_MANAGEMENT,
-        description: "Removed equipment #" + args.id
-      }
-      await AuditLogResolvers.Mutation.addLog(logInput);
+    removeEquipment: async (_: any, args: { id: number }, context: any) => {
+      await createLog(
+        `user:${context.user.userID} removed the equipment:${args.id} equipment.`
+      );
 
       return await equipmentRepo.removeEquipment(args.id);
     },
