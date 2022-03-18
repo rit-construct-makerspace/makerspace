@@ -18,10 +18,10 @@ export default function AuditLogRow({ dateTime, message }: AuditLogRowProps) {
 
   return (
     <Stack direction="row" alignItems="center" px={2}>
-      <Typography color="grey.700" sx={{ width: 74 }} variant="body2">
+      <Typography color="grey.700" sx={{ width: 70 }} variant="body2">
         {date}
       </Typography>
-      <Typography color="grey.700" sx={{ width: 74 }} variant="body2">
+      <Typography color="grey.700" sx={{ width: 93 }} variant="body2">
         {time}
       </Typography>
       <Typography>

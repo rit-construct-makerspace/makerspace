@@ -28,7 +28,7 @@ export async function getLogs(
   const knexResult = await knex("AuditLogs")
     .select()
     .whereBetween("dateTime", [startDate, stopDate])
-    .where("message", "like", `%${searchText}%`)
+    .where("message", "ilike", `%${searchText}%`)
     .orderBy("dateTime", "DESC");
 
   return logsToDomain(knexResult);
