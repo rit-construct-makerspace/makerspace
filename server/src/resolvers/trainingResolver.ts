@@ -1,6 +1,6 @@
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import * as OptionRepo from "../repositories/Training/optionRepo";
-import * as QuestionRepo from "../repositories/Training/questionRepo";
+import * as OptionRepo from "../repositories/Training/OptionRepository";
+import * as ModuleItemRepo from "../repositories/Training/ModuleItemRepository";
 
 const TrainingResolvers = {
   Query: {
@@ -14,13 +14,13 @@ const TrainingResolvers = {
 
   TrainingModule: {
     items: (parent: any) => {
-      return QuestionRepo.getQuestionsByModule(parent.id);
+      return ModuleItemRepo.getModuleItemsByModule(parent.id);
     },
   },
 
-  Question: {
+  ModuleItem: {
     options: (parent: any) => {
-      return OptionRepo.getOptionsByQuestion(parent.id);
+      return OptionRepo.getOptionsByModuleItem(parent.id);
     },
   },
 
@@ -43,32 +43,26 @@ const TrainingResolvers = {
       await ModuleRepo.deleteModuleById(args.id);
     },
 
-    /*
-    Questions
-    TODO: Rename these to Module Items, since they don't always have to be
-      questions. They can be also be text, YouTube embeds, or image URLs.
-     */
-
-    addQuestion: async (_: any, args: any) =>
-      await QuestionRepo.addQuestion(args.module_id, {
-        text: args.question.text,
-        type: args.question.type
+    addModuleItem: async (_: any, args: any) =>
+      await ModuleItemRepo.addModuleItem(args.moduleID, {
+        text: args.moduleItem.text,
+        type: args.moduleItem.type
       }),
 
-    updateQuestion: async (_: any, args: any) => {
-      await QuestionRepo.updateQuestion(args.id, args.question)
-      return await QuestionRepo.getQuestion(args.id)
+    updateModuleItem: async (_: any, args: any) => {
+      await ModuleItemRepo.updateModuleItem(args.id, args.moduleItem)
+      return await ModuleItemRepo.getModuleItem(args.id)
     },
 
-    deleteQuestion: async (_: any, args: { id: number }) =>
-      await QuestionRepo.deleteQuestion(args.id),
+    deleteModuleItem: async (_: any, args: { id: number }) =>
+      await ModuleItemRepo.deleteModuleItem(args.id),
 
     /*
-    Question Options
+    ModuleItem Options
      */
 
     addOption: async (_: any, args: any) => {
-      return OptionRepo.addOptionToQuestion(args.question_id, args.option);
+      return OptionRepo.addOptionToModuleItem(args.moduleItemID, args.option);
     },
 
     updateOption: async (_: any, args: any) => {
