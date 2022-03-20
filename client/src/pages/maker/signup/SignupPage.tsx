@@ -42,12 +42,14 @@ const UPDATE_STUDENT_PROFILE = gql`
     $pronouns: String
     $college: String
     $expectedGraduation: String
+    $universityID: String
   ) {
     updateStudentProfile(
       userID: $userID
       pronouns: $pronouns
       college: $college
       expectedGraduation: $expectedGraduation
+      universityID: $universityID
     ) {
       id
     }
@@ -74,6 +76,7 @@ export default function SignupPage() {
   const [pronouns, setPronouns] = useState("");
   const [college, setCollege] = useState("");
   const [expectedGraduation, setExpectedGraduation] = useState("");
+  const [universityID, setUniversityID] = useState("");
   const [agreedToAbide, setAgreedToAbide] = useState(false);
 
   const handleSubmit = () => {
@@ -100,6 +103,7 @@ export default function SignupPage() {
         pronouns,
         college,
         expectedGraduation,
+        universityID,
       },
       onCompleted: () => history.push("/"),
     });
@@ -170,6 +174,14 @@ export default function SignupPage() {
           </MenuItem>
         ))}
       </TextField>
+
+      <TextField
+        label="University ID"
+        sx={{ mt: 4 }}
+        helperText="The nine digit number available from both eServices and myRIT."
+        value={universityID}
+        onChange={(e) => setUniversityID(e.target.value)}
+      />
 
       <Stack direction="row" alignItems="center" mt={4}>
         <Checkbox

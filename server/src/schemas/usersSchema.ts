@@ -110,6 +110,7 @@ export const UsersTypeDefs = gql`
       pronouns: String
       college: String
       expectedGraduation: String
+      universityID: String
     ): User
 
     setPrivilege(userID: ID!, privilege: Privilege): User

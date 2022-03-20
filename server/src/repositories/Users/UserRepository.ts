@@ -34,6 +34,13 @@ export async function getUserByRitUsername(
   return singleUserToDomain(knexResult);
 }
 
+export async function getUserByUniversityID(
+  universityID: string
+): Promise<User | null> {
+  const result = await knex("Users").first().where({ universityID });
+  return singleUserToDomain(result);
+}
+
 export async function createUser(user: {
   firstName: string;
   lastName: string;
@@ -49,26 +56,29 @@ export async function updateStudentProfile(args: {
   pronouns: string;
   college: string;
   expectedGraduation: string;
+  universityID: string;
 }): Promise<User | null> {
-  const { userID, pronouns, college, expectedGraduation } = args;
-
-  const user = await getUserByID(userID);
+  const user = await getUserByID(args.userID);
   assert(user);
 
   const alreadySetup = user.setupComplete;
 
   if (!alreadySetup) {
     await createLog("{user} has joined The Construct!", {
-      id: userID,
+      id: args.userID,
       label: getUsersFullName(user),
     });
   }
 
-  await knex("Users")
-    .where({ id: userID })
-    .update({ pronouns, college, expectedGraduation, setupComplete: true });
+  await knex("Users").where({ id: args.userID }).update({
+    pronouns: args.pronouns,
+    college: args.college,
+    expectedGraduation: args.expectedGraduation,
+    universityID: args.universityID,
+    setupComplete: true,
+  });
 
-  return getUserByID(userID);
+  return getUserByID(args.userID);
 }
 
 export async function setPrivilege(userID: number, privilege: Privilege) {
