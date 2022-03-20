@@ -70,12 +70,18 @@ async function updateOrderForOtherQuestions(moduleId: number, questionId: number
 }
 
 export async function updateQuestion(id: number, question: Question) {
-  const current = await getQuestion(id)
+  const current =
+    (await knex("Question")
+      .select(
+        "module",
+        "order"
+      )
+      .where("id", id))[0];
   await knex("Question")
     .where({ id: id })
     .update({ questionType: question.type, text: question.text });
-  if (current?.order !== question.order && current?.moduleId != null)
-    await updateQuestionOrder(current?.moduleId, id, question.order)
+  if (current.order !== question.order && current?.module != null)
+    await updateQuestionOrder(current?.module, id, question.order)
 }
 
 async function getNextIndex(id: number) {

@@ -12,7 +12,6 @@ export enum QuestionType {
 
 export interface Question {
   id: number | undefined;
-  moduleId?: number;
   text: string;
   type: QuestionType;
   order: number;
