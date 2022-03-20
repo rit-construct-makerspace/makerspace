@@ -10,6 +10,7 @@ import styled from "styled-components";
 import DeleteIcon from "@mui/icons-material/Delete";
 import HistoryIcon from "@mui/icons-material/History";
 import PrivilegeControl from "./PrivilegeControl";
+import { useHistory } from "react-router-dom";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -40,6 +41,7 @@ interface UserModalProps {
 }
 
 export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
+  const history = useHistory();
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
 
   useEffect(() => {
@@ -121,7 +123,13 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               >
                 Delete account
               </Button>
-              <Button startIcon={<HistoryIcon />} variant="outlined">
+              <Button
+                startIcon={<HistoryIcon />}
+                variant="outlined"
+                onClick={() =>
+                  history.push(`/admin/history?q=<user:${user.id}:`)
+                }
+              >
                 View logs
               </Button>
             </Stack>

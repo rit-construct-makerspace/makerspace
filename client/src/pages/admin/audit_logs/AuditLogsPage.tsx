@@ -1,11 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Page from "../../Page";
-import { Chip, Divider, Stack, TextField } from "@mui/material";
+import {
+  Divider,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
-import { gql, useLazyQuery, useQuery } from "@apollo/client";
+import { gql, useLazyQuery } from "@apollo/client";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import AuditLogRow from "./AuditLogRow";
 import { useHistory, useLocation } from "react-router-dom";
+import { endOfDay, parse, startOfDay } from "date-fns";
+import CloseIcon from "@mui/icons-material/Close";
 
 const GET_LOGS = gql`
   query GetLogs(
@@ -25,32 +33,62 @@ const GET_LOGS = gql`
   }
 `;
 
+function parseDateForQuery(
+  dateString: string,
+  dayShifter: (d: Date) => Date
+): Date | null {
+  if (!dateString) return null;
+  return dayShifter(parse(dateString, "yyyy-MM-dd", new Date()));
+}
+
 export default function LogPage() {
   const { search } = useLocation();
   const history = useHistory();
   const [query, queryResult] = useLazyQuery(GET_LOGS);
   const [searchText, setSearchText] = useState("");
 
-  const getUrlQuery = () => {
-    const searchParams = new URLSearchParams(search);
-    return searchParams.get("q") ?? "";
-  };
+  const [startDateString, setStartDateString] = useState("");
+  const [stopDateString, setStopDateString] = useState("");
 
   useEffect(() => {
-    const urlQuery = getUrlQuery();
-    setSearchText(urlQuery);
-    query({ variables: { searchText: urlQuery } });
-  }, [search]);
+    const searchParams = new URLSearchParams(search);
+    const startDate = searchParams.get("start") ?? "";
+    const stopDate = searchParams.get("stop") ?? "";
+    const queryString = searchParams.get("q") ?? "";
 
-  const handleSearch = () => {
-    const params = new URLSearchParams({ q: searchText });
+    setStartDateString(startDate);
+    setStopDateString(stopDate);
+    setSearchText(queryString);
+
+    query({
+      variables: {
+        startDate: parseDateForQuery(startDate, startOfDay),
+        stopDate: parseDateForQuery(stopDate, endOfDay),
+        searchText: queryString,
+      },
+    });
+  }, [search, query]);
+
+  const setUrlParam = (paramName: string, paramValue: string) => {
+    const params = new URLSearchParams(search);
+    params.set(paramName, paramValue);
     history.replace("/admin/history?" + params);
   };
+
+  const handleDateChange =
+    (paramName: string, setter: (s: string) => void) =>
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+      setUrlParam(paramName, e.target.value);
+    };
 
   const handleClear = () => {
     setSearchText("");
     history.replace("/admin/history");
   };
+
+  const showClearButton =
+    startDateString || stopDateString || search.includes("q=");
 
   return (
     <Page title="History" maxWidth="800px">
@@ -61,6 +99,8 @@ export default function LogPage() {
           size="small"
           InputLabelProps={{ shrink: true }}
           sx={{ width: 180 }}
+          value={startDateString}
+          onChange={handleDateChange("start", setStartDateString)}
         />
         <TextField
           label="Stop"
@@ -68,27 +108,51 @@ export default function LogPage() {
           size="small"
           InputLabelProps={{ shrink: true }}
           sx={{ width: 180 }}
+          value={stopDateString}
+          onChange={handleDateChange("stop", setStopDateString)}
         />
         <SearchBar
+          hideClearButton
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          onClear={handleClear}
-          onSubmit={handleSearch}
+          onSubmit={() => setUrlParam("q", searchText)}
         />
+        {showClearButton && (
+          <IconButton onClick={handleClear} sx={{ ml: "8px !important" }}>
+            <CloseIcon />
+          </IconButton>
+        )}
       </Stack>
       <RequestWrapper2
         result={queryResult}
-        render={(data) => (
-          <Stack divider={<Divider flexItem />} mt={4} spacing={2}>
-            {data.auditLogs.map((log: any) => (
-              <AuditLogRow
-                key={log.id}
-                dateTime={log.dateTime}
-                message={log.message}
-              />
-            ))}
-          </Stack>
-        )}
+        render={(data) => {
+          if (data.auditLogs.length === 0) {
+            return (
+              <Typography
+                variant="body1"
+                sx={{
+                  fontStyle: "italic",
+                  color: "grey.700",
+                  mx: "auto",
+                  my: 8,
+                }}
+              >
+                No results.
+              </Typography>
+            );
+          }
+          return (
+            <Stack divider={<Divider flexItem />} mt={4} spacing={2}>
+              {data.auditLogs.map((log: any) => (
+                <AuditLogRow
+                  key={log.id}
+                  dateTime={log.dateTime}
+                  message={log.message}
+                />
+              ))}
+            </Stack>
+          );
+        }}
       />
     </Page>
   );
