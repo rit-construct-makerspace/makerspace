@@ -1,46 +1,25 @@
 import { gql } from "apollo-server-express";
 
+export interface AuditLog {
+  id: string;
+  dateTime: string;
+  message: string;
+}
+
 export const AuditLogsTypeDefs = gql`
   scalar DateTime
 
-  type Log {
+  type AuditLog {
     id: ID!
-    timeDate: DateTime!
-    user: User!
-    eventType: EventType!
-    description: String
+    dateTime: DateTime!
+    message: String
   }
 
-  enum EventType {
-    DATABASE_MODIFICATION
-    RESERVATIONS
-    TRAINING
-    INVENTORY_MANAGEMENT
-    TRAINING_MANAGEMENT
-    EQUIPMENT_MANAGEMENT
-    USER_MANAGEMENT
-    ROOM_MANAGEMENT
-  }
-
-  input LogInput {
-    userID: Int!
-    eventType: EventType!
-    description: String
-  }
-
-  type Query {
-    auditLogs: [Log]
-    auditLog(logID: ID!): Log
-    auditLogsByUser(userID: ID!): [Log]
-    auditLogsByEventType(eventType: EventType!): [Log]
-    auditLogsByDate(startDate: DateTime!, endDate: DateTime!): [Log]
-  }
-
-  type Mutation {
-    addLog(log: LogInput): Log
-
-    modifyLogDescription(logID: ID!, description: String): Log
-
-    deleteLog(logID: ID!): Log
+  extend type Query {
+    auditLogs(
+      startDate: DateTime
+      stopDate: DateTime
+      searchText: String
+    ): [AuditLog]
   }
 `;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import { Stack } from "@mui/material";
@@ -7,10 +7,16 @@ import { useQuery } from "@apollo/client";
 import GET_USERS, { PartialUser } from "../../../queries/getUsers";
 import RequestWrapper from "../../../common/RequestWrapper";
 import UserModal from "./UserModal";
+import { useHistory, useParams } from "react-router-dom";
 
 export default function UsersPage() {
+  const { id } = useParams<{ id: string }>();
+  const history = useHistory();
   const getUsersResult = useQuery(GET_USERS);
-  const [selectedUserID, setSelectedUserID] = useState<string>("");
+
+  const handleUserModalClosed = () => {
+    history.push("/admin/people");
+  };
 
   return (
     <RequestWrapper
@@ -24,15 +30,12 @@ export default function UsersPage() {
             <UserCard
               user={user}
               key={user.id}
-              onClick={() => setSelectedUserID(user.id)}
+              onClick={() => history.push("/admin/people/" + user.id)}
             />
           ))}
         </Stack>
 
-        <UserModal
-          selectedUserID={selectedUserID}
-          onClose={() => setSelectedUserID("")}
-        />
+        <UserModal selectedUserID={id ?? ""} onClose={handleUserModalClosed} />
       </Page>
     </RequestWrapper>
   );

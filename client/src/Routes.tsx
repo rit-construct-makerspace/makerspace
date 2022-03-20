@@ -90,11 +90,15 @@ export default function Routes() {
               <StorefrontPage />
             </Route>
 
+            <Route path="/admin/people/:id">
+              <UsersPage />
+            </Route>
+
             <Route path="/admin/people">
               <UsersPage />
             </Route>
 
-            <Route path="/admin/audit">
+            <Route path="/admin/history">
               <AuditLogsPage />
             </Route>
           </Switch>

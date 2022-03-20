@@ -4,6 +4,9 @@ import {
   singleUserToDomain,
   usersToDomain,
 } from "../../mappers/users/userMapper";
+import { createLog } from "../AuditLogs/AuditLogRepository";
+import assert from "assert";
+import { getUsersFullName } from "../../resolvers/usersResolver";
 
 /*
 todo
@@ -48,6 +51,18 @@ export async function updateStudentProfile(args: {
   expectedGraduation: string;
 }): Promise<User | null> {
   const { userID, pronouns, college, expectedGraduation } = args;
+
+  const user = await getUserByID(userID);
+  assert(user);
+
+  const alreadySetup = user.setupComplete;
+
+  if (!alreadySetup) {
+    await createLog("{user} has joined The Construct!", {
+      id: userID,
+      label: getUsersFullName(user),
+    });
+  }
 
   await knex("Users")
     .where({ id: userID })

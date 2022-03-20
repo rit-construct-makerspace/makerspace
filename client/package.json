@@ -19,6 +19,7 @@
     "react-dom": "latest",
     "react-router-dom": "^5.3.0",
     "react-scripts": "latest",
+    "react-string-replace": "^1.0.0",
     "styled-components": "latest",
     "use-immer": "^0.6.0",
     "uuid": "^8.3.2"

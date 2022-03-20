@@ -1,48 +1,159 @@
-import React from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Page from "../../Page";
-import { Button, Divider, Stack, TextField, Typography } from "@mui/material";
-import Logs from "../../../test_data/Logs";
-import PageSectionHeader from "../../../common/PageSectionHeader";
-import AuditLogRow from "../../../common/AuditLogRow";
+import {
+  Divider,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import SearchBar from "../../../common/SearchBar";
+import { gql, useLazyQuery } from "@apollo/client";
+import RequestWrapper2 from "../../../common/RequestWrapper2";
+import AuditLogRow from "./AuditLogRow";
+import { useHistory, useLocation } from "react-router-dom";
+import { endOfDay, parse, startOfDay } from "date-fns";
+import CloseIcon from "@mui/icons-material/Close";
+
+const GET_LOGS = gql`
+  query GetLogs(
+    $startDate: DateTime
+    $stopDate: DateTime
+    $searchText: String
+  ) {
+    auditLogs(
+      startDate: $startDate
+      stopDate: $stopDate
+      searchText: $searchText
+    ) {
+      id
+      dateTime
+      message
+    }
+  }
+`;
+
+function parseDateForQuery(
+  dateString: string,
+  dayShifter: (d: Date) => Date
+): Date | null {
+  if (!dateString) return null;
+  return dayShifter(parse(dateString, "yyyy-MM-dd", new Date()));
+}
 
 export default function LogPage() {
+  const { search } = useLocation();
+  const history = useHistory();
+  const [query, queryResult] = useLazyQuery(GET_LOGS);
+  const [searchText, setSearchText] = useState("");
+
+  const [startDateString, setStartDateString] = useState("");
+  const [stopDateString, setStopDateString] = useState("");
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(search);
+    const startDate = searchParams.get("start") ?? "";
+    const stopDate = searchParams.get("stop") ?? "";
+    const queryString = searchParams.get("q") ?? "";
+
+    setStartDateString(startDate);
+    setStopDateString(stopDate);
+    setSearchText(queryString);
+
+    query({
+      variables: {
+        startDate: parseDateForQuery(startDate, startOfDay),
+        stopDate: parseDateForQuery(stopDate, endOfDay),
+        searchText: queryString,
+      },
+    });
+  }, [search, query]);
+
+  const setUrlParam = (paramName: string, paramValue: string) => {
+    const params = new URLSearchParams(search);
+    params.set(paramName, paramValue);
+    history.replace("/admin/history?" + params);
+  };
+
+  const handleDateChange =
+    (paramName: string, setter: (s: string) => void) =>
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+      setUrlParam(paramName, e.target.value);
+    };
+
+  const handleClear = () => {
+    setSearchText("");
+    history.replace("/admin/history");
+  };
+
+  const showClearButton =
+    startDateString || stopDateString || search.includes("q=");
+
   return (
-    <Page title="Logs">
-      <PageSectionHeader>Audit Logs</PageSectionHeader>
-
-      <TextField placeholder="Search for Events" size="small" />
-      <TextField placeholder="User" size="small" />
-      <TextField
-        label="Start date"
-        type="date"
-        InputLabelProps={{ shrink: true }}
-      />
-      <TextField
-        label="End Date"
-        type="date"
-        InputLabelProps={{ shrink: true }}
-      />
-      <Button>Search</Button>
-
-      <Stack direction="row" alignItems="center" spacing={4}>
-        <Typography variant="body1" width={150} fontWeight={"bold"}>
-          Date
-        </Typography>
-        <Typography variant="body1" width={150} fontWeight={"bold"}>
-          User
-        </Typography>
-        <Typography variant="body1" width={150} fontWeight={"bold"}>
-          Event Type
-        </Typography>
-        <Typography variant="body1" width={150} fontWeight={"bold"}>
-          Description
-        </Typography>
+    <Page title="History" maxWidth="800px">
+      <Stack direction="row" spacing={2}>
+        <TextField
+          label="Start"
+          type="date"
+          size="small"
+          InputLabelProps={{ shrink: true }}
+          sx={{ width: 180 }}
+          value={startDateString}
+          onChange={handleDateChange("start", setStartDateString)}
+        />
+        <TextField
+          label="Stop"
+          type="date"
+          size="small"
+          InputLabelProps={{ shrink: true }}
+          sx={{ width: 180 }}
+          value={stopDateString}
+          onChange={handleDateChange("stop", setStopDateString)}
+        />
+        <SearchBar
+          hideClearButton
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          onSubmit={() => setUrlParam("q", searchText)}
+        />
+        {showClearButton && (
+          <IconButton onClick={handleClear} sx={{ ml: "8px !important" }}>
+            <CloseIcon />
+          </IconButton>
+        )}
       </Stack>
-      <Stack divider={<Divider flexItem />} mt={2}>
-        {Logs.map((log) => (
-          <AuditLogRow log={log} key={log.id} />
-        ))}
-      </Stack>
+      <RequestWrapper2
+        result={queryResult}
+        render={(data) => {
+          if (data.auditLogs.length === 0) {
+            return (
+              <Typography
+                variant="body1"
+                sx={{
+                  fontStyle: "italic",
+                  color: "grey.700",
+                  mx: "auto",
+                  my: 8,
+                }}
+              >
+                No results.
+              </Typography>
+            );
+          }
+          return (
+            <Stack divider={<Divider flexItem />} mt={4} spacing={2}>
+              {data.auditLogs.map((log: any) => (
+                <AuditLogRow
+                  key={log.id}
+                  dateTime={log.dateTime}
+                  message={log.message}
+                />
+              ))}
+            </Stack>
+          );
+        }}
+      />
     </Page>
   );
 }

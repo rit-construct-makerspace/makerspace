@@ -8,10 +8,11 @@ import { schema } from "./schema";
 import dotenv from "dotenv";
 import fs from "fs";
 import { setupAuth } from "./auth";
-import { User } from "./schemas/usersSchema";
+import { Privilege, User } from "./schemas/usersSchema";
 
 export interface ApolloContext {
-  getUser: () => User | undefined;
+  user: User | undefined;
+  userHasPrivilege: (...allowedPrivileges: Privilege[]) => boolean;
   logout: () => void;
 }
 
@@ -35,7 +36,9 @@ async function startServer() {
     schema,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
     context: ({ req }) => ({
-      getUser: () => req.user,
+      user: req.user,
+      userHasPrivilege: (...allowedPrivileges: Privilege[]) =>
+        allowedPrivileges.includes((req.user as User)?.privilege),
       logout: () => req.logout(),
     }),
   });

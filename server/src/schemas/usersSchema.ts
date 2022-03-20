@@ -3,9 +3,9 @@ import { TrainingModule } from "../models/training/trainingModule";
 import { Hold } from "./holdsSchema";
 
 export enum Privilege {
-  MAKER,
-  LABBIE,
-  ADMIN,
+  MAKER = "MAKER",
+  LABBIE = "LABBIE",
+  ADMIN = "ADMIN",
 }
 
 export interface User {
