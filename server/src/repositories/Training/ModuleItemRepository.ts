@@ -80,7 +80,7 @@ export async function updateModuleItem(id: number, moduleItem: ModuleItem) {
   await knex("ModuleItem")
     .where({ id: id })
     .update({ moduleItemType: moduleItem.type, text: moduleItem.text });
-  if (current.order !== moduleItem.order && current?.module != null)
+  if (current.order !== moduleItem.order && current?.module)
     await updateModuleItemOrder(current?.module, id, moduleItem.order)
 }
 
