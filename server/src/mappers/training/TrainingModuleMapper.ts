@@ -1,4 +1,4 @@
-import { TrainingModule } from "../../models/training/trainingModule";
+import { TrainingModule } from "../../schemas/trainingSchema";
 
 export function trainingModulesToDomain(raw: any): TrainingModule[] {
   return raw.map((i: any) => singleTrainingModuleToDomain(i));
@@ -6,6 +6,9 @@ export function trainingModulesToDomain(raw: any): TrainingModule[] {
 
 export function singleTrainingModuleToDomain(raw: any): TrainingModule | null {
   if (raw === undefined || raw === null) return null;
+  if (Array.isArray(raw)) {
+    raw = raw[0]
+  }
   const value: TrainingModule = {
     id: raw.id,
     name: raw.name,

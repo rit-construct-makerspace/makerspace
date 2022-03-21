@@ -10,12 +10,12 @@ export async function up(knex: Knex): Promise<void> {
     }
   });
 
-  knex.schema.hasTable("Question").then(function (exists) {
+  knex.schema.hasTable("ModuleItem").then(function (exists) {
     if (!exists) {
-      return knex.schema.createTable("Question", function (t) {
+      return knex.schema.createTable("ModuleItem", function (t) {
         t.increments("id").primary();
-        t.integer("module").references("TrainingModule.id").onDelete("CASCADE"); // If module is deleted, delete question as well
-        t.enu("questionType", [
+        t.integer("module").references("TrainingModule.id").onDelete("CASCADE"); // If module is deleted, delete moduleItem as well
+        t.enu("moduleItemType", [
           "MULTIPLE_CHOICE",
           "CHECKBOXES",
           "TEXT",
@@ -27,11 +27,11 @@ export async function up(knex: Knex): Promise<void> {
     }
   });
 
-  knex.schema.hasTable("QuestionOption").then(function (exists) {
+  knex.schema.hasTable("ModuleItemOption").then(function (exists) {
     if (!exists) {
-      return knex.schema.createTable("QuestionOption", function (t) {
+      return knex.schema.createTable("ModuleItemOption", function (t) {
         t.increments("id");
-        t.integer("question").references("Question.id").onDelete("CASCADE"); // If question is deleted, delete option as well
+        t.integer("moduleItem").references("ModuleItem.id").onDelete("CASCADE"); // If moduleItem is deleted, delete option as well
         t.text("text");
         t.boolean("correct");
       });
@@ -46,15 +46,15 @@ export async function down(knex: Knex): Promise<void> {
     }
   });
 
-  knex.schema.hasTable("Question").then(function (exists) {
+  knex.schema.hasTable("ModuleItem").then(function (exists) {
     if (exists) {
-      return knex.schema.dropTable("Question");
+      return knex.schema.dropTable("ModuleItem");
     }
   });
 
-  knex.schema.hasTable("QuestionOption").then(function (exists) {
+  knex.schema.hasTable("ModuleItemOption").then(function (exists) {
     if (exists) {
-      return knex.schema.dropTable("QuestionOption");
+      return knex.schema.dropTable("ModuleItemOption");
     }
   });
 }
