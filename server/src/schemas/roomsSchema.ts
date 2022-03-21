@@ -26,9 +26,6 @@ export const RoomTypeDefs = gql`
 
     updateRoomName(roomID: ID!, name: String): Room
 
-    addEquipmentToRoom(roomID: ID!, equipmentID: ID!): Room
-    removeEquipmentFromRoom(roomID: ID!, equipmentID: ID!): Room
-
     addUserToRoom(roomID: ID!, userID: ID!): Room
     removeUserFromRoom(roomID: ID!, userID: ID!): Room
 

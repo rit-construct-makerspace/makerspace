@@ -1,6 +1,12 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
-import { Privilege, StudentUserInput } from "../schemas/usersSchema";
-import { createHash } from "crypto";
+import { Privilege, User } from "../schemas/usersSchema";
+import { ApolloContext } from "../server";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
+import assert from "assert";
+
+export function getUsersFullName(user: User) {
+  return `${user.firstName} ${user.lastName}`;
+}
 
 //TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
@@ -12,52 +18,55 @@ const UsersResolvers = {
     user: async (_: any, args: { id: number }) => {
       return await UserRepo.getUserByID(args.id);
     },
+    currentUser: async (parent: any, args: any, context: ApolloContext) => {
+      return context.user;
+    },
   },
 
   Mutation: {
-    createStudentUser: async (_: any, { user }: { user: StudentUserInput }) => {
-      const hashedUniversityID = createHash("sha256")
-        .update(user.universityID)
-        .digest("hex");
-
-      return await UserRepo.createStudentUser({
-        ...user,
-        universityID: hashedUniversityID,
-      });
-    },
-
-    createFacultyUser: async (_: any, args: any) => {
-      return UserRepo.createStudentUser(args);
-    },
-
-    updateFacultyUser: async (_: any, args: any) => {
-      await UserRepo.updateUser(args);
-    },
-
-    updateStudentUser: async (_: any, args: any) => {
-      await UserRepo.updateUser(args);
+    updateStudentProfile: async (
+      parent: any,
+      args: {
+        userID: number;
+        pronouns: string;
+        college: string;
+        expectedGraduation: string;
+      },
+      context: any
+    ) => {
+      return await UserRepo.updateStudentProfile(args);
     },
 
     setPrivilege: async (
       _: any,
-      { userID, privilege }: { userID: number; privilege: Privilege }
+      { userID, privilege }: { userID: number; privilege: Privilege },
+      context: ApolloContext
     ) => {
-      return await UserRepo.setPrivilege(userID, privilege);
+      assert(context.user);
+
+      const userSubject = await UserRepo.setPrivilege(userID, privilege);
+      assert(userSubject);
+
+      await createLog(
+        `{user} set {user}'s access level to ${privilege}.`,
+        { id: context.user.id, label: getUsersFullName(context.user) },
+        { id: userSubject.id, label: getUsersFullName(userSubject) }
+      );
     },
 
-    addTraining: async (_: any, args: any) => {
+    addTraining: async (_: any, args: any, context: any) => {
       await UserRepo.addTrainingToUser(args.userID, args.trainingModuleID);
     },
 
-    removeTraining: async (_: any, args: any) => {
+    removeTraining: async (_: any, args: any, context: any) => {
       await UserRepo.removeTrainingFromUser(args.userID, args.trainingModuleID);
     },
 
-    addHold: async (_: any, args: any) => {
+    addHold: async (_: any, args: any, context: any) => {
       await UserRepo.addHoldToUser(args.userID, args.holdID);
     },
 
-    removeHold: async (_: any, args: any) => {
+    removeHold: async (_: any, args: any, context: any) => {
       await UserRepo.removeHoldFromUser(args.userID, args.holdID);
     },
   },

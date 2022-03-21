@@ -24,37 +24,51 @@ const StorefrontResolvers = {
   },
 
   Mutation: {
-    createInventoryItem: async (_: any, args: { item: InventoryItemInput }) => {
+    createInventoryItem: async (
+      _: any,
+      args: { item: InventoryItemInput },
+      context: any
+    ) => {
       return await InventoryRepo.addItem(args.item);
     },
 
     updateInventoryItem: async (
       _: any,
-      args: { itemId: number; item: InventoryItemInput }
+      args: { itemId: number; item: InventoryItemInput },
+      context: any
     ) => {
       return await InventoryRepo.updateItemById(args.itemId, args.item);
     },
 
-    addItemAmount: async (_: any, args: { itemId: number; count: number }) => {
+    addItemAmount: async (
+      _: any,
+      args: { itemId: number; count: number },
+      context: any
+    ) => {
       return InventoryRepo.addItemAmount(args.itemId, args.count);
     },
 
     removeItemAmount: async (
       _: any,
-      args: { itemId: number; count: number }
+      args: { itemId: number; count: number },
+      context: any
     ) => {
       return InventoryRepo.addItemAmount(args.itemId, args.count * -1);
     },
 
-    deleteInventoryItem: async (_: any, args: { itemId: number }) => {
+    deleteInventoryItem: async (
+      _: any,
+      args: { itemId: number },
+      context: any
+    ) => {
       return InventoryRepo.deleteItemById(args.itemId);
     },
 
-    createLabel: async (_: any, args: { label: string }) => {
+    createLabel: async (_: any, args: { label: string }, context: any) => {
       await LabelRepo.addLabel(args.label);
     },
 
-    deleteLabel: async (_: any, args: { label: string }) => {
+    deleteLabel: async (_: any, args: { label: string }, context: any) => {
       await LabelRepo.deleteLabel(args.label);
     },
   },

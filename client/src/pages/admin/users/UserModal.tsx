@@ -3,7 +3,6 @@ import PrettyModal from "../../../common/PrettyModal";
 import { Avatar, Button, Stack, Typography } from "@mui/material";
 import { gql, useLazyQuery } from "@apollo/client";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { makeSentenceCase } from "./PrivilegeChip";
 import InfoBlob from "./InfoBlob";
 import { format, parseISO } from "date-fns";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
@@ -11,9 +10,10 @@ import styled from "styled-components";
 import DeleteIcon from "@mui/icons-material/Delete";
 import HistoryIcon from "@mui/icons-material/History";
 import PrivilegeControl from "./PrivilegeControl";
+import { useHistory } from "react-router-dom";
 
 const StyledInfo = styled.div`
-  margin-top: 32px;
+  margin-top: 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   row-gap: 32px;
@@ -25,9 +25,9 @@ export const GET_USER = gql`
       id
       firstName
       lastName
+      pronouns
       email
       college
-      major
       expectedGraduation
       registrationDate
       privilege
@@ -41,6 +41,7 @@ interface UserModalProps {
 }
 
 export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
+  const history = useHistory();
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
 
   useEffect(() => {
@@ -66,23 +67,21 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
                 <Typography variant="h5" component="div" fontWeight={500}>
                   {`${user.firstName} ${user.lastName}`}
                 </Typography>
-                <Typography>{makeSentenceCase(user.privilege)}</Typography>
+                <Typography>{user.pronouns}</Typography>
               </Stack>
             </Stack>
 
-            <InfoBlob label="Email" value={user.email} />
-
             <StyledInfo>
+              <InfoBlob label="Email" value={user.email} />
               <InfoBlob
                 label="Member Since"
                 value={format(parseISO(user.registrationDate), "MM/dd/yyyy")}
               />
+              <InfoBlob label="College" value={user.college} />
               <InfoBlob
                 label="Expected Graduation"
                 value={user.expectedGraduation}
               />
-              <InfoBlob label="Major" value={user.major} />
-              <InfoBlob label="College" value={user.college} />
             </StyledInfo>
 
             <PrivilegeControl userID={user.id} privilege={user.privilege} />
@@ -124,7 +123,13 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               >
                 Delete account
               </Button>
-              <Button startIcon={<HistoryIcon />} variant="outlined">
+              <Button
+                startIcon={<HistoryIcon />}
+                variant="outlined"
+                onClick={() =>
+                  history.push(`/admin/history?q=<user:${user.id}:`)
+                }
+              >
                 View logs
               </Button>
             </Stack>

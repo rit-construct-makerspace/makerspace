@@ -17,6 +17,7 @@ import UsersPage from "./pages/admin/users/UsersPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
+import SignupPage from "./pages/maker/signup/SignupPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -25,6 +26,10 @@ export default function Routes() {
   return (
     <BrowserRouter>
       <Switch>
+        <Route path="/signup">
+          <SignupPage />
+        </Route>
+
         <Route path="/admin/storefront/preview">
           <StorefrontPreviewPage />
         </Route>
@@ -85,11 +90,15 @@ export default function Routes() {
               <StorefrontPage />
             </Route>
 
+            <Route path="/admin/people/:id">
+              <UsersPage />
+            </Route>
+
             <Route path="/admin/people">
               <UsersPage />
             </Route>
 
-            <Route path="/admin/audit">
+            <Route path="/admin/history">
               <AuditLogsPage />
             </Route>
           </Switch>

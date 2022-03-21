@@ -3,14 +3,15 @@ import { TrainingModule } from "../schemas/trainingSchema";
 import { Hold } from "./holdsSchema";
 
 export enum Privilege {
-  MAKER,
-  LABBIE,
-  ADMIN,
+  MAKER = "MAKER",
+  LABBIE = "LABBIE",
+  ADMIN = "ADMIN",
 }
 
 export interface User {
   id: number;
   universityID: string;
+  ritUsername: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -21,8 +22,9 @@ export interface User {
   completedModules: [TrainingModule];
   expectedGraduation: string;
   college: string;
-  major: string;
   roomID: number;
+  pronouns: string;
+  setupComplete: boolean;
 }
 
 export interface StudentUserInput {
@@ -46,6 +48,7 @@ export const UsersTypeDefs = gql`
     id: ID!
     firstName: String!
     lastName: String!
+    pronouns: String
     email: String!
     isStudent: Boolean!
     privilege: Privilege!
@@ -54,9 +57,15 @@ export const UsersTypeDefs = gql`
     trainingModules: [TrainingModule]
     expectedGraduation: String
     college: String
-    major: String
     room: Room
     roomMonitoring: Room
+
+    """
+    The number-letter combination that is attached to your RIT email
+    (ie. abc1234). Not sensitive info. Stored plainly.
+    Not to be confused with the universityID.
+    """
+    ritUsername: String!
 
     """
     The nine digit number encoded in the mag strip of RIT ID cards.
@@ -65,10 +74,16 @@ export const UsersTypeDefs = gql`
     Not to be confused with RIT usernames (ie. abc1234)
     """
     universityID: String!
+
+    """
+    Has the user completed the signup form?
+    """
+    setupComplete: Boolean
   }
 
   input StudentUserInput {
     universityID: String!
+    ritUsername: String!
     firstName: String!
     lastName: String!
     email: String!
@@ -86,14 +101,16 @@ export const UsersTypeDefs = gql`
   extend type Query {
     users: [User]
     user(id: ID!): User
+    currentUser: User
   }
 
   extend type Mutation {
-    createStudentUser(user: StudentUserInput): User
-    createFacultyUser(user: FacultyUserInput): User
-
-    updateStudentUser(user: StudentUserInput): User
-    updateFacultyUser(user: FacultyUserInput): User
+    updateStudentProfile(
+      userID: ID!
+      pronouns: String
+      college: String
+      expectedGraduation: String
+    ): User
 
     setPrivilege(userID: ID!, privilege: Privilege): User
 

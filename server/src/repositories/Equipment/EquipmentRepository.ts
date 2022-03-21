@@ -127,6 +127,7 @@ export class EquipmentRepository implements IEquipmentRepository {
       .then(async () => {
         await this.updateTrainingModules(id, equipment.trainingModules);
       });
+
     return this.getEquipmentById(id);
   }
 
@@ -148,6 +149,7 @@ export class EquipmentRepository implements IEquipmentRepository {
         newId,
         equipment.trainingModules
       );
+
     return await this.getEquipmentById(newId);
   }
 }

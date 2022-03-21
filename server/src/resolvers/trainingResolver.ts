@@ -39,7 +39,7 @@ const TrainingResolvers = {
       return mod;
     },
 
-    deleteModule: async (_: any, args: { id: number }) => {
+    deleteModule: async (_: any, args: { id: number }, context: any) => {
       await ModuleRepo.deleteModuleById(args.id);
     },
 

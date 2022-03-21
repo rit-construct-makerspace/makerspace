@@ -30,39 +30,31 @@ const RoomResolvers = {
   },
 
   Mutation: {
-    addRoom: async (_: any, args: any) => {
+    addRoom: async (_: any, args: any, context: any) => {
       return await rr.addRoom(args.room);
     },
 
-    removeRoom: async (_: any, args: any) => {
+    removeRoom: async (_: any, args: any, context: any) => {
       return await rr.removeRoom(args.id);
     },
 
-    updateRoomName: async (_: any, args: any) => {
+    updateRoomName: async (_: any, args: any, context: any) => {
       return await rr.updateRoomName(args.id, args.name);
     },
 
-    addEquipmentToRoom: async (_: any, args: any) => {
-      return await rr.addEquipmentToRoom(args.roomID, args.equipmentID);
-    },
-
-    removeEquipmentFromRoom: async (_: any, args: any) => {
-      return await rr.removeEquipmentFromRoom(args.roomID, args.equipmentID);
-    },
-
-    addLabbieToMonitorRoom: async (_: any, args: any) => {
+    addLabbieToMonitorRoom: async (_: any, args: any, context: any) => {
       return await rr.addLabbieToRoom(args.roomID, args.labbieID);
     },
 
-    removeLabbieFromMonitorRoom: async (_: any, args: any) => {
+    removeLabbieFromMonitorRoom: async (_: any, args: any, context: any) => {
       return await rr.removeLabbieFromRoom(args.roomID, args.labbieID);
     },
 
-    addUserToRoom: async (_: any, args: any) => {
+    addUserToRoom: async (_: any, args: any, context: any) => {
       return await rr.addUserToRoom(args.roomID, args.userID);
     },
 
-    removeUserFromRoom: async (_: any, args: any) => {
+    removeUserFromRoom: async (_: any, args: any, context: any) => {
       return await rr.removeUserFromRoom(args.roomID, args.userID);
     },
   },
