@@ -49,7 +49,7 @@ export async function addModuleItem(
 
 export async function updateModuleItemOrder(moduleId: number, moduleItemId: number, newOrder: number) {
   let moduleItem = await getModuleItem(moduleItemId)
-  if (moduleItem === undefined || moduleItem === null)
+  if (!moduleItem)
     throw new Error("Provided moduleItemId does not match existing moduleItem")
   let currentOrder = moduleItem.order
   updateOrderForOtherModuleItems(moduleId, moduleItemId, currentOrder, newOrder);
