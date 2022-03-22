@@ -24,6 +24,10 @@ const UsersResolvers = {
   },
 
   Mutation: {
+    createUser: async (_: any, args: any, context: any) => {
+      return await UserRepo.createUser(args);
+    },
+
     updateStudentProfile: async (
       parent: any,
       args: {
@@ -69,6 +73,10 @@ const UsersResolvers = {
     removeHold: async (_: any, args: any, context: any) => {
       await UserRepo.removeHoldFromUser(args.userID, args.holdID);
     },
+
+    archiveUser: async (parents: any, args: {userID: number}, context: any) => {
+      return await UserRepo.archiveUser(args.userID);
+    }
   },
 };
 

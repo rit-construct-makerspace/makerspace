@@ -94,3 +94,8 @@ export function addHoldToUser(userID: number, holdID: number) {
 export function removeHoldFromUser(userID: number, holdID: number) {
   throw new Error("Method not implemented.");
 }
+
+export async function archiveUser(userID: number){
+  await knex("Users").where({ id: userID}).update({isArchived: true})
+  return await getUserByID(userID)
+}
