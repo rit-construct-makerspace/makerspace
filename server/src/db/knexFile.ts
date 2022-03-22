@@ -1,7 +1,7 @@
-require('dotenv').config({path:__dirname+'/./../../.env'})
+require("dotenv").config({ path: __dirname + "/./../../.env" });
+
 // Update with your config settings.
 module.exports = {
-
   development: {
     client: "pg",
     connection: {
@@ -52,5 +52,4 @@ module.exports = {
       directory: "seeds",
     },
   },
-
 };

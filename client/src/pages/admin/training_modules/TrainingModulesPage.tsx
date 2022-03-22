@@ -1,51 +1,72 @@
 import React from "react";
 import Page from "../../Page";
-import TrainingModule from "./TrainingModule";
 import SearchBar from "../../../common/SearchBar";
-import { Divider, Fab, Stack } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
+import { Divider, Stack } from "@mui/material";
+import CreateIcon from "@mui/icons-material/Create";
+import { useHistory } from "react-router-dom";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { LoadingButton } from "@mui/lab";
+import RequestWrapper from "../../../common/RequestWrapper";
+import TrainingModule from "./TrainingModule";
+import GET_TRAINING_MODULES from "../../../queries/getModules";
+
+const CREATE_TRAINING_MODULE = gql`
+  mutation CreateTrainingModule($name: String) {
+    createModule(name: $name) {
+      id
+    }
+  }
+`;
 
 export default function TrainingModulesPage() {
+  const history = useHistory();
+
+  const [createModule, { loading }] = useMutation(CREATE_TRAINING_MODULE, {
+    variables: { name: "New Training Module" },
+    refetchQueries: [{ query: GET_TRAINING_MODULES }],
+  });
+
+  const getModuleResults = useQuery(GET_TRAINING_MODULES);
+
+  const handleNewModuleClicked = async () => {
+    const result = await createModule();
+    const moduleId = result?.data?.createModule?.id;
+
+    // Redirect to the module editor after creation
+    history.push(`/admin/training/${moduleId}`);
+  };
+
   return (
-    <Page title="Training modules">
-      <SearchBar placeholder="Search training modules" />
-      <Stack
-        alignItems="stretch"
-        sx={{ width: "100%", mt: 2 }}
-        divider={<Divider flexItem />}
-      >
-        <TrainingModule
-          title="Intro to CNC safety"
-          questionCount={15}
-          equipmentCount={3}
-          makerCount={64}
-        />
-        <TrainingModule
-          title="Don't chop off your finger"
-          questionCount={6}
-          equipmentCount={31}
-          makerCount={1267}
-        />
-        <TrainingModule
-          title="Soldering basics"
-          questionCount={42}
-          equipmentCount={6}
-          makerCount={24}
-        />
-        <TrainingModule
-          title="Intro to CNC safety"
-          questionCount={52}
-          equipmentCount={4}
-          makerCount={9}
-        />
-      </Stack>
-      <Fab
-        color="primary"
-        aria-label="add"
-        sx={{ position: "absolute", bottom: 32, right: 32 }}
-      >
-        <AddIcon />
-      </Fab>
-    </Page>
+    <RequestWrapper
+      loading={getModuleResults.loading}
+      error={getModuleResults.error}
+    >
+      <Page title="Training modules" maxWidth="800px">
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <SearchBar placeholder="Search training modules" />
+          <LoadingButton
+            loading={loading}
+            variant="outlined"
+            startIcon={<CreateIcon />}
+            onClick={handleNewModuleClicked}
+            sx={{ height: 40 }}
+          >
+            New module
+          </LoadingButton>
+        </Stack>
+
+        <Stack
+          alignItems="stretch"
+          sx={{ width: "100%", mt: 2 }}
+          divider={<Divider flexItem />}
+        >
+          {getModuleResults.data?.trainingModules?.map(
+            (m: { id: number; name: string }) => (
+              <TrainingModule key={m.id} id={m.id} title={m.name} />
+            )
+          )}
+        </Stack>
+      </Page>
+    </RequestWrapper>
   );
 }

@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 import { Stack, TextField } from "@mui/material";
-import QuizItemDraft from "./QuizItemDraft";
-import { YoutubeEmbed } from "../../../../types/Quiz";
+import ModuleItemDraft from "./ModuleItemDraft";
+import { ModuleItem } from "../../../../types/Module";
+import useTimedState from "../../../../hooks/useTimedState";
 
 const StyledIFrame = styled.iframe`
   border-radius: 4px;
@@ -11,36 +12,46 @@ const StyledIFrame = styled.iframe`
   height: 300px;
 `;
 
+function getEmbedId(youtubeUrl: string) {
+  try {
+    return new URL(youtubeUrl).searchParams.get("v") ?? "";
+  } catch (e) {
+    // For some reason the URL object throws an error for invalid URLs
+    return "";
+  }
+}
+
 interface YouTubeEmbedProps {
   index: number;
-  youtubeEmbed: YoutubeEmbed;
-  updateYoutubeEmbed: (updatedYoutubeEmbed: YoutubeEmbed) => void;
+  moduleItem: ModuleItem;
+  onChange: (updatedText: string) => void;
   onRemove: () => void;
 }
 
 export default function YouTubeEmbedDraft({
   index,
-  youtubeEmbed,
-  updateYoutubeEmbed,
+  moduleItem,
+  onChange,
   onRemove,
 }: YouTubeEmbedProps) {
+  const [text, setText] = useTimedState<string>(moduleItem.text, (latestText) =>
+    onChange(latestText)
+  );
+
+  const embedId = getEmbedId(text);
+
   return (
-    <QuizItemDraft onRemove={onRemove} index={index} itemId={youtubeEmbed.id}>
+    <ModuleItemDraft onRemove={onRemove} index={index} itemId={moduleItem.id}>
       <Stack padding={2} spacing={2}>
         <TextField
           label="YouTube URL"
           placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-          onChange={(e) => {
-            const embedId = new URL(e.target.value).searchParams.get("v") ?? "";
-            updateYoutubeEmbed({ ...youtubeEmbed, embedId });
-          }}
+          onChange={(e) => setText(e.target.value)}
         />
-        {youtubeEmbed.embedId && (
-          <StyledIFrame
-            src={`https://www.youtube.com/embed/${youtubeEmbed.embedId}`}
-          />
+        {embedId && (
+          <StyledIFrame src={`https://www.youtube.com/embed/${embedId}`} />
         )}
       </Stack>
-    </QuizItemDraft>
+    </ModuleItemDraft>
   );
 }

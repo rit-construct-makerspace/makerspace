@@ -6,7 +6,7 @@ import LeftNav from "./left_nav/LeftNav";
 import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
-import EditEquipmentPage from "./pages/admin/edit_equipment/EditEquipmentPage";
+import ManageEquipmentPage from "./pages/admin/manage_equipment/ManageEquipmentPage";
 import TrainingModulesPage from "./pages/admin/training_modules/TrainingModulesPage";
 import InventoryPage from "./pages/admin/inventory/InventoryPage";
 import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
@@ -14,10 +14,10 @@ import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
 import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
-import ManageUserPage from "./pages/admin/manage_user/ManageUserPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
+import SignupPage from "./pages/maker/signup/SignupPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -26,6 +26,10 @@ export default function Routes() {
   return (
     <BrowserRouter>
       <Switch>
+        <Route path="/signup">
+          <SignupPage />
+        </Route>
+
         <Route path="/admin/storefront/preview">
           <StorefrontPreviewPage />
         </Route>
@@ -36,10 +40,6 @@ export default function Routes() {
           <Switch>
             <Route path="/create-reservation">
               <CreateReservationPage />
-            </Route>
-
-            <Route path="/quiz-builder">
-              <EditModulePage />
             </Route>
 
             <Route path="/maker/equipment">
@@ -54,12 +54,16 @@ export default function Routes() {
               <InventoryPreviewPage />
             </Route>
 
-            <Route path="/admin/edit-equipment">
-              <EditEquipmentPage />
+            <Route path="/admin/equipment/:id">
+              <ManageEquipmentPage />
             </Route>
 
             <Route path="/admin/equipment">
               <EquipmentPage isAdmin={true} />
+            </Route>
+
+            <Route path="/admin/training/:id">
+              <EditModulePage />
             </Route>
 
             <Route path="/admin/training">
@@ -86,15 +90,15 @@ export default function Routes() {
               <StorefrontPage />
             </Route>
 
+            <Route path="/admin/people/:id">
+              <UsersPage />
+            </Route>
+
             <Route path="/admin/people">
               <UsersPage />
             </Route>
 
-            <Route path="/admin/manage-user">
-              <ManageUserPage />
-            </Route>
-
-            <Route path="/admin/audit">
+            <Route path="/admin/history">
               <AuditLogsPage />
             </Route>
           </Switch>

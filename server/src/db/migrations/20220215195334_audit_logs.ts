@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
                 t.increments('id').primary();
                 t.dateTime('timeDate').defaultTo(knex.fn.now());
                 t.integer('userID').references("id").inTable("Users");
-                t.enu('eventType', ['DATABASE_MODIFICATION', 'PURCHASE_ORDERS', 'RESERVATIONS', 'TRAINING', 'INVENTORY_MANAGEMENT', 'TRAINING_MANAGEMENT', 'EQUIPMENT_MANAGEMENT', 'USER_MANAGEMENT']);
+                t.enu('eventType', ['DATABASE_MODIFICATION', 'PURCHASE_ORDERS', 'RESERVATIONS', 'TRAINING', 'INVENTORY_MANAGEMENT', 'TRAINING_MANAGEMENT', 'EQUIPMENT_MANAGEMENT', 'USER_MANAGEMENT', 'ROOM_MANAGEMENT']);
                 t.text('description');
             });
         }

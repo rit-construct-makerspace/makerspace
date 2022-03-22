@@ -1,106 +1,83 @@
-import { Module } from "../models/training/module";
-import { ModuleRepo } from "../repositories/Training/ModuleRepository";
-import { OptionRepo } from "../repositories/Training/optionRepo";
-import { QuestionRepo } from "../repositories/Training/questionRepo";
+import * as ModuleRepo from "../repositories/Training/ModuleRepository";
+import * as OptionRepo from "../repositories/Training/OptionRepository";
+import * as ModuleItemRepo from "../repositories/Training/ModuleItemRepository";
 
 const TrainingResolvers = {
   Query: {
     modules: async (_: any, args: any, context: any) => {
-      try {
-        const mr = new ModuleRepo(); 
-        return await mr.getModules();
-      } catch (e) {
-        console.log("Error:", e);
-      }
+      return await ModuleRepo.getModules();
+    },
+
+    module: (_: any, args: { id: number }, context: any) =>
+      ModuleRepo.getModuleById(args.id),
+  },
+
+  TrainingModule: {
+    items: (parent: any) => {
+      return ModuleItemRepo.getModuleItemsByModule(parent.id);
+    },
+  },
+
+  ModuleItem: {
+    options: (parent: any) => {
+      return OptionRepo.getOptionsByModuleItem(parent.id);
     },
   },
 
   Mutation: {
+    /*
+    Modules
+     */
+
     createModule: async (_: any, args: any) => {
-      try {
-        return await Module.create(args.name, []);
-      } catch (e) {
-        console.log("Error:", e);
-      }
-    },
-
-    addQuestion: async (_: any, args: any) => {
-      try {
-        const qr = new QuestionRepo();
-        return await qr.addQuestionToModule(args.module_id, {text:args.question.text, type: args.question.type, options: [], id: undefined});
-      } catch (e) {
-        console.log("Error:", e);
-      }
-    },
-
-    addOption: async (_: any, args: any) => {
-      try {
-        const or = new OptionRepo();
-        return or.addOptionToQuestion(args.question_id, args.option);
-      } catch (e) {
-        console.log("Error:", e);
-      }
+      const mod = await ModuleRepo.addModule(args.name);
+      return mod;
     },
 
     updateModule: async (_: any, args: any) => {
-      try {
-        const mr = new ModuleRepo();
-        const mod = await mr.getModuleById(args.id);
-        mod.updateName(args.name);
-        await mr.save(mod);
-        return mod;
-      } catch (e) {
-        console.log("Error:", e);
-      }
+      const mod = await ModuleRepo.updateName(args.id, args.name);
+      return mod;
     },
 
-    updateQuestion: async (_: any, args: any) => {
-      try {
-        const qr = new QuestionRepo();
-        return await qr.addQuestionToModule(args.id, args.question);
-      } catch (e) {
-        console.log("Error:", e);
-      }
+    deleteModule: async (_: any, args: { id: number }, context: any) => {
+      await ModuleRepo.deleteModuleById(args.id);
+    },
+
+    addModuleItem: async (_: any, args: any) =>
+      await ModuleItemRepo.addModuleItem(args.moduleID, {
+        text: args.moduleItem.text,
+        type: args.moduleItem.type
+      }),
+
+    updateModuleItem: async (_: any, args: any) => {
+      await ModuleItemRepo.updateModuleItem(args.id, args.moduleItem)
+      return await ModuleItemRepo.getModuleItem(args.id)
+    },
+
+    deleteModuleItem: async (_: any, args: { id: number }) =>
+      await ModuleItemRepo.deleteModuleItem(args.id),
+
+    /*
+    ModuleItem Options
+     */
+
+    addOption: async (_: any, args: any) => {
+      return OptionRepo.addOptionToModuleItem(args.moduleItemID, args.option);
     },
 
     updateOption: async (_: any, args: any) => {
-      try {
-        const or = new OptionRepo();
-        let opt = {id: args.id, text: args.option.text, correct: args.option.correct}
-        await or.updateOption(opt)
-        return opt
-      } catch (e) {
-        console.log("Error:", e);
-      }
+      let opt = {
+        id: args.id,
+        text: args.option.text,
+        correct: args.option.correct,
+      };
+      await OptionRepo.updateOption(opt);
+      return opt;
     },
 
-    deleteModule: async (_: any, args: any) => {
-      try {
-        const mr = new ModuleRepo();
-        await mr.deleteModuleById(args.id)
-      } catch (e) {
-        console.log("Error", e)
-      }
+    deleteOption: async (_: any, args: { id: number }) => {
+      await OptionRepo.deleteOptionById(args.id);
     },
-    
-    deleteQuestion: async (_: any, args: any) => {
-      try {
-        const qr = new QuestionRepo();
-        await qr.deleteQuestionById(args.id)
-      } catch (e) {
-        console.log("Error", e)
-      }
-    },
-
-    deleteOption: async (_: any, args: any) => {
-      try {
-        const or = new OptionRepo();
-        await or.deleteOptionById(args.id)
-      } catch (e) {
-        console.log("Error", e)
-      }
-    },
-
   },
 };
 
