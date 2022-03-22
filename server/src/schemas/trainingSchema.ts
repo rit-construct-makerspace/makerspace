@@ -74,6 +74,17 @@ export const TrainingTypeDefs = gql`
     correct: Boolean!
   }
 
+  input ModuleItemAnswerInput {
+    moduleItemID: ID!
+    selectedOptionIDs: [ID]!
+  } 
+
+  input ModuleSubmissionInput {
+    moduleID: ID!
+    userID: ID!
+    answers: [ModuleItemAnswerInput]
+  }
+
   extend type Mutation {
     createModule(name: String): TrainingModule
     addModuleItem(moduleID: ID!, moduleItem: ModuleItemInput): ModuleItem
@@ -84,5 +95,9 @@ export const TrainingTypeDefs = gql`
     deleteModule(id: ID!): TrainingModule
     deleteModuleItem(id: ID!): ModuleItem
     deleteOption(id: ID!): ModuleItemOption
+    """
+    Submit a trainingModule for assesment, the attempt will be stored for the user and the grade will be returned as a Float out of 100
+    """
+    submitModule(submission: ModuleSubmissionInput): Float
   }
 `;
