@@ -1,9 +1,22 @@
+import { ReservationEvent } from "./reservationEvent";
+
+enum ReservationStatus {
+    "PENDING",
+    "CONFIRMED",
+    "CANCELLED"
+}
 export interface Reservation {
     id: number;
-    userId: number;
-    supervisorId: number;
-    machineId: number;
-    createdAt: Date;
+    creator: number;
+    maker: number;
+    labbie: number;
+    createDate: Date;
     startTime: Date;
-    endTime: Date;
+    endTIme: Date;
+    equipment: number;
+    status: ReservationStatus;
+    createdAt: Date;
+    lastUpdated: Date;
+    events: ReservationEvent[];
+    independent: boolean;
 }

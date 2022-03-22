@@ -36,6 +36,7 @@ export async function up(knex: Knex): Promise<void> {
           t.integer('equipment').references('id').inTable('Equipment');
           t.enu('status', ['PENDING', 'CONFIRMED', 'CANCELLED']);
           t.timestamp('lastUpdated').defaultTo(knex.fn.now());
+          t.boolean('independent').defaultTo(false);
         });
       }
     }).then(async () => {
@@ -50,7 +51,6 @@ export async function up(knex: Knex): Promise<void> {
         });
       }
     });
-
 }
 
 export async function down(knex: Knex): Promise<void> {
@@ -68,6 +68,11 @@ export async function down(knex: Knex): Promise<void> {
     knex.schema.hasTable('Reservations').then(function(exists) {
     if (exists) {
       return knex.schema.dropTable('Reservations');
+    }
+  }).then(async () => {
+    knex.schema.hasTable('ReservationEvents').then(function(exists) {
+    if (exists) {
+      return knex.schema.dropTable('ReservationEvents');
     }
   });
 });

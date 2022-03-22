@@ -1,8 +1,8 @@
 export interface ReservationInput {
-    userId: number;
-    supervisorId: number;
-    machineId: number;
-    createdAt: Date;
-    startTime: Date;
-    endTime: Date;
+
+    creator: number;
+    labbie: number;
+    maker: number;
+    equipment: number;
+    startingMakerComment: string;
 }
