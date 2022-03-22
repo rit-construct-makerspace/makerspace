@@ -80,6 +80,6 @@ export class ReservationRepository implements IReservationRepository {
     }
 
     public async removeReservation(id: number): Promise<void> {
-        await this.queryBuilder("Reservations").where({ id: id }).del();
+        await knex("Reservations").where({ id: id}).update({isArchived: true})
     }
 }

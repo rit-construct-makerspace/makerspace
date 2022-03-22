@@ -27,6 +27,6 @@ export const EquipmentTypeDefs = gql`
   extend type Mutation {
     addEquipment(equipment: EquipmentInput): Equipment
     updateEquipment(id: ID!, equipment: EquipmentInput): Equipment
-    removeEquipment(id: ID!): Equipment
+    archiveEquipment(id: ID!): Equipment
   }
 `;
