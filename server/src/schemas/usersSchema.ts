@@ -25,6 +25,7 @@ export interface User {
   roomID: number;
   pronouns: string;
   setupComplete: boolean;
+  isArchived: boolean;
 }
 
 export interface StudentUserInput {
@@ -79,6 +80,11 @@ export const UsersTypeDefs = gql`
     Has the user completed the signup form?
     """
     setupComplete: Boolean
+
+    """
+    Is the user's account suspended/deleted?
+    """
+    isArchived: Boolean
   }
 
   input StudentUserInput {
@@ -105,6 +111,9 @@ export const UsersTypeDefs = gql`
   }
 
   extend type Mutation {
+
+    createUser(firstName: String, lastName: String, ritUsername: String, email: String): User
+
     updateStudentProfile(
       userID: ID!
       pronouns: String
@@ -119,5 +128,7 @@ export const UsersTypeDefs = gql`
 
     addHold(userID: ID!, hold: HoldInput): User
     removeHold(userID: ID!, hold: HoldInput): User
+
+    archiveUser(userID: ID!): User
   }
 `;
