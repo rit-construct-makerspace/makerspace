@@ -37,7 +37,7 @@ export async function up(knex: Knex): Promise<void> {
           t.time('startTime');
           t.time('endTime');
           t.integer('equipment').references('id').inTable('Equipment');
-          t.enu('status', ['PENDING', 'CONFIRMED', 'CANCELLED']);
+          t.enu('status', ['PENDING', 'CONFIRMED', 'CANCELLED']).defaultTo("PENDING");
           t.timestamp('lastUpdated').defaultTo(knex.fn.now());
           t.boolean('independent').defaultTo(false);
         });
@@ -47,6 +47,7 @@ export async function up(knex: Knex): Promise<void> {
       if (!exists) {
         return knex.schema.createTable('ReservationEvents', function (t) {
           t.increments('id');
+          t.integer('reservationId').references('id').inTable('Reservations');
           t.enu('eventType', ['COMMENT', 'ASSIGNMENT', 'CONFIRMATION', 'CANCELLATION']);
           t.integer('user').references('id').inTable('Users');
           t.timestamp('dateTime').defaultTo(knex.fn.now());

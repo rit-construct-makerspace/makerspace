@@ -4,5 +4,7 @@ export interface ReservationInput {
     labbie: number;
     maker: number;
     equipment: number;
+    startTime: Date;
+    endTime: Date;
     startingMakerComment: string;
 }

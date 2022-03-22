@@ -17,6 +17,5 @@ export interface Reservation {
     status: ReservationStatus;
     createdAt: Date;
     lastUpdated: Date;
-    events: ReservationEvent[];
     independent: boolean;
 }

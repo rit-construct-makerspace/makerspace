@@ -25,8 +25,6 @@ export const ReservationsTypeDefs = gql`
     equipment: Equipment
     status: ReservationStatus
     lastUpdated: DateTime
-    events: [ReservationEvent]
-
     """
     **True:** The maker is proficient with the machine,
     has not requested a labbie, and does not need labbie supervision.
@@ -47,6 +45,7 @@ export const ReservationsTypeDefs = gql`
 
   type ReservationEvent {
     id: ID!
+    reservationId: ID!
     eventType: ReservationEventType
     user: User
     dateTime: DateTime

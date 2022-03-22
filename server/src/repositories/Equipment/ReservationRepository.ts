@@ -4,12 +4,13 @@ import { ReservationInput } from "../../models/equipment/reservationInput";
 import { reservationsToDomain, singleReservationToDomain } from "../../mappers/equipment/Reservation";
 
 export interface IReservationRepository {
+  createReservation(reservation: ReservationInput): Promise<Reservation | null>;
+  assignLabbieToReservation(resId: number, labbieId: number): Promise<Reservation | null>;
+  addComment(resId: number, authorId: number, commentText: string): Promise<string | null>;
+  cancelReservation(resId: number): Promise<Reservation | null>;
+  confirmReservation(resId: number): Promise<Reservation | null>;
   getReservationById(id: number | string): Promise<Reservation | null>;
   getReservations(): Promise<Reservation[]>;
-  addReservation(reservation: ReservationInput): Promise<Reservation | null>;
-  updateReservation(id: number, reservation: ReservationInput): Promise<Reservation | null>;
-  removeReservation(id: number): Promise<void>;
-  
 }
 
 export class ReservationRepository implements IReservationRepository {
@@ -24,12 +25,15 @@ export class ReservationRepository implements IReservationRepository {
       const knexResult = await this.queryBuilder
       .first(
         "id",
-        "userId",
-        "supervisorId",
-        "machineId",
-        "createdAt",
+        "creator",
+        "labbie",
+        "maker",
+        "createDate",
         "startTime",
-        "endTime"
+        "endTime",
+        "equipment",
+        "status",
+        "lastUpdated"
         )
       .from("Reservations")
       .where("id", id);
@@ -40,12 +44,15 @@ export class ReservationRepository implements IReservationRepository {
     public async getReservations(): Promise<Reservation[]> {
       const knexResult = await this.queryBuilder("Reservations").select(
         "id",
-        "userId",
-        "supervisorId",
-        "machineId",
-        "createdAt",
+        "creator",
+        "labbie",
+        "maker",
+        "createDate",
         "startTime",
-        "endTime"
+        "endTime",
+        "equipment",
+        "status",
+        "lastUpdated"
       );
       return reservationsToDomain(knexResult);
     }
@@ -54,24 +61,29 @@ export class ReservationRepository implements IReservationRepository {
         await this.queryBuilder("Reservations")
         .where("id", id)
         .update({
-            userId: reservation.userId,
-            supervisorId: reservation.supervisorId,
-            machineId: reservation.machineId,
-            startTime: reservation.startTime,
-            endTime: reservation.endTime
+          creator: reservation.creator,
+          labbie: reservation.labbie,
+          maker: reservation.maker,
+          equipment: reservation.equipment,
+          startTime: reservation.startTime,
+          endTime: reservation.endTime,
+          startingMakerComment: reservation.startingMakerComment
         });
         return this.getReservationById(id);
     }
 
-    public async addReservation(reservation: ReservationInput): Promise<Reservation | null> {
+    public async createReservation(reservation: ReservationInput): Promise<Reservation | null> {
+      
       const newId = (
         await this.queryBuilder("Reservations").insert(
           {
-            userId: reservation.userId,
-            supervisorId: reservation.supervisorId,
-            machineId: reservation.machineId,
+            creator: reservation.creator,
+            labbie: reservation.labbie,
+            maker: reservation.maker,
+            equipment: reservation.equipment,
             startTime: reservation.startTime,
-            endTime: reservation.endTime
+            endTime: reservation.endTime,
+            startingMakerComment: reservation.startingMakerComment
           },
           "id"
         )
@@ -79,7 +91,51 @@ export class ReservationRepository implements IReservationRepository {
       return await this.getReservationById(newId);
     }
 
-    public async removeReservation(id: number): Promise<void> {
-        await this.queryBuilder("Reservations").where({ id: id }).del();
+  public async assignLabbieToReservation(resId: number, labbieId: number): Promise<Reservation | null> {
+    await this.queryBuilder("Reservations")
+      .where("id", resId)
+      .update({labbie: labbieId});
+    return await this.getReservationById(resId);
+  }
+
+  public async addComment(resId: number, authorId: number, commentText: string): 
+  Promise<string | null> {
+    const newId = (
+      await this.queryBuilder("ReservationEvents").insert(
+        {
+          eventType: "COMMENT",
+          reservationId: resId,
+          user: authorId,
+          payload: commentText
+        },
+        "id"
+      )
+    )[0];
+
+    return knex("Reservations")
+    .join(
+      "ReservationEvents",
+      "Reservations.id",
+      "=",
+      "ReservationEvents.reservationId"
+    )
+    .select("ReservationEvents.payload")
+    .where("Reservations.id", resId)
+    .orderBy("ReservationEvents.dateTime", "desc")
+    .limit(1);
+  }
+
+    public async confirmReservation(resId: number): Promise<Reservation | null> {
+      await this.queryBuilder("Reservations")
+      .where("id", resId)
+      .update({status: "CONFIRMED"});
+      return await this.getReservationById(resId);
+    }
+
+    public async cancelReservation(resId: number): Promise<Reservation | null> {
+      await this.queryBuilder("Reservations")
+      .where("id", resId)
+      .update({status: "CANCELLED"});
+      return await this.getReservationById(resId);
     }
 }
