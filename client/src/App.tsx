@@ -1,8 +1,8 @@
-import * as React from "react";
-import { createTheme, ThemeProvider } from "@mui/material";
+import React from "react";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import Routes from "./Routes";
+import { createTheme, ThemeProvider } from "@mui/material";
 import { CurrentUserProvider } from "./common/CurrentUserProvider";
+import Routes from "./Routes";
 
 const apolloClient = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URL ?? "https://localhost:3000/graphql",

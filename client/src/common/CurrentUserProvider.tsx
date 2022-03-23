@@ -6,7 +6,7 @@ import RequestWrapper2 from "./RequestWrapper2";
 const loginUrl =
   process.env.REACT_APP_LOGIN_URL ?? "https://localhost:3000/login";
 
-const GET_CURRENT_USER = gql`
+export const GET_CURRENT_USER = gql`
   query GetCurrentUser {
     currentUser {
       id

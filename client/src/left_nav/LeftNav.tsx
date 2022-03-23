@@ -42,7 +42,7 @@ export default function LeftNav() {
       variant="permanent"
       anchor="left"
     >
-      <StyledLogo src={LogoSvg} alt="" />
+      <StyledLogo src={LogoSvg} alt="Construct logo" />
 
       <Stack direction="row" alignItems="center" spacing={2} padding={2}>
         <Avatar
@@ -111,7 +111,6 @@ export default function LeftNav() {
             to="/admin/reservations"
             primary="Reservations"
             icon={<EventIcon />}
-            notificationCount={1}
           />
           <NavLink to="/admin/people" primary="People" icon={<PeopleIcon />} />
           <NavLink
