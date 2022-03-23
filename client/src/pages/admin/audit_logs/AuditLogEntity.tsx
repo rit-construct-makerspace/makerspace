@@ -10,6 +10,8 @@ function getEntityUrl(entityType: string, id: string) {
   switch (entityType) {
     case "user":
       return "/admin/people/" + id;
+    case "room":
+      return "/admin/rooms/" + id;
     default:
       return "/admin/history";
   }

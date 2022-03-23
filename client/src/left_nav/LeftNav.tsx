@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 import NavLink from "./NavLink";
 import LogoSvg from "../assets/logo.svg";
 import styled from "styled-components";
-import MonitorIcon from "@mui/icons-material/Monitor";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 
@@ -56,7 +56,7 @@ export default function LeftNav() {
 
       {/*<Stack spacing={1} my={2}>*/}
       {/*  <MonitorAlert />*/}
-      {/*  <CardReaderAlert />*/}
+      {/*  <CardReader />*/}
       {/*  <HoldAlert />*/}
       {/*</Stack>*/}
 
@@ -94,24 +94,24 @@ export default function LeftNav() {
           />
           <NavLink
             to="/admin/inventory"
-            primary="Inventory"
+            primary="Materials"
             icon={<InventoryIcon />}
+          />
+          <NavLink
+            to="/admin/storefront"
+            primary="Storefront"
+            icon={<StorefrontIcon />}
+          />
+          <NavLink
+            to="/admin/rooms"
+            primary="Rooms"
+            icon={<MeetingRoomIcon />}
           />
           <NavLink
             to="/admin/reservations"
             primary="Reservations"
             icon={<EventIcon />}
             notificationCount={1}
-          />
-          <NavLink
-            to="/admin/monitor/select-room"
-            primary="Monitor"
-            icon={<MonitorIcon />}
-          />
-          <NavLink
-            to="/admin/storefront"
-            primary="Storefront"
-            icon={<StorefrontIcon />}
           />
           <NavLink to="/admin/people" primary="People" icon={<PeopleIcon />} />
           <NavLink

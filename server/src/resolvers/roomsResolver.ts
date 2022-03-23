@@ -1,61 +1,91 @@
-import { EquipmentRepository } from "../repositories/Equipment/EquipmentRepository";
-import { RoomRepo } from "../repositories/Rooms/RoomRepository";
+import * as RoomRepo from "../repositories/Rooms/RoomRepository";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import * as UserRepo from "../repositories/Users/UserRepository";
-
-const er = new EquipmentRepository();
-const rr = new RoomRepo();
+import { ApolloContext } from "../server";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
+import { getUsersFullName, hashUniversityID } from "./usersResolver";
+import assert from "assert";
+import { Room } from "../models/rooms/room";
 
 const RoomResolvers = {
   Query: {
-    rooms: async (_: any, args: any, context: any) => {
-      return await rr.getRooms();
+    rooms: async () => {
+      return await RoomRepo.getRooms();
     },
 
-    room: async (_: any, args: any, context: any) => {
-      return await rr.getRoomByID(args.id);
+    room: async (parent: any, args: { id: number }) => {
+      return await RoomRepo.getRoomByID(args.id);
+    },
+  },
+
+  Room: {
+    equipment: async (parent: Room) => {
+      return await EquipmentRepo.getEquipmentWithRoomID(parent.id);
     },
 
-    roomByEquipment: async (_: any, args: any, context: any) => {
-      const equip = await er.getEquipmentById(args.equipmentID);
-      if (equip) {
-        return await rr.getRoomByID(equip.roomID);
-      }
-    },
-    roomByLabbie: async (_: any, args: any, context: any) => {
-      const labbie = await UserRepo.getUserByID(args.labbieID);
-      if (labbie) {
-        return await rr.getRoomByID(labbie.roomID);
-      }
+    recentSwipes: async (parent: Room) => {
+      const swipes = await RoomRepo.getRecentSwipes(parent.id);
+      return swipes.map(async (s) => ({
+        id: s.id,
+        dateTime: s.dateTime,
+        user: await UserRepo.getUserByID(s.userID),
+      }));
     },
   },
 
   Mutation: {
-    addRoom: async (_: any, args: any, context: any) => {
-      return await rr.addRoom(args.room);
+    addRoom: async (parent: any, args: any, context: ApolloContext) => {
+      const newRoom = await RoomRepo.addRoom(args.room);
+
+      assert(context.user);
+      assert(newRoom);
+
+      await createLog(
+        "{user} created the {room} room.",
+        { id: context.user?.id, label: getUsersFullName(context.user) },
+        { id: newRoom.id, label: newRoom.name }
+      );
+
+      return newRoom;
     },
 
-    removeRoom: async (_: any, args: any, context: any) => {
-      return await rr.removeRoom(args.id);
+    removeRoom: async (_parent: any, args: any) => {
+      return await RoomRepo.removeRoom(args.id);
     },
 
-    updateRoomName: async (_: any, args: any, context: any) => {
-      return await rr.updateRoomName(args.id, args.name);
+    updateRoomName: async (_parent: any, args: any) => {
+      return await RoomRepo.updateRoomName(args.id, args.name);
     },
 
-    addLabbieToMonitorRoom: async (_: any, args: any, context: any) => {
-      return await rr.addLabbieToRoom(args.roomID, args.labbieID);
+    addLabbieToMonitorRoom: async (_parent: any, args: any) => {
+      return await RoomRepo.addLabbieToRoom(args.roomID, args.labbieID);
     },
 
-    removeLabbieFromMonitorRoom: async (_: any, args: any, context: any) => {
-      return await rr.removeLabbieFromRoom(args.roomID, args.labbieID);
+    removeLabbieFromMonitorRoom: async (_parent: any, args: any) => {
+      return await RoomRepo.removeLabbieFromRoom(args.roomID, args.labbieID);
     },
 
-    addUserToRoom: async (_: any, args: any, context: any) => {
-      return await rr.addUserToRoom(args.roomID, args.userID);
-    },
+    swipeIntoRoom: async (
+      _parent: any,
+      args: { roomID: number; universityID: string }
+    ) => {
+      const room = await RoomRepo.getRoomByID(args.roomID);
+      assert(room);
 
-    removeUserFromRoom: async (_: any, args: any, context: any) => {
-      return await rr.removeUserFromRoom(args.roomID, args.userID);
+      const hashedUniversityID = hashUniversityID(args.universityID);
+      const user = await UserRepo.getUserByUniversityID(hashedUniversityID);
+
+      if (!user) return null;
+
+      await RoomRepo.swipeIntoRoom(args.roomID, user.id);
+
+      await createLog(
+        "{user} swiped into the {room}.",
+        { id: user.id, label: getUsersFullName(user) },
+        { id: room.id, label: room.name }
+      );
+
+      return user;
     },
   },
 };
