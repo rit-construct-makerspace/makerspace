@@ -61,7 +61,7 @@ const EquipmentResolvers = {
       return await EquipmentRepo.updateEquipment(args.id, args.equipment);
     },
 
-    archiveEquipment: async (_: any, args: { id: number }, context: any) => {
+    deleteEquipment: async (_: any, args: { id: number }, context: any) => {
       return await EquipmentRepo.archiveEquipment(args.id);
     },
   },
