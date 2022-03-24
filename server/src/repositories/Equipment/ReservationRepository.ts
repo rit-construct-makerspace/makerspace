@@ -8,7 +8,7 @@ export interface IReservationRepository {
   getReservations(): Promise<Reservation[]>;
   addReservation(reservation: ReservationInput): Promise<Reservation | null>;
   updateReservation(id: number, reservation: ReservationInput): Promise<Reservation | null>;
-  removeReservation(id: number): Promise<void>;
+  archiveReservation(id: number): Promise<void>;
   
 }
 
@@ -79,7 +79,7 @@ export class ReservationRepository implements IReservationRepository {
       return await this.getReservationById(newId);
     }
 
-    public async removeReservation(id: number): Promise<void> {
+    public async archiveReservation(id: number): Promise<void> {
         await knex("Reservations").where({ id: id}).update({isArchived: true})
     }
 }

@@ -12,14 +12,6 @@ export async function up(knex: Knex): Promise<void> {
             }
         })
         .then(async () => {
-            const exists = await knex.schema.hasTable("ModulesForEquipment");
-            if (exists) {
-                return knex.schema.alterTable("ModulesForEquipment", function (t) {
-                    t.boolean("isArchived").defaultTo(false);
-                });
-            }
-        })
-        .then(async () => {
             knex.schema.hasTable("Reservations").then(function (exists) {
                 if (exists) {
                     return knex.schema.alterTable("Reservations", function (t) {
@@ -37,14 +29,6 @@ export async function down(knex: Knex): Promise<void> {
         .then(function (exists) {
             if (exists) {
                 return knex.schema.alterTable("Equipment", function (t) {
-                    t.dropColumn("isArchived");
-                });
-            }
-        })
-        .then(async () => {
-            const exists = await knex.schema.hasTable("ModulesForEquipment");
-            if (exists) {
-                return knex.schema.alterTable("ModulesForEquipment", function (t) {
                     t.dropColumn("isArchived");
                 });
             }
