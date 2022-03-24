@@ -1,8 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { ImageEmbed } from "../../../../types/Quiz";
-import QuizItemDraft from "./QuizItemDraft";
+import ModuleItemDraft from "./ModuleItemDraft";
 import { Stack, TextField } from "@mui/material";
+import { ModuleItem } from "../../../../types/Module";
+import useTimedState from "../../../../hooks/useTimedState";
 
 const StyledImage = styled.img`
   border-radius: 4px;
@@ -10,28 +11,31 @@ const StyledImage = styled.img`
 
 interface ImageEmbedDraftProps {
   index: number;
-  imageEmbed: ImageEmbed;
-  updateImageEmbed: (updatedImageEmbed: ImageEmbed) => void;
+  moduleItem: ModuleItem;
+  onChange: (updatedText: string) => void;
   onRemove: () => void;
 }
 
 export default function ImageEmbedDraft({
   index,
-  imageEmbed,
-  updateImageEmbed,
+  moduleItem,
+  onChange,
   onRemove,
 }: ImageEmbedDraftProps) {
+  const [text, setText] = useTimedState<string>(moduleItem.text, (latestText) =>
+    onChange(latestText)
+  );
+
   return (
-    <QuizItemDraft onRemove={onRemove} index={index} itemId={imageEmbed.id}>
+    <ModuleItemDraft onRemove={onRemove} index={index} itemId={moduleItem.id}>
       <Stack padding={2} spacing={2}>
         <TextField
+          value={text}
           label="Image URL"
-          onChange={(e) => {
-            updateImageEmbed({ ...imageEmbed, href: e.target.value });
-          }}
+          onChange={(e) => setText(e.target.value)}
         />
-        {imageEmbed.href && <StyledImage src={imageEmbed.href} alt="" />}
+        {moduleItem.text && <StyledImage src={moduleItem.text} alt="" />}
       </Stack>
-    </QuizItemDraft>
+    </ModuleItemDraft>
   );
 }

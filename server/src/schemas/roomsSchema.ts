@@ -1,48 +1,45 @@
 import { gql } from "apollo-server-express";
 
+export interface Swipe {
+  id: number;
+  dateTime: Date;
+  roomID: number;
+  userID: number;
+}
+
 export const RoomTypeDefs = gql`
+  type Swipe {
+    id: ID!
+    dateTime: DateTime
+    user: User
+  }
 
   type Room {
     id: ID!
     name: String!
-    equipmentList: [Equipment]
-    currentUsers: [User]
+    equipment: [Equipment]
+    recentSwipes: [Swipe]
     labbies: [User]
-    isOpen: Boolean!
   }
 
   input RoomInput {
     name: String!
-    equipmentList: [Equipment]
-    currentUsers: [User]
-    labbies: [User]
-    isOpen: Boolean!
-  }
-  
-  type Query {
-    rooms: [Room]
-    room(roomID: ID!): Room
-    roomsByEquipment(equipment: Equipment!): [Room]
-    roomsByLabbie(labbie: User!): [Room]
-    roomsByIfOpen(isOpen: Boolean!): [Room]
   }
 
-  type Mutation {
+  extend type Query {
+    rooms: [Room]
+    room(id: ID!): Room
+  }
+
+  extend type Mutation {
     addRoom(room: RoomInput): Room
-    removeRoom(room: RoomInput): Room
-    
+    removeRoom(roomID: ID!): Room
+
     updateRoomName(roomID: ID!, name: String): Room
-    
-    addEquipmentToRoom(roomID: ID!, equipment: Equipment): Room
-    removeEquipmentFromRoom(roomID: ID!, equipment: Equipment): Room
-    
-    addUserToRoom(roomID: ID!, user: User): Room
-    removeUserFromRoom(roomID: ID!, user: User): Room
-    
-    addLabbieToRoom(roomID: ID!, labbie: User): Room
-    removeLabbieFromRoom(roomID: ID!, labbie: User): Room
-    
-    closeRoom(roomID: ID!): Room
-    openRoom(roomID: ID!): Room
+
+    swipeIntoRoom(roomID: ID!, universityID: String!): User
+
+    addLabbieToMonitorRoom(roomID: ID!, labbieID: ID!): Room
+    removeLabbieFromMonitorRoom(roomID: ID!, labbieID: ID!): Room
   }
 `;

@@ -1,10 +1,8 @@
-import { Module } from "../models/training/module";
+import { TrainingModule } from "../schemas/trainingSchema";
 import { knex } from "../db";
-import { ModuleRepo } from "../repositories/Training/ModuleRepository";
-
+import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 
 describe("Example test set", () => {
-
   beforeAll(() => {
     return knex.migrate.latest();
     // we can here also seed our tables, if we have any seeding files
@@ -15,12 +13,8 @@ describe("Example test set", () => {
   });
 
   test("example test", async () => {
-    let mr = new ModuleRepo();
-    let m1 = new Module("test", []);
-    await mr.addModule(m1);
-    let mods = await mr.getModules();
+    await ModuleRepo.addModule("test");
+    let mods = await ModuleRepo.getModules();
     expect(mods.length).toBe(1);
   });
-
-
 });

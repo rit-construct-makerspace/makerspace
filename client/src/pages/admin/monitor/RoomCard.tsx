@@ -10,12 +10,11 @@ import {
 } from "@mui/material";
 import Person from "../../../types/Person";
 import { useHistory } from "react-router-dom";
+import Room from "../../../types/Room";
 
-export interface Room {
-  id: string;
-  name: string;
-  image: string;
-}
+// TODO: Remove this
+const ROOM_PLACEHOLDER_IMAGE =
+  "https://i.ytimg.com/vi/nfDgGOCy4ms/maxresdefault.jpg";
 
 interface RoomCardProps {
   room: Room;
@@ -27,14 +26,17 @@ export default function RoomCard({ room, monitor }: RoomCardProps) {
 
   return (
     <Card sx={{ width: 400, mr: 2, mb: 2 }}>
-      <CardActionArea
-        onClick={() => history.push("/admin/monitor/sample-room")}
-      >
-        <CardMedia component="img" image={room.image} sx={{ height: 200 }} />
+      <CardActionArea onClick={() => history.push(`/admin/rooms/${room.id}`)}>
+        <CardMedia
+          component="img"
+          image={ROOM_PLACEHOLDER_IMAGE}
+          sx={{ height: 200 }}
+        />
         <CardContent>
           <Typography variant="h6" component="div" mb={1}>
             {room.name}
           </Typography>
+
           {monitor ? (
             <Stack direction="row">
               <Avatar

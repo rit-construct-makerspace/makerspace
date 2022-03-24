@@ -2,120 +2,119 @@ import { knex } from "../../db";
 import { Equipment } from "../../models/equipment/equipment";
 import { EquipmentInput } from "../../models/equipment/equipmentInput";
 import { equipmentToDomain, singleEquipmentToDomain } from "../../mappers/equipment/Equipment";
-import { EquipmentLabel } from "../../models/equipment/equipmentLabel";
-import { singleEquipmentLabelToDomain } from "../../mappers/equipment/EquipmentLabel";
+import { TrainingModule } from "../../schemas/trainingSchema";
+import { singleTrainingModuleToDomain } from "../../mappers/training/TrainingModuleMapper";
 
-export interface IEquipmentRepository {
-  getEquipmentById(id: number | string): Promise<Equipment | null>;
-  getEquipments(): Promise<Equipment[]>;
-  addEquipment(equipment: EquipmentInput): Promise<Equipment | null>;
-  getLabels(id: number): Promise<EquipmentLabel[] | null>;
-  addLabelsToEquipment(id: number, equipmentLabels: number[]): Promise<void>;
-  updateLabels(id: number, equipmentLabels: number[]): Promise<void>;
-  removeLabelsFromEquipment(id: number, equipmentLabels: number[]): Promise<void>;
-  updateEquipment(id: number, equipment: EquipmentInput): Promise<Equipment | null>;
-  removeEquipment(id: number): Promise<void>;
-  
+export async function getEquipmentById(
+  id: string | number
+): Promise<Equipment | null> {
+  const knexResult = await knex
+    .first("id", "name", "addedAt", "inUse", "roomID")
+    .from("Equipment")
+    .where("id", id);
+
+  return singleEquipmentToDomain(knexResult);
 }
 
-export class EquipmentRepository implements IEquipmentRepository {
-
-    private queryBuilder
-
-    constructor(queryBuilder?: any) {
-        this.queryBuilder = queryBuilder || knex
-    }
-
-    public async getEquipmentById(id: string | number): Promise<Equipment | null> {
-      const knexResult = await this.queryBuilder
-      .first(
-        "id",
-        "name",
-        "room",
-        "addedAt",
-        "inUse"
-      )
-      .from("Equipment")
-      .where("id", id);
-
-      return singleEquipmentToDomain(knexResult);
-    }
-
-    public async removeEquipment(id: number): Promise<void> {
-      await this.queryBuilder("Equipment").where({ id: id }).del();
-    }
-
-    public async getEquipments(): Promise<Equipment[]> {
-      const knexResult = await this.queryBuilder("Equipment").select(
-        "id",
-        "name",
-        "room",
-        "addedAt",
-        "inUse"
-      );
-      return equipmentToDomain(knexResult);
-    }
-
-    public async getLabels(id: number): Promise<EquipmentLabel[] | null> {
-      const knexResult = await this.queryBuilder("LabelsForEquipment")
-        .leftJoin("EquipmentLabels", "EquipmentLabels.id", "=", "LabelsForEquipment.equipmentLabelId")
-        .select("EquipmentLabels.id", "EquipmentLabels.name")
-        .where("LabelsForEquipment.equipmentId", id);
-      const result = knexResult.map((i: any) => singleEquipmentLabelToDomain(i));
-      if (result.length === 1 && result[0] === null) return null;
-      return result;
-    }
-
-    public async addLabelsToEquipment(id: number, equipmentLabels: number[]): Promise<void> {
-      await this.queryBuilder("LabelsForEquipment")
-        .insert(
-          equipmentLabels.map(equipmentLabel => 
-            ({ equipmentId: id, equipmentLabelId: equipmentLabel }))
-        );
-    }
-
-    public async removeLabelsFromEquipment(id: number, equipmentLabels: number[]): Promise<void> {
-      await this.queryBuilder("LabelsForEquipment")
-        .where("equipmentId", "=", id)
-        .whereIn("equipmentLabelId", equipmentLabels)
-        .del();
-    }
-
-    public async updateLabels(id: number, equipmentLabels: number[]): Promise<void> {
-      await this.queryBuilder("LabelsForEquipment").del().where("equipmentId", id);
-      if (equipmentLabels && equipmentLabels.length > 0) {
-        await this.addLabelsToEquipment(id, equipmentLabels);
-      }
-    }
-
-    public async updateEquipment(id: number, equipment: EquipmentInput): Promise<Equipment | null> {
-      await this.queryBuilder("Equipment")
-        .where("id", id)
-        .update({
-          name: equipment.name,
-          room: equipment.room,
-          inUse: equipment.inUse
-        }).then(async () => {
-          await this.updateLabels(id, equipment.equipmentLabels);
-        });
-        return this.getEquipmentById(id);
-    }
-
-    public async addEquipment(equipment: EquipmentInput): Promise<Equipment | null> {
-      const newId = (
-        await this.queryBuilder("Equipment").insert(
-          {
-            name: equipment.name,
-            room: equipment.room,
-            inUse: equipment.inUse
-          },
-          "id"
-        )
-      )[0];
-      if (equipment.equipmentLabels && equipment.equipmentLabels.length > 0)
-        await this.addLabelsToEquipment(newId, equipment.equipmentLabels);
-      return await this.getEquipmentById(newId);
-    }
+export async function removeEquipment(id: number): Promise<void> {
+  await knex("ModulesForEquipment").where({ equipmentId: id }).del();
+  await knex("Equipment").where({ id: id }).del();
 }
 
+export async function getEquipments(): Promise<Equipment[]> {
+  const knexResult = await knex("Equipment").select();
+  return equipmentToDomain(knexResult);
+}
 
+export async function getEquipmentWithRoomID(
+  roomID: number
+): Promise<Equipment[]> {
+  const result = await knex("Equipment").select().where({ roomID });
+  return equipmentToDomain(result);
+}
+
+export async function getTrainingModules(
+  id: number
+): Promise<TrainingModule[] | null> {
+  const knexResult = await knex("ModulesForEquipment")
+    .leftJoin(
+      "TrainingModule",
+      "TrainingModule.id",
+      "=",
+      "ModulesForEquipment.trainingModuleId"
+    )
+    .select("TrainingModule.id", "TrainingModule.name")
+    .where("ModulesForEquipment.equipmentId", id);
+  const result = knexResult.map((i: any) => singleTrainingModuleToDomain(i));
+  if (result.length === 1 && result[0] === null) return null;
+  return result;
+}
+
+export async function addTrainingModulesToEquipment(
+  id: number,
+  trainingModules: number[]
+): Promise<void> {
+  await knex("ModulesForEquipment").insert(
+    trainingModules.map((trainingModule) => ({
+      equipmentId: id,
+      trainingModuleId: trainingModule,
+    }))
+  );
+}
+
+export async function removeTrainingModulesFromEquipment(
+  id: number,
+  trainingModules: number[]
+): Promise<void> {
+  await knex("ModulesForEquipment")
+    .where("equipmentId", "=", id)
+    .whereIn("trainingModuleId", trainingModules)
+    .del();
+}
+
+export async function updateTrainingModules(
+  id: number,
+  trainingModules: number[]
+): Promise<void> {
+  await knex("ModulesForEquipment").del().where("equipmentId", id);
+  if (trainingModules && trainingModules.length > 0) {
+    await addTrainingModulesToEquipment(id, trainingModules);
+  }
+}
+
+export async function updateEquipment(
+  id: number,
+  equipment: EquipmentInput
+): Promise<Equipment | null> {
+  await knex("Equipment")
+    .where("id", id)
+    .update({
+      name: equipment.name,
+      inUse: equipment.inUse,
+      roomID: equipment.roomID,
+    })
+    .then(async () => {
+      await updateTrainingModules(id, equipment.trainingModules);
+    });
+
+  return getEquipmentById(id);
+}
+
+export async function addEquipment(
+  equipment: EquipmentInput
+): Promise<Equipment | null> {
+  const newId = (
+    await knex("Equipment").insert(
+      {
+        name: equipment.name,
+        inUse: equipment.inUse,
+        roomID: equipment.roomID,
+      },
+      "id"
+    )
+  )[0];
+  if (equipment.trainingModules && equipment.trainingModules.length > 0)
+    await addTrainingModulesToEquipment(newId, equipment.trainingModules);
+
+  return await getEquipmentById(newId);
+}

@@ -1,39 +1,99 @@
 import { gql } from "apollo-server-express";
-import { HoldsTypeDefs } from "./holdsSchema";
+import { TrainingModule } from "../schemas/trainingSchema";
+import { Hold } from "./holdsSchema";
+
+export enum Privilege {
+  MAKER = "MAKER",
+  LABBIE = "LABBIE",
+  ADMIN = "ADMIN",
+}
+
+export interface User {
+  id: number;
+  universityID: string;
+  ritUsername: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  isStudent: boolean;
+  privilege: Privilege;
+  registrationDate: Date;
+  holds: [Hold];
+  completedModules: [TrainingModule];
+  expectedGraduation: string;
+  college: string;
+  roomID: number;
+  pronouns: string;
+  setupComplete: boolean;
+  isArchived: boolean;
+}
+
+export interface StudentUserInput {
+  universityID: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  expectedGraduation: string;
+  college: string;
+  major: string;
+}
 
 export const UsersTypeDefs = gql`
-
-  scalar DateTime
+  enum Privilege {
+    MAKER
+    LABBIE
+    ADMIN
+  }
 
   type User {
     id: ID!
     firstName: String!
     lastName: String!
+    pronouns: String
     email: String!
     isStudent: Boolean!
     privilege: Privilege!
     registrationDate: DateTime!
     holds: [Hold]
     trainingModules: [TrainingModule]
-    year: Int
+    expectedGraduation: String
     college: String
-    major: String
-    aboutMe: String
-  }
+    room: Room
+    roomMonitoring: Room
 
-  enum Privilege{
-    MAKER
-    LABBIE
-    ADMIN
+    """
+    The number-letter combination that is attached to your RIT email
+    (ie. abc1234). Not sensitive info. Stored plainly.
+    Not to be confused with the universityID.
+    """
+    ritUsername: String!
+
+    """
+    The nine digit number encoded in the mag strip of RIT ID cards.
+    Can also be found on the eServices and/or myRIT portals.
+    Sensitive information. Stored as a SHA256 hash in the database.
+    Not to be confused with RIT usernames (ie. abc1234)
+    """
+    universityID: String!
+
+    """
+    Has the user completed the signup form?
+    """
+    setupComplete: Boolean
+
+    """
+    Is the user's account suspended/deleted?
+    """
+    isArchived: Boolean
   }
 
   input StudentUserInput {
+    universityID: String!
+    ritUsername: String!
     firstName: String!
     lastName: String!
     email: String!
-    isStudent: Boolean!
-    privilege: Privilege!
-    year: Int!
+    expectedGraduation: String!
     college: String!
     major: String!
   }
@@ -42,21 +102,27 @@ export const UsersTypeDefs = gql`
     firstName: String!
     lastName: String!
     email: String!
-    isStudent: Boolean!
-    privilege: Privilege!
   }
 
-
-  type Query {
-    user: User
+  extend type Query {
+    users: [User]
+    user(id: ID!): User
+    currentUser: User
   }
 
-  type Mutation {
-    addStudentUser(user: StudentUserInput): User
-    addFacultyUser(user: FacultyUserInput): User
+  extend type Mutation {
 
-    updateStudentUser(user: StudentUserInput): User
-    updateFacultyUser(user: FacultyUserInput): User
+    createUser(firstName: String, lastName: String, ritUsername: String, email: String): User
+
+    updateStudentProfile(
+      userID: ID!
+      pronouns: String
+      college: String
+      expectedGraduation: String
+      universityID: String
+    ): User
+
+    setPrivilege(userID: ID!, privilege: Privilege): User
 
     addTraining(userID: ID!, moduleID: ID!): User
     removeTraining(userID: ID!, moduleID: ID!): User
@@ -64,7 +130,6 @@ export const UsersTypeDefs = gql`
     addHold(userID: ID!, hold: HoldInput): User
     removeHold(userID: ID!, hold: HoldInput): User
 
-    addDescription(userID: ID!, description: String): User
-
+    archiveUser(userID: ID!): User
   }
 `;

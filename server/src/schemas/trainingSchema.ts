@@ -1,57 +1,103 @@
 import { gql } from "apollo-server-express";
 
+export interface TrainingModule {
+  id: number;
+  name: string;
+}
+
+export enum ModuleItemType {
+  MULTIPLE_CHOICE,
+  CHECKBOXES
+}
+
+export interface ModuleItem {
+  id: number | undefined;
+  text: string;
+  type: ModuleItemType;
+  order: number;
+}
+
+export interface Option {
+  id: number;
+  text: string;
+  correct: boolean;
+}
+
+
 export const TrainingTypeDefs = gql`
   type TrainingModule {
     id: ID!
     name: String!
-    items: [Question]!
+    items: [ModuleItem]!
   }
 
   interface TrainingModuleItem {
     id: ID!
+    order: Int
   }
 
-  enum QuestionType {
+  enum ModuleItemType {
     MULTIPLE_CHOICE
     CHECKBOXES
+    TEXT
+    YOUTUBE
+    IMAGE
   }
 
-  type Question implements TrainingModuleItem {
+  type ModuleItem implements TrainingModuleItem {
     id: ID!
     text: String!
-    type: QuestionType!
-    options: [QuestionOption]!
+    type: ModuleItemType!
+    options: [ModuleItemOption]!
+    order: Int
   }
 
-  type QuestionOption {
+  type ModuleItemOption {
     id: ID!
     text: String!
     correct: Boolean!
   }
 
-  type Query {
+  extend type Query {
     modules: [TrainingModule]
+    module(id: ID!): TrainingModule
   }
 
-  input QuestionInput {
+  input ModuleItemInput {
     text: String!
-    type: QuestionType!
+    type: ModuleItemType!
+    order: Int
   }
 
-  input QuestionOptionInput {    
+  input ModuleItemOptionInput {
     text: String!
     correct: Boolean!
   }
 
-  type Mutation {
-    createModule(name: String): TrainingModule 
-    addQuestion(module_id: ID!, question: QuestionInput): Question
-    addOption(question_id: ID!, option: QuestionOptionInput): QuestionOption
+  input ModuleItemAnswerInput {
+    moduleItemID: ID!
+    selectedOptionIDs: [ID]!
+  } 
+
+  input ModuleSubmissionInput {
+    moduleID: ID!
+    userID: ID!
+    answers: [ModuleItemAnswerInput]
+  }
+
+  extend type Mutation {
+    createModule(name: String): TrainingModule
+    addModuleItem(moduleID: ID!, moduleItem: ModuleItemInput): ModuleItem
+    addOption(moduleItemID: ID!, option: ModuleItemOptionInput): ModuleItemOption
     updateModule(id: ID!, name: String): TrainingModule
-    updateQuestion(id: ID!, question: QuestionInput): Question
-    updateOption(id: ID!, option: QuestionOptionInput): QuestionOption
+    updateModuleItem(id: ID!, moduleItem: ModuleItemInput): ModuleItem
+    updateOption(id: ID!, option: ModuleItemOptionInput): ModuleItemOption
     deleteModule(id: ID!): TrainingModule
-    deleteQuestion(id: ID!): Question
-    deleteOption(id: ID!): QuestionOption
+    deleteModuleItem(id: ID!): ModuleItem
+    deleteOption(id: ID!): ModuleItemOption
+    """
+    Submit a trainingModule for assesment, the attempt will be stored for the user and the grade will be returned as a Float out of 100
+    """
+    submitModule(submission: ModuleSubmissionInput): Float
   }
 `;
