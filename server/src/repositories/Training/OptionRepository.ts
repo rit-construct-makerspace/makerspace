@@ -2,7 +2,6 @@ import { knex } from "../../db";
 import * as OptionMap from "../../mappers/training/optionMapper";
 import { Option } from "../../schemas/trainingSchema";
 
-
 export async function getOptionById(id: number): Promise<Option | null> {
   const knexResult = await knex("ModuleItemOption")
     .select("id", "moduleItem", "text", "correct")
@@ -16,6 +15,16 @@ export async function getOptionsByModuleItem(
   const knexResult = await knex("ModuleItemOption")
     .select("id", "moduleItem", "text", "correct")
     .where("moduleItem", moduleItemId);
+  return OptionMap.optionsToDomain(knexResult);
+}
+
+export async function getCorrectOptionsWithModuleItemByModule(
+  moduleID: string
+) {
+  const knexResult = await knex("ModuleItemOption")
+    .select("id", "moduleItem", "text", "correct")
+    .join('ModuleItem', 'ModuleItemOption.moduleItem', 'ModuleItem.id')
+    .where("ModuleItem.module", moduleID);
   return OptionMap.optionsToDomain(knexResult);
 }
 
@@ -43,4 +52,3 @@ export async function updateOption(option: Option): Promise<void> {
 export async function deleteOptionById(id: number): Promise<void> {
   await knex("ModuleItemOption").where({ id: id }).del();
 }
-

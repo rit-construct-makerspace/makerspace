@@ -1,6 +1,7 @@
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import * as OptionRepo from "../repositories/Training/OptionRepository";
 import * as ModuleItemRepo from "../repositories/Training/ModuleItemRepository";
+import { ModuleSubmissionInput } from "../schemas/trainingSchema";
 
 const TrainingResolvers = {
   Query: {
@@ -8,7 +9,7 @@ const TrainingResolvers = {
       return await ModuleRepo.getModules();
     },
 
-    module: (_: any, args: { id: number }, context: any) =>
+    module: (_: any, args: { id: string }, context: any) =>
       ModuleRepo.getModuleById(args.id),
   },
 
@@ -46,12 +47,12 @@ const TrainingResolvers = {
     addModuleItem: async (_: any, args: any) =>
       await ModuleItemRepo.addModuleItem(args.moduleID, {
         text: args.moduleItem.text,
-        type: args.moduleItem.type
+        type: args.moduleItem.type,
       }),
 
     updateModuleItem: async (_: any, args: any) => {
-      await ModuleItemRepo.updateModuleItem(args.id, args.moduleItem)
-      return await ModuleItemRepo.getModuleItem(args.id)
+      await ModuleItemRepo.updateModuleItem(args.id, args.moduleItem);
+      return await ModuleItemRepo.getModuleItem(args.id);
     },
 
     deleteModuleItem: async (_: any, args: { id: number }) =>
@@ -77,6 +78,15 @@ const TrainingResolvers = {
 
     deleteOption: async (_: any, args: { id: number }) => {
       await OptionRepo.deleteOptionById(args.id);
+    },
+
+    submitModule: async (
+      parent: any,
+      args: { submission: ModuleSubmissionInput }, 
+      context: any
+    ) => {
+      const submission = args.submission;
+      const answers = await OptionRepo.getCorrectOptionsWithModuleItemByModule(submission.moduleID)
     },
   },
 };

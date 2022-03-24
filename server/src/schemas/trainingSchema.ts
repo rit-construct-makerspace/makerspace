@@ -23,6 +23,17 @@ export interface Option {
   correct: boolean;
 }
 
+export interface ModuleItemAnswerInput {
+  moduleItemID: string;
+  selectedOptionIDs: string[]
+} 
+
+export interface ModuleSubmissionInput {
+  moduleID: string;
+  userID: string;
+  answers: ModuleItemAnswerInput[]
+}
+
 
 export const TrainingTypeDefs = gql`
   type TrainingModule {
