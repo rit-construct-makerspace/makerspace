@@ -3,9 +3,14 @@ import { Privilege, User } from "../schemas/usersSchema";
 import { ApolloContext } from "../server";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
+import { createHash } from "crypto";
 
 export function getUsersFullName(user: User) {
   return `${user.firstName} ${user.lastName}`;
+}
+
+export function hashUniversityID(universityID: string) {
+  return createHash("sha256").update(universityID).digest("hex");
 }
 
 //TODO: Update all "args" parameters upon implementation
@@ -35,10 +40,16 @@ const UsersResolvers = {
         pronouns: string;
         college: string;
         expectedGraduation: string;
+        universityID: string;
       },
       context: any
     ) => {
-      return await UserRepo.updateStudentProfile(args);
+      const hashedUniversityID = hashUniversityID(args.universityID);
+
+      return await UserRepo.updateStudentProfile({
+        ...args,
+        universityID: hashedUniversityID,
+      });
     },
 
     setPrivilege: async (

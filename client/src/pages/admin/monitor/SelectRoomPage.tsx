@@ -33,7 +33,7 @@ export default function SelectRoomPage() {
       loading={getRoomsResult.loading}
       error={getRoomsResult.error}
     >
-      <Page title="Select a room to monitor">
+      <Page title="Rooms">
         <Stack direction="row" spacing={2} mb={4}>
           <SearchBar placeholder="Search rooms" />
           <Button variant="contained" onClick={handleCreateRoom}>

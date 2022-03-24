@@ -23,7 +23,7 @@ export interface IEquipmentRepository {
     id: number,
     equipment: EquipmentInput
   ): Promise<Equipment | null>;
-  archiveEquipment(id: number): Promise<Equipment | null>;
+  removeEquipment(id: number): Promise<void>;
 }
 
 export class EquipmentRepository implements IEquipmentRepository {
@@ -44,10 +44,11 @@ export class EquipmentRepository implements IEquipmentRepository {
     return singleEquipmentToDomain(knexResult);
   }
 
-  public async archiveEquipment(id: number): Promise<Equipment | null> {
-    await knex("ModulesForEquipment").where({ id: id}).update({isArchived: true})
-    await knex("Equipment").where({ id: id}).update({isArchived: true})
-    return this.getEquipmentById(id);
+  public async removeEquipment(id: number): Promise<void> {
+    await this.queryBuilder("ModulesForEquipment")
+      .where({ equipmentId: id })
+      .del();
+    await this.queryBuilder("Equipment").where({ id: id }).del();
   }
 
   public async getEquipments(): Promise<Equipment[]> {
