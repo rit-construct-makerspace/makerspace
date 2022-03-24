@@ -24,5 +24,6 @@ export function singleUserToDomain(raw: any): User | null {
     roomID: raw.roomID,
     pronouns: raw.pronouns,
     setupComplete: raw.setupComplete,
+    isArchived: raw.isArchived
   };
 }

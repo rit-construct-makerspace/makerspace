@@ -78,12 +78,12 @@ export default function Routes() {
               <ReservationsPage />
             </Route>
 
-            <Route path="/admin/monitor/select-room">
-              <SelectRoomPage />
+            <Route path="/admin/rooms/:id">
+              <MonitorRoomPage />
             </Route>
 
-            <Route path="/admin/monitor/sample-room">
-              <MonitorRoomPage />
+            <Route path="/admin/rooms">
+              <SelectRoomPage />
             </Route>
 
             <Route path="/admin/storefront">

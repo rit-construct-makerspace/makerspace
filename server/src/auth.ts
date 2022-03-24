@@ -11,12 +11,19 @@ import {
   getUserByRitUsername,
 } from "./repositories/Users/UserRepository";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
+import { User as AppUser } from "./schemas/usersSchema"
 
 interface RitSsoUser {
   firstName: string;
   lastName: string;
   email: string;
   ritUsername: string;
+}
+
+declare global {
+  namespace Express {
+    interface User extends AppUser {}
+  }
 }
 
 // Map the test users from samltest.id to match
@@ -137,7 +144,8 @@ export function setupAuth(app: express.Application) {
   });
 
   passport.deserializeUser(async (username: string, done) => {
-    const user = await getUserByRitUsername(username);
+    const user = await getUserByRitUsername(username);  
+    /* @ts-ignore */
     done(null, user);
   });
 

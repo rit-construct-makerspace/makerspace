@@ -3,9 +3,14 @@ import { Privilege, User } from "../schemas/usersSchema";
 import { ApolloContext } from "../server";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
+import { createHash } from "crypto";
 
 export function getUsersFullName(user: User) {
   return `${user.firstName} ${user.lastName}`;
+}
+
+export function hashUniversityID(universityID: string) {
+  return createHash("sha256").update(universityID).digest("hex");
 }
 
 //TODO: Update all "args" parameters upon implementation
@@ -24,6 +29,10 @@ const UsersResolvers = {
   },
 
   Mutation: {
+    createUser: async (_: any, args: any, context: any) => {
+      return await UserRepo.createUser(args);
+    },
+
     updateStudentProfile: async (
       parent: any,
       args: {
@@ -31,10 +40,16 @@ const UsersResolvers = {
         pronouns: string;
         college: string;
         expectedGraduation: string;
+        universityID: string;
       },
       context: any
     ) => {
-      return await UserRepo.updateStudentProfile(args);
+      const hashedUniversityID = hashUniversityID(args.universityID);
+
+      return await UserRepo.updateStudentProfile({
+        ...args,
+        universityID: hashedUniversityID,
+      });
     },
 
     setPrivilege: async (
@@ -69,6 +84,10 @@ const UsersResolvers = {
     removeHold: async (_: any, args: any, context: any) => {
       await UserRepo.removeHoldFromUser(args.userID, args.holdID);
     },
+
+    archiveUser: async (parents: any, args: {userID: number}, context: any) => {
+      return await UserRepo.archiveUser(args.userID);
+    }
   },
 };
 

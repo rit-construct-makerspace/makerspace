@@ -26,9 +26,7 @@ export default function RoomCard({ room, monitor }: RoomCardProps) {
 
   return (
     <Card sx={{ width: 400, mr: 2, mb: 2 }}>
-      <CardActionArea
-        onClick={() => history.push("/admin/monitor/sample-room")}
-      >
+      <CardActionArea onClick={() => history.push(`/admin/rooms/${room.id}`)}>
         <CardMedia
           component="img"
           image={ROOM_PLACEHOLDER_IMAGE}
