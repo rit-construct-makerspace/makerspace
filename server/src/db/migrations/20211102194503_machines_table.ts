@@ -29,7 +29,7 @@ export async function up(knex: Knex): Promise<void> {
       const exists = await knex.schema.hasTable('Reservations');
       if (!exists) {
         return knex.schema.createTable('Reservations', function (t) {
-          t.increments('id');
+          t.increments('id').primary();
           t.integer('creator').references('id').inTable('Users');
           t.integer('maker').references('id').inTable('Users');
           t.integer('labbie').references('id').inTable('Users');
@@ -45,7 +45,8 @@ export async function up(knex: Knex): Promise<void> {
       const exists = await knex.schema.hasTable('ReservationEvents');
       if (!exists) {
         return knex.schema.createTable('ReservationEvents', function (t) {
-          t.increments('id');
+          t.increments('id').primary();
+          t.integer('reservationId').references('id').inTable('Reservations');
           t.enu('eventType', ['COMMENT', 'ASSIGNMENT', 'CONFIRMATION', 'CANCELLATION']);
           t.integer('user').references('id').inTable('Users');
           t.timestamp('dateTime').defaultTo(knex.fn.now());
@@ -75,5 +76,11 @@ export async function down(knex: Knex): Promise<void> {
           return knex.schema.dropTable("Reservations");
         }
       });
+    })
+    .then(async () => {
+      const exists = await knex.schema.hasTable("ReservationEvents");
+      if (exists) {
+        return knex.schema.dropTable("ReservationEvents");
+      }
     });
 }
