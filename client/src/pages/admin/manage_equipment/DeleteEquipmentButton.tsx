@@ -3,7 +3,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { gql, useMutation } from "@apollo/client";
 import GET_EQUIPMENTS from "../../../queries/getEquipments";
 import { LoadingButton } from "@mui/lab";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const DELETE_EQUIPMENT = gql`
   mutation DeleteEquipment($id: ID!) {
@@ -15,7 +15,7 @@ const DELETE_EQUIPMENT = gql`
 
 export default function DeleteEquipmentButton() {
   const { id } = useParams<{ id: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [deleteEquipment, { loading }] = useMutation(DELETE_EQUIPMENT, {
     variables: { id },
@@ -24,7 +24,7 @@ export default function DeleteEquipmentButton() {
 
   const handleClick = async () => {
     await deleteEquipment();
-    history.push("/admin/equipment");
+    navigate("/admin/equipment");
   };
 
   return (

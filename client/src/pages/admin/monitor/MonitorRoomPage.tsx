@@ -13,7 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import EmptyPageSection from "../../../common/EmptyPageSection";
@@ -76,7 +76,7 @@ export interface Swipe {
 
 export default function MonitorRoomPage() {
   const { id } = useParams<{ id: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const queryResult = useQuery(GET_ROOM, { variables: { id } });
   const [loadingUser, setLoadingUser] = useState(false);
   const [cardError, setCardError] = useState(false);
@@ -149,7 +149,7 @@ export default function MonitorRoomPage() {
             <Button
               variant="outlined"
               startIcon={<HistoryIcon />}
-              onClick={() => history.push(`/admin/history?q=<room:${id}:`)}
+              onClick={() => navigate(`/admin/history?q=<room:${id}:`)}
             >
               View Logs
             </Button>

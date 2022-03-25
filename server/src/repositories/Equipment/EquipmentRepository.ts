@@ -6,7 +6,7 @@ import { TrainingModule } from "../../schemas/trainingSchema";
 import { singleTrainingModuleToDomain } from "../../mappers/training/TrainingModuleMapper";
 
 export async function getEquipmentById(
-  id: string | number
+    id: string | number
 ): Promise<Equipment | null> {
   const knexResult = await knex
     .first("id", "name", "addedAt", "inUse", "roomID")
@@ -16,9 +16,10 @@ export async function getEquipmentById(
   return singleEquipmentToDomain(knexResult);
 }
 
-export async function removeEquipment(id: number): Promise<void> {
-  await knex("ModulesForEquipment").where({ equipmentId: id }).del();
-  await knex("Equipment").where({ id: id }).del();
+
+export async function archiveEquipment(id: number): Promise<Equipment | null> {
+  await knex("Equipment").where({ id: id}).update({archived: true})
+  return getEquipmentById(id);
 }
 
 export async function getEquipments(): Promise<Equipment[]> {
@@ -27,14 +28,14 @@ export async function getEquipments(): Promise<Equipment[]> {
 }
 
 export async function getEquipmentWithRoomID(
-  roomID: number
+    roomID: number
 ): Promise<Equipment[]> {
   const result = await knex("Equipment").select().where({ roomID });
   return equipmentToDomain(result);
 }
 
 export async function getTrainingModules(
-  id: number
+    id: number
 ): Promise<TrainingModule[] | null> {
   const knexResult = await knex("ModulesForEquipment")
     .leftJoin(
@@ -51,8 +52,8 @@ export async function getTrainingModules(
 }
 
 export async function addTrainingModulesToEquipment(
-  id: number,
-  trainingModules: number[]
+    id: number,
+    trainingModules: number[]
 ): Promise<void> {
   await knex("ModulesForEquipment").insert(
     trainingModules.map((trainingModule) => ({
@@ -63,8 +64,8 @@ export async function addTrainingModulesToEquipment(
 }
 
 export async function removeTrainingModulesFromEquipment(
-  id: number,
-  trainingModules: number[]
+    id: number,
+    trainingModules: number[]
 ): Promise<void> {
   await knex("ModulesForEquipment")
     .where("equipmentId", "=", id)
@@ -73,8 +74,8 @@ export async function removeTrainingModulesFromEquipment(
 }
 
 export async function updateTrainingModules(
-  id: number,
-  trainingModules: number[]
+    id: number,
+    trainingModules: number[]
 ): Promise<void> {
   await knex("ModulesForEquipment").del().where("equipmentId", id);
   if (trainingModules && trainingModules.length > 0) {
@@ -83,8 +84,8 @@ export async function updateTrainingModules(
 }
 
 export async function updateEquipment(
-  id: number,
-  equipment: EquipmentInput
+    id: number,
+    equipment: EquipmentInput
 ): Promise<Equipment | null> {
   await knex("Equipment")
     .where("id", id)
@@ -101,7 +102,7 @@ export async function updateEquipment(
 }
 
 export async function addEquipment(
-  equipment: EquipmentInput
+    equipment: EquipmentInput
 ): Promise<Equipment | null> {
   const newId = (
     await knex("Equipment").insert(

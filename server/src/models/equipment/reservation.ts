@@ -6,4 +6,5 @@ export interface Reservation {
     createdAt: Date;
     startTime: Date;
     endTime: Date;
+    isArchived: boolean;
 }
