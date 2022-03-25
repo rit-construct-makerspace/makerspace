@@ -32,12 +32,6 @@ jobs:
       
       - name: Install Node modules
         run: cd client && npm ci
-      
-      - name: Lint frontend
-        run: cd client && npm run lint
-          
-      - name: Type checking
-        run: cd client && npm run tsc
 
-      - name: Prettier format check
-        run: cd client && npm run prettier-check
+      - name: Run tests
+        run: cd client && CI=true npm test

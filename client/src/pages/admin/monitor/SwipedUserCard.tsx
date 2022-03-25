@@ -1,14 +1,14 @@
 import React from "react";
 import { Swipe } from "./MonitorRoomPage";
 import { Avatar, Card, CardActionArea, Stack, Typography } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface SwipedUserCardProps {
   swipe: Swipe;
 }
 
 export default function SwipedUserCard({ swipe }: SwipedUserCardProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const { user } = swipe;
 
@@ -16,7 +16,7 @@ export default function SwipedUserCard({ swipe }: SwipedUserCardProps) {
     <Card sx={{ flexShrink: 0, mr: 2 }}>
       <CardActionArea
         sx={{ p: 2 }}
-        onClick={() => history.push(`/admin/people/${user.id}`)}
+        onClick={() => navigate(`/admin/people/${user.id}`)}
       >
         <Stack alignItems="center" spacing={1.5}>
           <Avatar

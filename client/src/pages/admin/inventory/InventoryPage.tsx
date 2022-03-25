@@ -3,7 +3,7 @@ import Page from "../../Page";
 import { Button, Divider, Stack } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
 import PageSectionHeader from "../../../common/PageSectionHeader";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import InventoryRow from "../../../common/InventoryRow";
 import CreateIcon from "@mui/icons-material/Create";
 import { useQuery } from "@apollo/client";
@@ -17,7 +17,7 @@ function sortItemsByName(items: InventoryItem[]): InventoryItem[] {
 }
 
 export default function InventoryPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [searchText, setSearchText] = useState<string>("");
   const [modalItemId, setModalItemId] = useState<string>("");
@@ -39,7 +39,7 @@ export default function InventoryPage() {
             <InventoryRow
               item={item}
               key={item.id}
-              onClick={() => history.push(`/admin/inventory/${item.id}`)}
+              onClick={() => navigate(`/admin/inventory/${item.id}`)}
             />
           ))}
         </Stack>

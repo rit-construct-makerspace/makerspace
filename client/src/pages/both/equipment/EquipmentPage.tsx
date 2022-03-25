@@ -3,7 +3,7 @@ import { Button, Grid, Stack } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import EquipmentCard from "./EquipmentCard";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import GET_EQUIPMENTS from "../../../queries/getEquipments";
 import { NameAndID } from "../../admin/manage_equipment/ManageEquipmentPage";
@@ -14,7 +14,7 @@ interface MakerEquipmentPageProps {
 }
 
 export default function EquipmentPage({ isAdmin }: MakerEquipmentPageProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const getEquipmentsResult = useQuery(GET_EQUIPMENTS);
 
@@ -31,7 +31,7 @@ export default function EquipmentPage({ isAdmin }: MakerEquipmentPageProps) {
           {isAdmin && (
             <Button
               variant="contained"
-              onClick={() => history.push("/admin/equipment/new")}
+              onClick={() => navigate("/admin/equipment/new")}
             >
               + Add Equipment
             </Button>
