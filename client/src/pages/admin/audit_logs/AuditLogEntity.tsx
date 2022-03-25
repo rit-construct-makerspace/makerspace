@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface AuditLogEntityProps {
   entityCode: string;
@@ -18,14 +18,14 @@ function getEntityUrl(entityType: string, id: string) {
 }
 
 export default function AuditLogEntity({ entityCode }: AuditLogEntityProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [entityType, id, label] = entityCode.split(":");
 
   const url = getEntityUrl(entityType, id);
 
   return (
-    <Link onClick={() => history.push(url)} sx={{ cursor: "pointer" }}>
+    <Link onClick={() => navigate(url)} sx={{ cursor: "pointer" }}>
       {label}
     </Link>
   );

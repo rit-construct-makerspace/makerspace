@@ -12,6 +12,7 @@ export function singleEquipmentToDomain(raw: any): Equipment | null {
     addedAt: raw.addedAt,
     inUse: raw.inUse,
     roomID: raw.roomID,
+    isArchived: raw.isArchived
   };
   return value;
 }

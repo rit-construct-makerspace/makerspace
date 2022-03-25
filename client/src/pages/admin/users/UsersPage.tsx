@@ -7,15 +7,15 @@ import { useQuery } from "@apollo/client";
 import GET_USERS, { PartialUser } from "../../../queries/getUsers";
 import RequestWrapper from "../../../common/RequestWrapper";
 import UserModal from "./UserModal";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function UsersPage() {
   const { id } = useParams<{ id: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const getUsersResult = useQuery(GET_USERS);
 
   const handleUserModalClosed = () => {
-    history.push("/admin/people");
+    navigate("/admin/people");
   };
 
   return (
@@ -30,7 +30,7 @@ export default function UsersPage() {
             <UserCard
               user={user}
               key={user.id}
-              onClick={() => history.push("/admin/people/" + user.id)}
+              onClick={() => navigate("/admin/people/" + user.id)}
             />
           ))}
         </Stack>

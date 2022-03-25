@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import Person from "../../../types/Person";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Room from "../../../types/Room";
 
 // TODO: Remove this
@@ -22,11 +22,11 @@ interface RoomCardProps {
 }
 
 export default function RoomCard({ room, monitor }: RoomCardProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Card sx={{ width: 400, mr: 2, mb: 2 }}>
-      <CardActionArea onClick={() => history.push(`/admin/rooms/${room.id}`)}>
+      <CardActionArea onClick={() => navigate(`/admin/rooms/${room.id}`)}>
         <CardMedia
           component="img"
           image={ROOM_PLACEHOLDER_IMAGE}

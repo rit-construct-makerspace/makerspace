@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Checkbox,
   Chip,
@@ -8,11 +8,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import {
+  GET_CURRENT_USER,
+  useCurrentUser,
+} from "../../../common/CurrentUserProvider";
 import styled from "styled-components";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const StyledFakeTextField = styled.div`
   border-radius: 4px;
@@ -36,7 +39,7 @@ const COLLEGES = [
   "SOIS - School of Individualized Study",
 ];
 
-const UPDATE_STUDENT_PROFILE = gql`
+export const UPDATE_STUDENT_PROFILE = gql`
   mutation UpdateStudentProfile(
     $userID: ID!
     $pronouns: String
@@ -69,7 +72,7 @@ function generateGradDates() {
 }
 
 export default function SignupPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const currentUser = useCurrentUser();
   const [updateStudentProfile, result] = useMutation(UPDATE_STUDENT_PROFILE);
 
@@ -90,6 +93,11 @@ export default function SignupPage() {
       return;
     }
 
+    if (!universityID.match(/^\d{9}$/)) {
+      window.alert("University ID must be 9 digits.");
+      return;
+    }
+
     if (!agreedToAbide) {
       window.alert(
         "You must agree to abide by The Construct's rules and policies."
@@ -105,9 +113,14 @@ export default function SignupPage() {
         expectedGraduation,
         universityID,
       },
-      onCompleted: () => history.push("/"),
+      refetchQueries: [{ query: GET_CURRENT_USER }],
     });
   };
+
+  // Redirect to home page if setupComplete
+  useEffect(() => {
+    if (currentUser?.setupComplete) navigate("/");
+  }, [currentUser, navigate]);
 
   return (
     <Stack sx={{ maxWidth: 715, mx: "auto", mt: 8 }}>
