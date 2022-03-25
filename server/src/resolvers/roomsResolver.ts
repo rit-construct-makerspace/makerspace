@@ -57,14 +57,6 @@ const RoomResolvers = {
       return await RoomRepo.updateRoomName(args.id, args.name);
     },
 
-    addLabbieToMonitorRoom: async (_parent: any, args: any) => {
-      return await RoomRepo.addLabbieToRoom(args.roomID, args.labbieID);
-    },
-
-    removeLabbieFromMonitorRoom: async (_parent: any, args: any) => {
-      return await RoomRepo.removeLabbieFromRoom(args.roomID, args.labbieID);
-    },
-
     swipeIntoRoom: async (
       _parent: any,
       args: { roomID: number; universityID: string }

@@ -38,8 +38,5 @@ export const RoomTypeDefs = gql`
     updateRoomName(roomID: ID!, name: String): Room
 
     swipeIntoRoom(roomID: ID!, universityID: String!): User
-
-    addLabbieToMonitorRoom(roomID: ID!, labbieID: ID!): Room
-    removeLabbieFromMonitorRoom(roomID: ID!, labbieID: ID!): Room
   }
 `;

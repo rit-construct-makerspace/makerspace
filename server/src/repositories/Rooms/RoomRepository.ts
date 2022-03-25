@@ -47,30 +47,6 @@ export async function updateRoomName(
   return await getRoomByID(roomID);
 }
 
-export async function addLabbieToRoom(
-  roomID: number,
-  labbieID: number
-): Promise<Room | null> {
-  await knex("User").where({ id: labbieID }).update({
-    roomID: roomID,
-    monitoringRoomID: roomID,
-  });
-
-  return await getRoomByID(roomID);
-}
-
-export async function removeLabbieFromRoom(
-  roomID: number,
-  labbieID: number
-): Promise<Room | null> {
-  await knex("User").where({ id: labbieID }).update({
-    roomID: null,
-    monitoringRoomID: null,
-  });
-
-  return await getRoomByID(roomID);
-}
-
 export async function swipeIntoRoom(roomID: number, userID: number) {
   await knex("RoomSwipes").insert({ roomID, userID });
 }
