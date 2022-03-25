@@ -1,9 +1,9 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
 import { Privilege, User } from "../schemas/usersSchema";
-import { ApolloContext } from "../server";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
 import { createHash } from "crypto";
+import { ApolloContext } from "../context";
 
 export function getUsersFullName(user: User) {
   return `${user.firstName} ${user.lastName}`;
@@ -85,9 +85,13 @@ const UsersResolvers = {
       await UserRepo.removeHoldFromUser(args.userID, args.holdID);
     },
 
-    archiveUser: async (parents: any, args: {userID: number}, context: any) => {
+    archiveUser: async (
+      parents: any,
+      args: { userID: number },
+      context: any
+    ) => {
       return await UserRepo.archiveUser(args.userID);
-    }
+    },
   },
 };
 
