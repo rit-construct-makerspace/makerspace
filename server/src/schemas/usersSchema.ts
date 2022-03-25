@@ -1,6 +1,6 @@
 import { gql } from "apollo-server-express";
 import { TrainingModule } from "../schemas/trainingSchema";
-import { Hold } from "../models/holds/hold";
+import { Hold } from "../schemas/holdsSchema";
 
 export enum Privilege {
   MAKER = "MAKER",
