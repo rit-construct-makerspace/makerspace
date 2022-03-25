@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
         .then(function (exists) {
             if (exists) {
                 return knex.schema.alterTable("Equipment", function (t) {
-                    t.boolean("isArchived").defaultTo(false);
+                    t.boolean("archived").defaultTo(false);
                 });
             }
         })
@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
             knex.schema.hasTable("Reservations").then(function (exists) {
                 if (exists) {
                     return knex.schema.alterTable("Reservations", function (t) {
-                        t.boolean("isArchived").defaultTo(false);
+                        t.boolean("archived").defaultTo(false);
                     });
                 }
             });
@@ -29,7 +29,7 @@ export async function down(knex: Knex): Promise<void> {
         .then(function (exists) {
             if (exists) {
                 return knex.schema.alterTable("Equipment", function (t) {
-                    t.dropColumn("isArchived");
+                    t.dropColumn("archived");
                 });
             }
         })
@@ -37,7 +37,7 @@ export async function down(knex: Knex): Promise<void> {
             knex.schema.hasTable("Reservations").then(function (exists) {
                 if (exists) {
                     return knex.schema.alterTable("Reservations", function (t) {
-                        t.dropColumn("isArchived");
+                        t.dropColumn("archived");
                     });
                 }
             });

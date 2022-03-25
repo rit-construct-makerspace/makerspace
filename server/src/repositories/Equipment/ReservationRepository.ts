@@ -80,6 +80,6 @@ export class ReservationRepository implements IReservationRepository {
     }
 
     public async archiveReservation(id: number): Promise<void> {
-        await knex("Reservations").where({ id: id}).update({isArchived: true})
+        await knex("Reservations").where({ id: id}).update({archived: true})
     }
 }
