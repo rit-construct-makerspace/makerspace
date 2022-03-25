@@ -1,38 +1,26 @@
 import { gql } from "apollo-server-express";
 
-export interface Hold {
-  id: number;
-  description: String;
-}
-
 export const HoldsTypeDefs = gql`
-  enum HoldType {
-    INCOMPLETE_TRAINING
-    SAFETY_VIOLATION
-    BALANCE_DUE
-  }
-
   type Hold {
     id: ID!
-    type: HoldType!
+    userID: User!
     description: String
-    createdBy: User!
-    createdAt: DateTime
-    removedAt: DateTime
-    userId: User!
+    active: Boolean
   }
 
   input HoldInput {
-    id: Int!
-    type: HoldType!
+    userID: Int!
     description: String
-    createdBy: Int!
-    createdAt: DateTime
-    removedAt: DateTime
-    userId: Int!
+    active: Boolean
   }
 
   type Query {
     holds: [Hold]
+    holdsByUser(userID: ID!): [Hold]
+  }
+
+  type Mutation {
+    createHold(holdInput: HoldInput): Hold
+    removeHold(id: ID!): Hold
   }
 `;
