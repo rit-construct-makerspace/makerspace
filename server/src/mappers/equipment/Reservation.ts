@@ -14,7 +14,8 @@ export function singleReservationToDomain(raw: any): Reservation | null {
     machineId: raw.machineId,
     createdAt: raw.createdAt,
     startTime: raw.startTime,
-    endTime: raw.endTime
+    endTime: raw.endTime,
+    isArchived: raw.isArchived
   }
   return value;
 }

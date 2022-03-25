@@ -4,6 +4,7 @@ import * as RoomRepo from "../repositories/Rooms/RoomRepository";
 import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
 import { Equipment } from "../models/equipment/equipment";
 
+
 const reservationRepo = new ReservationRepository();
 
 const EquipmentResolvers = {
@@ -25,9 +26,9 @@ const EquipmentResolvers = {
     },
 
     trainingModulesByEquipment: async (
-      _: any,
-      args: { Id: number },
-      context: any
+        _: any,
+        args: { Id: number },
+        context: any
     ) => {
       return await EquipmentRepo.getTrainingModules(args.Id);
     },
@@ -45,23 +46,23 @@ const EquipmentResolvers = {
 
   Mutation: {
     addEquipment: async (
-      _: any,
-      args: { equipment: EquipmentInput },
-      context: any
+        _: any,
+        args: { equipment: EquipmentInput },
+        context: any
     ) => {
       return await EquipmentRepo.addEquipment(args.equipment);
     },
 
     updateEquipment: async (
-      _: any,
-      args: { id: number; equipment: EquipmentInput },
-      context: any
+        _: any,
+        args: { id: number; equipment: EquipmentInput },
+        context: any
     ) => {
       return await EquipmentRepo.updateEquipment(args.id, args.equipment);
     },
 
-    removeEquipment: async (_: any, args: { id: number }, context: any) => {
-      return await EquipmentRepo.removeEquipment(args.id);
+    deleteEquipment: async (_: any, args: { id: number }, context: any) => {
+      return await EquipmentRepo.archiveEquipment(args.id);
     },
   },
 };
