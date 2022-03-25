@@ -7,7 +7,7 @@ export interface TrainingModule {
 
 export enum ModuleItemType {
   MULTIPLE_CHOICE,
-  CHECKBOXES
+  CHECKBOXES,
 }
 
 export interface ModuleItem {
@@ -25,15 +25,19 @@ export interface Option {
 
 export interface ModuleItemAnswerInput {
   moduleItemID: string;
-  selectedOptionIDs: string[]
-} 
+  selectedOptionIDs: string[];
+}
 
 export interface ModuleSubmissionInput {
   moduleID: string;
   userID: string;
-  answers: ModuleItemAnswerInput[]
+  answers: ModuleItemAnswerInput[];
 }
 
+export interface ModuleItemAnswers {
+  moduleItemID: string;
+  correctOptionIDs: string[];
+}
 
 export const TrainingTypeDefs = gql`
   type TrainingModule {
@@ -88,7 +92,7 @@ export const TrainingTypeDefs = gql`
   input ModuleItemAnswerInput {
     moduleItemID: ID!
     selectedOptionIDs: [ID]!
-  } 
+  }
 
   input ModuleSubmissionInput {
     moduleID: ID!
@@ -99,7 +103,10 @@ export const TrainingTypeDefs = gql`
   extend type Mutation {
     createModule(name: String): TrainingModule
     addModuleItem(moduleID: ID!, moduleItem: ModuleItemInput): ModuleItem
-    addOption(moduleItemID: ID!, option: ModuleItemOptionInput): ModuleItemOption
+    addOption(
+      moduleItemID: ID!
+      option: ModuleItemOptionInput
+    ): ModuleItemOption
     updateModule(id: ID!, name: String): TrainingModule
     updateModuleItem(id: ID!, moduleItem: ModuleItemInput): ModuleItem
     updateOption(id: ID!, option: ModuleItemOptionInput): ModuleItemOption

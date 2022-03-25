@@ -1,6 +1,7 @@
 import { knex } from "../../db";
 import * as OptionMap from "../../mappers/training/optionMapper";
-import { Option } from "../../schemas/trainingSchema";
+import { ModuleItemAnswers, Option } from "../../schemas/trainingSchema";
+import { answersToDomain } from "../../mappers/training/moduleItemAnswersMapper";
 
 export async function getOptionById(id: number): Promise<Option | null> {
   const knexResult = await knex("ModuleItemOption")
@@ -20,12 +21,12 @@ export async function getOptionsByModuleItem(
 
 export async function getCorrectOptionsWithModuleItemByModule(
   moduleID: string
-) {
+): Promise<ModuleItemAnswers[] | null> {
   const knexResult = await knex("ModuleItemOption")
-    .select("id", "moduleItem", "text", "correct")
-    .join('ModuleItem', 'ModuleItemOption.moduleItem', 'ModuleItem.id')
+    .select("ModuleItemOption.id", "moduleItem")
+    .join("ModuleItem", "ModuleItemOption.moduleItem", "ModuleItem.id")
     .where("ModuleItem.module", moduleID);
-  return OptionMap.optionsToDomain(knexResult);
+  return answersToDomain(knexResult);
 }
 
 export async function addOptionToModuleItem(

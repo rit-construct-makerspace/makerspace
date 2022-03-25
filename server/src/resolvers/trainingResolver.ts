@@ -82,11 +82,47 @@ const TrainingResolvers = {
 
     submitModule: async (
       parent: any,
-      args: { submission: ModuleSubmissionInput }, 
+      args: { submission: ModuleSubmissionInput },
       context: any
     ) => {
       const submission = args.submission;
-      const answers = await OptionRepo.getCorrectOptionsWithModuleItemByModule(submission.moduleID)
+      const answers = await OptionRepo.getCorrectOptionsWithModuleItemByModule(
+        submission.moduleID
+      );
+      if (!answers || answers.length === 0) {
+        throw Error("Training module for provided ID has no correct answers");
+      }
+      let correct = 0,
+        incorrect = 0;
+      for (let correctAnswers of answers) {
+        let submittedAnswers = submission.answers.find(
+          (x) => x.moduleItemID == correctAnswers.moduleItemID
+        );
+
+        if (!submittedAnswers) {
+          incorrect++;
+          continue;
+        }
+
+        let areEqual =
+          correctAnswers.correctOptionIDs.length ===
+            submittedAnswers.selectedOptionIDs.length &&
+          correctAnswers.correctOptionIDs.every(function (element) {
+            return (
+              submittedAnswers &&
+              submittedAnswers.selectedOptionIDs.includes(element)
+            );
+          });
+
+        if (areEqual) {
+          correct++;
+        } else {
+          incorrect++;
+        }
+      }
+      console.log(correct);
+      console.log(incorrect);
+      return (correct / (correct + incorrect)) * 100;
     },
   },
 };
