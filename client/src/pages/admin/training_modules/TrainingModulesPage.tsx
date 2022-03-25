@@ -3,7 +3,7 @@ import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import { Divider, Stack } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import RequestWrapper from "../../../common/RequestWrapper";
@@ -19,7 +19,7 @@ const CREATE_TRAINING_MODULE = gql`
 `;
 
 export default function TrainingModulesPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [createModule, { loading }] = useMutation(CREATE_TRAINING_MODULE, {
     variables: { name: "New Training Module" },
@@ -33,7 +33,7 @@ export default function TrainingModulesPage() {
     const moduleId = result?.data?.createModule?.id;
 
     // Redirect to the module editor after creation
-    history.push(`/admin/training/${moduleId}`);
+    navigate(`/admin/training/${moduleId}`);
   };
 
   return (

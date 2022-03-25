@@ -2,7 +2,8 @@ import React from "react";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { CurrentUserProvider } from "./common/CurrentUserProvider";
-import Routes from "./Routes";
+import AppRoutes from "./AppRoutes";
+import { BrowserRouter } from "react-router-dom";
 
 const apolloClient = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URL ?? "https://localhost:3000/graphql",
@@ -16,9 +17,11 @@ export default function App() {
   return (
     <ApolloProvider client={apolloClient}>
       <ThemeProvider theme={theme}>
-        <CurrentUserProvider>
-          <Routes />
-        </CurrentUserProvider>
+        <BrowserRouter>
+          <CurrentUserProvider>
+            <AppRoutes />
+          </CurrentUserProvider>
+        </BrowserRouter>
       </ThemeProvider>
     </ApolloProvider>
   );

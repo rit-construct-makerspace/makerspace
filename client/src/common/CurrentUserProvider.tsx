@@ -2,6 +2,7 @@ import React, { createContext, ReactElement, useContext } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { PartialUser } from "../queries/getUsers";
 import RequestWrapper2 from "./RequestWrapper2";
+import { Navigate, useLocation } from "react-router-dom";
 
 const loginUrl =
   process.env.REACT_APP_LOGIN_URL ?? "https://localhost:3000/login";
@@ -27,10 +28,12 @@ interface CurrentUserProviderProps {
 
 export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
   const result = useQuery(GET_CURRENT_USER);
+  const location = useLocation();
 
   // If the current user is null, redirect to SSO login
   if (!result.loading && !result.data.currentUser) {
     window.location.replace(loginUrl);
+    return null;
   }
 
   // If the user exists but setupComplete is false,
@@ -38,9 +41,9 @@ export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
   if (
     result.data?.currentUser &&
     !result.data.currentUser.setupComplete &&
-    !window.location.href.includes("/signup")
+    !location.pathname.includes("/signup")
   ) {
-    window.location.replace("/signup");
+    return <Navigate to={"/signup"} />;
   }
 
   return (

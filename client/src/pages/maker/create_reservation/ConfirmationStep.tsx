@@ -1,10 +1,10 @@
 import React from "react";
 import CheckIcon from "@mui/icons-material/Check";
 import { Button, Container, Stack, Typography } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ConfirmationStep() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Container maxWidth="sm">
@@ -18,7 +18,7 @@ export default function ConfirmationStep() {
           <br />
           and will be reviewed by your expert.
         </Typography>
-        <Button sx={{ mt: 2 }} onClick={() => history.push("/maker/equipment")}>
+        <Button sx={{ mt: 2 }} onClick={() => navigate("/maker/equipment")}>
           Back to Equipment
         </Button>
       </Stack>

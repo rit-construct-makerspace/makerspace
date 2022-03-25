@@ -18,6 +18,8 @@ import styled from "styled-components";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
+import { Outlet } from "react-router-dom";
+import { Box } from "@mui/material";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -30,96 +32,103 @@ export default function LeftNav() {
   const isMaker = currentUser.privilege === Privilege.MAKER;
 
   return (
-    <Drawer
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        "& .MuiDrawer-paper": {
+    <Box display="flex">
+      <Drawer
+        sx={{
           width: drawerWidth,
-          boxSizing: "border-box",
-        },
-      }}
-      variant="permanent"
-      anchor="left"
-    >
-      <StyledLogo src={LogoSvg} alt="Construct logo" />
+          flexShrink: 0,
+          "& .MuiDrawer-paper": {
+            width: drawerWidth,
+            boxSizing: "border-box",
+          },
+        }}
+        variant="permanent"
+        anchor="left"
+      >
+        <StyledLogo src={LogoSvg} alt="Construct logo" />
 
-      <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-        <Avatar
-          alt="Profile picture"
-          src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-        />
-        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-          {`${currentUser.firstName} ${currentUser.lastName}`}
-        </Typography>
-      </Stack>
+        <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+          <Avatar
+            alt="Profile picture"
+            src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+          />
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+            {`${currentUser.firstName} ${currentUser.lastName}`}
+          </Typography>
+        </Stack>
 
-      {/*<Stack spacing={1} my={2}>*/}
-      {/*  <MonitorAlert />*/}
-      {/*  <CardReader />*/}
-      {/*  <HoldAlert />*/}
-      {/*</Stack>*/}
+        {/*<Stack spacing={1} my={2}>*/}
+        {/*  <MonitorAlert />*/}
+        {/*  <CardReader />*/}
+        {/*  <HoldAlert />*/}
+        {/*</Stack>*/}
 
-      <List component="nav">
-        {!isMaker && <Divider textAlign="left">MAKER</Divider>}
-        <NavLink
-          to="/maker/equipment"
-          primary="Equipment"
-          icon={<HandymanIcon />}
-        />
-        <NavLink
-          to="/maker/training"
-          primary="Training"
-          icon={<SchoolIcon />}
-        />
-        <NavLink
-          to="/maker/materials"
-          primary="Materials"
-          icon={<InventoryIcon />}
-        />
-      </List>
-
-      {!isMaker && (
         <List component="nav">
-          <Divider textAlign="left">ADMIN</Divider>
+          {!isMaker && <Divider textAlign="left">MAKER</Divider>}
           <NavLink
-            to="/admin/equipment"
+            to="/maker/equipment"
             primary="Equipment"
             icon={<HandymanIcon />}
           />
           <NavLink
-            to="/admin/training"
+            to="/maker/training"
             primary="Training"
             icon={<SchoolIcon />}
           />
           <NavLink
-            to="/admin/inventory"
+            to="/maker/materials"
             primary="Materials"
             icon={<InventoryIcon />}
           />
-          <NavLink
-            to="/admin/storefront"
-            primary="Storefront"
-            icon={<StorefrontIcon />}
-          />
-          <NavLink
-            to="/admin/rooms"
-            primary="Rooms"
-            icon={<MeetingRoomIcon />}
-          />
-          <NavLink
-            to="/admin/reservations"
-            primary="Reservations"
-            icon={<EventIcon />}
-          />
-          <NavLink to="/admin/people" primary="People" icon={<PeopleIcon />} />
-          <NavLink
-            to="/admin/history"
-            primary="History"
-            icon={<HistoryIcon />}
-          />
         </List>
-      )}
-    </Drawer>
+
+        {!isMaker && (
+          <List component="nav">
+            <Divider textAlign="left">ADMIN</Divider>
+            <NavLink
+              to="/admin/equipment"
+              primary="Equipment"
+              icon={<HandymanIcon />}
+            />
+            <NavLink
+              to="/admin/training"
+              primary="Training"
+              icon={<SchoolIcon />}
+            />
+            <NavLink
+              to="/admin/inventory"
+              primary="Materials"
+              icon={<InventoryIcon />}
+            />
+            <NavLink
+              to="/admin/storefront"
+              primary="Storefront"
+              icon={<StorefrontIcon />}
+            />
+            <NavLink
+              to="/admin/rooms"
+              primary="Rooms"
+              icon={<MeetingRoomIcon />}
+            />
+            <NavLink
+              to="/admin/reservations"
+              primary="Reservations"
+              icon={<EventIcon />}
+            />
+            <NavLink
+              to="/admin/people"
+              primary="People"
+              icon={<PeopleIcon />}
+            />
+            <NavLink
+              to="/admin/history"
+              primary="History"
+              icon={<HistoryIcon />}
+            />
+          </List>
+        )}
+      </Drawer>
+      <Outlet />
+    </Box>
   );
 }

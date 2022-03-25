@@ -1,6 +1,6 @@
 import React from "react";
 import { CardActionArea, Stack, Typography } from "@mui/material";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface TrainingModuleProps {
   id: number;
@@ -8,12 +8,12 @@ interface TrainingModuleProps {
 }
 
 export default function TrainingModule({ id, title }: TrainingModuleProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <CardActionArea
       sx={{ p: 1, pl: 2 }}
-      onClick={() => history.push("/admin/training/" + id)}
+      onClick={() => navigate("/admin/training/" + id)}
     >
       <Stack direction="row" alignItems="center" spacing={2}>
         <Typography
