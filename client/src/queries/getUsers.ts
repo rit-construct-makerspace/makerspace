@@ -7,6 +7,7 @@ export interface PartialUser {
   lastName: string;
   email?: string;
   privilege: Privilege;
+  setupComplete?: boolean;
 }
 
 const GET_USERS = gql`

@@ -10,7 +10,7 @@ export async function createLog(
 
   // "{user} reserved {equipment}" -> "<user:3:Matt> reserved <equipment:12:Table Saw>"
   entities.forEach(({ id, label }) => {
-    const entityType = message.match(/{(\w+)}/)?.[1];
+    const entityType = formattedMessage.match(/{(\w+)}/)?.[1];
     formattedMessage = formattedMessage.replace(
       /{\w+}/,
       `<${entityType}:${id}:${label}>`

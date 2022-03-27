@@ -11,7 +11,7 @@ import SearchBar from "../../../common/SearchBar";
 import { gql, useLazyQuery } from "@apollo/client";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import AuditLogRow from "./AuditLogRow";
-import { useHistory, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { endOfDay, parse, startOfDay } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -43,7 +43,7 @@ function parseDateForQuery(
 
 export default function LogPage() {
   const { search } = useLocation();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [query, queryResult] = useLazyQuery(GET_LOGS);
   const [searchText, setSearchText] = useState("");
 
@@ -72,7 +72,7 @@ export default function LogPage() {
   const setUrlParam = (paramName: string, paramValue: string) => {
     const params = new URLSearchParams(search);
     params.set(paramName, paramValue);
-    history.replace("/admin/history?" + params);
+    navigate("/admin/history?" + params, { replace: true });
   };
 
   const handleDateChange =
@@ -84,7 +84,7 @@ export default function LogPage() {
 
   const handleClear = () => {
     setSearchText("");
-    history.replace("/admin/history");
+    navigate("/admin/history", { replace: true });
   };
 
   const showClearButton =

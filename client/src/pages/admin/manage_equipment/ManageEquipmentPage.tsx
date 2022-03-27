@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import NewEquipment from "./NewEquipment";
 import ExistingEquipment from "./ExistingEquipment";
 
@@ -18,7 +18,7 @@ export interface EquipmentInput {
 
 export default function ManageEquipmentPage() {
   const { id } = useParams<{ id: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [equipment, setEquipment] = useState<EquipmentInput>({
     name: "",
@@ -40,7 +40,7 @@ export default function ManageEquipmentPage() {
 
     await mutation({ variables });
 
-    history.push("/admin/equipment");
+    navigate("/admin/equipment");
   };
 
   return newEquipment ? (

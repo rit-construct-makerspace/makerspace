@@ -6,7 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { useHistory, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useTimedState from "../../../hooks/useTimedState";
 import SaveStatus from "./SaveStatus";
 import GET_MODULE from "../../../queries/getModule";
@@ -33,7 +33,7 @@ const DELETE_MODULE = gql`
 
 export default function EditModulePage() {
   const { id } = useParams<{ id: string }>();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [tabIndex, setTabIndex] = useState("questions-tab");
 
@@ -64,7 +64,7 @@ export default function EditModulePage() {
   const handleDeleteModule = async () => {
     if (!window.confirm(DELETE_CONFIRMATION_MESSAGE)) return;
     await deleteModule();
-    history.push("/admin/training");
+    navigate("/admin/training");
   };
 
   useEffect(() => {

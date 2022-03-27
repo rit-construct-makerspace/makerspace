@@ -1,11 +1,24 @@
 import { gql } from "apollo-server-express";
 
+export interface Swipe {
+  id: number;
+  dateTime: Date;
+  roomID: number;
+  userID: number;
+}
+
 export const RoomTypeDefs = gql`
+  type Swipe {
+    id: ID!
+    dateTime: DateTime
+    user: User
+  }
+
   type Room {
     id: ID!
     name: String!
-    equipmentList: [Equipment]
-    currentUsers: [User]
+    equipment: [Equipment]
+    recentSwipes: [Swipe]
     labbies: [User]
   }
 
@@ -13,21 +26,18 @@ export const RoomTypeDefs = gql`
     name: String!
   }
 
-  type Query {
+  extend type Query {
     rooms: [Room]
-    room(roomID: ID!): Room
-    roomByEquipment(equipmentID: ID!): Room
-    roomByLabbie(labbieID: ID!): Room
+    room(id: ID!): Room
   }
 
-  type Mutation {
+  extend type Mutation {
     addRoom(room: RoomInput): Room
     removeRoom(roomID: ID!): Room
 
     updateRoomName(roomID: ID!, name: String): Room
 
-    addUserToRoom(roomID: ID!, userID: ID!): Room
-    removeUserFromRoom(roomID: ID!, userID: ID!): Room
+    swipeIntoRoom(roomID: ID!, universityID: String!): User
 
     addLabbieToMonitorRoom(roomID: ID!, labbieID: ID!): Room
     removeLabbieFromMonitorRoom(roomID: ID!, labbieID: ID!): Room

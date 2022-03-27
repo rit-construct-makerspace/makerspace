@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Checkbox,
   Chip,
@@ -8,11 +8,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import {
+  GET_CURRENT_USER,
+  useCurrentUser,
+} from "../../../common/CurrentUserProvider";
 import styled from "styled-components";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const StyledFakeTextField = styled.div`
   border-radius: 4px;
@@ -36,18 +39,20 @@ const COLLEGES = [
   "SOIS - School of Individualized Study",
 ];
 
-const UPDATE_STUDENT_PROFILE = gql`
+export const UPDATE_STUDENT_PROFILE = gql`
   mutation UpdateStudentProfile(
     $userID: ID!
     $pronouns: String
     $college: String
     $expectedGraduation: String
+    $universityID: String
   ) {
     updateStudentProfile(
       userID: $userID
       pronouns: $pronouns
       college: $college
       expectedGraduation: $expectedGraduation
+      universityID: $universityID
     ) {
       id
     }
@@ -67,13 +72,14 @@ function generateGradDates() {
 }
 
 export default function SignupPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const currentUser = useCurrentUser();
   const [updateStudentProfile, result] = useMutation(UPDATE_STUDENT_PROFILE);
 
   const [pronouns, setPronouns] = useState("");
   const [college, setCollege] = useState("");
   const [expectedGraduation, setExpectedGraduation] = useState("");
+  const [universityID, setUniversityID] = useState("");
   const [agreedToAbide, setAgreedToAbide] = useState(false);
 
   const handleSubmit = () => {
@@ -84,6 +90,11 @@ export default function SignupPage() {
 
     if (!expectedGraduation) {
       window.alert("Please select your expected graduation date.");
+      return;
+    }
+
+    if (!universityID.match(/^\d{9}$/)) {
+      window.alert("University ID must be 9 digits.");
       return;
     }
 
@@ -100,10 +111,16 @@ export default function SignupPage() {
         pronouns,
         college,
         expectedGraduation,
+        universityID,
       },
-      onCompleted: () => history.push("/"),
+      refetchQueries: [{ query: GET_CURRENT_USER }],
     });
   };
+
+  // Redirect to home page if setupComplete
+  useEffect(() => {
+    if (currentUser?.setupComplete) navigate("/");
+  }, [currentUser, navigate]);
 
   return (
     <Stack sx={{ maxWidth: 715, mx: "auto", mt: 8 }}>
@@ -170,6 +187,14 @@ export default function SignupPage() {
           </MenuItem>
         ))}
       </TextField>
+
+      <TextField
+        label="University ID"
+        sx={{ mt: 4 }}
+        helperText="The nine digit number available from both eServices and myRIT."
+        value={universityID}
+        onChange={(e) => setUniversityID(e.target.value)}
+      />
 
       <Stack direction="row" alignItems="center" mt={4}>
         <Checkbox

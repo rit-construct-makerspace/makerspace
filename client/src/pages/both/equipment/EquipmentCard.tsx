@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardActionArea,
@@ -15,10 +15,10 @@ interface MachineCardProps {
 }
 
 export default function EquipmentCard({ name, to }: MachineCardProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
-    <Grid item onClick={() => history.push(to)}>
+    <Grid item onClick={() => navigate(to)}>
       <Card sx={{ width: 250 }}>
         <CardActionArea>
           <CardMedia

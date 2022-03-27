@@ -12,7 +12,7 @@ export interface Reservation {
     labbie: number;
     createDate: Date;
     startTime: Date;
-    endTIme: Date;
+    endTime: Date;
     equipment: number;
     status: ReservationStatus;
     createdAt: Date;

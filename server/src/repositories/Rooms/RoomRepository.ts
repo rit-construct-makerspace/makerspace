@@ -4,117 +4,84 @@ import {
   singleRoomToDomain,
   roomsToDomain,
 } from "../../mappers/rooms/roomMapper";
+import { Swipe } from "../../schemas/roomsSchema";
+import assert from "assert";
 
-export interface IRoomRepo {
-  getRoomByID(logID: number): Promise<Room | null>;
-  getRooms(): Promise<Room[]>;
+export async function getRoomByID(roomID: number): Promise<Room | null> {
+  const knexResult = await knex
+    .first("id", "name")
+    .from("Rooms")
+    .where("id", roomID);
 
-  addRoom(room: Room): Promise<Room | null>;
-  removeRoom(roomID: number): Promise<void>;
-
-  updateRoomName(roomID: number, name: string): Promise<Room | null>;
-
-  addUserToRoom(roomID: number, userID: number): Promise<Room | null>;
-  removeUserFromRoom(roomID: number, userID: number): Promise<Room | null>;
-
-  addLabbieToRoom(roomID: number, labbieID: number): Promise<Room | null>;
-  removeLabbieFromRoom(roomID: number, labbieID: number): Promise<Room | null>;
+  return singleRoomToDomain(knexResult);
 }
 
-export class RoomRepo implements IRoomRepo {
-  private queryBuilder;
+export async function getRooms(): Promise<Room[]> {
+  const knexResult = await knex("Rooms").select("Rooms.id", "Rooms.name");
+  return roomsToDomain(knexResult);
+}
 
-  constructor(queryBuilder?: any) {
-    this.queryBuilder = queryBuilder || knex;
-  }
+export async function addRoom(room: Room): Promise<Room> {
+  const newID = (
+    await knex("Rooms").insert(
+      {
+        name: room.name,
+      },
+      "id"
+    )
+  )[0];
+  const newRoom = await getRoomByID(newID);
+  assert(newRoom);
+  return newRoom;
+}
 
-  async getRoomByID(roomID: number): Promise<Room | null> {
-    const knexResult = await this.queryBuilder
-      .first("id", "name")
-      .from("Rooms")
-      .where("id", roomID);
+export async function removeRoom(roomID: number): Promise<void> {
+  await knex("Rooms").where({ id: roomID }).del();
+}
 
-    return singleRoomToDomain(knexResult);
-  }
+export async function updateRoomName(
+  roomID: number,
+  name: string
+): Promise<Room | null> {
+  await knex("Rooms").where({ id: roomID }).update({
+    name: name,
+  });
 
-  async getRooms(): Promise<Room[]> {
-    const knexResult = await this.queryBuilder("Rooms").select(
-      "Rooms.id",
-      "Rooms.name"
-    );
-    return roomsToDomain(knexResult);
-  }
+  return await getRoomByID(roomID);
+}
 
-  async addRoom(room: Room): Promise<Room | null> {
-    const newID = (
-      await this.queryBuilder("Rooms").insert(
-        {
-          name: room.name,
-        },
-        "id"
-      )
-    )[0];
-    return await this.getRoomByID(newID);
-  }
+export async function addLabbieToRoom(
+  roomID: number,
+  labbieID: number
+): Promise<Room | null> {
+  await knex("User").where({ id: labbieID }).update({
+    roomID: roomID,
+    monitoringRoomID: roomID,
+  });
 
-  async removeRoom(roomID: number): Promise<void> {
-    await this.queryBuilder("Rooms").where({ id: roomID }).del();
-  }
+  return await getRoomByID(roomID);
+}
 
-  async updateRoomName(roomID: number, name: string): Promise<Room | null> {
-    const updateName = await this.queryBuilder("Rooms")
-      .where({ id: roomID })
-      .update({
-        name: name,
-      });
+export async function removeLabbieFromRoom(
+  roomID: number,
+  labbieID: number
+): Promise<Room | null> {
+  await knex("User").where({ id: labbieID }).update({
+    roomID: null,
+    monitoringRoomID: null,
+  });
 
-    return await this.getRoomByID(roomID);
-  }
+  return await getRoomByID(roomID);
+}
 
-  async addLabbieToRoom(
-    roomID: number,
-    labbieID: number
-  ): Promise<Room | null> {
-    const updateLabbieRoom = await this.queryBuilder("User")
-      .where({ id: labbieID })
-      .update({
-        roomID: roomID,
-        monitoringRoomID: roomID,
-      });
-    return await this.getRoomByID(roomID);
-  }
+export async function swipeIntoRoom(roomID: number, userID: number) {
+  await knex("RoomSwipes").insert({ roomID, userID });
+}
 
-  async removeLabbieFromRoom(
-    roomID: number,
-    labbieID: number
-  ): Promise<Room | null> {
-    const updateLabbieRoom = await this.queryBuilder("User")
-      .where({ id: labbieID })
-      .update({
-        roomID: null,
-        monitoringRoomID: null,
-      });
-    return await this.getRoomByID(roomID);
-  }
-
-  async addUserToRoom(roomID: number, userID: number): Promise<Room | null> {
-    const updateLabbieRoom = await this.queryBuilder("User")
-      .where({ id: userID })
-      .update({
-        roomID: roomID,
-      });
-    return await this.getRoomByID(roomID);
-  }
-
-  async removeUserFromRoom(
-    roomID: number,
-    userID: number
-  ): Promise<Room | null> {
-    const updateLabbieRoom = await this.queryBuilder("User")
-      .where({ id: userID })
-      .update({
-        roomID: null,
-      });
-    return await this.getRoomByID(roomID);
-  }
+export async function getRecentSwipes(roomID: number): Promise<Swipe[]> {
+  return knex("RoomSwipes")
+    .select()
+    .where({ roomID })
+    .orderBy("dateTime", "DESC")
+    .limit(10);
 }

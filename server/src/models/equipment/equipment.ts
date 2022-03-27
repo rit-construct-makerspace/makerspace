@@ -4,6 +4,7 @@ export interface Equipment {
     addedAt: Date,
     inUse: boolean;
     roomID: number;
+    isArchived: boolean;
 }
 
 

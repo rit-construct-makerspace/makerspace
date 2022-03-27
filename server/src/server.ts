@@ -8,13 +8,7 @@ import { schema } from "./schema";
 import dotenv from "dotenv";
 import fs from "fs";
 import { setupAuth } from "./auth";
-import { Privilege, User } from "./schemas/usersSchema";
-
-export interface ApolloContext {
-  user: User | undefined;
-  userHasPrivilege: (...allowedPrivileges: Privilege[]) => boolean;
-  logout: () => void;
-}
+import context from "./context";
 
 const CORS_CONFIG = {
   origin: "https://localhost:3001",
@@ -35,12 +29,7 @@ async function startServer() {
   const server = new ApolloServer({
     schema,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-    context: ({ req }) => ({
-      user: req.user,
-      userHasPrivilege: (...allowedPrivileges: Privilege[]) =>
-        allowedPrivileges.includes((req.user as User)?.privilege),
-      logout: () => req.logout(),
-    }),
+    context,
   });
 
   await server.start();

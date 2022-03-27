@@ -4,14 +4,16 @@ import { ReservationInput } from "../../models/equipment/reservationInput";
 import { reservationsToDomain, singleReservationToDomain } from "../../mappers/equipment/Reservation";
 
 export interface IReservationRepository {
+  getReservationById(id: number | string): Promise<Reservation | null>;
+  getReservations(): Promise<Reservation[]>;
   createReservation(reservation: ReservationInput): Promise<Reservation | null>;
   assignLabbieToReservation(resId: number, labbieId: number): Promise<Reservation | null>;
   removeLabbieFromReservation(resId: number): Promise<Reservation | null>;
   addComment(resId: number, authorId: number, commentText: string): Promise<string | null>;
-  cancelReservation(resId: number): Promise<Reservation | null>;
   confirmReservation(resId: number): Promise<Reservation | null>;
-  getReservationById(id: number | string): Promise<Reservation | null>;
-  getReservations(): Promise<Reservation[]>;
+  updateReservation(id: number, reservation: ReservationInput): Promise<Reservation | null>;
+  cancelReservation(resId: number): Promise<Reservation | null>;
+  archiveReservation(id: number): Promise<void>;
 }
 
 export class ReservationRepository implements IReservationRepository {
@@ -167,17 +169,24 @@ export class ReservationRepository implements IReservationRepository {
     .first();
   }
 
-    public async confirmReservation(resId: number): Promise<Reservation | null> {
-      await this.queryBuilder("Reservations")
-      .where("id", resId)
-      .update({status: "CONFIRMED"});
-      return singleReservationToDomain(this.getReservationById(resId));
-    }
+  public async confirmReservation(resId: number): Promise<Reservation | null> {
+    await this.queryBuilder("Reservations")
+    .where("id", resId)
+    .update({status: "CONFIRMED"});
+    return singleReservationToDomain(this.getReservationById(resId));
+  }
 
-    public async cancelReservation(resId: number): Promise<Reservation | null> {
-      await this.queryBuilder("Reservations")
-      .where("id", resId)
-      .update({status: "CANCELLED"});
-      return singleReservationToDomain(this.getReservationById(resId));
-    }
+  public async cancelReservation(resId: number): Promise<Reservation | null> {
+    await this.queryBuilder("Reservations")
+    .where("id", resId)
+    .update({status: "CANCELLED"});
+    // idk if cancelling and archiving should be different, or if setting a
+    // cancelled status is necessary
+    this.archiveReservation(resId);
+    return singleReservationToDomain(this.getReservationById(resId));
+  }
+
+  public async archiveReservation(id: number): Promise<void> {
+    await knex("Reservations").where({ id: id}).update({archived: true})
+  }
 }

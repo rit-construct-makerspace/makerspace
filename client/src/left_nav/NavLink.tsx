@@ -35,7 +35,11 @@ export default function NavLink({
   );
 
   return (
-    <ListItem button selected={url.pathname === to} component={renderLink}>
+    <ListItem
+      button
+      selected={url.pathname.includes(to)}
+      component={renderLink}
+    >
       {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
       <ListItemText primary={primary} />
       {notificationCount && (
