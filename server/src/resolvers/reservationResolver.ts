@@ -31,10 +31,10 @@ const ReservationResolvers = {
     },
 
     removeLabbieFromReservation: async (_: any, args: { resId: number, labbieId: number }) => {
-      return await reservationRepo.removeLabbieFromReservation(args.resId, args.labbieId);
+      return await reservationRepo.removeLabbieFromReservation(args.resId);
     },
 
-    addComment: async (_: any, args: { resId: number, authorId: number, commentText: String }) => {
+    addComment: async (_: any, args: { resId: number, authorId: number, commentText: string }) => {
       return await reservationRepo.addComment(args.resId, args.authorId, args.commentText);
     },
 

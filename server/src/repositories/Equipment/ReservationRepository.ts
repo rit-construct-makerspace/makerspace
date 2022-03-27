@@ -6,6 +6,7 @@ import { reservationsToDomain, singleReservationToDomain } from "../../mappers/e
 export interface IReservationRepository {
   createReservation(reservation: ReservationInput): Promise<Reservation | null>;
   assignLabbieToReservation(resId: number, labbieId: number): Promise<Reservation | null>;
+  removeLabbieFromReservation(resId: number): Promise<Reservation | null>;
   addComment(resId: number, authorId: number, commentText: string): Promise<string | null>;
   cancelReservation(resId: number): Promise<Reservation | null>;
   confirmReservation(resId: number): Promise<Reservation | null>;
@@ -73,29 +74,68 @@ export class ReservationRepository implements IReservationRepository {
     }
 
     public async createReservation(reservation: ReservationInput): Promise<Reservation | null> {
-      
-      const newId = (
-        await this.queryBuilder("Reservations").insert(
-          {
-            creator: reservation.creator,
-            labbie: reservation.labbie,
-            maker: reservation.maker,
-            equipment: reservation.equipment,
-            startTime: reservation.startTime,
-            endTime: reservation.endTime,
-            startingMakerComment: reservation.startingMakerComment
-          },
-          "id"
-        )
-      )[0];
-      return await this.getReservationById(newId);
+      // get all modules needed for the equipment
+      const modules = (
+        await this.queryBuilder("ModulesForEquipment")
+        .select("trainingModuleId")
+        .where("equipmentId", reservation.equipment)
+      );
+      let passed = true;
+      // get last submission from maker for every module
+      modules.forEach(async (module: any) => {
+        const eligibility = await this.queryBuilder("ModuleSubmissions")
+          .select("passed")
+          .where("moduleID", module.id)
+          .where("makerID", reservation.maker)
+          .orderBy("submissionDate", "desc")
+          .limit(1)
+          .first();
+        if (!eligibility) {
+          passed = false;
+        }
+      });
+      // in progress
+      // const startTime = reservation.startTime;
+      // const endTime
+      // const free = await this.queryBuilder("Reservations")
+      //   .select("*")
+      //   .whereBetween("startTime", [reservation.startTime, reservation.endTime])
+      //   .whereBetween("endTime", [reservation.startTime, reservation.endTime])
+      // if maker has passed all modules 
+      if (passed) {
+        const newId = (
+          await this.queryBuilder("Reservations").insert(
+            {
+              creator: reservation.creator,
+              labbie: reservation.labbie,
+              maker: reservation.maker,
+              equipment: reservation.equipment,
+              startTime: reservation.startTime,
+              endTime: reservation.endTime,
+              startingMakerComment: reservation.startingMakerComment
+            },
+            "id"
+          )
+        )[0];
+        return singleReservationToDomain(this.getReservationById(newId));
+      } else {
+        // idk if this is the right thing to do
+        return null;
+      }
     }
 
   public async assignLabbieToReservation(resId: number, labbieId: number): Promise<Reservation | null> {
     await this.queryBuilder("Reservations")
       .where("id", resId)
       .update({labbie: labbieId});
-    return await this.getReservationById(resId);
+    return singleReservationToDomain(this.getReservationById(resId));
+  }
+
+  public async removeLabbieFromReservation(resId: number): Promise<Reservation | null> {
+    await this.queryBuilder("Reservations")
+      .where("id", resId)
+      .update({labbie: null});
+    return singleReservationToDomain(this.getReservationById(resId));
   }
 
   public async addComment(resId: number, authorId: number, commentText: string): 
@@ -111,7 +151,8 @@ export class ReservationRepository implements IReservationRepository {
         "id"
       )
     )[0];
-
+    
+    // return last added comment
     return knex("Reservations")
     .join(
       "ReservationEvents",
@@ -122,20 +163,21 @@ export class ReservationRepository implements IReservationRepository {
     .select("ReservationEvents.payload")
     .where("Reservations.id", resId)
     .orderBy("ReservationEvents.dateTime", "desc")
-    .limit(1);
+    .limit(1)
+    .first();
   }
 
     public async confirmReservation(resId: number): Promise<Reservation | null> {
       await this.queryBuilder("Reservations")
       .where("id", resId)
       .update({status: "CONFIRMED"});
-      return await this.getReservationById(resId);
+      return singleReservationToDomain(this.getReservationById(resId));
     }
 
     public async cancelReservation(resId: number): Promise<Reservation | null> {
       await this.queryBuilder("Reservations")
       .where("id", resId)
       .update({status: "CANCELLED"});
-      return await this.getReservationById(resId);
+      return singleReservationToDomain(this.getReservationById(resId));
     }
 }
