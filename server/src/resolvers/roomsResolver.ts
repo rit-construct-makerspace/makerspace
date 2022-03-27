@@ -1,11 +1,12 @@
 import * as RoomRepo from "../repositories/Rooms/RoomRepository";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import * as UserRepo from "../repositories/Users/UserRepository";
-import { ApolloContext } from "../server";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName, hashUniversityID } from "./usersResolver";
 import assert from "assert";
 import { Room } from "../models/rooms/room";
+import { ApolloContext } from "../context";
+import { Privilege } from "../schemas/usersSchema";
 
 const RoomResolvers = {
   Query: {
@@ -34,20 +35,18 @@ const RoomResolvers = {
   },
 
   Mutation: {
-    addRoom: async (parent: any, args: any, context: ApolloContext) => {
-      const newRoom = await RoomRepo.addRoom(args.room);
+    addRoom: async (parent: any, args: any, { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.ADMIN], async (user) => {
+        const newRoom = await RoomRepo.addRoom(args.room);
 
-      assert(context.user);
-      assert(newRoom);
+        await createLog(
+          "{user} created the {room} room.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: newRoom.id, label: newRoom.name }
+        );
 
-      await createLog(
-        "{user} created the {room} room.",
-        { id: context.user?.id, label: getUsersFullName(context.user) },
-        { id: newRoom.id, label: newRoom.name }
-      );
-
-      return newRoom;
-    },
+        return newRoom;
+      }),
 
     removeRoom: async (_parent: any, args: any) => {
       return await RoomRepo.removeRoom(args.id);
