@@ -29,11 +29,5 @@ export const HoldsTypeDefs = gql`
 
   type Query {
     holds: [Hold]
-    holdsByUser(userID: ID!): [Hold]
-  }
-
-  type Mutation {
-    createHold(holdInput: HoldInput): Hold
-    removeHold(id: ID!): Hold
   }
 `;
