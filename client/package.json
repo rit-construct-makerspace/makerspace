@@ -43,6 +43,9 @@
   },
   "jest": {
     "coveragePathIgnorePatterns": [
+      "src/App.tsx",
+      "src/index.tsx",
+      "src/reportWebVitals.ts",
       "src/test/*",
       "src/queries/*",
       "src/test_data/*",
