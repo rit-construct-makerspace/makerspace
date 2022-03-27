@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import { Divider, Stack } from "@mui/material";
@@ -10,7 +10,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import TrainingModule from "./TrainingModule";
 import GET_TRAINING_MODULES from "../../../queries/getModules";
 
-const CREATE_TRAINING_MODULE = gql`
+export const CREATE_TRAINING_MODULE = gql`
   mutation CreateTrainingModule($name: String) {
     createModule(name: $name) {
       id
@@ -28,6 +28,8 @@ export default function TrainingModulesPage() {
 
   const getModuleResults = useQuery(GET_TRAINING_MODULES);
 
+  const [searchText, setSearchText] = useState("");
+
   const handleNewModuleClicked = async () => {
     const result = await createModule();
     const moduleId = result?.data?.createModule?.id;
@@ -43,7 +45,11 @@ export default function TrainingModulesPage() {
     >
       <Page title="Training modules" maxWidth="800px">
         <Stack direction="row" alignItems="center" spacing={1}>
-          <SearchBar placeholder="Search training modules" />
+          <SearchBar
+            placeholder="Search training modules"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+          />
           <LoadingButton
             loading={loading}
             variant="outlined"
@@ -60,11 +66,15 @@ export default function TrainingModulesPage() {
           sx={{ width: "100%", mt: 2 }}
           divider={<Divider flexItem />}
         >
-          {getModuleResults.data?.trainingModules?.map(
-            (m: { id: number; name: string }) => (
-              <TrainingModule key={m.id} id={m.id} title={m.name} />
+          {getModuleResults.data?.modules
+            ?.filter((m: { id: number; name: string }) =>
+              m.name
+                .toLocaleLowerCase()
+                .includes(searchText.toLocaleLowerCase())
             )
-          )}
+            .map((m: { id: number; name: string }) => (
+              <TrainingModule key={m.id} id={m.id} title={m.name} />
+            ))}
         </Stack>
       </Page>
     </RequestWrapper>

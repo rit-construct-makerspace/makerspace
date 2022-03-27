@@ -1,26 +1,19 @@
 import { knex } from "../../db";
 import { TrainingModule } from "../../schemas/trainingSchema";
-import * as TrainingModuleMap from "../../mappers/training/TrainingModuleMapper"
+import * as TrainingModuleMap from "../../mappers/training/TrainingModuleMapper";
 
 export async function getModuleById(
   id: number | string
 ): Promise<TrainingModule | null> {
   const knexResult = await knex("TrainingModule")
-    .select(
-      "id",
-      "name"
-    )
+    .select("id", "name")
     .where("id", id);
 
   return TrainingModuleMap.singleTrainingModuleToDomain(knexResult);
 }
 
 export async function getModules(): Promise<TrainingModule[]> {
-  const knexResult = await knex("TrainingModule")
-    .select(
-      "id",
-      "name"
-    );
+  const knexResult = await knex("TrainingModule").select("id", "name");
   return TrainingModuleMap.trainingModulesToDomain(knexResult);
 }
 
@@ -29,15 +22,15 @@ export async function deleteModuleById(id: number): Promise<void> {
 }
 
 export async function addModule(name: string): Promise<TrainingModule | null> {
-  const insert = await knex("TrainingModule").insert(
-    { name: name },
-    "id"
-  );
+  const insert = await knex("TrainingModule").insert({ name: name }, "id");
   return getModuleById(insert[0]);
 }
 
-export async function updateName(id: number, name: string): Promise<TrainingModule | null> {
-  await knex("TrainingModule").where({ id: module.id }).update({
+export async function updateName(
+  id: number,
+  name: string
+): Promise<TrainingModule | null> {
+  await knex("TrainingModule").where({ id }).update({
     name: name,
   });
   return getModuleById(id);
