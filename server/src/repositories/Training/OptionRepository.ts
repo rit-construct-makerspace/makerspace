@@ -25,7 +25,8 @@ export async function getCorrectOptionsWithModuleItemByModule(
   const knexResult = await knex("ModuleItemOption")
     .select("ModuleItemOption.id", "moduleItem")
     .join("ModuleItem", "ModuleItemOption.moduleItem", "ModuleItem.id")
-    .where("ModuleItem.module", moduleID);
+    .where("ModuleItem.module", moduleID)
+    .andWhere("correct", true);
   return answersToDomain(knexResult);
 }
 

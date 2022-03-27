@@ -107,7 +107,7 @@ const TrainingResolvers = {
         let areEqual =
           correctAnswers.correctOptionIDs.length ===
             submittedAnswers.selectedOptionIDs.length &&
-          correctAnswers.correctOptionIDs.every(function (element) {
+          correctAnswers.correctOptionIDs.map(String).every(function (element) {
             return (
               submittedAnswers &&
               submittedAnswers.selectedOptionIDs.includes(element)
@@ -120,9 +120,10 @@ const TrainingResolvers = {
           incorrect++;
         }
       }
-      console.log(correct);
-      console.log(incorrect);
-      return (correct / (correct + incorrect)) * 100;
+
+      const finalScore = (correct / (correct + incorrect)) * 100;
+
+      return finalScore;
     },
   },
 };
