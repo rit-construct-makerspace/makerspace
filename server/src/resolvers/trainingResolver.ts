@@ -40,7 +40,8 @@ const TrainingResolvers = {
     },
 
     deleteModule: async (_: any, args: { id: number }, context: any) => {
-      await ModuleRepo.deleteModuleById(args.id);
+      await ModuleRepo.archiveModuleById(args.id);
+
     },
 
     addModuleItem: async (_: any, args: any) =>
@@ -55,7 +56,7 @@ const TrainingResolvers = {
     },
 
     deleteModuleItem: async (_: any, args: { id: number }) =>
-      await ModuleItemRepo.deleteModuleItem(args.id),
+      await ModuleItemRepo.archiveModuleItem(args.id),
 
     /*
     ModuleItem Options
@@ -76,7 +77,7 @@ const TrainingResolvers = {
     },
 
     deleteOption: async (_: any, args: { id: number }) => {
-      await OptionRepo.deleteOptionById(args.id);
+      await OptionRepo.archiveOptionById(args.id);
     },
   },
 };

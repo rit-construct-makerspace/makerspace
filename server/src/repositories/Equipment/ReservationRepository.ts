@@ -2,13 +2,14 @@ import { knex } from "../../db";
 import { Reservation } from "../../models/equipment/reservation";
 import { ReservationInput } from "../../models/equipment/reservationInput";
 import { reservationsToDomain, singleReservationToDomain } from "../../mappers/equipment/Reservation";
+import {getEquipmentById} from "./EquipmentRepository";
 
 export interface IReservationRepository {
   getReservationById(id: number | string): Promise<Reservation | null>;
   getReservations(): Promise<Reservation[]>;
   addReservation(reservation: ReservationInput): Promise<Reservation | null>;
   updateReservation(id: number, reservation: ReservationInput): Promise<Reservation | null>;
-  archiveReservation(id: number): Promise<void>;
+  archiveReservation(id: number): Promise<Reservation | null>;
   
 }
 
@@ -79,7 +80,8 @@ export class ReservationRepository implements IReservationRepository {
       return await this.getReservationById(newId);
     }
 
-    public async archiveReservation(id: number): Promise<void> {
+    public async archiveReservation(id: number): Promise<Reservation| null> {
         await knex("Reservations").where({ id: id}).update({archived: true})
+        return this.getReservationById(id);
     }
 }

@@ -94,6 +94,7 @@ async function getNextIndex(id: number) {
   return result[0].count
 }
 
-export async function deleteModuleItem(id: number) {
-  await knex("ModuleItem").where({ id: id }).del();
+export async function archiveModuleItem(id: number) {
+  await knex("ModuleItem").where({ id: id}).update({archived: true})
+  return getModuleItem(id);
 }
