@@ -40,7 +40,7 @@ const TrainingResolvers = {
     },
 
     deleteModule: async (_: any, args: { id: number }, context: any) => {
-      await ModuleRepo.archiveModuleById(args.id);
+      await ModuleRepo.archiveModule(args.id);
 
     },
 
@@ -77,7 +77,7 @@ const TrainingResolvers = {
     },
 
     deleteOption: async (_: any, args: { id: number }) => {
-      await OptionRepo.archiveOptionById(args.id);
+      await OptionRepo.archiveOption(args.id);
     },
   },
 };

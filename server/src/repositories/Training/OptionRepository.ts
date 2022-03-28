@@ -41,7 +41,7 @@ export async function updateOption(option: Option): Promise<void> {
   return update;
 }
 
-export async function archiveOptionById(id: number): Promise<Option | null> {
+export async function archiveOption(id: number): Promise<Option | null> {
   await knex("ModuleItemOption").where({ id: id}).update({archived: true})
   return getOptionById(id);
 }
