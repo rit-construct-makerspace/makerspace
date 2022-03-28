@@ -24,8 +24,9 @@ export async function getModules(): Promise<TrainingModule[]> {
   return TrainingModuleMap.trainingModulesToDomain(knexResult);
 }
 
-export async function deleteModuleById(id: number): Promise<void> {
-  await knex("TrainingModule").where({ id: id }).del();
+export async function archiveModule(id: number): Promise<TrainingModule | null> {
+  await knex("TrainingModule").where({ id: id}).update({archived: true})
+  return getModuleById(id);
 }
 
 export async function addModule(name: string): Promise<TrainingModule | null> {
