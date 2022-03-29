@@ -1,4 +1,5 @@
 import { knex } from "../../db";
+import {getEquipmentById} from "../Equipment/EquipmentRepository";
 
 export async function getAllLabels(): Promise<string[]> {
   const knexResult = await knex("Label").select("label");
@@ -22,10 +23,10 @@ export async function addLabel(label: string): Promise<void> {
   await knex("Label").insert({ label });
 }
 
-export async function deleteLabel(label: string): Promise<void> {
-  await knex("Label").where({ label }).del();
+export async function archiveLabel(label: string): Promise<void> {
+  await knex("Label").where({label}).update({archived: true})
 }
 
-export async function deleteLabelById(labelId: number): Promise<void> {
-  await knex("Label").where({ id: labelId }).del();
+export async function archiveLabelById(labelId: number): Promise<void> {
+  await knex("Label").where({ id: labelId}).update({archived: true})
 }

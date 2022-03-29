@@ -123,7 +123,7 @@ describe("InventoryRepository test set", () => {
     let item1Output = await InventoryRepo.addItem(item1);
     let item2Output = await InventoryRepo.addItem(item2);
     if (item1Output !== null) {
-      let final = await InventoryRepo.deleteItemById(item1Output.id);
+      let final = await InventoryRepo.archiveItem(item1Output.id);
       let items = await InventoryRepo.getItems();
       expect(items.length).toBe(1);
       expect(items[0].id).toBe(item2Output?.id);

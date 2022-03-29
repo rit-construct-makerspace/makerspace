@@ -49,7 +49,7 @@ const RoomResolvers = {
       }),
 
     removeRoom: async (_parent: any, args: any) => {
-      return await RoomRepo.removeRoom(args.id);
+      return await RoomRepo.archiveRoom(args.id);
     },
 
     updateRoomName: async (_parent: any, args: any) => {

@@ -61,7 +61,7 @@ const StorefrontResolvers = {
       args: { itemId: number },
       context: any
     ) => {
-      return InventoryRepo.deleteItemById(args.itemId);
+      return InventoryRepo.archiveItem(args.itemId);
     },
 
     createLabel: async (_: any, args: { label: string }, context: any) => {
@@ -69,7 +69,7 @@ const StorefrontResolvers = {
     },
 
     deleteLabel: async (_: any, args: { label: string }, context: any) => {
-      await LabelRepo.deleteLabel(args.label);
+      await LabelRepo.archiveLabel(args.label);
     },
   },
 };
