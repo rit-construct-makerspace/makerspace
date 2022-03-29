@@ -22,7 +22,7 @@ export const HoldsTypeDefs = gql`
   }
 
   input HoldInput {
-    userID: Int!
+    userID: ID!
     description: String
     active: Boolean
   }
