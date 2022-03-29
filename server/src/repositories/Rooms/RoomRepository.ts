@@ -6,6 +6,7 @@ import {
 } from "../../mappers/rooms/roomMapper";
 import { Swipe } from "../../schemas/roomsSchema";
 import assert from "assert";
+import {getEquipmentById} from "../Equipment/EquipmentRepository";
 
 export async function getRoomByID(roomID: number): Promise<Room | null> {
   const knexResult = await knex
@@ -35,8 +36,9 @@ export async function addRoom(room: Room): Promise<Room> {
   return newRoom;
 }
 
-export async function removeRoom(roomID: number): Promise<void> {
-  await knex("Rooms").where({ id: roomID }).del();
+export async function archiveRoom(roomID: number): Promise<Room | null> {
+  await knex("Rooms").where({ id: roomID}).update({archived: true})
+  return getRoomByID(roomID);
 }
 
 export async function updateRoomName(
