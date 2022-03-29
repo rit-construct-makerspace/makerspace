@@ -16,15 +16,14 @@ export interface HoldInput {
 export const HoldsTypeDefs = gql`
   type Hold {
     id: ID!
-    userID: User!
+    user: User!
     description: String
     active: Boolean
   }
 
   input HoldInput {
-    userID: Int!
+    userID: ID!
     description: String
-    active: Boolean
   }
 
   type Query {
