@@ -86,8 +86,8 @@ export async function setPrivilege(userID: number, privilege: Privilege) {
   return getUserByID(userID);
 }
 
-export function addTrainingToUser(userID: number, trainingModuleID: number) {
-  throw new Error("Method not implemented.");
+export async function addTrainingModuleAttemptToUser(userID: number, trainingModuleID: string, passed: boolean) {
+  await knex("ModuleSubmissions").insert({makerID: userID, moduleID: trainingModuleID, passed: passed})
 }
 
 export function removeTrainingFromUser(

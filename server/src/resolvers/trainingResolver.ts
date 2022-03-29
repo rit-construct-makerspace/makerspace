@@ -2,6 +2,9 @@ import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import * as OptionRepo from "../repositories/Training/OptionRepository";
 import * as ModuleItemRepo from "../repositories/Training/ModuleItemRepository";
 import { ModuleSubmissionInput } from "../schemas/trainingSchema";
+import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
+import { ApolloContext } from "../context";
+import { Privilege } from "../schemas/usersSchema";
 
 const TrainingResolvers = {
   Query: {
@@ -83,47 +86,65 @@ const TrainingResolvers = {
     submitModule: async (
       parent: any,
       args: { submission: ModuleSubmissionInput },
-      context: any
+      { ifAllowed }: ApolloContext
     ) => {
-      const submission = args.submission;
-      const answers = await OptionRepo.getCorrectOptionsWithModuleItemByModule(
-        submission.moduleID
-      );
-      if (!answers || answers.length === 0) {
-        throw Error("Training module for provided ID has no correct answers");
-      }
-      let correct = 0,
-        incorrect = 0;
-      for (let correctAnswers of answers) {
-        let submittedAnswers = submission.answers.find(
-          (x) => x.moduleItemID == correctAnswers.moduleItemID
-        );
-
-        if (!submittedAnswers) {
-          incorrect++;
-          continue;
-        }
-
-        let areEqual =
-          correctAnswers.correctOptionIDs.length ===
-            submittedAnswers.selectedOptionIDs.length &&
-          correctAnswers.correctOptionIDs.map(String).every(function (element) {
-            return (
-              submittedAnswers &&
-              submittedAnswers.selectedOptionIDs.includes(element)
+      return ifAllowed(
+        [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
+        async (user) => {
+          const submission = args.submission;
+          const answers =
+            await OptionRepo.getCorrectOptionsWithModuleItemByModule(
+              submission.moduleID
             );
-          });
+          if (!answers || answers.length === 0) {
+            throw Error(
+              "Training module for provided ID has no correct answers"
+            );
+          }
+          let correct = 0,
+            incorrect = 0;
+          for (let correctAnswers of answers) {
+            let submittedAnswers = submission.answers.find(
+              (x) => x.moduleItemID == correctAnswers.moduleItemID
+            );
 
-        if (areEqual) {
-          correct++;
-        } else {
-          incorrect++;
+            if (!submittedAnswers) {
+              incorrect++;
+              continue;
+            }
+
+            let areEqual =
+              correctAnswers.correctOptionIDs.length ===
+                submittedAnswers.selectedOptionIDs.length &&
+              correctAnswers.correctOptionIDs
+                .map(String)
+                .every(function (element) {
+                  return (
+                    submittedAnswers &&
+                    submittedAnswers.selectedOptionIDs.includes(element)
+                  );
+                });
+
+            if (areEqual) {
+              correct++;
+            } else {
+              incorrect++;
+            }
+          }
+
+          const finalScore = (correct / (correct + incorrect)) * 100;
+
+          const THRESHOLD = 80;
+
+          await addTrainingModuleAttemptToUser(
+            user?.id,
+            submission.moduleID,
+            finalScore >= THRESHOLD
+          );
+
+          return finalScore;
         }
-      }
-
-      const finalScore = (correct / (correct + incorrect)) * 100;
-
-      return finalScore;
+      );
     },
   },
 };

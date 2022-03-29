@@ -4,6 +4,7 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
 import { createHash } from "crypto";
 import { ApolloContext } from "../context";
+import { getCompletedModulesByUser } from "../repositories/Training/ModuleRepository";
 
 export function getUsersFullName(user: User) {
   return `${user.firstName} ${user.lastName}`;
@@ -15,6 +16,11 @@ export function hashUniversityID(universityID: string) {
 
 //TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
+  User: {
+    trainingModules: (parent: any) => {
+      return getCompletedModulesByUser(parent.id);
+    },
+  },
   Query: {
     users: async () => {
       return await UserRepo.getUsers();
@@ -70,7 +76,7 @@ const UsersResolvers = {
     },
 
     addTraining: async (_: any, args: any, context: any) => {
-      await UserRepo.addTrainingToUser(args.userID, args.trainingModuleID);
+      await UserRepo.addTrainingModuleAttemptToUser(args.userID, args.trainingModuleID, true);
     },
 
     removeTraining: async (_: any, args: any, context: any) => {
