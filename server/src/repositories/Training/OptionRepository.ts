@@ -3,6 +3,7 @@ import * as OptionMap from "../../mappers/training/optionMapper";
 import { ModuleItemAnswers, Option } from "../../schemas/trainingSchema";
 import { answersToDomain } from "../../mappers/training/moduleItemAnswersMapper";
 
+
 export async function getOptionById(id: number): Promise<Option | null> {
   const knexResult = await knex("ModuleItemOption")
     .select("id", "moduleItem", "text", "correct")
@@ -51,6 +52,7 @@ export async function updateOption(option: Option): Promise<void> {
   return update;
 }
 
-export async function deleteOptionById(id: number): Promise<void> {
-  await knex("ModuleItemOption").where({ id: id }).del();
+export async function archiveOption(id: number): Promise<Option | null> {
+  await knex("ModuleItemOption").where({ id: id}).update({archived: true})
+  return getOptionById(id);
 }

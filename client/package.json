@@ -41,6 +41,17 @@
       "pre-commit": "lint-staged"
     }
   },
+  "jest": {
+    "coveragePathIgnorePatterns": [
+      "src/App.tsx",
+      "src/index.tsx",
+      "src/reportWebVitals.ts",
+      "src/test/*",
+      "src/queries/*",
+      "src/test_data/*",
+      "src/types/*"
+    ]
+  },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
       "prettier --write"
