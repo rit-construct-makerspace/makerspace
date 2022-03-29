@@ -7,9 +7,8 @@ import {
 } from "../common/CurrentUserProvider";
 import React from "react";
 import Privilege from "../types/Privilege";
-import { MemoryRouter, Routes } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
 import { DocumentNode } from "graphql";
-import { createMemoryHistory } from "history";
 
 let mocks: any[] = [];
 
@@ -32,6 +31,17 @@ export function resetMocks() {
       },
     },
   ];
+}
+
+export function addQueryMock(
+  query: DocumentNode,
+  data: object,
+  variables: object = {}
+) {
+  mocks.push({
+    request: { query, variables },
+    result: { data },
+  });
 }
 
 export function addMutationMock(
