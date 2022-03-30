@@ -1,9 +1,9 @@
-import { ModuleItemAnswers } from "../../schemas/trainingSchema";
+import { ModuleItemAnswer } from "../../schemas/trainingSchema";
 
-export function answersToDomain(raw: any[]): ModuleItemAnswers[] | null {
+export function answersToDomain(raw: any[]): ModuleItemAnswer[] | null {
   if (raw === undefined || raw === null) return null;
 
-  let answers: ModuleItemAnswers[] = [];
+  let answers: ModuleItemAnswer[] = [];
 
   for (let answer of raw) {
     let existing = answers.find((x) => x.moduleItemID === answer.moduleItem);
@@ -12,7 +12,7 @@ export function answersToDomain(raw: any[]): ModuleItemAnswers[] | null {
     if (existing) {
       existing.correctOptionIDs.push(answer.id);
     } else {
-      let value: ModuleItemAnswers = {
+      let value: ModuleItemAnswer = {
         moduleItemID: answer.moduleItem,
         correctOptionIDs: [answer.id],
       };
