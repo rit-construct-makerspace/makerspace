@@ -34,7 +34,7 @@ export interface ModuleSubmissionInput {
   answers: ModuleItemAnswerInput[];
 }
 
-export interface ModuleItemAnswers {
+export interface ModuleItemAnswer {
   moduleItemID: string;
   correctOptionIDs: string[];
 }

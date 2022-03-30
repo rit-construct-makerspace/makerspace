@@ -5,6 +5,7 @@ import { ModuleSubmissionInput } from "../schemas/trainingSchema";
 import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
+import { MODULE_PASSING_THRESHOLD } from "../constants";
 
 const TrainingResolvers = {
   Query: {
@@ -45,7 +46,6 @@ const TrainingResolvers = {
 
     deleteModule: async (_: any, args: { id: number }, context: any) => {
       await ModuleRepo.archiveModule(args.id);
-
     },
 
     addModuleItem: async (_: any, args: any) =>
@@ -93,20 +93,20 @@ const TrainingResolvers = {
         [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
         async (user) => {
           const submission = args.submission;
-          const answers =
-            await OptionRepo.getCorrectOptionsWithModuleItemByModule(
+          const answerSheet =
+            await OptionRepo.getAnswerSheet(
               submission.moduleID
             );
-          if (!answers || answers.length === 0) {
+          if (!answerSheet || answerSheet.length === 0) {
             throw Error(
               "Training module for provided ID has no correct answers"
             );
           }
           let correct = 0,
             incorrect = 0;
-          for (let correctAnswers of answers) {
-            let submittedAnswers = submission.answers.find(
-              (x) => x.moduleItemID == correctAnswers.moduleItemID
+          for (let moduleItemAnswer of answerSheet) {
+            const submittedAnswers = submission.answers.find(
+              (x) => x.moduleItemID == moduleItemAnswer.moduleItemID
             );
 
             if (!submittedAnswers) {
@@ -114,10 +114,10 @@ const TrainingResolvers = {
               continue;
             }
 
-            let areEqual =
-              correctAnswers.correctOptionIDs.length ===
+            const areEqual =
+              moduleItemAnswer.correctOptionIDs.length ===
                 submittedAnswers.selectedOptionIDs.length &&
-              correctAnswers.correctOptionIDs
+              moduleItemAnswer.correctOptionIDs
                 .map(String)
                 .every(function (element) {
                   return (
@@ -135,12 +135,10 @@ const TrainingResolvers = {
 
           const finalScore = (correct / (correct + incorrect)) * 100;
 
-          const THRESHOLD = 80;
-
           await addTrainingModuleAttemptToUser(
             user?.id,
             submission.moduleID,
-            finalScore >= THRESHOLD
+            finalScore >= MODULE_PASSING_THRESHOLD
           );
 
           return finalScore;

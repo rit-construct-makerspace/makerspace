@@ -1,8 +1,7 @@
 import { knex } from "../../db";
 import * as OptionMap from "../../mappers/training/optionMapper";
-import { ModuleItemAnswers, Option } from "../../schemas/trainingSchema";
+import { ModuleItemAnswer, Option } from "../../schemas/trainingSchema";
 import { answersToDomain } from "../../mappers/training/moduleItemAnswersMapper";
-
 
 export async function getOptionById(id: number): Promise<Option | null> {
   const knexResult = await knex("ModuleItemOption")
@@ -20,9 +19,12 @@ export async function getOptionsByModuleItem(
   return OptionMap.optionsToDomain(knexResult);
 }
 
-export async function getCorrectOptionsWithModuleItemByModule(
+// returns a collection of ModuleItemAnswer Objects that repesent the correct
+// answers for each module item in the module with the provided moduleID.
+// Naming convention comes from the idea if this was pen/paper test
+export async function getAnswerSheet(
   moduleID: string
-): Promise<ModuleItemAnswers[] | null> {
+): Promise<ModuleItemAnswer[] | null> {
   const knexResult = await knex("ModuleItemOption")
     .select("ModuleItemOption.id", "moduleItem")
     .join("ModuleItem", "ModuleItemOption.moduleItem", "ModuleItem.id")
@@ -53,6 +55,6 @@ export async function updateOption(option: Option): Promise<void> {
 }
 
 export async function archiveOption(id: number): Promise<Option | null> {
-  await knex("ModuleItemOption").where({ id: id}).update({archived: true})
+  await knex("ModuleItemOption").where({ id: id }).update({ archived: true });
   return getOptionById(id);
 }
