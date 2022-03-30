@@ -36,3 +36,18 @@ export async function updateName(
   });
   return getModuleById(id);
 }
+
+export async function getCompletedModulesByUser(
+  userID: string
+): Promise<TrainingModule[]> {
+  const knexResult = await knex("ModuleSubmissions")
+    .distinct("TrainingModule.id", "TrainingModule.name")
+    .join(
+      "TrainingModule",
+      "TrainingModule.id",
+      "=",
+      "ModuleSubmissions.moduleID"
+    )
+    .where("ModuleSubmissions.makerID", userID).andWhere("passed", true);
+  return TrainingModuleMap.trainingModulesToDomain(knexResult);
+}
