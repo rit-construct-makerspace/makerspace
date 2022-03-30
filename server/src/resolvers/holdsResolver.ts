@@ -9,7 +9,7 @@ import { EntityNotFound } from "../EntityNotFound";
 
 const HoldsResolvers = {
   User: {
-    holds: async (parent: User) => HoldsRepo.getUsersHolds(parent.id),
+    holds: async (parent: User) => HoldsRepo.getHoldsByUser(parent.id),
   },
 
   Hold: {

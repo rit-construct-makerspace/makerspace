@@ -31,7 +31,7 @@ export interface CurrentUser {
   email: string;
   privilege: Privilege;
   setupComplete: boolean;
-  hasHold: boolean;
+  hasHolds: boolean;
 }
 
 const CurrentUserContext = createContext<CurrentUser | undefined>(undefined);
@@ -39,13 +39,13 @@ const CurrentUserContext = createContext<CurrentUser | undefined>(undefined);
 function mapUser(data: any): CurrentUser | undefined {
   if (!data?.currentUser) return undefined;
 
-  const hasHold = data.currentUser.holds.some(
+  const hasHolds = data.currentUser.holds.some(
     (hold: { removeDate: string }) => !hold.removeDate
   );
 
   return {
     ...data.currentUser,
-    hasHold,
+    hasHolds,
   };
 }
 

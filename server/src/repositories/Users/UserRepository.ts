@@ -23,13 +23,17 @@ export async function getUserByID(userID: number): Promise<User> {
   return user;
 }
 
-export async function getUserByRitUsername(
-  ritUsername: string
-): Promise<User | null> {
+export async function getUserByRitUsername(ritUsername: string): Promise<User> {
   const knexResult = await knex("Users")
     .first()
     .where("ritUsername", ritUsername);
-  return singleUserToDomain(knexResult);
+
+  const user = singleUserToDomain(knexResult);
+
+  if (!user)
+    throw new EntityNotFound(`User with RIT username ${ritUsername} not found`);
+
+  return user;
 }
 
 export async function getUserByUniversityID(

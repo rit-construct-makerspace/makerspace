@@ -58,7 +58,7 @@ export default function LeftNav() {
           </Typography>
         </Stack>
 
-        {currentUser.hasHold && <HoldAlert />}
+        {currentUser.hasHolds && <HoldAlert />}
 
         <List component="nav">
           {!isMaker && <Divider textAlign="left">MAKER</Divider>}

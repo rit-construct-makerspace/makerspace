@@ -26,6 +26,7 @@ export interface User {
   pronouns: string;
   setupComplete: boolean;
   isArchived: boolean;
+  hasHolds?: boolean;
 }
 
 export const UsersTypeDefs = gql`

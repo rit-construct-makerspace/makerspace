@@ -10,8 +10,8 @@ import {
   createUser,
   getUserByRitUsername,
 } from "./repositories/Users/UserRepository";
-import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
-import { User as AppUser } from "./schemas/usersSchema"
+import { User as AppUser } from "./schemas/usersSchema";
+import { getHoldsByUser } from "./repositories/Holds/HoldsRepository";
 
 interface RitSsoUser {
   firstName: string;
@@ -144,7 +144,14 @@ export function setupAuth(app: express.Application) {
   });
 
   passport.deserializeUser(async (username: string, done) => {
-    const user = await getUserByRitUsername(username);  
+    const user = await getUserByRitUsername(username);
+
+    // Populate user.hasHolds
+    const holds = await getHoldsByUser(user.id);
+    user.hasHolds = holds.some(
+      (hold: { removeDate: string }) => !hold.removeDate
+    );
+
     /* @ts-ignore */
     done(null, user);
   });

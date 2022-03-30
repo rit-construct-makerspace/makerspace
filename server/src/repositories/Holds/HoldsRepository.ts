@@ -38,6 +38,6 @@ export async function removeHold(holdID: number, removerID: number) {
   return getHold(holdID);
 }
 
-export async function getUsersHolds(userID: number) {
+export async function getHoldsByUser(userID: number) {
   return knex("Holds").select().where({ userID }).orderBy("createDate", "DESC");
 }

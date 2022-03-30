@@ -20,13 +20,13 @@ const ifAllowed =
     const user = expressUser as User;
 
     const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
-    console.log(user);
-
     if (!sufficientPrivilege) {
       throw new ForbiddenError("Insufficient privilege");
     }
 
-    // TODO: if (userHasHold) throw new ForbiddenError("Account on hold");
+    if (user.hasHolds) {
+      throw new ForbiddenError("User has outstanding account holds");
+    }
 
     return callback(user);
   };
