@@ -13,7 +13,6 @@ export function hashUniversityID(universityID: string) {
   return createHash("sha256").update(universityID).digest("hex");
 }
 
-//TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
   Query: {
     users: async () => {
@@ -75,14 +74,6 @@ const UsersResolvers = {
 
     removeTraining: async (_: any, args: any, context: any) => {
       await UserRepo.removeTrainingFromUser(args.userID, args.trainingModuleID);
-    },
-
-    addHold: async (_: any, args: any, context: any) => {
-      await UserRepo.addHoldToUser(args.userID, args.holdID);
-    },
-
-    removeHold: async (_: any, args: any, context: any) => {
-      await UserRepo.removeHoldFromUser(args.userID, args.holdID);
     },
 
     archiveUser: async (

@@ -18,7 +18,9 @@ const ifAllowed =
     }
 
     const user = expressUser as User;
+
     const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
+    console.log(user);
 
     if (!sufficientPrivilege) {
       throw new ForbiddenError("Insufficient privilege");

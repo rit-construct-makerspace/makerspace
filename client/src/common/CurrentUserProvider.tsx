@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client";
 import { PartialUser } from "../queries/getUsers";
 import RequestWrapper2 from "./RequestWrapper2";
 import { Navigate, useLocation } from "react-router-dom";
+import Privilege from "../types/Privilege";
 
 const loginUrl =
   process.env.REACT_APP_LOGIN_URL ?? "https://localhost:3000/login";
@@ -16,11 +17,37 @@ export const GET_CURRENT_USER = gql`
       email
       privilege
       setupComplete
+      holds {
+        removeDate
+      }
     }
   }
 `;
 
-const CurrentUserContext = createContext<PartialUser | undefined>(undefined);
+export interface CurrentUser {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  privilege: Privilege;
+  setupComplete: boolean;
+  hasHold: boolean;
+}
+
+const CurrentUserContext = createContext<CurrentUser | undefined>(undefined);
+
+function mapUser(data: any): CurrentUser | undefined {
+  if (!data?.currentUser) return undefined;
+
+  const hasHold = data.currentUser.holds.some(
+    (hold: { removeDate: string }) => !hold.removeDate
+  );
+
+  return {
+    ...data.currentUser,
+    hasHold,
+  };
+}
 
 interface CurrentUserProviderProps {
   children: ReactElement;
@@ -47,7 +74,7 @@ export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
   }
 
   return (
-    <CurrentUserContext.Provider value={result.data?.currentUser}>
+    <CurrentUserContext.Provider value={mapUser(result.data)}>
       <RequestWrapper2 result={result} render={() => children} />
     </CurrentUserContext.Provider>
   );

@@ -20,6 +20,7 @@ import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
+import HoldAlert from "./HoldAlert";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -57,11 +58,7 @@ export default function LeftNav() {
           </Typography>
         </Stack>
 
-        {/*<Stack spacing={1} my={2}>*/}
-        {/*  <MonitorAlert />*/}
-        {/*  <CardReader />*/}
-        {/*  <HoldAlert />*/}
-        {/*</Stack>*/}
+        {currentUser.hasHold && <HoldAlert />}
 
         <List component="nav">
           {!isMaker && <Divider textAlign="left">MAKER</Divider>}

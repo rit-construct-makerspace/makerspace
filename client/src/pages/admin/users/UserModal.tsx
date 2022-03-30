@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import PrettyModal from "../../../common/PrettyModal";
 import { Avatar, Button, Stack, Typography } from "@mui/material";
-import { gql, useLazyQuery } from "@apollo/client";
+import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoBlob from "./InfoBlob";
 import { format, parseISO } from "date-fns";
@@ -11,6 +11,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import HistoryIcon from "@mui/icons-material/History";
 import PrivilegeControl from "./PrivilegeControl";
 import { useNavigate } from "react-router-dom";
+import HoldCard from "./HoldCard";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -18,6 +19,21 @@ const StyledInfo = styled.div`
   grid-template-columns: 1fr 1fr;
   row-gap: 32px;
 `;
+
+export interface Hold {
+  id: string;
+  description: string;
+  creator: {
+    firstName: string;
+    lastName: string;
+  };
+  remover?: {
+    firstName: string;
+    lastName: string;
+  };
+  createDate: string;
+  removeDate?: string;
+}
 
 export const GET_USER = gql`
   query GetUser($id: ID!) {
@@ -31,6 +47,28 @@ export const GET_USER = gql`
       expectedGraduation
       registrationDate
       privilege
+      holds {
+        id
+        creator {
+          firstName
+          lastName
+        }
+        remover {
+          firstName
+          lastName
+        }
+        createDate
+        removeDate
+        description
+      }
+    }
+  }
+`;
+
+export const CREATE_HOLD = gql`
+  mutation CreateHold($userID: ID!, $description: String!) {
+    createHold(userID: $userID, description: $description) {
+      id
     }
   }
 `;
@@ -43,10 +81,25 @@ interface UserModalProps {
 export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const navigate = useNavigate();
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
+  const [createHold] = useMutation(CREATE_HOLD);
 
   useEffect(() => {
     if (selectedUserID) getUser({ variables: { id: selectedUserID } });
   }, [selectedUserID, getUser]);
+
+  const handlePlaceHoldClicked = () => {
+    const description = window.prompt("Enter hold description:");
+
+    if (!description) {
+      window.alert("Description required.");
+      return;
+    }
+
+    createHold({
+      variables: { userID: getUserResult.data.user.id, description },
+      refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }],
+    });
+  };
 
   return (
     <PrettyModal open={!!selectedUserID} onClose={onClose} width={600}>
@@ -90,18 +143,25 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               Account Holds
             </Typography>
 
-            <Stack direction="row" spacing={1} sx={{ opacity: 0.8 }}>
-              <CheckCircleIcon color="success" fontSize="small" />
+            {user.holds.length === 0 && (
+              <Stack direction="row" spacing={1} sx={{ opacity: 0.8 }}>
+                <CheckCircleIcon color="success" fontSize="small" />
+                <Typography variant="body1" fontStyle="italic">
+                  No holds.
+                </Typography>
+              </Stack>
+            )}
 
-              {/* TODO: query and display holds */}
-              <Typography variant="body1" fontStyle="italic">
-                No holds.
-              </Typography>
+            <Stack spacing={2}>
+              {user.holds.map((hold: Hold) => (
+                <HoldCard key={hold.id} hold={hold} userID={user.id} />
+              ))}
             </Stack>
 
             <Button
-              sx={{ mt: 1.5, alignSelf: "flex-start" }}
+              sx={{ mt: 2, alignSelf: "flex-start" }}
               variant="outlined"
+              onClick={handlePlaceHoldClicked}
             >
               Place hold
             </Button>

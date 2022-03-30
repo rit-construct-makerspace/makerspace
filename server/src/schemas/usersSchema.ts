@@ -28,16 +28,6 @@ export interface User {
   isArchived: boolean;
 }
 
-export interface StudentUserInput {
-  universityID: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  expectedGraduation: string;
-  college: string;
-  major: string;
-}
-
 export const UsersTypeDefs = gql`
   enum Privilege {
     MAKER
@@ -111,8 +101,12 @@ export const UsersTypeDefs = gql`
   }
 
   extend type Mutation {
-
-    createUser(firstName: String, lastName: String, ritUsername: String, email: String): User
+    createUser(
+      firstName: String
+      lastName: String
+      ritUsername: String
+      email: String
+    ): User
 
     updateStudentProfile(
       userID: ID!
@@ -126,9 +120,6 @@ export const UsersTypeDefs = gql`
 
     addTraining(userID: ID!, moduleID: ID!): User
     removeTraining(userID: ID!, moduleID: ID!): User
-
-    addHold(userID: ID!, hold: HoldInput): User
-    removeHold(userID: ID!, hold: HoldInput): User
 
     archiveUser(userID: ID!): User
   }

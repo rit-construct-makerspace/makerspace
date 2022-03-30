@@ -7,22 +7,20 @@ import {
 import { createLog } from "../AuditLogs/AuditLogRepository";
 import assert from "assert";
 import { getUsersFullName } from "../../resolvers/usersResolver";
-
-/*
-todo
-get users by room,
-search/get users by name
-get users by module
-*/
+import { EntityNotFound } from "../../EntityNotFound";
 
 export async function getUsers(): Promise<User[]> {
   const knexResult = await knex("Users").select();
   return usersToDomain(knexResult);
 }
 
-export async function getUserByID(userID: number): Promise<User | null> {
+export async function getUserByID(userID: number): Promise<User> {
   const knexResult = await knex("Users").first().where("id", userID);
-  return singleUserToDomain(knexResult);
+  const user = singleUserToDomain(knexResult);
+
+  if (!user) throw new EntityNotFound(`User #${userID} not found`);
+
+  return user;
 }
 
 export async function getUserByRitUsername(
@@ -97,15 +95,7 @@ export function removeTrainingFromUser(
   throw new Error("Method not implemented.");
 }
 
-export function addHoldToUser(userID: number, holdID: number) {
-  throw new Error("Method not implemented.");
-}
-
-export function removeHoldFromUser(userID: number, holdID: number) {
-  throw new Error("Method not implemented.");
-}
-
-export async function archiveUser(userID: number){
-  await knex("Users").where({ id: userID}).update({isArchived: true})
-  return await getUserByID(userID)
+export async function archiveUser(userID: number) {
+  await knex("Users").where({ id: userID }).update({ isArchived: true });
+  return await getUserByID(userID);
 }
