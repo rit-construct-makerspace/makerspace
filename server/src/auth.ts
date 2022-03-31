@@ -146,6 +146,10 @@ export function setupAuth(app: express.Application) {
   passport.deserializeUser(async (username: string, done) => {
     const user = await getUserByRitUsername(username);
 
+    if (!user) {
+      throw new Error("Tried to deserialize user that doesn't exist");
+    }
+
     // Populate user.hasHolds
     const holds = await getHoldsByUser(user.id);
     user.hasHolds = holds.some(
