@@ -152,9 +152,7 @@ export function setupAuth(app: express.Application) {
 
     // Populate user.hasHolds
     const holds = await getHoldsByUser(user.id);
-    user.hasHolds = holds.some(
-      (hold: { removeDate: string }) => !hold.removeDate
-    );
+    user.hasHolds = holds.some((hold) => !hold.removeDate);
 
     /* @ts-ignore */
     done(null, user);

@@ -7,7 +7,7 @@ import {
   InventoryItem,
   InventoryItemInput,
 } from "../../schemas/storeFrontSchema";
-import {getEquipmentById} from "../Equipment/EquipmentRepository";
+import { getEquipmentByID } from "../Equipment/EquipmentRepository";
 
 export async function getLabels(itemId: number): Promise<string[] | null> {
   const knexResult = await knex("InventoryItemLabel")
@@ -111,8 +111,10 @@ export async function addItemAmount(
   return await getItemById(updateItem);
 }
 
-export async function archiveItem(itemId: number): Promise<InventoryItem | null> {
-  await knex("InventoryItem").where({ id: itemId}).update({archived: true})
+export async function archiveItem(
+  itemId: number
+): Promise<InventoryItem | null> {
+  await knex("InventoryItem").where({ id: itemId }).update({ archived: true });
   return getItemById(itemId);
 }
 

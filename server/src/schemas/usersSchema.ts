@@ -1,11 +1,17 @@
 import { gql } from "apollo-server-express";
-import { TrainingModule } from "../schemas/trainingSchema";
-import { Hold } from "../schemas/holdsSchema";
+import { Hold } from "./holdsSchema";
 
 export enum Privilege {
   MAKER = "MAKER",
   LABBIE = "LABBIE",
   ADMIN = "ADMIN",
+}
+
+export interface PassedModule {
+  id: number;
+  moduleID: number;
+  moduleName: string;
+  submissionDate: Date;
 }
 
 export interface User {
@@ -19,7 +25,7 @@ export interface User {
   privilege: Privilege;
   registrationDate: Date;
   holds: [Hold];
-  completedModules: [TrainingModule];
+  passedModules: [PassedModule];
   expectedGraduation: string;
   college: string;
   roomID: number;
@@ -36,6 +42,13 @@ export const UsersTypeDefs = gql`
     ADMIN
   }
 
+  type PassedModule {
+    id: ID!
+    moduleID: ID!
+    moduleName: String!
+    submissionDate: DateTime!
+  }
+
   type User {
     id: ID!
     firstName: String!
@@ -46,7 +59,7 @@ export const UsersTypeDefs = gql`
     privilege: Privilege!
     registrationDate: DateTime!
     holds: [Hold]
-    trainingModules: [TrainingModule]
+    passedModules: [PassedModule]
     expectedGraduation: String
     college: String
     room: Room
@@ -118,9 +131,6 @@ export const UsersTypeDefs = gql`
     ): User
 
     setPrivilege(userID: ID!, privilege: Privilege): User
-
-    addTraining(userID: ID!, moduleID: ID!): User
-    removeTraining(userID: ID!, moduleID: ID!): User
 
     archiveUser(userID: ID!): User
   }

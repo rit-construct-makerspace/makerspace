@@ -85,15 +85,12 @@ export async function setPrivilege(userID: number, privilege: Privilege) {
   return getUserByID(userID);
 }
 
-export async function addTrainingModuleAttemptToUser(userID: number, trainingModuleID: string, passed: boolean) {
-  await knex("ModuleSubmissions").insert({makerID: userID, moduleID: trainingModuleID, passed: passed})
-}
-
-export function removeTrainingFromUser(
-  userID: number,
-  trainingModuleID: number
+export async function addTrainingModuleAttemptToUser(
+  makerID: number,
+  moduleID: number,
+  passed: boolean
 ) {
-  throw new Error("Method not implemented.");
+  await knex("ModuleSubmissions").insert({ makerID, moduleID, passed });
 }
 
 export async function archiveUser(userID: number) {

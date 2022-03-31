@@ -1,10 +1,10 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
+import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import { Privilege, User } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
 import { createHash } from "crypto";
 import { ApolloContext } from "../context";
-import { getCompletedModulesByUser } from "../repositories/Training/ModuleRepository";
 
 export function getUsersFullName(user: User) {
   return `${user.firstName} ${user.lastName}`;
@@ -16,10 +16,11 @@ export function hashUniversityID(universityID: string) {
 
 const UsersResolvers = {
   User: {
-    trainingModules: (parent: any) => {
-      return getCompletedModulesByUser(parent.id);
+    passedModules: (parent: { id: number }) => {
+      return ModuleRepo.getPassedModulesByUser(parent.id);
     },
   },
+
   Query: {
     users: async () => {
       return await UserRepo.getUsers();
@@ -28,6 +29,7 @@ const UsersResolvers = {
     user: async (_: any, args: { id: number }) => {
       return await UserRepo.getUserByID(args.id);
     },
+
     currentUser: async (parent: any, args: any, context: ApolloContext) => {
       return context.user;
     },
@@ -72,14 +74,6 @@ const UsersResolvers = {
         { id: context.user.id, label: getUsersFullName(context.user) },
         { id: userSubject.id, label: getUsersFullName(userSubject) }
       );
-    },
-
-    addTraining: async (_: any, args: any, context: any) => {
-      await UserRepo.addTrainingModuleAttemptToUser(args.userID, args.trainingModuleID, true);
-    },
-
-    removeTraining: async (_: any, args: any, context: any) => {
-      await UserRepo.removeTrainingFromUser(args.userID, args.trainingModuleID);
     },
 
     archiveUser: async (

@@ -1,5 +1,5 @@
 import { knex } from "../../db";
-import {getEquipmentById} from "../Equipment/EquipmentRepository";
+import { getEquipmentByID } from "../Equipment/EquipmentRepository";
 
 export async function getAllLabels(): Promise<string[]> {
   const knexResult = await knex("Label").select("label");
@@ -24,9 +24,9 @@ export async function addLabel(label: string): Promise<void> {
 }
 
 export async function archiveLabel(label: string): Promise<void> {
-  await knex("Label").where({label}).update({archived: true})
+  await knex("Label").where({ label }).update({ archived: true });
 }
 
 export async function archiveLabelById(labelId: number): Promise<void> {
-  await knex("Label").where({ id: labelId}).update({archived: true})
+  await knex("Label").where({ id: labelId }).update({ archived: true });
 }
