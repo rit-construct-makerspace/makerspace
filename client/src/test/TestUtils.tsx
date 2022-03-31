@@ -26,6 +26,7 @@ export function resetMocks() {
             email: "jxs1234@rit.edu",
             privilege: Privilege.ADMIN,
             setupComplete: true,
+            holds: [],
           },
         },
       },

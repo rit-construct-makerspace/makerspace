@@ -1,24 +1,24 @@
 import { gql } from "apollo-server-express";
-import { User } from "./usersSchema";
 
 export interface Hold {
   id: number;
-  user: User;
+  creatorID: number;
+  removerID?: number;
+  userID: number;
   description: string;
-  active: boolean;
-}
-
-export interface HoldInput {
-  user: number;
-  description: string;
+  createDate: Date;
+  removeDate?: Date;
 }
 
 export const HoldsTypeDefs = gql`
   type Hold {
     id: ID!
+    creator: User!
+    remover: User
     user: User!
-    description: String
-    active: Boolean
+    description: String!
+    createDate: DateTime!
+    removeDate: DateTime
   }
 
   input HoldInput {
@@ -26,7 +26,8 @@ export const HoldsTypeDefs = gql`
     description: String
   }
 
-  type Query {
-    holds: [Hold]
+  extend type Mutation {
+    createHold(userID: ID!, description: String!): Hold
+    removeHold(holdID: ID!): Hold
   }
 `;

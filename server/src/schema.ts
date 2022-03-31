@@ -15,6 +15,7 @@ import roomsResolver from "./resolvers/roomsResolver";
 import EquipmentResolvers from "./resolvers/equipmentResolver";
 import usersResolver from "./resolvers/usersResolver";
 import auditLogsResolver from "./resolvers/auditLogsResolver";
+import holdsResolver from "./resolvers/holdsResolver";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -40,6 +41,7 @@ export const schema = makeExecutableSchema({
     storefrontResolvers,
     roomsResolver,
     usersResolver,
+    holdsResolver,
     auditLogsResolver,
   ]),
 });
