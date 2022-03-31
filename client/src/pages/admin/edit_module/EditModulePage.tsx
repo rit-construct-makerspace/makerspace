@@ -5,7 +5,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import Page from "../../Page";
 import SaveIcon from "@mui/icons-material/Save";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { useImmer } from "use-immer";
 import { QuizItem } from "../../../types/Quiz";
@@ -28,8 +28,17 @@ const UPDATE_MODULE = gql`
   }
 `;
 
+const DELETE_MODULE = gql`
+  mutation DeleteModule($id: ID!) {
+    deleteModule(id: $id) {
+      id
+    }
+  }
+`;
+
 export default function EditModulePage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [quiz, setQuiz] = useImmer<QuizItem[]>([]);
@@ -42,16 +51,27 @@ export default function EditModulePage() {
     },
   });
 
-  const [updateQuiz, mutationResult] = useMutation(UPDATE_MODULE);
+  const [updateModule, updateResult] = useMutation(UPDATE_MODULE);
+
+  const [deleteModule] = useMutation(DELETE_MODULE, {
+    variables: { id },
+    refetchQueries: [{ query: GET_TRAINING_MODULES }],
+    onCompleted: () => navigate("/admin/training"),
+  });
 
   const handleSaveClicked = () =>
-    updateQuiz({
+    updateModule({
       variables: { id, name, quiz },
       refetchQueries: [
         { query: GET_MODULE, variables: { id } },
         { query: GET_TRAINING_MODULES },
       ],
     });
+
+  const handleDeleteClicked = () => {
+    if (!window.confirm("Are you sure you want to delete this module?")) return;
+    deleteModule();
+  };
 
   return (
     <RequestWrapper2
@@ -65,7 +85,11 @@ export default function EditModulePage() {
               onChange={(e) => setName(e.target.value)}
               sx={{ width: 400 }}
             />
-            <Button startIcon={<DeleteIcon />} color="error">
+            <Button
+              startIcon={<DeleteIcon />}
+              color="error"
+              onClick={handleDeleteClicked}
+            >
               Delete
             </Button>
           </Stack>
@@ -82,8 +106,11 @@ export default function EditModulePage() {
               alignSelf: "flex-end",
             }}
           >
-            <SaveIcon />
-            {/*<CircularProgress size={20} sx={{ color: "white" }} />*/}
+            {updateResult.loading ? (
+              <CircularProgress size={20} sx={{ color: "white" }} />
+            ) : (
+              <SaveIcon />
+            )}
           </Fab>
         </Page>
       )}

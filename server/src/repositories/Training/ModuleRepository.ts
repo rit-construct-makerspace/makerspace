@@ -13,7 +13,7 @@ export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
 }
 
 export async function getModules(): Promise<TrainingModuleRow[]> {
-  return knex("TrainingModule").select();
+  return knex("TrainingModule").select().where({ archived: false });
 }
 
 export async function archiveModule(id: number): Promise<TrainingModuleRow> {
