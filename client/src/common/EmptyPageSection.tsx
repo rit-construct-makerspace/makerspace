@@ -1,14 +1,16 @@
 import React, { cloneElement, ReactElement } from "react";
-import { Stack, Typography } from "@mui/material";
+import { Stack, SxProps, Typography } from "@mui/material";
 
 interface EmptyPageSectionProps {
   icon?: ReactElement;
   label: string;
+  sx?: SxProps;
 }
 
 export default function EmptyPageSection({
   icon,
   label,
+  sx,
 }: EmptyPageSectionProps) {
   return (
     <Stack
@@ -16,6 +18,7 @@ export default function EmptyPageSection({
         bgcolor: "grey.100",
         p: 2,
         borderRadius: 1,
+        ...sx,
       }}
       direction="row"
       alignItems="center"

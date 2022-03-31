@@ -28,6 +28,8 @@ const TrainingResolvers = {
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
+
+        return module;
       }),
 
     updateModule: async (

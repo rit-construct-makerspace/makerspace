@@ -12,12 +12,21 @@ interface PageProps {
 export default function Page({
   title,
   topRightAddons,
-  maxWidth = "none",
+  maxWidth = "100%",
   children,
 }: PageProps) {
   return (
-    <Stack alignItems="center" sx={{ padding: 4, width: "100%" }}>
-      <Stack sx={{ width: "100%", maxWidth: maxWidth }}>
+    <Stack
+      alignItems="center"
+      sx={{ width: "100%", height: "100vh", overflowY: "auto" }}
+    >
+      <Stack
+        sx={{
+          p: 4,
+          width: "100%",
+          maxWidth: `min(calc(100% - 64px), ${maxWidth})`,
+        }}
+      >
         <Stack direction="row" alignItems="center" mb={4}>
           <Typography variant="h3" flexGrow={1}>
             {title}

@@ -31,7 +31,10 @@ export async function updateModule(
   name: string,
   quiz: object
 ): Promise<TrainingModuleRow> {
-  await knex("TrainingModule").where({ id }).update({ name, quiz });
+  await knex("TrainingModule")
+    .where({ id })
+    // @ts-ignore
+    .update({ name, quiz: JSON.stringify(quiz) });
   return getModuleByID(id);
 }
 
