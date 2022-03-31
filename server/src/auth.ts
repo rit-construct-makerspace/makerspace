@@ -10,20 +10,14 @@ import {
   createUser,
   getUserByRitUsername,
 } from "./repositories/Users/UserRepository";
-import { User as AppUser } from "./schemas/usersSchema";
 import { getHoldsByUser } from "./repositories/Holds/HoldsRepository";
+import { CurrentUser } from "./context";
 
 interface RitSsoUser {
   firstName: string;
   lastName: string;
   email: string;
   ritUsername: string;
-}
-
-declare global {
-  namespace Express {
-    interface User extends AppUser {}
-  }
 }
 
 // Map the test users from samltest.id to match
@@ -144,11 +138,9 @@ export function setupAuth(app: express.Application) {
   });
 
   passport.deserializeUser(async (username: string, done) => {
-    const user = await getUserByRitUsername(username);
+    const user = (await getUserByRitUsername(username)) as CurrentUser;
 
-    if (!user) {
-      throw new Error("Tried to deserialize user that doesn't exist");
-    }
+    if (!user) throw new Error("Tried to deserialize user that doesn't exist");
 
     // Populate user.hasHolds
     const holds = await getHoldsByUser(user.id);

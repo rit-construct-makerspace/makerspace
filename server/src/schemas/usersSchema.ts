@@ -1,5 +1,4 @@
 import { gql } from "apollo-server-express";
-import { Hold } from "./holdsSchema";
 
 export enum Privilege {
   MAKER = "MAKER",
@@ -12,27 +11,6 @@ export interface PassedModule {
   moduleID: number;
   moduleName: string;
   submissionDate: Date;
-}
-
-export interface User {
-  id: number;
-  universityID: string;
-  ritUsername: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  isStudent: boolean;
-  privilege: Privilege;
-  registrationDate: Date;
-  holds: [Hold];
-  passedModules: [PassedModule];
-  expectedGraduation: string;
-  college: string;
-  roomID: number;
-  pronouns: string;
-  setupComplete: boolean;
-  isArchived: boolean;
-  hasHolds?: boolean;
 }
 
 export const UsersTypeDefs = gql`

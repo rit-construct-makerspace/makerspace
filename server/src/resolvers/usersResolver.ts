@@ -1,12 +1,13 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import { Privilege, User } from "../schemas/usersSchema";
+import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
 import { createHash } from "crypto";
 import { ApolloContext } from "../context";
+import { UserRow } from "../db/tables";
 
-export function getUsersFullName(user: User) {
+export function getUsersFullName(user: UserRow) {
   return `${user.firstName} ${user.lastName}`;
 }
 

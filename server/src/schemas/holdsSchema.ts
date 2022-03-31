@@ -1,15 +1,5 @@
 import { gql } from "apollo-server-express";
 
-export interface Hold {
-  id: number;
-  creatorID: number;
-  removerID?: number;
-  userID: number;
-  description: string;
-  createDate: Date;
-  removeDate?: Date;
-}
-
 export const HoldsTypeDefs = gql`
   type Hold {
     id: ID!

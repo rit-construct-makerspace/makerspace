@@ -1,22 +1,16 @@
-import { Privilege, User } from "../../schemas/usersSchema";
+import { Privilege } from "../../schemas/usersSchema";
 import { knex } from "../../db";
-import {
-  singleUserToDomain,
-  usersToDomain,
-} from "../../mappers/users/userMapper";
 import { createLog } from "../AuditLogs/AuditLogRepository";
-import assert from "assert";
 import { getUsersFullName } from "../../resolvers/usersResolver";
 import { EntityNotFound } from "../../EntityNotFound";
+import { UserRow } from "../../db/tables";
 
-export async function getUsers(): Promise<User[]> {
-  const knexResult = await knex("Users").select();
-  return usersToDomain(knexResult);
+export async function getUsers(): Promise<UserRow[]> {
+  return knex("Users").select();
 }
 
-export async function getUserByID(userID: number): Promise<User> {
-  const knexResult = await knex("Users").first().where("id", userID);
-  const user = singleUserToDomain(knexResult);
+export async function getUserByID(userID: number): Promise<UserRow> {
+  const user = await knex("Users").first().where("id", userID);
 
   if (!user) throw new EntityNotFound(`User #${userID} not found`);
 
@@ -25,19 +19,14 @@ export async function getUserByID(userID: number): Promise<User> {
 
 export async function getUserByRitUsername(
   ritUsername: string
-): Promise<User | null> {
-  const knexResult = await knex("Users")
-    .first()
-    .where("ritUsername", ritUsername);
-
-  return singleUserToDomain(knexResult);
+): Promise<UserRow | undefined> {
+  return knex("Users").first().where("ritUsername", ritUsername);
 }
 
 export async function getUserByUniversityID(
   universityID: string
-): Promise<User | null> {
-  const result = await knex("Users").first().where({ universityID });
-  return singleUserToDomain(result);
+): Promise<UserRow | undefined> {
+  return knex("Users").first().where({ universityID });
 }
 
 export async function createUser(user: {
@@ -45,7 +34,7 @@ export async function createUser(user: {
   lastName: string;
   ritUsername: string;
   email: string;
-}) {
+}): Promise<UserRow> {
   const [newID] = await knex("Users").insert(user, "id");
   return await getUserByID(newID);
 }
@@ -56,13 +45,10 @@ export async function updateStudentProfile(args: {
   college: string;
   expectedGraduation: string;
   universityID: string;
-}): Promise<User | null> {
+}): Promise<UserRow> {
   const user = await getUserByID(args.userID);
-  assert(user);
 
-  const alreadySetup = user.setupComplete;
-
-  if (!alreadySetup) {
+  if (!user.setupComplete) {
     await createLog("{user} has joined The Construct!", {
       id: args.userID,
       label: getUsersFullName(user),
@@ -80,7 +66,10 @@ export async function updateStudentProfile(args: {
   return getUserByID(args.userID);
 }
 
-export async function setPrivilege(userID: number, privilege: Privilege) {
+export async function setPrivilege(
+  userID: number,
+  privilege: Privilege
+): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ privilege });
   return getUserByID(userID);
 }
@@ -93,7 +82,7 @@ export async function addTrainingModuleAttemptToUser(
   await knex("ModuleSubmissions").insert({ makerID, moduleID, passed });
 }
 
-export async function archiveUser(userID: number) {
+export async function archiveUser(userID: number): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ isArchived: true });
   return await getUserByID(userID);
 }
