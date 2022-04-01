@@ -11,7 +11,7 @@ import { useImmer } from "use-immer";
 import { QuizItem } from "../../../types/Quiz";
 import GET_TRAINING_MODULES from "../../../queries/getModules";
 
-const GET_MODULE = gql`
+export const GET_MODULE = gql`
   query GetModule($id: ID!) {
     module(id: $id) {
       name
@@ -20,7 +20,7 @@ const GET_MODULE = gql`
   }
 `;
 
-const UPDATE_MODULE = gql`
+export const UPDATE_MODULE = gql`
   mutation UpdateModule($id: ID!, $name: String!, $quiz: JSON!) {
     updateModule(id: $id, name: $name, quiz: $quiz) {
       id
@@ -28,7 +28,7 @@ const UPDATE_MODULE = gql`
   }
 `;
 
-const DELETE_MODULE = gql`
+export const DELETE_MODULE = gql`
   mutation DeleteModule($id: ID!) {
     deleteModule(id: $id) {
       id
