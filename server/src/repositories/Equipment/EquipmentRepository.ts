@@ -1,8 +1,8 @@
 import { knex } from "../../db";
-import { EquipmentInput } from "../../models/equipment/equipmentInput";
 import { TrainingModule } from "../../schemas/trainingSchema";
 import { EntityNotFound } from "../../EntityNotFound";
 import { EquipmentRow, TrainingModuleRow } from "../../db/tables";
+import { EquipmentInput } from "../../schemas/equipmentSchema";
 
 export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   const equipment = await knex("Equipment").where({ id }).first();
@@ -38,33 +38,23 @@ export async function getModulesByEquipment(
 
 export async function addModulesToEquipment(
   id: number,
-  trainingModules: number[]
+  moduleIDs: number[]
 ): Promise<void> {
   await knex("ModulesForEquipment").insert(
-    trainingModules.map((trainingModule) => ({
+    moduleIDs.map((trainingModule) => ({
       equipmentID: id,
       moduleID: trainingModule,
     }))
   );
 }
 
-export async function removeModulesFromEquipment(
-  id: number,
-  trainingModules: number[]
-): Promise<void> {
-  await knex("ModulesForEquipment")
-    .where("equipmentID", id)
-    .whereIn("moduleID", trainingModules)
-    .del();
-}
-
 export async function updateModules(
   id: number,
-  trainingModules: number[]
+  moduleIDs: number[]
 ): Promise<void> {
-  await knex("ModulesForEquipment").del().where("equipmentId", id);
-  if (trainingModules && trainingModules.length > 0) {
-    await addModulesToEquipment(id, trainingModules);
+  await knex("ModulesForEquipment").del().where("equipmentID", id);
+  if (moduleIDs && moduleIDs.length > 0) {
+    await addModulesToEquipment(id, moduleIDs);
   }
 }
 
@@ -72,16 +62,12 @@ export async function updateEquipment(
   id: number,
   equipment: EquipmentInput
 ): Promise<EquipmentRow> {
-  await knex("Equipment")
-    .where("id", id)
-    .update({
-      name: equipment.name,
-      inUse: equipment.inUse,
-      roomID: equipment.roomID,
-    })
-    .then(async () => {
-      await updateModules(id, equipment.trainingModules);
-    });
+  await knex("Equipment").where("id", id).update({
+    name: equipment.name,
+    roomID: equipment.roomID,
+  });
+
+  await updateModules(id, equipment.moduleIDs);
 
   return getEquipmentByID(id);
 }
@@ -92,14 +78,13 @@ export async function addEquipment(
   const [id] = await knex("Equipment").insert(
     {
       name: equipment.name,
-      inUse: equipment.inUse,
       roomID: equipment.roomID,
     },
     "id"
   );
 
-  if (equipment.trainingModules?.length)
-    await addModulesToEquipment(id, equipment.trainingModules);
+  if (equipment.moduleIDs?.length)
+    await addModulesToEquipment(id, equipment.moduleIDs);
 
   return await getEquipmentByID(id);
 }

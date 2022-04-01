@@ -1,4 +1,3 @@
-import { EquipmentInput } from "../models/equipment/equipmentInput";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository";
 import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
@@ -7,6 +6,7 @@ import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
 import { EquipmentRow } from "../db/tables";
+import { EquipmentInput } from "../schemas/equipmentSchema";
 
 const reservationRepo = new ReservationRepository();
 

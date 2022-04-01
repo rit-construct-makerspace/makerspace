@@ -31,7 +31,7 @@ const UPDATE_EQUIPMENT = gql`
   ) {
     updateEquipment(
       id: $id
-      equipment: { name: $name, roomID: $roomID, trainingModules: $moduleIDs }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs }
     ) {
       id
     }
