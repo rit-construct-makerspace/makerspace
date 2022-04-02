@@ -39,6 +39,11 @@ export default function AppRoutes() {
           element={<EquipmentPage isAdmin={false} />}
         />
 
+        <Route
+          path="/maker/equipment/:id"
+          element={<EquipmentPage isAdmin={false} />}
+        />
+
         <Route path="/maker/training" element={<TrainingPage />} />
 
         <Route path="/maker/materials" element={<InventoryPreviewPage />} />

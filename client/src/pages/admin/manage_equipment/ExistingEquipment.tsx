@@ -6,7 +6,7 @@ import GET_EQUIPMENTS from "../../../queries/getEquipments";
 import EquipmentEditor from "./EquipmentEditor";
 import RequestWrapper from "../../../common/RequestWrapper";
 
-const GET_EQUIPMENT = gql`
+export const GET_EQUIPMENT = gql`
   query GetEquipment($id: ID!) {
     equipment(id: $id) {
       name

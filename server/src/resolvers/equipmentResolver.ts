@@ -27,14 +27,6 @@ const EquipmentResolvers = {
     reservation: async (_: any, args: { Id: number }, context: any) => {
       return await reservationRepo.getReservationById(args.Id);
     },
-
-    trainingModulesByEquipment: async (
-      _: any,
-      args: { Id: number },
-      context: any
-    ) => {
-      return await EquipmentRepo.getModulesByEquipment(args.Id);
-    },
   },
 
   Equipment: {

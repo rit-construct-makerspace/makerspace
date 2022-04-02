@@ -25,7 +25,6 @@ export const EquipmentTypeDefs = gql`
   extend type Query {
     equipment(id: ID!): Equipment
     equipments: [Equipment]
-    trainingModulesByEquipment: [TrainingModule]
   }
 
   extend type Mutation {
