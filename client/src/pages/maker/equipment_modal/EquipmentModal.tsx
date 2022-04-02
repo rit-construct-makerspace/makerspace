@@ -6,24 +6,13 @@ import { GET_EQUIPMENT } from "../../admin/manage_equipment/ExistingEquipment";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { Avatar, Button, Divider, Stack, Typography } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import TrainingModuleRow from "../../../common/TrainingModuleRow";
 import {
-  PassedModule,
-  useCurrentUser,
-} from "../../../common/CurrentUserProvider";
-import RequiredModule from "./RequiredModule";
-import { differenceInYears, parseISO } from "date-fns";
+  ModuleStatus,
+  moduleStatusMapper,
+} from "../../../common/TrainingModuleUtils";
 
-export interface ModuleStatus {
-  moduleID: string;
-  moduleName: string;
-  status: "Passed" | "Expired" | "Not taken";
-  submissionDate: string;
-}
-
-interface TrainingModule {
-  id: string;
-  name: string;
-}
 interface EquipmentModalProps {
   equipmentID: string;
 }
@@ -34,28 +23,6 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
 
   const result = useQuery(GET_EQUIPMENT, { variables: { id: equipmentID } });
 
-  const moduleStatusMapper = (module: TrainingModule) => {
-    const passedModule = passedModules.find((pm) => pm.moduleID === module.id);
-
-    if (!passedModule)
-      return {
-        moduleID: module.id,
-        moduleName: module.name,
-        status: "Not taken",
-        submissionDate: "",
-      };
-
-    const submissionDate = parseISO(passedModule.submissionDate);
-    const expired = differenceInYears(submissionDate, new Date()) > 0;
-
-    return {
-      moduleID: module.id,
-      moduleName: module.name,
-      status: expired ? "Expired" : "Passed",
-      submissionDate: passedModule.submissionDate,
-    };
-  };
-
   return (
     <PrettyModal
       open={!!equipmentID}
@@ -64,8 +31,9 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
       <RequestWrapper2
         result={result}
         render={({ equipment }) => {
-          const moduleStatuses =
-            equipment.trainingModules.map(moduleStatusMapper);
+          const moduleStatuses = equipment.trainingModules.map(
+            moduleStatusMapper(passedModules)
+          );
 
           const reservationReady = moduleStatuses.every(
             (ms: ModuleStatus) => ms.status === "Passed"
@@ -90,7 +58,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
 
               <Stack divider={<Divider flexItem />} mb={6}>
                 {moduleStatuses.map((ms: ModuleStatus) => (
-                  <RequiredModule key={ms.moduleID} moduleStatus={ms} />
+                  <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
                 ))}
               </Stack>
 

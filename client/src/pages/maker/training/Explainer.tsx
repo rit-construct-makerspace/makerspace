@@ -8,7 +8,7 @@ import CarpenterIcon from "@mui/icons-material/Carpenter";
 import styled from "styled-components";
 
 const StyledExplainer = styled.div`
-  line-height: 1.2em;
+  line-height: 1.3em;
   text-align: center;
   width: max-content;
 
@@ -64,8 +64,6 @@ export default function Explainer() {
           <Stack alignItems="center">
             <EventIcon className="explainer-icon" />
             Create a reservation
-            <br />
-            with an expert
           </Stack>
           <Stack alignItems="center">
             <CarpenterIcon className="explainer-icon" />

@@ -1,17 +1,19 @@
 import React from "react";
 import { CardActionArea, Stack, Typography } from "@mui/material";
-import { ModuleStatus } from "./EquipmentModal";
 import WarningIcon from "@mui/icons-material/Warning";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import { format, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { ModuleStatus } from "./TrainingModuleUtils";
 
 interface RequiredModuleProps {
   moduleStatus: ModuleStatus;
 }
 
-export default function RequiredModule({ moduleStatus }: RequiredModuleProps) {
+export default function TrainingModuleRow({
+  moduleStatus,
+}: RequiredModuleProps) {
   const navigate = useNavigate();
 
   return (
