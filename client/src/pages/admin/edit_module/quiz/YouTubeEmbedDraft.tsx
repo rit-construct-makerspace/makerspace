@@ -7,7 +7,6 @@ import { QuizItem } from "../../../../types/Quiz";
 const StyledIFrame = styled.iframe`
   border-radius: 4px;
   border: none;
-
   height: 300px;
 `;
 

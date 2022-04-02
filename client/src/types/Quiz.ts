@@ -18,3 +18,9 @@ export type QuizItem = {
   text: string;
   options?: Option[];
 };
+
+export interface Module {
+  id: number;
+  name: string;
+  quiz: QuizItem[];
+}
