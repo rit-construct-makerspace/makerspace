@@ -6,20 +6,9 @@ export interface TrainingModule {
   quiz: object;
 }
 
-export interface ModuleItemAnswerInput {
-  moduleItemID: string;
-  selectedOptionIDs: string[];
-}
-
-export interface ModuleSubmissionInput {
-  moduleID: number;
-  userID: number;
-  answers: ModuleItemAnswerInput[];
-}
-
-export interface ModuleItemAnswer {
-  moduleItemID: string;
-  correctOptionIDs: string[];
+export interface AnswerInput {
+  itemID: string;
+  optionIDs: string[];
 }
 
 export const TrainingTypeDefs = gql`
@@ -31,15 +20,9 @@ export const TrainingTypeDefs = gql`
     quiz: JSON
   }
 
-  input ModuleItemAnswerInput {
-    moduleItemID: ID!
-    selectedOptionIDs: [ID]!
-  }
-
-  input ModuleSubmissionInput {
-    moduleID: ID!
-    userID: ID!
-    answers: [ModuleItemAnswerInput]
+  input AnswerInput {
+    itemID: ID!
+    optionIDs: [ID]!
   }
 
   extend type Query {
@@ -53,8 +36,9 @@ export const TrainingTypeDefs = gql`
     deleteModule(id: ID!): TrainingModule
 
     """
-    Submit a trainingModule for assessment, the attempt will be stored for the user and the grade will be returned as a Float out of 100
+    Submit a trainingModule for assessment, the attempt will be stored
+    for the user and the grade will be returned as a Float out of 100
     """
-    submitModule(submission: ModuleSubmissionInput): Float
+    submitModule(moduleID: ID!, answerSheet: [AnswerInput]): Float
   }
 `;

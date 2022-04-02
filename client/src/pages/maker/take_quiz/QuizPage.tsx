@@ -16,7 +16,7 @@ export default function QuizPage() {
       result={result}
       render={({ module }: { module: Module }) => (
         <Page title={module.name} maxWidth="800px">
-          <QuizTaker quiz={module.quiz} />
+          <QuizTaker module={module} />
         </Page>
       )}
     />

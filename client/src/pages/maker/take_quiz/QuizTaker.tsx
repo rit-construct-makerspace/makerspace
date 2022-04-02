@@ -1,9 +1,11 @@
 import React from "react";
-import { QuizItem, QuizItemType } from "../../../types/Quiz";
+import { Module, QuizItem, QuizItemType } from "../../../types/Quiz";
 import { useImmer } from "use-immer";
 import { Button, Stack, Typography } from "@mui/material";
 import Question from "./Question";
 import styled, { css } from "styled-components";
+import { gql, useMutation } from "@apollo/client";
+import { LoadingButton } from "@mui/lab";
 
 const elevationTwoShadow = css`
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -26,33 +28,43 @@ const StyledIFrame = styled.iframe`
   ${elevationTwoShadow}
 `;
 
-export type AnswerSheet = { id: string; optionIDs: string[] }[];
+export type AnswerSheet = { itemID: string; optionIDs: string[] }[];
+
+const SUBMIT_MODULE = gql`
+  mutation SubmitModule($moduleID: ID!, $answerSheet: [AnswerInput]) {
+    submitModule(moduleID: $moduleID, answerSheet: $answerSheet)
+  }
+`;
 
 interface QuizTakerProps {
-  quiz: QuizItem[];
+  module: Module;
 }
 
-export default function QuizTaker({ quiz }: QuizTakerProps) {
-  const initialAnswerSheet = quiz
+export default function QuizTaker({ module }: QuizTakerProps) {
+  const initialAnswerSheet = module.quiz
     .filter(
       (item) =>
         item.type === QuizItemType.MultipleChoice ||
         item.type === QuizItemType.Checkboxes
     )
-    .map((item) => ({ id: item.id, optionIDs: [] }));
+    .map((item) => ({ itemID: item.id, optionIDs: [] }));
 
   const [answerSheet, setAnswerSheet] =
     useImmer<AnswerSheet>(initialAnswerSheet);
 
+  const [submitModule, result] = useMutation(SUBMIT_MODULE, {
+    variables: { moduleID: module.id, answerSheet },
+  });
+
   const selectMultipleChoiceOption = (itemID: string, optionID: string) =>
     setAnswerSheet((draft) => {
-      const index = draft.findIndex((i) => i.id === itemID);
+      const index = draft.findIndex((i) => i.itemID === itemID);
       draft[index].optionIDs = [optionID];
     });
 
   const toggleCheckboxOption = (itemID: string, optionID: string) =>
     setAnswerSheet((draft) => {
-      const itemIndex = draft.findIndex((i) => i.id === itemID);
+      const itemIndex = draft.findIndex((i) => i.itemID === itemID);
 
       const optionIndex = draft[itemIndex].optionIDs.findIndex(
         (o) => o === optionID
@@ -65,9 +77,9 @@ export default function QuizTaker({ quiz }: QuizTakerProps) {
 
   return (
     <Stack spacing={4}>
-      {quiz.map((quizItem) => {
+      {module.quiz.map((quizItem) => {
         const selectedOptionIDs =
-          answerSheet.find((qi) => qi.id === quizItem.id)?.optionIDs ?? [];
+          answerSheet.find((qi) => qi.itemID === quizItem.id)?.optionIDs ?? [];
 
         switch (quizItem.type) {
           case QuizItemType.Text:
@@ -108,9 +120,14 @@ export default function QuizTaker({ quiz }: QuizTakerProps) {
         }
       })}
 
-      <Button variant="contained" sx={{ alignSelf: "flex-end" }}>
+      <LoadingButton
+        loading={result.loading}
+        variant="contained"
+        sx={{ alignSelf: "flex-end" }}
+        onClick={() => submitModule()}
+      >
         Submit
-      </Button>
+      </LoadingButton>
     </Stack>
   );
 }

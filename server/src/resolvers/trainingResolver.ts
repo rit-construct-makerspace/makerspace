@@ -1,5 +1,5 @@
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import { ModuleSubmissionInput } from "../schemas/trainingSchema";
+import { AnswerInput } from "../schemas/trainingSchema";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
@@ -67,13 +67,15 @@ const TrainingResolvers = {
       }),
 
     submitModule: async (
-      parent: any,
-      args: { submission: ModuleSubmissionInput },
+      _parent: any,
+      args: { moduleID: number; answerSheet: AnswerInput[] },
       { ifAllowed }: ApolloContext
     ) => {
       return ifAllowed(
         [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
         async (user) => {
+          // TODO: grade answer sheet
+          console.log(args.answerSheet);
           return null;
         }
       );

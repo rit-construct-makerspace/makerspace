@@ -14,6 +14,7 @@ import GET_TRAINING_MODULES from "../../../queries/getModules";
 export const GET_MODULE = gql`
   query GetModule($id: ID!) {
     module(id: $id) {
+      id
       name
       quiz
     }
