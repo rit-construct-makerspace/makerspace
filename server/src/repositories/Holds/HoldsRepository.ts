@@ -1,8 +1,8 @@
 import { knex } from "../../db";
-import { Hold } from "../../schemas/holdsSchema";
 import { EntityNotFound } from "../../EntityNotFound";
+import { HoldRow } from "../../db/tables";
 
-export async function getHold(id: number): Promise<Hold> {
+export async function getHold(id: number): Promise<HoldRow> {
   const hold = await knex("Holds").first().where({ id });
 
   if (!hold) throw new EntityNotFound(`Hold #${id} not found`);
@@ -14,7 +14,7 @@ export async function createHold(
   creatorID: number,
   userID: number,
   description: string
-): Promise<Hold> {
+): Promise<HoldRow> {
   const [holdID] = await knex("Holds").insert(
     {
       creatorID,
@@ -27,7 +27,10 @@ export async function createHold(
   return getHold(holdID);
 }
 
-export async function removeHold(holdID: number, removerID: number) {
+export async function removeHold(
+  holdID: number,
+  removerID: number
+): Promise<HoldRow> {
   await knex("Holds")
     .update({
       removerID,
@@ -38,6 +41,6 @@ export async function removeHold(holdID: number, removerID: number) {
   return getHold(holdID);
 }
 
-export async function getHoldsByUser(userID: number) {
+export async function getHoldsByUser(userID: number): Promise<HoldRow[]> {
   return knex("Holds").select().where({ userID }).orderBy("createDate", "DESC");
 }

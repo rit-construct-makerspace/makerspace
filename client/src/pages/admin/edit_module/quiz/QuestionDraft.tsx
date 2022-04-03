@@ -7,57 +7,85 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
-import {
-  ModuleItem,
-  ModuleItemType,
-  QuestionOption,
-} from "../../../../types/Module";
-import QuestionOptionDraft from "./QuestionOptionDraft";
-import ModuleItemDraft from "./ModuleItemDraft";
-import useTimedState from "../../../../hooks/useTimedState";
+import OptionDraft from "./OptionDraft";
+import QuizItemDraft from "./QuizItemDraft";
+import { v4 as uuidv4 } from "uuid";
+import produce, { Draft } from "immer";
+import { Option, QuizItem, QuizItemType } from "../../../../types/Quiz";
+
+function updateOptions(
+  draft: Draft<Required<QuizItem>>,
+  clickedOptionId: string
+) {
+  if (draft.type === QuizItemType.Checkboxes) {
+    const clickedOptionIndex = draft.options.findIndex(
+      (option) => option.id === clickedOptionId
+    );
+
+    draft.options[clickedOptionIndex].correct =
+      !draft.options[clickedOptionIndex].correct;
+  }
+
+  if (draft.type === QuizItemType.MultipleChoice) {
+    draft.options.forEach((o) => (o.correct = o.id === clickedOptionId));
+  }
+}
+
+// When switching from a checkboxes to multiple choice, we need to make sure
+// we aren't left with multiple correct options (there should only be one)
+function adjustOptionsToQuestionType(draft: Draft<Required<QuizItem>>) {
+  if (draft.type === QuizItemType.MultipleChoice) {
+    const firstCorrectOptionIndex = draft.options.findIndex((o) => o.correct);
+
+    draft.options.forEach(
+      (option, index) => (option.correct = index === firstCorrectOptionIndex)
+    );
+  }
+}
 
 interface QuestionDraftProps {
   index: number;
-  moduleItem: ModuleItem;
-  updateModuleItem: (text: string, type: ModuleItemType) => void;
-  deleteModuleItem: () => void;
-  addOption: () => void;
-  updateOption: (optionId: number, text: string, correct: boolean) => void;
-  deleteOption: (optionId: number) => void;
+  item: QuizItem;
+  updateQuestion: (updatedQuestion: QuizItem) => void;
+  removeQuestion: () => void;
 }
 
 export default function QuestionDraft({
   index,
-  moduleItem,
-  updateModuleItem,
-  deleteModuleItem,
-  addOption,
-  updateOption,
-  deleteOption,
+  item,
+  updateQuestion,
+  removeQuestion,
 }: QuestionDraftProps) {
-  const [questionText, setQuestionText] = useTimedState(
-    moduleItem.text,
-    (latestText) => updateModuleItem(latestText, moduleItem.type)
-  );
+  if (!item.options) {
+    console.error("Tried to render question with undefined options");
+    return null;
+  }
+
+  const question = item as Required<QuizItem>;
 
   return (
-    <ModuleItemDraft
+    <QuizItemDraft
       index={index}
-      itemId={moduleItem.id}
-      onRemove={deleteModuleItem}
+      itemId={question.id}
+      onRemove={removeQuestion}
       extraActions={
         <Select
-          value={moduleItem.type}
+          value={question.type}
           size="small"
           sx={{ ml: "auto", mr: 1, width: 160 }}
-          onChange={(e) =>
-            updateModuleItem(questionText, e.target.value as ModuleItemType)
-          }
+          onChange={(e) => {
+            const updatedQuestion = produce(question, (draft) => {
+              draft.type = e.target.value as QuizItemType;
+              adjustOptionsToQuestionType(draft);
+            });
+
+            updateQuestion(updatedQuestion);
+          }}
         >
-          <MenuItem value={ModuleItemType.MultipleChoice}>
+          <MenuItem value={QuizItemType.MultipleChoice}>
             Multiple choice
           </MenuItem>
-          <MenuItem value={ModuleItemType.Checkboxes}>Checkboxes</MenuItem>
+          <MenuItem value={QuizItemType.Checkboxes}>Checkboxes</MenuItem>
         </Select>
       }
     >
@@ -67,31 +95,64 @@ export default function QuestionDraft({
           label="Question title"
           fullWidth
           variant="outlined"
-          value={questionText}
-          onChange={(e) => setQuestionText(e.target.value)}
+          value={question.text}
+          onChange={(e) =>
+            updateQuestion({ ...question, text: e.target.value })
+          }
         />
       </CardContent>
 
       <Stack spacing={1} px={1}>
-        {moduleItem.options.map((option: QuestionOption) => (
-          <QuestionOptionDraft
+        {question.options.map((option) => (
+          <OptionDraft
             key={option.id}
-            moduleItemType={moduleItem.type}
+            questionType={question.type}
             option={option}
-            onRemove={() => deleteOption(option.id)}
-            onTextChange={(updatedText) =>
-              updateOption(option.id, updatedText, option.correct)
-            }
-            onToggleCorrect={() =>
-              updateOption(option.id, option.text, !option.correct)
-            }
+            onRemove={() => {
+              const updatedQuestion = produce(question, (draft) => {
+                const i = draft.options.findIndex((o) => o.id === option.id);
+                draft.options.splice(i, 1);
+              });
+
+              updateQuestion(updatedQuestion);
+            }}
+            onTextChange={(e) => {
+              const updatedQuestion = produce(question, (draft) => {
+                const i = draft.options.findIndex((o) => o.id === option.id);
+                draft.options[i].text = e.target.value;
+              });
+
+              updateQuestion(updatedQuestion);
+            }}
+            onToggleCorrect={() => {
+              const updatedQuestion = produce(question, (draft) => {
+                updateOptions(draft, option.id);
+              });
+
+              updateQuestion(updatedQuestion);
+            }}
           />
         ))}
 
-        <Button sx={{ mx: 1 }} onClick={addOption}>
+        <Button
+          sx={{ mx: 1 }}
+          onClick={() => {
+            const newOption: Option = {
+              id: uuidv4(),
+              text: "",
+              correct: false,
+            };
+
+            const updatedQuestion = produce(question, (draft) => {
+              draft.options.push(newOption);
+            });
+
+            updateQuestion(updatedQuestion);
+          }}
+        >
           + Add option
         </Button>
       </Stack>
-    </ModuleItemDraft>
+    </QuizItemDraft>
   );
 }

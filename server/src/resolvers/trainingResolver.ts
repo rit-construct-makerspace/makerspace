@@ -1,147 +1,82 @@
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import * as OptionRepo from "../repositories/Training/OptionRepository";
-import * as ModuleItemRepo from "../repositories/Training/ModuleItemRepository";
-import { ModuleSubmissionInput } from "../schemas/trainingSchema";
-import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
+import { AnswerInput } from "../schemas/trainingSchema";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
-import { MODULE_PASSING_THRESHOLD } from "../constants";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
+import { getUsersFullName } from "./usersResolver";
 
 const TrainingResolvers = {
   Query: {
-    modules: async (_: any, args: any, context: any) => {
-      return await ModuleRepo.getModules();
-    },
+    modules: async (_parent: any, args: any, context: any) =>
+      await ModuleRepo.getModules(),
 
-    module: (_: any, args: { id: string }, context: any) =>
-      ModuleRepo.getModuleById(args.id),
-  },
-
-  TrainingModule: {
-    items: (parent: any) => {
-      return ModuleItemRepo.getModuleItemsByModule(parent.id);
-    },
-  },
-
-  ModuleItem: {
-    options: (parent: any) => {
-      return OptionRepo.getOptionsByModuleItem(parent.id);
-    },
+    module: async (_parent: any, args: { id: number }, context: any) =>
+      await ModuleRepo.getModuleByID(args.id),
   },
 
   Mutation: {
-    /*
-    Modules
-     */
+    createModule: async (
+      _parent: any,
+      args: { name: string },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.ADMIN], async (user) => {
+        const module = await ModuleRepo.addModule(args.name);
 
-    createModule: async (_: any, args: any) => {
-      const mod = await ModuleRepo.addModule(args.name);
-      return mod;
-    },
+        await createLog(
+          "{user} created the {module} module.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: module.id, label: module.name }
+        );
 
-    updateModule: async (_: any, args: any) => {
-      const mod = await ModuleRepo.updateName(args.id, args.name);
-      return mod;
-    },
-
-    deleteModule: async (_: any, args: { id: number }, context: any) => {
-      await ModuleRepo.archiveModule(args.id);
-    },
-
-    addModuleItem: async (_: any, args: any) =>
-      await ModuleItemRepo.addModuleItem(args.moduleID, {
-        text: args.moduleItem.text,
-        type: args.moduleItem.type,
+        return module;
       }),
 
-    updateModuleItem: async (_: any, args: any) => {
-      await ModuleItemRepo.updateModuleItem(args.id, args.moduleItem);
-      return await ModuleItemRepo.getModuleItem(args.id);
-    },
+    updateModule: async (
+      _parent: any,
+      args: { id: number; name: string; quiz: object },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.ADMIN], async (user) => {
+        const module = await ModuleRepo.updateModule(
+          args.id,
+          args.name,
+          args.quiz
+        );
 
-    deleteModuleItem: async (_: any, args: { id: number }) =>
-      await ModuleItemRepo.archiveModuleItem(args.id),
+        await createLog(
+          "{user} updated the {module} module.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: module.id, label: module.name }
+        );
+      }),
 
-    /*
-    ModuleItem Options
-     */
+    deleteModule: async (
+      _parent: any,
+      args: { id: number },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.ADMIN], async (user) => {
+        const module = await ModuleRepo.archiveModule(args.id);
 
-    addOption: async (_: any, args: any) => {
-      return OptionRepo.addOptionToModuleItem(args.moduleItemID, args.option);
-    },
-
-    updateOption: async (_: any, args: any) => {
-      let opt = {
-        id: args.id,
-        text: args.option.text,
-        correct: args.option.correct,
-      };
-      await OptionRepo.updateOption(opt);
-      return opt;
-    },
-
-    deleteOption: async (_: any, args: { id: number }) => {
-      await OptionRepo.archiveOption(args.id);
-    },
+        await createLog(
+          "{user} deleted the {module} module.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: module.id, label: module.name }
+        );
+      }),
 
     submitModule: async (
-      parent: any,
-      args: { submission: ModuleSubmissionInput },
+      _parent: any,
+      args: { moduleID: number; answerSheet: AnswerInput[] },
       { ifAllowed }: ApolloContext
     ) => {
       return ifAllowed(
         [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
         async (user) => {
-          const submission = args.submission;
-          const answerSheet =
-            await OptionRepo.getAnswerSheet(
-              submission.moduleID
-            );
-          if (!answerSheet || answerSheet.length === 0) {
-            throw Error(
-              "Training module for provided ID has no correct answers"
-            );
-          }
-          let correct = 0,
-            incorrect = 0;
-          for (let moduleItemAnswer of answerSheet) {
-            const submittedAnswers = submission.answers.find(
-              (x) => x.moduleItemID == moduleItemAnswer.moduleItemID
-            );
-
-            if (!submittedAnswers) {
-              incorrect++;
-              continue;
-            }
-
-            const areEqual =
-              moduleItemAnswer.correctOptionIDs.length ===
-                submittedAnswers.selectedOptionIDs.length &&
-              moduleItemAnswer.correctOptionIDs
-                .map(String)
-                .every(function (element) {
-                  return (
-                    submittedAnswers &&
-                    submittedAnswers.selectedOptionIDs.includes(element)
-                  );
-                });
-
-            if (areEqual) {
-              correct++;
-            } else {
-              incorrect++;
-            }
-          }
-
-          const finalScore = (correct / (correct + incorrect)) * 100;
-
-          await addTrainingModuleAttemptToUser(
-            user?.id,
-            submission.moduleID,
-            finalScore >= MODULE_PASSING_THRESHOLD
-          );
-
-          return finalScore;
+          // TODO: grade answer sheet
+          console.log(args.answerSheet);
+          return null;
         }
       );
     },

@@ -17,6 +17,7 @@ import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
 import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
 import SignupPage from "./pages/maker/signup/SignupPage";
+import QuizPage from "./pages/maker/take_quiz/QuizPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -39,7 +40,14 @@ export default function AppRoutes() {
           element={<EquipmentPage isAdmin={false} />}
         />
 
+        <Route
+          path="/maker/equipment/:id"
+          element={<EquipmentPage isAdmin={false} />}
+        />
+
         <Route path="/maker/training" element={<TrainingPage />} />
+
+        <Route path="/maker/training/:id" element={<QuizPage />} />
 
         <Route path="/maker/materials" element={<InventoryPreviewPage />} />
 

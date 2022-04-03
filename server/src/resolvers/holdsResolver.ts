@@ -1,24 +1,32 @@
 import { ApolloContext } from "../context";
-import { Privilege, User } from "../schemas/usersSchema";
+import { Privilege } from "../schemas/usersSchema";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
 import * as UsersRepo from "../repositories/Users/UserRepository";
-import { Hold } from "../schemas/holdsSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
-import { EntityNotFound } from "../EntityNotFound";
+import { HoldRow } from "../db/tables";
 
 const HoldsResolvers = {
   User: {
-    holds: async (parent: User) => HoldsRepo.getHoldsByUser(parent.id),
+    holds: async (parent: { id: number }) =>
+      HoldsRepo.getHoldsByUser(parent.id),
   },
 
   Hold: {
-    creator: async (parent: Hold, _args: any, { ifAllowed }: ApolloContext) =>
+    creator: async (
+      parent: HoldRow,
+      _args: any,
+      { ifAllowed }: ApolloContext
+    ) =>
       ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
         return UsersRepo.getUserByID(parent.creatorID);
       }),
 
-    remover: async (parent: Hold, _args: any, { ifAllowed }: ApolloContext) =>
+    remover: async (
+      parent: HoldRow,
+      _args: any,
+      { ifAllowed }: ApolloContext
+    ) =>
       ifAllowed(
         [Privilege.LABBIE, Privilege.ADMIN],
         async () => parent.removerID && UsersRepo.getUserByID(parent.removerID)

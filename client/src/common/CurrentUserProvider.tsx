@@ -20,9 +20,18 @@ export const GET_CURRENT_USER = gql`
       holds {
         removeDate
       }
+      passedModules {
+        moduleID
+        submissionDate
+      }
     }
   }
 `;
+
+export interface PassedModule {
+  moduleID: string;
+  submissionDate: string;
+}
 
 export interface CurrentUser {
   id: string;
@@ -32,6 +41,7 @@ export interface CurrentUser {
   privilege: Privilege;
   setupComplete: boolean;
   hasHolds: boolean;
+  passedModules: PassedModule[];
 }
 
 const CurrentUserContext = createContext<CurrentUser | undefined>(undefined);

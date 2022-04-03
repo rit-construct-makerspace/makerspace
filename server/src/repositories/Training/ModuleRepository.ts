@@ -1,53 +1,54 @@
 import { knex } from "../../db";
-import { TrainingModule } from "../../schemas/trainingSchema";
-import * as TrainingModuleMap from "../../mappers/training/TrainingModuleMapper";
+import { TrainingModuleRow } from "../../db/tables";
+import { EntityNotFound } from "../../EntityNotFound";
+import { PassedModule } from "../../schemas/usersSchema";
 
-export async function getModuleById(
-  id: number | string
-): Promise<TrainingModule | null> {
-  const knexResult = await knex("TrainingModule")
-    .select("id", "name")
-    .where("id", id);
+export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
+  const trainingModule = await knex("TrainingModule").first().where({ id });
 
-  return TrainingModuleMap.singleTrainingModuleToDomain(knexResult);
+  if (!trainingModule)
+    throw new EntityNotFound(`Training module #${id} not found`);
+
+  return trainingModule;
 }
 
-export async function getModules(): Promise<TrainingModule[]> {
-  const knexResult = await knex("TrainingModule").select("id", "name");
-  return TrainingModuleMap.trainingModulesToDomain(knexResult);
+export async function getModules(): Promise<TrainingModuleRow[]> {
+  return knex("TrainingModule").select().where({ archived: false });
 }
 
-export async function archiveModule(id: number): Promise<TrainingModule | null> {
-  await knex("TrainingModule").where({ id: id}).update({archived: true})
-  return getModuleById(id);
+export async function archiveModule(id: number): Promise<TrainingModuleRow> {
+  await knex("TrainingModule").where({ id: id }).update({ archived: true });
+  return getModuleByID(id);
 }
 
-export async function addModule(name: string): Promise<TrainingModule | null> {
-  const insert = await knex("TrainingModule").insert({ name: name }, "id");
-  return getModuleById(insert[0]);
+export async function addModule(name: string): Promise<TrainingModuleRow> {
+  const [id] = await knex("TrainingModule").insert({ name: name }, "id");
+  return getModuleByID(id);
 }
 
-export async function updateName(
+export async function updateModule(
   id: number,
-  name: string
-): Promise<TrainingModule | null> {
-  await knex("TrainingModule").where({ id }).update({
-    name: name,
-  });
-  return getModuleById(id);
+  name: string,
+  quiz: object
+): Promise<TrainingModuleRow> {
+  await knex("TrainingModule")
+    .where({ id })
+    // @ts-ignore
+    .update({ name, quiz: JSON.stringify(quiz) });
+  return getModuleByID(id);
 }
 
-export async function getCompletedModulesByUser(
-  userID: string
-): Promise<TrainingModule[]> {
-  const knexResult = await knex("ModuleSubmissions")
-    .distinct("TrainingModule.id", "TrainingModule.name")
-    .join(
-      "TrainingModule",
-      "TrainingModule.id",
-      "=",
-      "ModuleSubmissions.moduleID"
+export async function getPassedModulesByUser(
+  userID: number
+): Promise<PassedModule[]> {
+  return knex("ModuleSubmissions")
+    .join("TrainingModule", "TrainingModule.id", "ModuleSubmissions.moduleID")
+    .select(
+      "ModuleSubmissions.id",
+      "ModuleSubmissions.moduleID",
+      "TrainingModule.name",
+      "ModuleSubmissions.submissionDate"
     )
-    .where("ModuleSubmissions.makerID", userID).andWhere("passed", true);
-  return TrainingModuleMap.trainingModulesToDomain(knexResult);
+    .where("ModuleSubmissions.makerID", userID)
+    .andWhere("ModuleSubmissions.passed", true);
 }

@@ -1,12 +1,11 @@
 import { Room } from "../../models/rooms/room";
 import { knex } from "../../db";
 import {
-  singleRoomToDomain,
   roomsToDomain,
+  singleRoomToDomain,
 } from "../../mappers/rooms/roomMapper";
-import { Swipe } from "../../schemas/roomsSchema";
 import assert from "assert";
-import {getEquipmentById} from "../Equipment/EquipmentRepository";
+import { RoomSwipeRow } from "../../db/tables";
 
 export async function getRoomByID(roomID: number): Promise<Room | null> {
   const knexResult = await knex
@@ -37,7 +36,7 @@ export async function addRoom(room: Room): Promise<Room> {
 }
 
 export async function archiveRoom(roomID: number): Promise<Room | null> {
-  await knex("Rooms").where({ id: roomID}).update({archived: true})
+  await knex("Rooms").where({ id: roomID }).update({ archived: true });
   return getRoomByID(roomID);
 }
 
@@ -56,7 +55,7 @@ export async function swipeIntoRoom(roomID: number, userID: number) {
   await knex("RoomSwipes").insert({ roomID, userID });
 }
 
-export async function getRecentSwipes(roomID: number): Promise<Swipe[]> {
+export async function getRecentSwipes(roomID: number): Promise<RoomSwipeRow[]> {
   return knex("RoomSwipes")
     .select()
     .where({ roomID })

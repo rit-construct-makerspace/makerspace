@@ -3,7 +3,7 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import GET_TRAINING_MODULES from "../../queries/getModules";
 import { CREATE_TRAINING_MODULE } from "../../pages/admin/training_modules/TrainingModulesPage";
-import GET_MODULE from "../../queries/getModule";
+import { GET_MODULE } from "../../pages/admin/edit_module/EditModulePage";
 
 test("can navigate to page", async () => {
   addQueryMock(GET_TRAINING_MODULES, { modules: [] });
@@ -26,7 +26,7 @@ test("show and search, and click module", async () => {
 
   addQueryMock(
     GET_MODULE,
-    { module: { name: "another one", items: [] } },
+    { module: { name: "another one", quiz: [] } },
     { id: "2" }
   );
 
@@ -53,7 +53,7 @@ test("clicking new module button", async () => {
 
   addQueryMock(
     GET_MODULE,
-    { module: { name: "test module", items: [] } },
+    { module: { name: "test module", quiz: [] } },
     { id: "1" }
   );
 
