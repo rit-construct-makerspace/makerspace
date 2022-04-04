@@ -4,7 +4,6 @@ import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
-import { equal } from "assert";
 import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
 
