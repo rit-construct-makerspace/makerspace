@@ -4,6 +4,9 @@ import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
+import { equal } from "assert";
+import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
+import { MODULE_PASSING_THRESHOLD } from "../constants";
 
 const TrainingResolvers = {
   Query: {
@@ -69,14 +72,66 @@ const TrainingResolvers = {
     submitModule: async (
       _parent: any,
       args: { moduleID: number; answerSheet: AnswerInput[] },
-      { ifAllowed }: ApolloContext
+      { ifAllowed, user }: ApolloContext
     ) => {
       return ifAllowed(
         [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
         async (user) => {
-          // TODO: grade answer sheet
-          console.log(args.answerSheet);
-          return null;
+          const module: any = await (
+            await ModuleRepo.getModuleByID(args.moduleID)
+          ).quiz;
+
+          if (module.length === 0)
+            throw Error("Provided module has no questions");
+
+          let correct = 0,
+            incorrect = 0;
+
+          for (let question of module) {
+            if (
+              question.type !== "CHECKBOXES" &&
+              question.type !== "MULTIPLE_CHOICE"
+            )
+              continue;
+
+            let correctOptions = question.options.filter(function (
+              option: any
+            ) {
+              return option.correct;
+            });
+
+            let correctOptionIds = correctOptions.map(function (option: any) {
+              return option.id;
+            });
+
+            let submittedItem = args.answerSheet.find((item: any) => {
+              return item.itemID === question.id;
+            });
+
+            if (submittedItem?.optionIDs === undefined) {
+              incorrect++;
+              continue;
+            }
+
+            const submittedOptionsSet = new Set(submittedItem.optionIDs);
+            const correctOptionsSet = new Set(correctOptionIds);
+
+            const areSetsEqual = (a: any, b: any) =>
+              a.size === b.size && [...a].every((value) => b.has(value));
+
+            if (areSetsEqual(submittedOptionsSet, correctOptionsSet)) correct++;
+            else incorrect++;
+          }
+
+          const grade = (correct / (incorrect + correct)) * 100;
+
+          addTrainingModuleAttemptToUser(
+            user.id,
+            args.moduleID,
+            grade >= MODULE_PASSING_THRESHOLD
+          );
+
+          return grade;
         }
       );
     },
