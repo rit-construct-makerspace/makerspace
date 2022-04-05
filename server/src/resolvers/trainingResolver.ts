@@ -9,11 +9,46 @@ import { MODULE_PASSING_THRESHOLD } from "../constants";
 
 const TrainingResolvers = {
   Query: {
-    modules: async (_parent: any, args: any, context: any) =>
-      await ModuleRepo.getModules(),
+    modules: async (
+      _parent: any,
+      args: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        let modules = await ModuleRepo.getModules();
 
-    module: async (_parent: any, args: { id: number }, context: any) =>
-      await ModuleRepo.getModuleByID(args.id),
+        if (user.privilege === "MAKER")
+          for (let module of modules)
+            for (let item of module.quiz) {
+              if (item.options) {
+                for (let option of item.options) {
+                  delete option.correct;
+                }
+              }
+            }
+
+        return modules;
+      }),
+
+    module: async (
+      _parent: any,
+      args: { id: number },
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        let module = await ModuleRepo.getModuleByID(args.id);
+
+        if (user.privilege === "MAKER")
+          for (let item of module.quiz) {
+            if (item.options) {
+              for (let option of item.options) {
+                delete option.correct;
+              }
+            }
+          }
+
+        return module;
+      }),
   },
 
   Mutation: {
