@@ -53,25 +53,22 @@ export interface ModulesForEquipmentRow {
 
 export interface ReservationEventRow {
   id: number;
-  reservationId: number; // TODO: rename to reservationID
+  reservationID: number;
   eventType: string;
-  user: number; // TODO: rename to userID
+  userID: number;
   dateTime: Date;
   payload: string;
 }
 
 export interface ReservationRow {
   id: number;
-  creator: number; // TODO: rename to creatorID
-  maker: number; // TODO: rename to makerID
-  labbie: number; // TODO: remove
+  makerID: number;
   createDate: Date;
   startTime: Date;
   endTime: Date;
-  equipment: number; // TODO: rename to equipmentID;
+  equipmentID: number;
   status: string;
   lastUpdated: Date;
-  archived: boolean;
 }
 
 export interface RoomSwipeRow {
