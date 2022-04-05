@@ -34,7 +34,7 @@ export async function up(knex: Knex): Promise<void> {
           t.time("endTime");
           t.integer("equipmentID").references("id").inTable("Equipment");
           t.enu('status', ['PENDING', 'CONFIRMED', 'CANCELLED']).defaultTo("PENDING");
-          t.timestamp('lastUpdated').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
+          t.timestamp('lastUpdated').defaultTo(knex.fn.now());
           t.boolean('independent').defaultTo(false);
         });
       }
