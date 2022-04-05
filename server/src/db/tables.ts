@@ -90,8 +90,22 @@ export interface RoomRow {
 export interface TrainingModuleRow {
   id: number;
   name: string;
-  quiz: object;
+  quiz: TrainingModuleItem[];
   archived: boolean;
+}
+
+// not a table but the json structure for a column on the table above
+export interface TrainingModuleItem {
+  id: string;
+  type: string;
+  text: string;
+  options?: ModuleItemOption[];
+}
+
+export interface ModuleItemOption {
+  id: string;
+  text: string;
+  correct: boolean;
 }
 
 export interface UserRow {

@@ -46,7 +46,7 @@ export async function getPassedModulesByUser(
     .select(
       "ModuleSubmissions.id",
       "ModuleSubmissions.moduleID",
-      "TrainingModule.name",
+      "TrainingModule.name as moduleName",
       "ModuleSubmissions.submissionDate"
     )
     .where("ModuleSubmissions.makerID", userID)
