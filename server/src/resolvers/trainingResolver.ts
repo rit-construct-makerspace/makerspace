@@ -71,43 +71,42 @@ const TrainingResolvers = {
     submitModule: async (
       _parent: any,
       args: { moduleID: number; answerSheet: AnswerInput[] },
-      { ifAllowed, user }: ApolloContext
+      { ifAllowed }: ApolloContext
     ) => {
       return ifAllowed(
         [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
         async (user) => {
-          const module: any = await (
-            await ModuleRepo.getModuleByID(args.moduleID)
-          ).quiz;
+          const { quiz, name } = await ModuleRepo.getModuleByID(args.moduleID);
 
-          if (module.length === 0)
+          if (quiz.length === 0)
             throw Error("Provided module has no questions");
 
           let correct = 0,
             incorrect = 0;
 
-          for (let question of module) {
+          for (let question of quiz) {
             if (
               question.type !== "CHECKBOXES" &&
               question.type !== "MULTIPLE_CHOICE"
             )
               continue;
 
-            let correctOptions = question.options.filter(function (
-              option: any
-            ) {
-              return option.correct;
-            });
+            if (!question.options)
+              throw Error(
+                `Module Item ${question.id} of type ${question.type} has no options`
+              );
 
-            let correctOptionIds = correctOptions.map(function (option: any) {
-              return option.id;
-            });
+            const correctOptions = question.options.filter(
+              (option) => option.correct
+            );
 
-            let submittedItem = args.answerSheet.find((item: any) => {
-              return item.itemID === question.id;
-            });
+            const correctOptionIds = correctOptions.map((option) => option.id);
 
-            if (submittedItem?.optionIDs === undefined) {
+            const submittedItem = args.answerSheet.find(
+              (item) => item.itemID === question.id
+            );
+
+            if (!submittedItem?.optionIDs) {
               incorrect++;
               continue;
             }
@@ -128,6 +127,12 @@ const TrainingResolvers = {
             user.id,
             args.moduleID,
             grade >= MODULE_PASSING_THRESHOLD
+          );
+
+          await createLog(
+            `{user} submitted attempt of {module} with a grade of ${grade}.`,
+            { id: user.id, label: getUsersFullName(user) },
+            { id: args.moduleID, label: name }
           );
 
           return grade;
