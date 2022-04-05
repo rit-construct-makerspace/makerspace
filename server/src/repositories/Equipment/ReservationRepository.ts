@@ -1,7 +1,11 @@
 import { knex } from "../../db";
 import { Reservation } from "../../models/equipment/reservation";
 import { ReservationInput } from "../../models/equipment/reservationInput";
-import { reservationsToDomain, singleReservationToDomain } from "../../mappers/equipment/Reservation";
+import {
+  reservationsToDomain,
+  singleReservationToDomain,
+} from "../../mappers/equipment/Reservation";
+import { getEquipmentByID } from "./EquipmentRepository";
 
 export interface IReservationRepository {
   getReservationById(id: number | string): Promise<Reservation | null>;
@@ -17,15 +21,16 @@ export interface IReservationRepository {
 }
 
 export class ReservationRepository implements IReservationRepository {
+  private queryBuilder;
 
-    private queryBuilder
+  constructor(queryBuilder?: any) {
+    this.queryBuilder = queryBuilder || knex;
+  }
 
-    constructor(queryBuilder?: any) {
-        this.queryBuilder = queryBuilder || knex
-    }
-
-    public async getReservationById(id: string | number): Promise<Reservation | null> {
-      const knexResult = await this.queryBuilder
+  public async getReservationById(
+    id: string | number
+  ): Promise<Reservation | null> {
+    const knexResult = await this.queryBuilder
       .first(
         "id",
         "creator",
@@ -41,8 +46,8 @@ export class ReservationRepository implements IReservationRepository {
       .from("Reservations")
       .where("id", id);
 
-      return singleReservationToDomain(knexResult);
-    }
+    return singleReservationToDomain(knexResult);
+  }
 
     public async getReservations(): Promise<Reservation[]> {
       const knexResult = await this.queryBuilder("Reservations").select(

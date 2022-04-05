@@ -1,42 +1,71 @@
-import React from "react";
+import React, { useState } from "react";
 import Page from "../../Page";
 import Explainer from "./Explainer";
-import PageSectionHeader from "../../../common/PageSectionHeader";
-import MakerTrainingModules from "../../../test_data/MakerTrainingModules";
-import AvailableModuleThumbnail from "./AvailableModuleThumbnail";
-import CompletedModuleThumbnail from "./CompletedModuleThumbnail";
-import { Stack } from "@mui/material";
+import { gql, useQuery } from "@apollo/client";
+import RequestWrapper2 from "../../../common/RequestWrapper2";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import {
+  ModuleStatus,
+  moduleStatusMapper,
+} from "../../../common/TrainingModuleUtils";
+import TrainingModuleRow from "../../../common/TrainingModuleRow";
+import SearchBar, { searchFilter } from "../../../common/SearchBar";
+
+export const GET_ALL_TRAINING_MODULES = gql`
+  query GetAllTrainingModules {
+    modules {
+      id
+      name
+    }
+  }
+`;
 
 export default function TrainingPage() {
+  const { passedModules } = useCurrentUser();
+  const result = useQuery(GET_ALL_TRAINING_MODULES);
+  const [searchText, setSearchText] = useState("");
+
   return (
-    <Page title="Training">
-      <Explainer />
+    <RequestWrapper2
+      result={result}
+      render={({ modules }) => {
+        const moduleStatuses = modules.map(moduleStatusMapper(passedModules));
 
-      <PageSectionHeader>Available training modules</PageSectionHeader>
+        const matching = searchFilter<ModuleStatus>(
+          searchText,
+          moduleStatuses,
+          (ms: ModuleStatus) => ms.moduleName
+        );
 
-      <Stack direction="row" flexWrap="wrap">
-        {MakerTrainingModules.available.map((m) => (
-          <AvailableModuleThumbnail
-            key={m.id}
-            title={m.title}
-            image={m.image}
-            estimatedDuration={m.estimatedDuration}
-          />
-        ))}
-      </Stack>
+        const expired = matching.filter(
+          (ms: ModuleStatus) => ms.status === "Expired"
+        );
+        const passed = matching.filter(
+          (ms: ModuleStatus) => ms.status === "Passed"
+        );
+        const notTaken = matching.filter(
+          (ms: ModuleStatus) => ms.status === "Not taken"
+        );
 
-      <PageSectionHeader>Completed training modules</PageSectionHeader>
+        const reordered = [...expired, ...passed, ...notTaken];
 
-      <Stack direction="row" flexWrap="wrap">
-        {MakerTrainingModules.completed.map((m) => (
-          <CompletedModuleThumbnail
-            key={m.id}
-            title={m.title}
-            image={m.image}
-            completionDate={m.completionDate}
-          />
-        ))}
-      </Stack>
-    </Page>
+        return (
+          <Page title="Training" maxWidth="736px">
+            <Explainer />
+
+            <SearchBar
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onClear={() => setSearchText("")}
+              sx={{ mt: 8, mb: 1 }}
+            />
+
+            {reordered.map((ms: ModuleStatus) => (
+              <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
+            ))}
+          </Page>
+        );
+      }}
+    />
   );
 }

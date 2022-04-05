@@ -42,7 +42,7 @@ export default function SelectRoomPage() {
         </Stack>
         <Stack direction="row" flexWrap="wrap">
           {getRoomsResult.data?.rooms.map((room: Room) => (
-            <RoomCard key={room.id} room={room} monitor={undefined} />
+            <RoomCard key={room.id} room={room} />
           ))}
         </Stack>
       </Page>

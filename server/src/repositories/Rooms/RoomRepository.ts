@@ -1,11 +1,11 @@
 import { Room } from "../../models/rooms/room";
 import { knex } from "../../db";
 import {
-  singleRoomToDomain,
   roomsToDomain,
+  singleRoomToDomain,
 } from "../../mappers/rooms/roomMapper";
-import { Swipe } from "../../schemas/roomsSchema";
 import assert from "assert";
+import { RoomSwipeRow } from "../../db/tables";
 
 export async function getRoomByID(roomID: number): Promise<Room | null> {
   const knexResult = await knex
@@ -35,8 +35,9 @@ export async function addRoom(room: Room): Promise<Room> {
   return newRoom;
 }
 
-export async function removeRoom(roomID: number): Promise<void> {
-  await knex("Rooms").where({ id: roomID }).del();
+export async function archiveRoom(roomID: number): Promise<Room | null> {
+  await knex("Rooms").where({ id: roomID }).update({ archived: true });
+  return getRoomByID(roomID);
 }
 
 export async function updateRoomName(
@@ -50,35 +51,11 @@ export async function updateRoomName(
   return await getRoomByID(roomID);
 }
 
-export async function addLabbieToRoom(
-  roomID: number,
-  labbieID: number
-): Promise<Room | null> {
-  await knex("User").where({ id: labbieID }).update({
-    roomID: roomID,
-    monitoringRoomID: roomID,
-  });
-
-  return await getRoomByID(roomID);
-}
-
-export async function removeLabbieFromRoom(
-  roomID: number,
-  labbieID: number
-): Promise<Room | null> {
-  await knex("User").where({ id: labbieID }).update({
-    roomID: null,
-    monitoringRoomID: null,
-  });
-
-  return await getRoomByID(roomID);
-}
-
 export async function swipeIntoRoom(roomID: number, userID: number) {
   await knex("RoomSwipes").insert({ roomID, userID });
 }
 
-export async function getRecentSwipes(roomID: number): Promise<Swipe[]> {
+export async function getRecentSwipes(roomID: number): Promise<RoomSwipeRow[]> {
   return knex("RoomSwipes")
     .select()
     .where({ roomID })

@@ -1,29 +1,35 @@
-import React, { useEffect, useState } from "react";
-import Page from "../../Page";
+import React, { useState } from "react";
 import QuizBuilder from "./quiz/QuizBuilder";
-import { Stack, Tab, TextField } from "@mui/material";
+import { Button, CircularProgress, Fab, Stack, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { LoadingButton, TabContext, TabList, TabPanel } from "@mui/lab";
+import Page from "../../Page";
+import SaveIcon from "@mui/icons-material/Save";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import RequestWrapper from "../../../common/RequestWrapper";
 import { useNavigate, useParams } from "react-router-dom";
-import useTimedState from "../../../hooks/useTimedState";
-import SaveStatus from "./SaveStatus";
-import GET_MODULE from "../../../queries/getModule";
+import RequestWrapper2 from "../../../common/RequestWrapper2";
+import { useImmer } from "use-immer";
+import { QuizItem } from "../../../types/Quiz";
 import GET_TRAINING_MODULES from "../../../queries/getModules";
 
-const DELETE_CONFIRMATION_MESSAGE =
-  "Are you sure you wish to delete this module? This cannot be undone.";
+export const GET_MODULE = gql`
+  query GetModule($id: ID!) {
+    module(id: $id) {
+      id
+      name
+      quiz
+    }
+  }
+`;
 
-const RENAME_MODULE = gql`
-  mutation RenameModule($id: ID!, $name: String!) {
-    updateModule(id: $id, name: $name) {
+export const UPDATE_MODULE = gql`
+  mutation UpdateModule($id: ID!, $name: String!, $quiz: JSON!) {
+    updateModule(id: $id, name: $name, quiz: $quiz) {
       id
     }
   }
 `;
 
-const DELETE_MODULE = gql`
+export const DELETE_MODULE = gql`
   mutation DeleteModule($id: ID!) {
     deleteModule(id: $id) {
       id
@@ -35,98 +41,80 @@ export default function EditModulePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [tabIndex, setTabIndex] = useState("questions-tab");
+  const [name, setName] = useState("");
+  const [quiz, setQuiz] = useImmer<QuizItem[]>([]);
 
-  const getModuleResult = useQuery(GET_MODULE, { variables: { id } });
-
-  const [renameModule, renameModuleResult] = useMutation(RENAME_MODULE);
-
-  const [deleteModule, deleteModuleResult] = useMutation(DELETE_MODULE, {
+  const queryResult = useQuery(GET_MODULE, {
     variables: { id },
-    refetchQueries: [{ query: GET_TRAINING_MODULES }],
+    onCompleted: ({ module }) => {
+      setName(module.name);
+      Array.isArray(module.quiz) && setQuiz(module.quiz);
+    },
   });
 
-  const [name, setName, setNameSilently] = useTimedState<string>(
-    "",
-    (latestName) => {
-      renameModule({
-        variables: { id, name: latestName },
-        refetchQueries: [
-          { query: GET_TRAINING_MODULES },
-          { query: GET_MODULE, variables: { id } },
-        ],
-      });
-    }
-  );
+  const [updateModule, updateResult] = useMutation(UPDATE_MODULE);
 
-  const [quizBuilderLoading, setQuizBuilderLoading] = useState<boolean>(false);
+  const [deleteModule] = useMutation(DELETE_MODULE, {
+    variables: { id },
+    refetchQueries: [{ query: GET_TRAINING_MODULES }],
+    onCompleted: () => navigate("/admin/training"),
+  });
 
-  const handleDeleteModule = async () => {
-    if (!window.confirm(DELETE_CONFIRMATION_MESSAGE)) return;
-    await deleteModule();
-    navigate("/admin/training");
+  const handleSaveClicked = () =>
+    updateModule({
+      variables: { id, name, quiz },
+      refetchQueries: [
+        { query: GET_MODULE, variables: { id } },
+        { query: GET_TRAINING_MODULES },
+      ],
+    });
+
+  const handleDeleteClicked = () => {
+    if (!window.confirm("Are you sure you want to delete this module?")) return;
+    deleteModule();
   };
 
-  useEffect(() => {
-    const queriedTitle = getModuleResult.data?.module?.name;
-    if (queriedTitle) setNameSilently(queriedTitle);
-  }, [getModuleResult.data, setNameSilently]);
-
   return (
-    <RequestWrapper
-      loading={getModuleResult.loading}
-      error={getModuleResult.error}
-    >
-      <Page title="Edit training module" maxWidth="800px">
-        <Stack direction="row" justifyContent="space-between">
-          <TextField
-            label="Module title"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            sx={{ width: 400 }}
-          />
-          <LoadingButton
-            loading={deleteModuleResult.loading}
-            startIcon={<DeleteIcon />}
-            color="error"
-            onClick={handleDeleteModule}
+    <RequestWrapper2
+      result={queryResult}
+      render={() => (
+        <Page title="Edit training module" maxWidth="600px">
+          <Stack direction="row" justifyContent="space-between" sx={{ mb: 8 }}>
+            <TextField
+              label="Module title"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              sx={{ width: 400 }}
+            />
+            <Button
+              startIcon={<DeleteIcon />}
+              color="error"
+              onClick={handleDeleteClicked}
+            >
+              Delete
+            </Button>
+          </Stack>
+
+          <QuizBuilder quiz={quiz} setQuiz={setQuiz} />
+
+          <Fab
+            color="primary"
+            onClick={handleSaveClicked}
+            sx={{
+              position: "absolute",
+              bottom: 40,
+              mr: -12,
+              alignSelf: "flex-end",
+            }}
           >
-            Delete
-          </LoadingButton>
-        </Stack>
-
-        <SaveStatus
-          loading={
-            getModuleResult.loading ||
-            renameModuleResult.loading ||
-            quizBuilderLoading
-          }
-        />
-
-        <TabContext value={tabIndex}>
-          <TabList
-            value={tabIndex}
-            onChange={(e, newValue: string) => setTabIndex(newValue)}
-            sx={{ mt: 4, mb: 2, borderBottom: 1, borderColor: "divider" }}
-          >
-            <Tab label="Questions" value="questions-tab" />
-            <Tab label="Equipment" value="equipment-tab" />
-            <Tab label="Makers" value="makers-tab" />
-          </TabList>
-
-          <TabPanel value="questions-tab">
-            <QuizBuilder setQuizBuilderLoading={setQuizBuilderLoading} />
-          </TabPanel>
-
-          <TabPanel value="equipment-tab">
-            Imagine a list of equipment that use this module
-          </TabPanel>
-
-          <TabPanel value="makers-tab">
-            Imagine a list of makers who have completed this module
-          </TabPanel>
-        </TabContext>
-      </Page>
-    </RequestWrapper>
+            {updateResult.loading ? (
+              <CircularProgress size={20} sx={{ color: "white" }} />
+            ) : (
+              <SaveIcon />
+            )}
+          </Fab>
+        </Page>
+      )}
+    />
   );
 }

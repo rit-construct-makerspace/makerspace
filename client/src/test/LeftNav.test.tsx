@@ -62,3 +62,20 @@ test("render properly for makers", async () => {
   expect(screen.queryByRole("link", { name: "People" })).toBeNull();
   expect(screen.queryByRole("link", { name: "History" })).toBeNull();
 });
+
+test("show hold alert when outstanding hold", async () => {
+  editCurrentUser({ holds: [{ removeDate: null }] });
+  renderApp();
+
+  await screen.findByText(/A hold has been placed on your account./);
+});
+
+test("don't show hold alert for removed holds", async () => {
+  editCurrentUser({ holds: [{ removeDate: "2022-03-30 22:24:15.944078+00" }] });
+  renderApp();
+
+  await screen.findByText("John Smith");
+  expect(
+    screen.queryByText(/A hold has been placed on your account./)
+  ).toBeNull();
+});

@@ -1,6 +1,4 @@
 import { gql } from "apollo-server-express";
-import { TrainingModule } from "../schemas/trainingSchema";
-import { Hold } from "./holdsSchema";
 
 export enum Privilege {
   MAKER = "MAKER",
@@ -8,34 +6,11 @@ export enum Privilege {
   ADMIN = "ADMIN",
 }
 
-export interface User {
+export interface PassedModule {
   id: number;
-  universityID: string;
-  ritUsername: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  isStudent: boolean;
-  privilege: Privilege;
-  registrationDate: Date;
-  holds: [Hold];
-  completedModules: [TrainingModule];
-  expectedGraduation: string;
-  college: string;
-  roomID: number;
-  pronouns: string;
-  setupComplete: boolean;
-  isArchived: boolean;
-}
-
-export interface StudentUserInput {
-  universityID: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  expectedGraduation: string;
-  college: string;
-  major: string;
+  moduleID: number;
+  moduleName: string;
+  submissionDate: Date;
 }
 
 export const UsersTypeDefs = gql`
@@ -43,6 +18,13 @@ export const UsersTypeDefs = gql`
     MAKER
     LABBIE
     ADMIN
+  }
+
+  type PassedModule {
+    id: ID!
+    moduleID: ID!
+    moduleName: String!
+    submissionDate: DateTime!
   }
 
   type User {
@@ -55,7 +37,7 @@ export const UsersTypeDefs = gql`
     privilege: Privilege!
     registrationDate: DateTime!
     holds: [Hold]
-    trainingModules: [TrainingModule]
+    passedModules: [PassedModule]
     expectedGraduation: String
     college: String
     room: Room
@@ -111,8 +93,12 @@ export const UsersTypeDefs = gql`
   }
 
   extend type Mutation {
-
-    createUser(firstName: String, lastName: String, ritUsername: String, email: String): User
+    createUser(
+      firstName: String
+      lastName: String
+      ritUsername: String
+      email: String
+    ): User
 
     updateStudentProfile(
       userID: ID!
@@ -123,12 +109,6 @@ export const UsersTypeDefs = gql`
     ): User
 
     setPrivilege(userID: ID!, privilege: Privilege): User
-
-    addTraining(userID: ID!, moduleID: ID!): User
-    removeTraining(userID: ID!, moduleID: ID!): User
-
-    addHold(userID: ID!, hold: HoldInput): User
-    removeHold(userID: ID!, hold: HoldInput): User
 
     archiveUser(userID: ID!): User
   }

@@ -1,82 +1,84 @@
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import * as OptionRepo from "../repositories/Training/OptionRepository";
-import * as ModuleItemRepo from "../repositories/Training/ModuleItemRepository";
+import { AnswerInput } from "../schemas/trainingSchema";
+import { ApolloContext } from "../context";
+import { Privilege } from "../schemas/usersSchema";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
+import { getUsersFullName } from "./usersResolver";
 
 const TrainingResolvers = {
   Query: {
-    modules: async (_: any, args: any, context: any) => {
-      return await ModuleRepo.getModules();
-    },
+    modules: async (_parent: any, args: any, context: any) =>
+      await ModuleRepo.getModules(),
 
-    module: (_: any, args: { id: number }, context: any) =>
-      ModuleRepo.getModuleById(args.id),
-  },
-
-  TrainingModule: {
-    items: (parent: any) => {
-      return ModuleItemRepo.getModuleItemsByModule(parent.id);
-    },
-  },
-
-  ModuleItem: {
-    options: (parent: any) => {
-      return OptionRepo.getOptionsByModuleItem(parent.id);
-    },
+    module: async (_parent: any, args: { id: number }, context: any) =>
+      await ModuleRepo.getModuleByID(args.id),
   },
 
   Mutation: {
-    /*
-    Modules
-     */
+    createModule: async (
+      _parent: any,
+      args: { name: string },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.ADMIN], async (user) => {
+        const module = await ModuleRepo.addModule(args.name);
 
-    createModule: async (_: any, args: any) => {
-      const mod = await ModuleRepo.addModule(args.name);
-      return mod;
-    },
+        await createLog(
+          "{user} created the {module} module.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: module.id, label: module.name }
+        );
 
-    updateModule: async (_: any, args: any) => {
-      const mod = await ModuleRepo.updateName(args.id, args.name);
-      return mod;
-    },
-
-    deleteModule: async (_: any, args: { id: number }, context: any) => {
-      await ModuleRepo.deleteModuleById(args.id);
-    },
-
-    addModuleItem: async (_: any, args: any) =>
-      await ModuleItemRepo.addModuleItem(args.moduleID, {
-        text: args.moduleItem.text,
-        type: args.moduleItem.type
+        return module;
       }),
 
-    updateModuleItem: async (_: any, args: any) => {
-      await ModuleItemRepo.updateModuleItem(args.id, args.moduleItem)
-      return await ModuleItemRepo.getModuleItem(args.id)
-    },
+    updateModule: async (
+      _parent: any,
+      args: { id: number; name: string; quiz: object },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.ADMIN], async (user) => {
+        const module = await ModuleRepo.updateModule(
+          args.id,
+          args.name,
+          args.quiz
+        );
 
-    deleteModuleItem: async (_: any, args: { id: number }) =>
-      await ModuleItemRepo.deleteModuleItem(args.id),
+        await createLog(
+          "{user} updated the {module} module.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: module.id, label: module.name }
+        );
+      }),
 
-    /*
-    ModuleItem Options
-     */
+    deleteModule: async (
+      _parent: any,
+      args: { id: number },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.ADMIN], async (user) => {
+        const module = await ModuleRepo.archiveModule(args.id);
 
-    addOption: async (_: any, args: any) => {
-      return OptionRepo.addOptionToModuleItem(args.moduleItemID, args.option);
-    },
+        await createLog(
+          "{user} deleted the {module} module.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: module.id, label: module.name }
+        );
+      }),
 
-    updateOption: async (_: any, args: any) => {
-      let opt = {
-        id: args.id,
-        text: args.option.text,
-        correct: args.option.correct,
-      };
-      await OptionRepo.updateOption(opt);
-      return opt;
-    },
-
-    deleteOption: async (_: any, args: { id: number }) => {
-      await OptionRepo.deleteOptionById(args.id);
+    submitModule: async (
+      _parent: any,
+      args: { moduleID: number; answerSheet: AnswerInput[] },
+      { ifAllowed }: ApolloContext
+    ) => {
+      return ifAllowed(
+        [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
+        async (user) => {
+          // TODO: grade answer sheet
+          console.log(args.answerSheet);
+          return null;
+        }
+      );
     },
   },
 };

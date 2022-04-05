@@ -1,30 +1,37 @@
-import { Privilege, User } from "./schemas/usersSchema";
+import { Privilege } from "./schemas/usersSchema";
 import { AuthenticationError, ForbiddenError } from "apollo-server-express";
+import { UserRow } from "./db/tables";
+
+export interface CurrentUser extends UserRow {
+  hasHolds: boolean;
+}
 
 export interface ApolloContext {
-  user: User | undefined;
+  user: CurrentUser | undefined;
   logout: () => void;
   ifAllowed: (
     allowedPrivileges: Privilege[],
-    callback: (user: User) => any
+    callback: (user: CurrentUser) => any
   ) => any;
 }
 
 const ifAllowed =
   (expressUser: Express.User | undefined) =>
-  (allowedPrivileges: Privilege[], callback: (user: User) => any) => {
+  (allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
     if (!expressUser) {
       throw new AuthenticationError("Unauthenticated");
     }
 
-    const user = expressUser as User;
-    const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
+    const user = expressUser as CurrentUser;
 
+    const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
     if (!sufficientPrivilege) {
       throw new ForbiddenError("Insufficient privilege");
     }
 
-    // TODO: if (userHasHold) throw new ForbiddenError("Account on hold");
+    if (user.hasHolds) {
+      throw new ForbiddenError("User has outstanding account holds");
+    }
 
     return callback(user);
   };

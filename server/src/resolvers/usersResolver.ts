@@ -1,11 +1,13 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
-import { Privilege, User } from "../schemas/usersSchema";
+import * as ModuleRepo from "../repositories/Training/ModuleRepository";
+import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
 import { createHash } from "crypto";
 import { ApolloContext } from "../context";
+import { UserRow } from "../db/tables";
 
-export function getUsersFullName(user: User) {
+export function getUsersFullName(user: UserRow) {
   return `${user.firstName} ${user.lastName}`;
 }
 
@@ -13,8 +15,13 @@ export function hashUniversityID(universityID: string) {
   return createHash("sha256").update(universityID).digest("hex");
 }
 
-//TODO: Update all "args" parameters upon implementation
 const UsersResolvers = {
+  User: {
+    passedModules: (parent: { id: number }) => {
+      return ModuleRepo.getPassedModulesByUser(parent.id);
+    },
+  },
+
   Query: {
     users: async () => {
       return await UserRepo.getUsers();
@@ -23,6 +30,7 @@ const UsersResolvers = {
     user: async (_: any, args: { id: number }) => {
       return await UserRepo.getUserByID(args.id);
     },
+
     currentUser: async (parent: any, args: any, context: ApolloContext) => {
       return context.user;
     },
@@ -67,22 +75,6 @@ const UsersResolvers = {
         { id: context.user.id, label: getUsersFullName(context.user) },
         { id: userSubject.id, label: getUsersFullName(userSubject) }
       );
-    },
-
-    addTraining: async (_: any, args: any, context: any) => {
-      await UserRepo.addTrainingToUser(args.userID, args.trainingModuleID);
-    },
-
-    removeTraining: async (_: any, args: any, context: any) => {
-      await UserRepo.removeTrainingFromUser(args.userID, args.trainingModuleID);
-    },
-
-    addHold: async (_: any, args: any, context: any) => {
-      await UserRepo.addHoldToUser(args.userID, args.holdID);
-    },
-
-    removeHold: async (_: any, args: any, context: any) => {
-      await UserRepo.removeHoldFromUser(args.userID, args.holdID);
     },
 
     archiveUser: async (

@@ -7,7 +7,7 @@ import { EquipmentInput, MutationCallback } from "./ManageEquipmentPage";
 const CREATE_EQUIPMENT = gql`
   mutation CreateEquipment($name: String!, $roomID: ID!, $moduleIDs: [ID]!) {
     addEquipment(
-      equipment: { name: $name, roomID: $roomID, trainingModules: $moduleIDs }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs }
     ) {
       id
     }

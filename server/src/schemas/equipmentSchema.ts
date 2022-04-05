@@ -1,5 +1,11 @@
 import { gql } from "apollo-server-express";
 
+export interface EquipmentInput {
+  name: string;
+  roomID: number;
+  moduleIDs: [number];
+}
+
 export const EquipmentTypeDefs = gql`
   type Equipment {
     id: ID!
@@ -13,15 +19,12 @@ export const EquipmentTypeDefs = gql`
   input EquipmentInput {
     name: String!
     roomID: ID!
-    trainingModules: [ID]
-    addedAt: DateTime
-    inUse: Boolean = false
+    moduleIDs: [ID]
   }
 
   extend type Query {
     equipment(id: ID!): Equipment
     equipments: [Equipment]
-    trainingModulesByEquipment: [TrainingModule]
   }
 
   extend type Mutation {

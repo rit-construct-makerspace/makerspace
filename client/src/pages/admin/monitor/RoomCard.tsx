@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  Avatar,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Stack,
-  Typography,
-} from "@mui/material";
-import Person from "../../../types/Person";
+import { Card, CardActionArea, CardContent, CardMedia, Typography, } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Room from "../../../types/Room";
 
@@ -18,10 +9,9 @@ const ROOM_PLACEHOLDER_IMAGE =
 
 interface RoomCardProps {
   room: Room;
-  monitor: Person | undefined;
 }
 
-export default function RoomCard({ room, monitor }: RoomCardProps) {
+export default function RoomCard({ room }: RoomCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -33,24 +23,9 @@ export default function RoomCard({ room, monitor }: RoomCardProps) {
           sx={{ height: 200 }}
         />
         <CardContent>
-          <Typography variant="h6" component="div" mb={1}>
+          <Typography variant="h6" component="div">
             {room.name}
           </Typography>
-
-          {monitor ? (
-            <Stack direction="row">
-              <Avatar
-                src={monitor.avatarHref}
-                alt=""
-                sx={{ width: 24, height: 24, mr: 1 }}
-              />
-              <Typography variant="body1">{monitor.name}</Typography>
-            </Stack>
-          ) : (
-            <Typography variant="body1">
-              Nobody is monitoring this room.
-            </Typography>
-          )}
         </CardContent>
       </CardActionArea>
     </Card>

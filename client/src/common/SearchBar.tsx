@@ -4,6 +4,16 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import { StandardTextFieldProps } from "@mui/material/TextField/TextField";
 
+export function searchFilter<T>(
+  searchText: string,
+  collection: T[],
+  getter: (x: T) => string
+): T[] {
+  return collection.filter((x: any) =>
+    getter(x).toLocaleLowerCase().includes(searchText.toLocaleLowerCase())
+  );
+}
+
 interface SearchBarProps extends StandardTextFieldProps {
   onSubmit?: () => void;
   onClear?: () => void;

@@ -1,44 +1,54 @@
 import { knex } from "../../db";
-import { TrainingModule } from "../../schemas/trainingSchema";
-import * as TrainingModuleMap from "../../mappers/training/TrainingModuleMapper"
+import { TrainingModuleRow } from "../../db/tables";
+import { EntityNotFound } from "../../EntityNotFound";
+import { PassedModule } from "../../schemas/usersSchema";
 
-export async function getModuleById(
-  id: number | string
-): Promise<TrainingModule | null> {
-  const knexResult = await knex("TrainingModule")
+export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
+  const trainingModule = await knex("TrainingModule").first().where({ id });
+
+  if (!trainingModule)
+    throw new EntityNotFound(`Training module #${id} not found`);
+
+  return trainingModule;
+}
+
+export async function getModules(): Promise<TrainingModuleRow[]> {
+  return knex("TrainingModule").select().where({ archived: false });
+}
+
+export async function archiveModule(id: number): Promise<TrainingModuleRow> {
+  await knex("TrainingModule").where({ id: id }).update({ archived: true });
+  return getModuleByID(id);
+}
+
+export async function addModule(name: string): Promise<TrainingModuleRow> {
+  const [id] = await knex("TrainingModule").insert({ name: name }, "id");
+  return getModuleByID(id);
+}
+
+export async function updateModule(
+  id: number,
+  name: string,
+  quiz: object
+): Promise<TrainingModuleRow> {
+  await knex("TrainingModule")
+    .where({ id })
+    // @ts-ignore
+    .update({ name, quiz: JSON.stringify(quiz) });
+  return getModuleByID(id);
+}
+
+export async function getPassedModulesByUser(
+  userID: number
+): Promise<PassedModule[]> {
+  return knex("ModuleSubmissions")
+    .join("TrainingModule", "TrainingModule.id", "ModuleSubmissions.moduleID")
     .select(
-      "id",
-      "name"
+      "ModuleSubmissions.id",
+      "ModuleSubmissions.moduleID",
+      "TrainingModule.name",
+      "ModuleSubmissions.submissionDate"
     )
-    .where("id", id);
-
-  return TrainingModuleMap.singleTrainingModuleToDomain(knexResult);
-}
-
-export async function getModules(): Promise<TrainingModule[]> {
-  const knexResult = await knex("TrainingModule")
-    .select(
-      "id",
-      "name"
-    );
-  return TrainingModuleMap.trainingModulesToDomain(knexResult);
-}
-
-export async function deleteModuleById(id: number): Promise<void> {
-  await knex("TrainingModule").where({ id: id }).del();
-}
-
-export async function addModule(name: string): Promise<TrainingModule | null> {
-  const insert = await knex("TrainingModule").insert(
-    { name: name },
-    "id"
-  );
-  return getModuleById(insert[0]);
-}
-
-export async function updateName(id: number, name: string): Promise<TrainingModule | null> {
-  await knex("TrainingModule").where({ id: module.id }).update({
-    name: name,
-  });
-  return getModuleById(id);
+    .where("ModuleSubmissions.makerID", userID)
+    .andWhere("ModuleSubmissions.passed", true);
 }
