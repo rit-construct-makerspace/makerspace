@@ -14,5 +14,4 @@ export interface Reservation {
     equipmentID: number;
     status: ReservationStatus;
     lastUpdated: Date;
-    independent: boolean;
 }

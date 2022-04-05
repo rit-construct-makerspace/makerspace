@@ -69,7 +69,6 @@ export interface ReservationRow {
   equipmentID: number;
   status: string;
   lastUpdated: Date;
-  independent: boolean; // is this needed?
 }
 
 export interface RoomSwipeRow {

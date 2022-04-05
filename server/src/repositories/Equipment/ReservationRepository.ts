@@ -55,7 +55,7 @@ export class ReservationRepository implements IReservationRepository {
 
   public async noConflicts(reservation: ReservationInput): Promise<boolean> {
       const conflicts = await this.queryBuilder("Reservations")
-        .select("*")
+        .select()
         .whereBetween("startTime", [reservation.startTime, reservation.endTime])
         .orWhereBetween("endTime", [reservation.startTime, reservation.endTime])
         .orWhereBetween(reservation.startTime, ["startTime", "endTime"])

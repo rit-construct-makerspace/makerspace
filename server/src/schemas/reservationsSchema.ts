@@ -23,15 +23,6 @@ export const ReservationsTypeDefs = gql`
     equipment: Equipment
     status: ReservationStatus
     lastUpdated: DateTime
-    """
-    **True:** The maker is proficient with the machine,
-    has not requested a labbie, and does not need labbie supervision.
-
-    **False:** The maker is *not* proficient with the machine,
-    *does* need labbie supervision. The reservation cannot
-    be approved until a labbie is assigned.
-    """
-    independent: Boolean
   }
 
   enum ReservationEventType {
