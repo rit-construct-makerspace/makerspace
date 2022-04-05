@@ -29,15 +29,13 @@ export async function up(knex: Knex): Promise<void> {
         return knex.schema.createTable("Reservations", function (t) {
           t.increments("id").primary();
           t.integer("makerID").references("id").inTable("Users");
-          t.integer("labbieID").references("id").inTable("Users");
           t.timestamp("createDate").defaultTo(knex.fn.now());
           t.time("startTime");
           t.time("endTime");
-          t.integer("equipment").references("id").inTable("Equipment");
+          t.integer("equipmentID").references("id").inTable("Equipment");
           t.enu('status', ['PENDING', 'CONFIRMED', 'CANCELLED']).defaultTo("PENDING");
-          t.timestamp('lastUpdated').defaultTo(knex.fn.now());
+          t.timestamp('lastUpdated').defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
           t.boolean('independent').defaultTo(false);
-          t.boolean('archived').defaultTo(false);
         });
       }
     })
@@ -46,13 +44,13 @@ export async function up(knex: Knex): Promise<void> {
       if (!exists) {
         return knex.schema.createTable("ReservationEvents", function (t) {
           t.increments("id").primary();
-          t.integer("reservationID").references("id").inTable("Reservations");
           t.enu("eventType", [
             "COMMENT",
             "ASSIGNMENT",
             "CONFIRMATION",
             "CANCELLATION",
           ]);
+          t.integer("reservationID").references("id").inTable("Reservations");
           t.integer("userID").references("id").inTable("Users");
           t.timestamp("dateTime").defaultTo(knex.fn.now());
           t.string("payload", 500);

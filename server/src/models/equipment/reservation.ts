@@ -7,15 +7,12 @@ enum ReservationStatus {
 }
 export interface Reservation {
     id: number;
-    creator: number;
-    maker: number;
-    labbie: number;
+    makerID: number;
     createDate: Date;
     startTime: Date;
     endTime: Date;
-    equipment: number;
+    equipmentID: number;
     status: ReservationStatus;
-    createdAt: Date;
     lastUpdated: Date;
     independent: boolean;
 }

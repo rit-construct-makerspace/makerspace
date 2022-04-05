@@ -16,9 +16,7 @@ export const ReservationsTypeDefs = gql`
 
   type Reservation {
     id: ID!
-    creator: User
     maker: User
-    labbie: User
     createDate: DateTime
     startTime: DateTime
     endTime: DateTime
@@ -45,8 +43,8 @@ export const ReservationsTypeDefs = gql`
 
   type ReservationEvent {
     id: ID!
-    reservationId: ID!
     eventType: ReservationEventType
+    reservation: Reservation
     user: User
     dateTime: DateTime
     payload: String
@@ -55,18 +53,13 @@ export const ReservationsTypeDefs = gql`
   type Query {
     reservations: [Reservation]
     reservation(id: ID!): Reservation
-    reservationsByUser(id: ID!): [Reservation]
   }
 
   input ReservationInput {
-    creatorId: Int!
-    makerId: Int!
-    equipmentId: Int!
-
-    """
-    Leave blank to create an unassigned reservation.
-    """
-    labbieId: Int
+    makerID: Int!
+    equipmentID: Int!
+    startTime: DateTime!
+    endTime: DateTime!
 
     """
     If provided, a comment will automatically be placed on the reservation,
@@ -77,10 +70,8 @@ export const ReservationsTypeDefs = gql`
 
   type Mutation {
     createReservation(reservationInput: ReservationInput): Reservation
-    assignLabbieToReservation(resId: ID!, labbieId: ID!): Reservation
-    removeLabbieFromReservation(resId: ID!): Reservation
-    addComment(resId: ID!, authorId: ID!, commentText: String!): Reservation
-    cancelReservation(resId: ID!): Reservation
-    confirmReservation(resId: ID!): Reservation
+    addComment(resID: ID!, commentText: String!): Reservation
+    cancelReservation(resID: ID!): Reservation
+    confirmReservation(resID: ID!): Reservation
   }
 `;

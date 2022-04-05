@@ -1,23 +1,15 @@
 import { knex } from "../../db";
-import { Reservation } from "../../models/equipment/reservation";
 import { ReservationInput } from "../../models/equipment/reservationInput";
-import {
-  reservationsToDomain,
-  singleReservationToDomain,
-} from "../../mappers/equipment/Reservation";
-import { getEquipmentByID } from "./EquipmentRepository";
+import { EntityNotFound } from "../../EntityNotFound";
+import { ReservationRow, ReservationEventRow } from "../../db/tables";
 
 export interface IReservationRepository {
-  getReservationById(id: number | string): Promise<Reservation | null>;
-  getReservations(): Promise<Reservation[]>;
-  createReservation(reservation: ReservationInput): Promise<Reservation | null>;
-  assignLabbieToReservation(resId: number, labbieId: number): Promise<Reservation | null>;
-  removeLabbieFromReservation(resId: number): Promise<Reservation | null>;
-  addComment(resId: number, authorId: number, commentText: string): Promise<string | null>;
-  confirmReservation(resId: number): Promise<Reservation | null>;
-  updateReservation(id: number, reservation: ReservationInput): Promise<Reservation | null>;
-  cancelReservation(resId: number): Promise<Reservation | null>;
-  archiveReservation(id: number): Promise<void>;
+  getReservationById(id: number): Promise<ReservationRow>;
+  getReservations(): Promise<ReservationRow[]>;
+  createReservation(reservation: ReservationInput): Promise<ReservationRow>;
+  addComment(resID: number, authorID: number, commentText: string): Promise<ReservationEventRow>;
+  confirmReservation(resID: number): Promise<ReservationRow>;
+  cancelReservation(resID: number): Promise<ReservationRow>;
 }
 
 export class ReservationRepository implements IReservationRepository {
@@ -27,171 +19,104 @@ export class ReservationRepository implements IReservationRepository {
     this.queryBuilder = queryBuilder || knex;
   }
 
-  public async getReservationById(
-    id: string | number
-  ): Promise<Reservation | null> {
-    const knexResult = await this.queryBuilder
-      .first(
-        "id",
-        "creator",
-        "labbie",
-        "maker",
-        "createDate",
-        "startTime",
-        "endTime",
-        "equipment",
-        "status",
-        "lastUpdated"
-        )
-      .from("Reservations")
-      .where("id", id);
-
-    return singleReservationToDomain(knexResult);
+  public async getReservationById(id: number): Promise<ReservationRow> {
+    const reservation = await knex("Reservations").where({ id }).first();
+    if (!reservation) throw new EntityNotFound("Could not find reservation #${id}");
+    return reservation;
   }
 
-    public async getReservations(): Promise<Reservation[]> {
-      const knexResult = await this.queryBuilder("Reservations").select(
-        "id",
-        "creator",
-        "labbie",
-        "maker",
-        "createDate",
-        "startTime",
-        "endTime",
-        "equipment",
-        "status",
-        "lastUpdated"
-      );
-      return reservationsToDomain(knexResult);
-    }
+  public async getReservations(): Promise<ReservationRow[]> {
+    return knex("Reservations").select();
+  }
 
-    public async updateReservation(id: number, reservation: ReservationInput): Promise<Reservation | null> {
-        await this.queryBuilder("Reservations")
-        .where("id", id)
-        .update({
-          creator: reservation.creator,
-          labbie: reservation.labbie,
-          maker: reservation.maker,
-          equipment: reservation.equipment,
-          startTime: reservation.startTime,
-          endTime: reservation.endTime,
-          startingMakerComment: reservation.startingMakerComment
-        });
-        return this.getReservationById(id);
-    }
-
-    public async createReservation(reservation: ReservationInput): Promise<Reservation | null> {
-      // get all modules needed for the equipment
-      const modules = (
-        await this.queryBuilder("ModulesForEquipment")
-        .select("trainingModuleId")
-        .where("equipmentId", reservation.equipment)
-      );
-      let passed = true;
-      // get last submission from maker for every module
-      modules.forEach(async (module: any) => {
-        const eligibility = await this.queryBuilder("ModuleSubmissions")
-          .select("passed")
-          .where("moduleID", module.id)
-          .where("makerID", reservation.maker)
-          .orderBy("submissionDate", "desc")
-          .limit(1)
-          .first();
-        if (!eligibility) {
-          passed = false;
-        }
-      });
-      // in progress
-      // const startTime = reservation.startTime;
-      // const endTime
-      // const free = await this.queryBuilder("Reservations")
-      //   .select("*")
-      //   .whereBetween("startTime", [reservation.startTime, reservation.endTime])
-      //   .whereBetween("endTime", [reservation.startTime, reservation.endTime])
-      // if maker has passed all modules 
-      if (passed) {
-        const newId = (
-          await this.queryBuilder("Reservations").insert(
-            {
-              creator: reservation.creator,
-              labbie: reservation.labbie,
-              maker: reservation.maker,
-              equipment: reservation.equipment,
-              startTime: reservation.startTime,
-              endTime: reservation.endTime,
-              startingMakerComment: reservation.startingMakerComment
-            },
-            "id"
-          )
-        )[0];
-        return singleReservationToDomain(this.getReservationById(newId));
-      } else {
-        // idk if this is the right thing to do
-        return null;
+  public async userIsEligible(reservation: ReservationInput): Promise<boolean> {
+    // get all modules needed for the equipment
+    const modules = (
+      await this.queryBuilder("ModulesForEquipment")
+      .select("trainingModuleId")
+      .where("equipmentId", reservation.equipmentID)
+    );
+    let passed = true;
+    // get last submission from maker for every module
+    modules.forEach(async (module: any) => {
+      const eligibility = await this.queryBuilder("ModuleSubmissions")
+        .select("passed")
+        .where("moduleID", module.id)
+        .where("makerID", reservation.makerID)
+        .orderBy("submissionDate", "desc")
+        .limit(1)
+        .first();
+      if (!eligibility) {
+        passed = false;
       }
+    });
+    return passed;
+  }
+
+  public async noConflicts(reservation: ReservationInput): Promise<boolean> {
+      const conflicts = await this.queryBuilder("Reservations")
+        .select("*")
+        .whereBetween("startTime", [reservation.startTime, reservation.endTime])
+        .orWhereBetween("endTime", [reservation.startTime, reservation.endTime])
+        .orWhereBetween(reservation.startTime, ["startTime", "endTime"])
+        .orWhereBetween(reservation.endTime, ["startTime", "endTime"])
+        .as('t') 
+        .count("t.* as count");
+      if (conflicts == 0){
+        return true;
+      } else {
+        return false;
+      }
+  }
+
+
+    public async createReservation(reservation: ReservationInput): Promise<ReservationRow> {
+      const [newId] = (
+        await this.queryBuilder("Reservations").insert(
+          {
+            makerID: reservation.makerID,
+            equipmentID: reservation.equipmentID,
+            startTime: reservation.startTime,
+            endTime: reservation.endTime
+          },
+          "id"
+        )
+      );
+      await this.addComment(newId, reservation.makerID, reservation.startingMakerComment);
+      return this.getReservationById(newId);
     }
 
-  public async assignLabbieToReservation(resId: number, labbieId: number): Promise<Reservation | null> {
-    await this.queryBuilder("Reservations")
-      .where("id", resId)
-      .update({labbie: labbieId});
-    return singleReservationToDomain(this.getReservationById(resId));
-  }
 
-  public async removeLabbieFromReservation(resId: number): Promise<Reservation | null> {
-    await this.queryBuilder("Reservations")
-      .where("id", resId)
-      .update({labbie: null});
-    return singleReservationToDomain(this.getReservationById(resId));
-  }
-
-  public async addComment(resId: number, authorId: number, commentText: string): 
-  Promise<string | null> {
-    const newId = (
+  public async addComment(resID: number, authorId: number, commentText: string): 
+  Promise<ReservationEventRow> {
+    const [newId] = (
       await this.queryBuilder("ReservationEvents").insert(
         {
           eventType: "COMMENT",
-          reservationId: resId,
-          user: authorId,
+          reservationID: resID,
+          userID: authorId,
           payload: commentText
         },
         "id"
       )
-    )[0];
+    );
     
-    // return last added comment
-    return knex("Reservations")
-    .join(
-      "ReservationEvents",
-      "Reservations.id",
-      "=",
-      "ReservationEvents.reservationId"
-    )
-    .select("ReservationEvents.payload")
-    .where("Reservations.id", resId)
-    .orderBy("ReservationEvents.dateTime", "desc")
-    .limit(1)
-    .first();
+    const commentID = await knex("ReservationEvents").where({ id: newId }).first();
+    if (!commentID) throw new EntityNotFound("Could not find comment #${newId}");
+    return commentID;
   }
 
-  public async confirmReservation(resId: number): Promise<Reservation | null> {
+  public async confirmReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
-    .where("id", resId)
-    .update({status: "CONFIRMED"});
-    return singleReservationToDomain(this.getReservationById(resId));
+    .where("id", resID)
+    .update({status: "CONFIRMED", lastUpdated: Date.now()});
+    return this.getReservationById(resID);
   }
 
-  public async cancelReservation(resId: number): Promise<Reservation | null> {
+  public async cancelReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
-    .where("id", resId)
-    .update({status: "CANCELLED"});
-    // idk if cancelling and archiving should be different, or if setting a
-    // cancelled status is necessary
-    this.archiveReservation(resId);
-    return singleReservationToDomain(this.getReservationById(resId));
-  }
-
-  public async archiveReservation(id: number): Promise<void> {
-    await knex("Reservations").where({ id: id}).update({archived: true})
+    .where("id", resID)
+    .update({status: "CANCELLED", lastUpdated: Date.now()});
+    return this.getReservationById(resID);
   }
 }
