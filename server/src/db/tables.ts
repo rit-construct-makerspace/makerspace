@@ -105,7 +105,7 @@ export interface TrainingModuleItem {
 export interface ModuleItemOption {
   id: string;
   text: string;
-  correct: boolean;
+  correct?: boolean;
 }
 
 export interface UserRow {

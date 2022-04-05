@@ -6,14 +6,46 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
 import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
+import { TrainingModuleItem } from "../db/tables";
+
+const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
+  for (let item of quiz) {
+    if (item.options) {
+      for (let option of item.options) {
+        delete option.correct;
+      }
+    }
+  }
+};
 
 const TrainingResolvers = {
   Query: {
-    modules: async (_parent: any, args: any, context: any) =>
-      await ModuleRepo.getModules(),
+    modules: async (
+      _parent: any,
+      args: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        let modules = await ModuleRepo.getModules();
 
-    module: async (_parent: any, args: { id: number }, context: any) =>
-      await ModuleRepo.getModuleByID(args.id),
+        if (user.privilege === "MAKER")
+          for (let module of modules) removeAnswersFromQuiz(module.quiz);
+
+        return modules;
+      }),
+
+    module: async (
+      _parent: any,
+      args: { id: number },
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        let module = await ModuleRepo.getModuleByID(args.id);
+
+        if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
+
+        return module;
+      }),
   },
 
   Mutation: {
