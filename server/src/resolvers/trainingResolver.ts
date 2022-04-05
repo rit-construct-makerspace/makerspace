@@ -6,6 +6,17 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
 import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
+import { TrainingModuleItem } from "../db/tables";
+
+const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
+  for (let item of quiz) {
+    if (item.options) {
+      for (let option of item.options) {
+        delete option.correct;
+      }
+    }
+  }
+};
 
 const TrainingResolvers = {
   Query: {
@@ -18,14 +29,7 @@ const TrainingResolvers = {
         let modules = await ModuleRepo.getModules();
 
         if (user.privilege === "MAKER")
-          for (let module of modules)
-            for (let item of module.quiz) {
-              if (item.options) {
-                for (let option of item.options) {
-                  delete option.correct;
-                }
-              }
-            }
+          for (let module of modules) removeAnswersFromQuiz(module.quiz);
 
         return modules;
       }),
@@ -38,14 +42,7 @@ const TrainingResolvers = {
       ifAuthenticated(async (user) => {
         let module = await ModuleRepo.getModuleByID(args.id);
 
-        if (user.privilege === "MAKER")
-          for (let item of module.quiz) {
-            if (item.options) {
-              for (let option of item.options) {
-                delete option.correct;
-              }
-            }
-          }
+        if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
 
         return module;
       }),
