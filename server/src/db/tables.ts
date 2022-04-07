@@ -108,7 +108,7 @@ export interface UserRow {
   setupComplete: boolean;
   ritUsername: string;
   pronouns: string;
-  isArchived: boolean; // TODO: rename to archived
+  archived: boolean;
 }
 
 declare module "knex/types/tables" {

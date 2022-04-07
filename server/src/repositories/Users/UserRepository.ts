@@ -83,6 +83,6 @@ export async function addTrainingModuleAttemptToUser(
 }
 
 export async function archiveUser(userID: number): Promise<UserRow> {
-  await knex("Users").where({ id: userID }).update({ isArchived: true });
+  await knex("Users").where({ id: userID }).update({ archived: true });
   return await getUserByID(userID);
 }

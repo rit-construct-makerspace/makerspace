@@ -66,7 +66,7 @@ export const UsersTypeDefs = gql`
     """
     Is the user's account suspended/deleted?
     """
-    isArchived: Boolean
+    archived: Boolean
   }
 
   input StudentUserInput {

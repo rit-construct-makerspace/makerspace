@@ -4,6 +4,7 @@ import { UserRow } from "./db/tables";
 
 export interface CurrentUser extends UserRow {
   hasHolds: boolean;
+  archived: boolean;
 }
 
 export interface ApolloContext {
@@ -23,6 +24,10 @@ const ifAllowed =
     }
 
     const user = expressUser as CurrentUser;
+
+    if (user.archived){
+      throw new ForbiddenError("User has been deleted")
+    }
 
     const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
     if (!sufficientPrivilege) {
