@@ -58,7 +58,11 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
 
               <Stack divider={<Divider flexItem />} mb={6}>
                 {moduleStatuses.map((ms: ModuleStatus) => (
-                  <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
+                  <TrainingModuleRow
+                    key={ms.moduleID}
+                    moduleStatus={ms}
+                    equipmentID={equipmentID}
+                  />
                 ))}
               </Stack>
 

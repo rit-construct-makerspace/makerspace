@@ -152,21 +152,18 @@ const TrainingResolvers = {
               : incorrect++;
           }
 
-          const grade = (correct / (incorrect + correct)) * 100;
+          const score = (correct / (incorrect + correct)) * 100;
+          const passed = score >= MODULE_PASSING_THRESHOLD;
 
-          await addTrainingModuleAttemptToUser(
-            user.id,
-            args.moduleID,
-            grade >= MODULE_PASSING_THRESHOLD
-          );
+          await addTrainingModuleAttemptToUser(user.id, args.moduleID, passed);
 
           await createLog(
-            `{user} submitted attempt of {module} with a grade of ${grade}.`,
+            `{user} submitted attempt of {module} with a score of ${score}.`,
             { id: user.id, label: getUsersFullName(user) },
             { id: args.moduleID, label: name }
           );
 
-          return grade;
+          return { score, passed };
         }
       );
     },

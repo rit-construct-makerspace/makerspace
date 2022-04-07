@@ -9,17 +9,23 @@ import { ModuleStatus } from "./TrainingModuleUtils";
 
 interface RequiredModuleProps {
   moduleStatus: ModuleStatus;
+  equipmentID?: string;
 }
 
 export default function TrainingModuleRow({
   moduleStatus,
+  equipmentID,
 }: RequiredModuleProps) {
   const navigate = useNavigate();
 
   return (
     <CardActionArea
       sx={{ py: 2 }}
-      onClick={() => navigate(`/maker/training/${moduleStatus.moduleID}`)}
+      onClick={() =>
+        navigate(`/maker/training/${moduleStatus.moduleID}`, {
+          state: { equipmentID },
+        })
+      }
     >
       <Stack direction="row" alignItems="center" spacing={1}>
         {moduleStatus.status === "Passed" && (

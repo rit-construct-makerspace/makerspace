@@ -20,6 +20,11 @@ export const TrainingTypeDefs = gql`
     quiz: JSON
   }
 
+  type QuizScore {
+    score: Float
+    passed: Boolean
+  }
+
   input AnswerInput {
     itemID: ID!
     optionIDs: [ID]!
@@ -39,6 +44,6 @@ export const TrainingTypeDefs = gql`
     Submit a trainingModule for assessment, the attempt will be stored
     for the user and the grade will be returned as a Float out of 100
     """
-    submitModule(moduleID: ID!, answerSheet: [AnswerInput]): Float
+    submitModule(moduleID: ID!, answerSheet: [AnswerInput]): QuizScore
   }
 `;
