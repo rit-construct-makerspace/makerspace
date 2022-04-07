@@ -24,7 +24,7 @@ module.exports = {
   production: {
     client: "pg",
     connection: {
-      host: "makerspace_db",
+      host: process.env.POSTGRES_ENDPOINT,
       user: process.env.POSTGRES_USER,
       database: process.env.POSTGRES_DB,
       password: process.env.POSTGRES_PASSWORD,
