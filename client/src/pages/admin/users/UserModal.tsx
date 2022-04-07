@@ -194,15 +194,17 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             </Typography>
 
             <Stack direction="row" spacing={2}>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<DeleteIcon />}
-                onClick={() => handleDeleteUserClicked
-                }
-              >
-                Delete account
-              </Button>
+              {getUserResult.data.user.privilege == Privilege.ADMIN &&
+                  <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => handleDeleteUserClicked
+                      }
+                  >
+                      Delete account
+                  </Button>
+              }
               <Button
                 startIcon={<HistoryIcon />}
                 variant="outlined"
