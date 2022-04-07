@@ -111,23 +111,17 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   };
 
   const handleDeleteUserClicked = () => {
-      let fName = getUserResult.data.user.firstName;
-      let lName = getUserResult.data.user.lastName;
-      let privilege = getUserResult.data.user.privilege;
-      if (privilege == Privilege.ADMIN) {
-          let result = window.confirm(
-              `Are you sure you wish to delete ${fName} ${lName}'s account? This cannot be undone.`
-          );
-          if (result) {
-              deleteUser({
-                  variables: {userID: getUserResult.data.user.id},
-                  refetchQueries: [{query: GET_USER, variables: {id: selectedUserID}}],
-              });
-          };
-      }
-      else {
-          window.alert("You don't have the privilege level to delete users!")
-      }
+      const fName = getUserResult.data.user.firstName;
+      const lName = getUserResult.data.user.lastName;
+      const result = window.confirm(
+          `Are you sure you wish to delete ${fName} ${lName}'s account? This cannot be undone.`
+      );
+      if (result) {
+          deleteUser({
+              variables: {userID: getUserResult.data.user.id},
+              refetchQueries: [{query: GET_USER, variables: {id: selectedUserID}}],
+          });
+      };
   }
 
   return (
