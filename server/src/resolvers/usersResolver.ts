@@ -83,19 +83,19 @@ const UsersResolvers = {
       {ifAllowed}: ApolloContext) => {
 
       return ifAllowed(
-          [Privilege.ADMIN],
-          async (user) => {
+        [Privilege.ADMIN],
+        async (user) => {
 
-            const userSubject = await UserRepo.getUserByID(args.userID);
+          const userSubject = await UserRepo.getUserByID(args.userID);
 
-            await createLog(
-                `{user} deleted {user}'s profile.`,
-                { id: user.id, label: getUsersFullName(user) },
-                { id: args.userID, label: getUsersFullName(userSubject) }
-            );
+          await createLog(
+            `{user} deleted {user}'s profile.`,
+            { id: user.id, label: getUsersFullName(user) },
+            { id: args.userID, label: getUsersFullName(userSubject) }
+          );
 
-            return await UserRepo.archiveUser(args.userID);
-          })
+          return await UserRepo.archiveUser(args.userID);
+        })
     },
   },
 };
