@@ -82,6 +82,15 @@ const UsersResolvers = {
       args: { userID: number },
       context: any
     ) => {
+
+      const userSubject = await UserRepo.getUserByID(args.userID);
+
+      await createLog(
+          `{user} deleted {user}'s profile.`,
+          { id: context.user.id, label: getUsersFullName(context.user) },
+          { id: args.userID, label: getUsersFullName(userSubject) }
+      );
+
       return await UserRepo.archiveUser(args.userID);
     },
   },
