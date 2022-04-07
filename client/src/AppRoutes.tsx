@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/admin/storefront_preview/StorefrontPreviewPage";
 import LeftNav from "./left_nav/LeftNav";
-import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
 import ManageEquipmentPage from "./pages/admin/manage_equipment/ManageEquipmentPage";
@@ -34,8 +33,6 @@ export default function AppRoutes() {
       />
 
       <Route path={"/"} element={<LeftNav />}>
-        <Route path="/create-reservation" element={<CreateReservationPage />} />
-
         <Route
           path="/maker/equipment"
           element={<EquipmentPage isAdmin={false} />}
