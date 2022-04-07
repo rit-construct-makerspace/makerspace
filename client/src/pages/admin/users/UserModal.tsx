@@ -73,6 +73,14 @@ export const CREATE_HOLD = gql`
   }
 `;
 
+export const DELETE_USER = gql`
+  mutation DeleteUser($userID: ID!) {
+    deleteUser(userID: $userID) {
+      id
+    }
+  }
+`;
+
 interface UserModalProps {
   selectedUserID: string;
   onClose: () => void;
@@ -82,6 +90,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const navigate = useNavigate();
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
   const [createHold] = useMutation(CREATE_HOLD);
+  const [deleteUser] = useMutation(DELETE_USER);
 
   useEffect(() => {
     if (selectedUserID) getUser({ variables: { id: selectedUserID } });
@@ -89,7 +98,6 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
   const handlePlaceHoldClicked = () => {
     const description = window.prompt("Enter hold description:");
-
     if (!description) {
       window.alert("Description required.");
       return;
@@ -100,6 +108,20 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
       refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }],
     });
   };
+
+  const handleDeleteUserClicked = () => {
+      let fName = getUserResult.data.user.firstName;
+      let lName = getUserResult.data.user.lastName;
+      let result = window.confirm(
+          `Are you sure you wish to delete ${fName} ${lName}'s account? This cannot be undone.`
+      );
+      if (result) {
+          deleteUser ({
+              variables: { userID: getUserResult.data.user.id},
+              refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }],
+          });
+      };
+  }
 
   return (
     <PrettyModal open={!!selectedUserID} onClose={onClose} width={600}>
@@ -175,10 +197,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
                 variant="outlined"
                 color="error"
                 startIcon={<DeleteIcon />}
-                onClick={() =>
-                  window.confirm(
-                    "Are you sure you wish to delete John Smith's account? This cannot be undone."
-                  )
+                onClick={() => handleDeleteUserClicked
                 }
               >
                 Delete account

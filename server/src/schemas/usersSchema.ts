@@ -110,6 +110,6 @@ export const UsersTypeDefs = gql`
 
     setPrivilege(userID: ID!, privilege: Privilege): User
 
-    archiveUser(userID: ID!): User
+    deleteUser(userID: ID!): User
   }
 `;

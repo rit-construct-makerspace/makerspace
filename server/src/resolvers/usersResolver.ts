@@ -77,7 +77,7 @@ const UsersResolvers = {
       );
     },
 
-    archiveUser: async (
+    deleteUser: async (
       parents: any,
       args: { userID: number },
       context: any
