@@ -5,7 +5,6 @@ import { v4 as uuid } from "uuid";
 import assert from "assert";
 import fs from "fs";
 import express from "express";
-import { MockStrategy } from "passport-mock-strategy";
 import {
   createUser,
   getUserByRitUsername,
@@ -31,51 +30,7 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
   };
 }
 
-export function setupMockAuth(app: express.Application) {
-  app.use(
-    session({
-      genid: (req) => uuid(),
-      secret: "mock-secret",
-    })
-  );
-
-  app.use(passport.initialize());
-  app.use(passport.session());
-
-  // override values on this object to match what mock user you want
-  const customUserObject = {
-    id: "12345",
-    name: "Adam Savage",
-    role: "labbie",
-  };
-
-  passport.use(
-    new MockStrategy({
-      // @ts-ignore
-      user: customUserObject,
-    })
-  );
-
-  app.get("/auth/mock", passport.authenticate("mock"), (req, res) => {
-    console.log("Mock Authenticating");
-    res.redirect("/");
-  });
-
-  passport.serializeUser(function (user, done) {
-    done(null, user);
-  });
-
-  passport.deserializeUser(function (user, done) {
-    // @ts-ignore
-    done(null, user);
-  });
-}
-
 export function setupAuth(app: express.Application) {
-  if (process.env.MOCK_AUTH === "TRUE") {
-    setupMockAuth(app);
-    return;
-  }
 
   const secret = process.env.SESSION_SECRET;
   const issuer = process.env.ISSUER;
