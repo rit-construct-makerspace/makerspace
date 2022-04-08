@@ -11,6 +11,7 @@ export async function up(knex: Knex): Promise<void> {
           t.integer('makerID').references('id').inTable('Users');
           t.timestamp("submissionDate").defaultTo(knex.fn.now());
           t.boolean("passed");
+          t.timestamp("expirationDate").defaultTo(knex.raw(`? + ?::INTERVAL`, [knex.fn.now(), '365 day']));
         });
       }
     });

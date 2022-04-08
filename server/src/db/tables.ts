@@ -43,6 +43,7 @@ export interface ModuleSubmissionRow {
   makerID: number;
   submissionDate: Date;
   passed: boolean;
+  expirationDate: Date;
 }
 
 export interface ModulesForEquipmentRow {
