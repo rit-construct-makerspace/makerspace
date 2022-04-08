@@ -18,6 +18,7 @@ import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPrevi
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResultPage from "./pages/maker/quiz_result/QuizResultPage";
+import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -41,6 +42,11 @@ export default function AppRoutes() {
         <Route
           path="/maker/equipment/:id"
           element={<EquipmentPage isAdmin={false} />}
+        />
+
+        <Route
+          path="/maker/create-reservation/:id"
+          element={<CreateReservationPage />}
         />
 
         <Route path="/maker/training" element={<TrainingPage />} />

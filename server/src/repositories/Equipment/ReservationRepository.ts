@@ -1,122 +1,149 @@
 import { knex } from "../../db";
-import { ReservationInput } from "../../models/equipment/reservationInput";
 import { EntityNotFound } from "../../EntityNotFound";
 import { ReservationRow, ReservationEventRow } from "../../db/tables";
+import { ReservationInput } from "../../schemas/reservationsSchema";
+import { formatISO, formatISO9075 } from "date-fns";
 
-export interface IReservationRepository {
-  getReservationById(id: number): Promise<ReservationRow>;
-  getReservations(): Promise<ReservationRow[]>;
-  createReservation(reservation: ReservationInput): Promise<ReservationRow>;
-  addComment(resID: number, authorID: number, commentText: string): Promise<ReservationEventRow>;
-  confirmReservation(resID: number): Promise<ReservationRow>;
-  cancelReservation(resID: number): Promise<ReservationRow>;
+export async function getReservationByID(id: number): Promise<ReservationRow> {
+  const reservation = await knex("Reservations").where({ id }).first();
+  if (!reservation)
+    throw new EntityNotFound("Could not find reservation #${id}");
+  return reservation;
 }
 
-export class ReservationRepository implements IReservationRepository {
-  private queryBuilder;
+export async function getReservations(): Promise<ReservationRow[]> {
+  return knex("Reservations").select();
+}
 
-  constructor(queryBuilder?: any) {
-    this.queryBuilder = queryBuilder || knex;
+export async function getReservationsByEquipmentID(
+  equipmentID: number,
+  start: Date,
+  end: Date
+) {
+  return knex("Reservations")
+    .select()
+    .where({ equipmentID })
+    .andWhere("startTime", ">=", formatISO9075(start))
+    .andWhere("endTime", "<=", formatISO9075(end));
+}
+
+export async function getReservationEvents(reservationID: number) {
+  return knex("ReservationEvents").select().where({ reservationID });
+}
+
+export async function userIsEligible(
+  userID: number,
+  equipmentID: number
+): Promise<boolean> {
+  const requiredModules = await knex("ModulesForEquipment")
+    .select()
+    .where("equipmentID", equipmentID);
+
+  for (let i = 0; i < requiredModules.length; i++) {
+    const eligibility = await knex("ModuleSubmissions")
+      .where({
+        moduleID: requiredModules[i].moduleID,
+        makerID: userID,
+        passed: true,
+      })
+      .orderBy("submissionDate", "desc")
+      .first();
+
+    if (!eligibility) return false;
   }
 
-  public async getReservationById(id: number): Promise<ReservationRow> {
-    const reservation = await knex("Reservations").where({ id }).first();
-    if (!reservation) throw new EntityNotFound("Could not find reservation #${id}");
-    return reservation;
-  }
+  return true;
+}
 
-  public async getReservations(): Promise<ReservationRow[]> {
-    return knex("Reservations").select();
-  }
+export async function noConflicts(
+  start: Date,
+  end: Date,
+  equipmentID: number
+): Promise<boolean> {
+  const startString = formatISO9075(start);
+  const endString = formatISO9075(end);
 
-  public async userIsEligible(reservation: ReservationInput): Promise<boolean> {
-    // get all modules needed for the equipment
-    const modules = (
-      await this.queryBuilder("ModulesForEquipment")
-      .select("trainingModuleId")
-      .where("equipmentId", reservation.equipmentID)
+  const overlappingReservations = await knex("Reservations")
+    .select()
+    .where({ equipmentID })
+    .whereBetween("startTime", [startString, endString])
+    .orWhereBetween("endTime", [startString, endString]);
+
+  if (overlappingReservations.length !== 0) return false;
+
+  const encompassingReservations = await knex("Reservations")
+    .select()
+    .where({ equipmentID })
+    .where("startTime", "<=", startString)
+    .andWhere("endTime", ">=", endString);
+
+  return encompassingReservations.length === 0;
+}
+
+export async function createReservation(
+  reservation: ReservationInput
+): Promise<ReservationRow> {
+  const [newID] = await knex("Reservations").insert(
+    {
+      makerID: reservation.makerID,
+      equipmentID: reservation.equipmentID,
+      startTime: reservation.startTime,
+      endTime: reservation.endTime,
+    },
+    "id"
+  );
+
+  if (reservation.startingMakerComment) {
+    await addComment(
+      newID,
+      reservation.makerID,
+      reservation.startingMakerComment
     );
-    let passed = true;
-    // get last submission from maker for every module
-    modules.forEach(async (module: any) => {
-      const eligibility = await this.queryBuilder("ModuleSubmissions")
-        .select("passed")
-        .where("moduleID", module.id)
-        .where("makerID", reservation.makerID)
-        .orderBy("submissionDate", "desc")
-        .limit(1)
-        .first();
-      if (!eligibility) {
-        passed = false;
-      }
-    });
-    return passed;
   }
 
-  public async noConflicts(reservation: ReservationInput): Promise<boolean> {
-      const conflicts = await this.queryBuilder("Reservations")
-        .select()
-        .whereBetween("startTime", [reservation.startTime, reservation.endTime])
-        .orWhereBetween("endTime", [reservation.startTime, reservation.endTime])
-        .orWhereBetween(reservation.startTime, ["startTime", "endTime"])
-        .orWhereBetween(reservation.endTime, ["startTime", "endTime"])
-        .as('t') 
-        .count("t.* as count");
-      if (conflicts == 0){
-        return true;
-      } else {
-        return false;
-      }
-  }
+  return getReservationByID(newID);
+}
 
+export async function addComment(
+  resID: number,
+  authorId: number,
+  commentText: string
+): Promise<ReservationEventRow> {
+  const [newID] = await knex("ReservationEvents").insert(
+    {
+      eventType: "COMMENT",
+      reservationID: resID,
+      userID: authorId,
+      payload: commentText,
+    },
+    "id"
+  );
 
-    public async createReservation(reservation: ReservationInput): Promise<ReservationRow> {
-      const [newId] = (
-        await this.queryBuilder("Reservations").insert(
-          {
-            makerID: reservation.makerID,
-            equipmentID: reservation.equipmentID,
-            startTime: reservation.startTime,
-            endTime: reservation.endTime
-          },
-          "id"
-        )
-      );
-      await this.addComment(newId, reservation.makerID, reservation.startingMakerComment);
-      return this.getReservationById(newId);
-    }
+  const commentID = await knex("ReservationEvents")
+    .where({ id: newID })
+    .first();
 
+  if (!commentID) throw new EntityNotFound(`Could not find comment #${newID}`);
 
-  public async addComment(resID: number, authorId: number, commentText: string): 
-  Promise<ReservationEventRow> {
-    const [newId] = (
-      await this.queryBuilder("ReservationEvents").insert(
-        {
-          eventType: "COMMENT",
-          reservationID: resID,
-          userID: authorId,
-          payload: commentText
-        },
-        "id"
-      )
-    );
-    
-    const commentID = await knex("ReservationEvents").where({ id: newId }).first();
-    if (!commentID) throw new EntityNotFound("Could not find comment #${newId}");
-    return commentID;
-  }
+  return commentID;
+}
 
-  public async confirmReservation(resID: number): Promise<ReservationRow> {
-    await this.queryBuilder("Reservations")
+export async function confirmReservation(
+  resID: number
+): Promise<ReservationRow> {
+  await knex("Reservations")
     .where("id", resID)
-    .update({status: "CONFIRMED", lastUpdated: Date.now()});
-    return this.getReservationById(resID);
-  }
+    .update({ status: "CONFIRMED", lastUpdated: knex.fn.now() });
 
-  public async cancelReservation(resID: number): Promise<ReservationRow> {
-    await this.queryBuilder("Reservations")
+  return getReservationByID(resID);
+}
+
+export async function cancelReservation(
+  resID: number
+): Promise<ReservationRow> {
+  await knex("Reservations")
     .where("id", resID)
-    .update({status: "CANCELLED", lastUpdated: Date.now()});
-    return this.getReservationById(resID);
-  }
+    .update({ status: "CANCELLED", lastUpdated: knex.fn.now() });
+
+  return getReservationByID(resID);
 }

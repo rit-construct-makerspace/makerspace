@@ -1,11 +1,12 @@
 import { gql } from "apollo-server-express";
 
-/*
-Potential future enhancements:
-  - Attach files to reservations
-  - Remove or edit reservation comments
-  - Reschedule reservations
- */
+export interface ReservationInput {
+  makerID: number;
+  equipmentID: number;
+  startTime: Date;
+  endTime: Date;
+  startingMakerComment: string;
+}
 
 export const ReservationsTypeDefs = gql`
   enum ReservationStatus {
@@ -47,22 +48,22 @@ export const ReservationsTypeDefs = gql`
   }
 
   input ReservationInput {
-    makerID: Int!
-    equipmentID: Int!
+    makerID: ID!
+    equipmentID: ID!
     startTime: DateTime!
     endTime: DateTime!
 
     """
-    If provided, a comment will automatically be placed on the reservation,
-    with the maker as the author.
+    If provided, a comment will automatically be placed
+    on the reservation on behalf of the maker.
     """
     startingMakerComment: String
   }
 
   type Mutation {
     createReservation(reservationInput: ReservationInput): Reservation
-    addComment(resID: ID!, commentText: String!): Reservation
-    cancelReservation(resID: ID!): Reservation
-    confirmReservation(resID: ID!): Reservation
+    addComment(reservationID: ID!, commentText: String!): Reservation
+    cancelReservation(reservationID: ID!): Reservation
+    confirmReservation(reservationID: ID!): Reservation
   }
 `;

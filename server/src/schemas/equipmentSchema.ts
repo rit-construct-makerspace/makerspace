@@ -7,13 +7,17 @@ export interface EquipmentInput {
 }
 
 export const EquipmentTypeDefs = gql`
+  type Timeslot {
+    time: DateTime!
+    available: Boolean!
+  }
+
   type Equipment {
     id: ID!
     name: String!
     room: Room!
     trainingModules: [TrainingModule]
-    addedAt: DateTime!
-    inUse: Boolean!
+    timeslots: [Timeslot]
   }
 
   input EquipmentInput {

@@ -1,76 +1,99 @@
-import { ReservationInput } from "../models/equipment/reservationInput";
-import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName, hashUniversityID } from "./usersResolver";
-
-const reservationRepo = new ReservationRepository();
+import { getUsersFullName } from "./usersResolver";
+import * as ReservationRepo from "../repositories/Equipment/ReservationRepository";
+import { ReservationInput } from "../schemas/reservationsSchema";
 
 const ReservationResolvers = {
-
   Query: {
-    reservations: async (_: any, args: { Id: number }, context: any) => {
-      return await reservationRepo.getReservations();
+    reservations: async (_parent: any) => {
+      return await ReservationRepo.getReservations();
     },
 
-    reservation: async (_: any, args: { Id: number }, context: any) => {
-      return await reservationRepo.getReservationById(args.Id);
-    }
+    reservation: async (_: any, args: { id: number }) => {
+      return await ReservationRepo.getReservationByID(args.id);
+    },
   },
 
   Mutation: {
-
-    createReservation:async (
+    createReservation: async (
       _parent: any,
       args: { reservation: ReservationInput },
       { ifAllowed }: ApolloContext
     ) => {
-      ifAllowed([Privilege.MAKER], async (user) => {
-        const eligible = await reservationRepo.userIsEligible(args.reservation);
-        const noConflicts = await reservationRepo.noConflicts(args.reservation);
-        if (eligible && noConflicts) {
-          const reservation = await reservationRepo.createReservation(args.reservation);
+      ifAllowed(
+        [Privilege.MAKER, Privilege.LABBIE, Privilege.ADMIN],
+        async (user) => {
+          const eligible = await ReservationRepo.userIsEligible(
+            args.reservation.makerID,
+            args.reservation.equipmentID
+          );
 
-        await createLog(
-          "{user} created the {reservation} reservation.",
-          { id: user.id, label: getUsersFullName(user) },
-          { id: reservation.id, label: reservation.id.toString() }
-        );
+          if (!eligible)
+            throw new Error(
+              "User has not completed all required training modules"
+            );
 
-        return reservation;
+          const noConflicts = await ReservationRepo.noConflicts(
+            args.reservation.startTime,
+            args.reservation.endTime,
+            args.reservation.equipmentID
+          );
 
-        } else {
-          return null;
+          if (!noConflicts)
+            throw new Error(
+              "Reservation would conflict with existing reservations"
+            );
+
+          const reservation = await ReservationRepo.createReservation(
+            args.reservation
+          );
+
+          await createLog(
+            "{user} created reservation #{reservation}.",
+            { id: user.id, label: getUsersFullName(user) },
+            { id: reservation.id, label: reservation.id.toString() }
+          );
+
+          return reservation;
         }
-        
-      })
+      );
     },
 
-    addComment: async (_parent: any, args: { resID: number, commentText: string },
-    { ifAllowed }: ApolloContext) => 
-        ifAllowed([Privilege.MAKER], async (user) => {
-          return await reservationRepo.addComment(args.resID, user.id, args.commentText);
-    }),
+    addComment: async (
+      _parent: any,
+      args: { resID: number; commentText: string },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.MAKER], async (user) => {
+        return await ReservationRepo.addComment(
+          args.resID,
+          user.id,
+          args.commentText
+        );
+      }),
 
-    confirmReservation: async (_parent: any,
+    confirmReservation: async (
+      _parent: any,
       args: { resID: number },
       { ifAllowed }: ApolloContext
     ) => {
       ifAllowed([Privilege.LABBIE], async (user) => {
-        return await reservationRepo.confirmReservation(args.resID);
-    });
+        return await ReservationRepo.confirmReservation(args.resID);
+      });
     },
 
-    cancelReservation: async (_parent: any,
+    cancelReservation: async (
+      _parent: any,
       args: { resID: number },
       { ifAllowed }: ApolloContext
     ) => {
       ifAllowed([Privilege.LABBIE], async (user) => {
-        return await reservationRepo.cancelReservation(args.resID);
-    });
-    }
-  }
+        return await ReservationRepo.cancelReservation(args.resID);
+      });
+    },
+  },
 };
 
 export default ReservationResolvers;
