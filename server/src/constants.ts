@@ -7,7 +7,7 @@ export const LAB_HOURS = [
   { open: 9, close: 21 }, // tuesday
   { open: 9, close: 21 }, // wednesday
   { open: 9, close: 21 }, // thursday
-  { open: 9, close: 16 }, // friday
+  { open: 9, close: 17 }, // friday
   { open: 12, close: 17 }, // saturday
 ];
 

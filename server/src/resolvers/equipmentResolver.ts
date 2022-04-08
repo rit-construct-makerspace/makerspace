@@ -12,7 +12,7 @@ import {
   addMinutes,
   eachMinuteOfInterval,
   endOfToday,
-  setHours,
+  isPast,
   startOfToday,
 } from "date-fns";
 import {
@@ -23,14 +23,24 @@ import {
 
 function withinLabHours(timeslot: Date) {
   const labHours = LAB_HOURS[timeslot.getDay()];
-  const labOpen = setHours(new Date(timeslot), labHours.open);
-  const labClose = setHours(new Date(timeslot), labHours.close);
-  return timeslot >= labOpen && timeslot <= labClose;
+
+  const labOpen = new Date(timeslot);
+  labOpen.setHours(labHours.open, 0, 0);
+
+  const labClose = new Date(timeslot);
+  labClose.setHours(labHours.close, 0, 0);
+
+  return timeslot >= labOpen && timeslot < labClose;
 }
 
-function noConflicts(timeslot: Date, existingReservations: ReservationRow[]) {
+function timeslotAvailable(
+  timeslot: Date,
+  existingReservations: ReservationRow[]
+) {
   const start = timeslot;
   const end = addMinutes(timeslot, TIMESLOT_DURATION - 1);
+
+  if (isPast(start)) return false;
 
   return existingReservations.every((r) => {
     if (start >= r.startTime && start <= r.endTime) return false;
@@ -74,7 +84,7 @@ const EquipmentResolvers = {
         .filter(withinLabHours)
         .map((ts) => ({
           time: ts,
-          available: noConflicts(ts, existingReservations),
+          available: timeslotAvailable(ts, existingReservations),
         }));
     },
   },
