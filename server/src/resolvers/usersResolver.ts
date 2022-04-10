@@ -77,12 +77,27 @@ const UsersResolvers = {
       );
     },
 
-    archiveUser: async (
+    deleteUser: async (
       parents: any,
       args: { userID: number },
-      context: any
+      {ifAllowed}: ApolloContext
     ) => {
-      return await UserRepo.archiveUser(args.userID);
+
+      return ifAllowed(
+        [Privilege.ADMIN],
+        async (user) => {
+
+          const userSubject = await UserRepo.getUserByID(args.userID);
+
+          await createLog(
+            `{user} deleted {user}'s profile.`,
+            { id: user.id, label: getUsersFullName(user) },
+            { id: args.userID, label: getUsersFullName(userSubject) }
+          );
+
+          return await UserRepo.archiveUser(args.userID);
+        }
+      );
     },
   },
 };

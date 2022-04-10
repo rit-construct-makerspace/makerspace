@@ -12,6 +12,7 @@ import HistoryIcon from "@mui/icons-material/History";
 import PrivilegeControl from "./PrivilegeControl";
 import { useNavigate } from "react-router-dom";
 import HoldCard from "./HoldCard";
+import Privilege from "../../../types/Privilege";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -73,6 +74,14 @@ export const CREATE_HOLD = gql`
   }
 `;
 
+export const DELETE_USER = gql`
+  mutation DeleteUser($userID: ID!) {
+    deleteUser(userID: $userID) {
+      id
+    }
+  }
+`;
+
 interface UserModalProps {
   selectedUserID: string;
   onClose: () => void;
@@ -82,6 +91,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const navigate = useNavigate();
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
   const [createHold] = useMutation(CREATE_HOLD);
+  const [deleteUser] = useMutation(DELETE_USER);
 
   useEffect(() => {
     if (selectedUserID) getUser({ variables: { id: selectedUserID } });
@@ -89,7 +99,6 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
   const handlePlaceHoldClicked = () => {
     const description = window.prompt("Enter hold description:");
-
     if (!description) {
       window.alert("Description required.");
       return;
@@ -100,6 +109,20 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
       refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }],
     });
   };
+
+  const handleDeleteUserClicked = () => {
+    const fName = getUserResult.data.user.firstName;
+    const lName = getUserResult.data.user.lastName;
+    const result = window.confirm(
+      `Are you sure you wish to delete ${fName} ${lName}'s account? This cannot be undone.`
+    );
+    if (result) {
+      deleteUser({
+        variables: {userID: getUserResult.data.user.id},
+        refetchQueries: [{query: GET_USER, variables: {id: selectedUserID}}],
+      });
+    };
+  }
 
   return (
     <PrettyModal open={!!selectedUserID} onClose={onClose} width={600}>
@@ -171,18 +194,17 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             </Typography>
 
             <Stack direction="row" spacing={2}>
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<DeleteIcon />}
-                onClick={() =>
-                  window.confirm(
-                    "Are you sure you wish to delete John Smith's account? This cannot be undone."
-                  )
-                }
-              >
-                Delete account
-              </Button>
+              {getUserResult.data.user.privilege === Privilege.ADMIN &&
+                  <Button
+                      variant="outlined"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      onClick={() => handleDeleteUserClicked
+                      }
+                  >
+                      Delete account
+                  </Button>
+              }
               <Button
                 startIcon={<HistoryIcon />}
                 variant="outlined"
