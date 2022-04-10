@@ -80,7 +80,8 @@ const UsersResolvers = {
     deleteUser: async (
       parents: any,
       args: { userID: number },
-      {ifAllowed}: ApolloContext) => {
+      {ifAllowed}: ApolloContext
+    ) => {
 
       return ifAllowed(
         [Privilege.ADMIN],
@@ -95,7 +96,8 @@ const UsersResolvers = {
           );
 
           return await UserRepo.archiveUser(args.userID);
-        })
+        }
+      );
     },
   },
 };
