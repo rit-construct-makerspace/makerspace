@@ -53,7 +53,7 @@ export const UsersTypeDefs = gql`
     """
     The nine digit number encoded in the mag strip of RIT ID cards.
     Can also be found on the eServices and/or myRIT portals.
-    Sensitive information. Stored as a SHA256 hash in the database.
+    Sensitive information. Stored as a SHA256 hash with salt in the database.
     Not to be confused with RIT usernames (ie. abc1234)
     """
     universityID: String!
