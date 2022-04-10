@@ -72,9 +72,9 @@ const UsersResolvers = {
     },
 
     setPrivilege: async (
-        _: any,
-        { userID, privilege }: { userID: number; privilege: Privilege },
-        context: ApolloContext
+      _: any,
+      { userID, privilege }: { userID: number; privilege: Privilege },
+      context: ApolloContext
     ) => {
       assert(context.user);
 
@@ -82,18 +82,33 @@ const UsersResolvers = {
       assert(userSubject);
 
       await createLog(
-          `{user} set {user}'s access level to ${privilege}.`,
-          { id: context.user.id, label: getUsersFullName(context.user) },
-          { id: userSubject.id, label: getUsersFullName(userSubject) }
+        `{user} set {user}'s access level to ${privilege}.`,
+        { id: context.user.id, label: getUsersFullName(context.user) },
+        { id: userSubject.id, label: getUsersFullName(userSubject) }
       );
     },
 
-    archiveUser: async (
-        parents: any,
-        args: { userID: number },
-        context: any
+    deleteUser: async (
+      parents: any,
+      args: { userID: number },
+      {ifAllowed}: ApolloContext
     ) => {
-      return await UserRepo.archiveUser(args.userID);
+
+      return ifAllowed(
+        [Privilege.ADMIN],
+        async (user) => {
+
+          const userSubject = await UserRepo.getUserByID(args.userID);
+
+          await createLog(
+            `{user} deleted {user}'s profile.`,
+            { id: user.id, label: getUsersFullName(user) },
+            { id: args.userID, label: getUsersFullName(userSubject) }
+          );
+
+          return await UserRepo.archiveUser(args.userID);
+        }
+      );
     },
   },
 };
