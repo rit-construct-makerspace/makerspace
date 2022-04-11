@@ -13,10 +13,7 @@ export function getUsersFullName(user: UserRow) {
 
 export function hashUniversityID(universityID: string, salt: string) {
   const hashed = createHash("sha256").update(universityID + salt).digest("hex");
-  return {
-    salt: salt,
-    hashedValue: hashed
-  };
+  return hashed + ":" + salt;
 }
 
 const UsersResolvers = {
@@ -57,17 +54,12 @@ const UsersResolvers = {
       context: any
     ) => {
 
-      const length = 16; //salt length
-
-      const salt = randomBytes(Math.ceil(length/2))
-        .toString('hex')
-        .slice(0,length);
-
+      const salt = randomBytes(Math.ceil(16)).toString('hex')
       const hashedUniversityID = hashUniversityID(args.universityID, salt);
 
       return await UserRepo.updateStudentProfile({
         ...args,
-        universityID: hashedUniversityID.hashedValue + ":" + hashedUniversityID.salt,
+        universityID: hashedUniversityID,
       });
     },
 
