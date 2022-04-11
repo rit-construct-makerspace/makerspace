@@ -5,16 +5,16 @@ import { gql, useQuery } from "@apollo/client";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import {
   Avatar,
-  Button,
   Stack,
   Step,
-  StepLabel,
+  StepButton,
   Stepper,
   Typography,
 } from "@mui/material";
-import { format } from "date-fns";
-import styled from "styled-components";
-import SelectStartStep from "./SelectStartStep";
+import StartTimeStep from "./steps/StartTimeStep";
+import EndTimeStep from "./steps/EndTimeStep";
+import FilesAndNotesStep from "./steps/FilesAndNotesStep";
+import ConfirmStep from "./steps/ConfirmStep";
 
 export interface Timeslot {
   time: string;
@@ -43,6 +43,21 @@ export default function CreateReservationPage() {
   });
 
   const [activeStep, setActiveStep] = useState(0);
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const [comment, setComment] = useState("");
+
+  const handleStartTimeClicked = (time: string) => {
+    setStartTime(time);
+    setActiveStep(1);
+  };
+
+  const handleEndTimeClicked = (time: string) => {
+    setEndTime(time);
+    setActiveStep(2);
+  };
+
+  const handleBackClicked = () => setActiveStep(activeStep - 1);
 
   return (
     <RequestWrapper2
@@ -61,22 +76,51 @@ export default function CreateReservationPage() {
               </Stack>
             </Stack>
 
-            <Stepper activeStep={0} sx={{ mt: 8 }}>
-              <Step>
-                <StepLabel>Start time</StepLabel>
-              </Step>
-              <Step>
-                <StepLabel>End time</StepLabel>
-              </Step>
-              <Step>
-                <StepLabel>Files & notes</StepLabel>
-              </Step>
-              <Step>
-                <StepLabel>Confirm</StepLabel>
-              </Step>
+            <Stepper activeStep={activeStep} sx={{ my: 8 }}>
+              {["Start time", "End time", "Files & notes", "Confirm"].map(
+                (label, index) => (
+                  <Step key={label}>
+                    <StepButton onClick={() => setActiveStep(index)}>
+                      {label}
+                    </StepButton>
+                  </Step>
+                )
+              )}
             </Stepper>
 
-            <SelectStartStep timeslots={equipment.timeslots} />
+            {activeStep === 0 && (
+              <StartTimeStep
+                timeslots={equipment.timeslots}
+                onStartTimeClicked={handleStartTimeClicked}
+              />
+            )}
+
+            {activeStep === 1 && (
+              <EndTimeStep
+                timeslots={equipment.timeslots}
+                startTime={startTime}
+                onEndTimeClicked={handleEndTimeClicked}
+                onBackClicked={handleBackClicked}
+              />
+            )}
+
+            {activeStep === 2 && (
+              <FilesAndNotesStep
+                comment={comment}
+                setComment={setComment}
+                onBackClicked={handleBackClicked}
+                onNextClicked={() => setActiveStep(3)}
+              />
+            )}
+
+            {activeStep === 3 && (
+              <ConfirmStep
+                startTime={startTime}
+                endTime={endTime}
+                comment={comment}
+                onBackClicked={handleBackClicked}
+              />
+            )}
           </Page>
         );
       }}

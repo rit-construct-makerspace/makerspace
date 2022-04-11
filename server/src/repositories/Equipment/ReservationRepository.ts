@@ -80,25 +80,28 @@ export async function noConflicts(
   return encompassingReservations.length === 0;
 }
 
-export async function createReservation(
-  reservation: ReservationInput
-): Promise<ReservationRow> {
+export async function createReservation({
+  makerID,
+  equipmentID,
+  startTime,
+  endTime,
+  comment,
+}: ReservationInput): Promise<ReservationRow> {
+  const startString = formatISO9075(startTime);
+  const endString = formatISO9075(endTime);
+
   const [newID] = await knex("Reservations").insert(
     {
-      makerID: reservation.makerID,
-      equipmentID: reservation.equipmentID,
-      startTime: reservation.startTime,
-      endTime: reservation.endTime,
+      makerID,
+      equipmentID,
+      startTime: startString,
+      endTime: endString,
     },
     "id"
   );
 
-  if (reservation.startingMakerComment) {
-    await addComment(
-      newID,
-      reservation.makerID,
-      reservation.startingMakerComment
-    );
+  if (comment) {
+    await addComment(newID, makerID, comment);
   }
 
   return getReservationByID(newID);

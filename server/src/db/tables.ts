@@ -64,8 +64,8 @@ export interface ReservationRow {
   id: number;
   makerID: number;
   createDate: Date;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   equipmentID: number;
   status: string;
   lastUpdated: Date;

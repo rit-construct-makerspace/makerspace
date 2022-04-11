@@ -5,7 +5,7 @@ export interface ReservationInput {
   equipmentID: number;
   startTime: Date;
   endTime: Date;
-  startingMakerComment: string;
+  comment: string;
 }
 
 export const ReservationsTypeDefs = gql`
@@ -57,11 +57,11 @@ export const ReservationsTypeDefs = gql`
     If provided, a comment will automatically be placed
     on the reservation on behalf of the maker.
     """
-    startingMakerComment: String
+    comment: String
   }
 
   type Mutation {
-    createReservation(reservationInput: ReservationInput): Reservation
+    createReservation(reservation: ReservationInput): Reservation
     addComment(reservationID: ID!, commentText: String!): Reservation
     cancelReservation(reservationID: ID!): Reservation
     confirmReservation(reservationID: ID!): Reservation

@@ -43,9 +43,12 @@ function timeslotAvailable(
   if (isPast(start)) return false;
 
   return existingReservations.every((r) => {
-    if (start >= r.startTime && start <= r.endTime) return false;
-    if (end >= r.startTime && end <= r.endTime) return false;
-    return !(r.startTime <= start && r.endTime >= end);
+    const resStart = new Date(r.startTime);
+    const resEnd = new Date(r.endTime);
+
+    if (start >= resStart && start <= resEnd) return false;
+    if (end >= resStart && end <= resEnd) return false;
+    return !(resStart <= start && resEnd >= end);
   });
 }
 

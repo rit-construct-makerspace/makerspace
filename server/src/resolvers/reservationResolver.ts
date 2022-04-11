@@ -21,7 +21,7 @@ const ReservationResolvers = {
       _parent: any,
       args: { reservation: ReservationInput },
       { ifAllowed }: ApolloContext
-    ) => {
+    ) =>
       ifAllowed(
         [Privilege.MAKER, Privilege.LABBIE, Privilege.ADMIN],
         async (user) => {
@@ -58,8 +58,7 @@ const ReservationResolvers = {
 
           return reservation;
         }
-      );
-    },
+      ),
 
     addComment: async (
       _parent: any,

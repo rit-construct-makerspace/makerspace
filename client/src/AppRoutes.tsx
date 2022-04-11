@@ -13,7 +13,7 @@ import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
-import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
+import ReservationsPage from "./pages/both/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
@@ -34,6 +34,11 @@ export default function AppRoutes() {
       />
 
       <Route path={"/"} element={<LeftNav />}>
+        <Route
+          path="/maker/reservations"
+          element={<ReservationsPage isAdmin={false} />}
+        />
+
         <Route
           path="/maker/equipment"
           element={<EquipmentPage isAdmin={false} />}
@@ -70,7 +75,10 @@ export default function AppRoutes() {
 
         <Route path="/admin/inventory" element={<InventoryPage />} />
 
-        <Route path="/admin/reservations" element={<ReservationsPage />} />
+        <Route
+          path="/admin/reservations"
+          element={<ReservationsPage isAdmin={true} />}
+        />
 
         <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
 
