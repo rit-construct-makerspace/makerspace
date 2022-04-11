@@ -1,12 +1,12 @@
 import * as RoomRepo from "../repositories/Rooms/RoomRepository";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import * as UserRepo from "../repositories/Users/UserRepository";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName, hashUniversityID } from "./usersResolver";
+import {createLog} from "../repositories/AuditLogs/AuditLogRepository";
+import {getUsersFullName, hashUniversityID} from "./usersResolver";
 import assert from "assert";
-import { Room } from "../models/rooms/room";
-import { ApolloContext } from "../context";
-import { Privilege } from "../schemas/usersSchema";
+import {Room} from "../models/rooms/room";
+import {ApolloContext} from "../context";
+import {Privilege} from "../schemas/usersSchema";
 
 const RoomResolvers = {
   Query: {
@@ -58,35 +58,38 @@ const RoomResolvers = {
 
     swipeIntoRoom: async (
       _parent: any,
-      args: { roomID: number; universityID: string }
+      args: { roomID: number; universityID: string },
+      {ifAllowed}: ApolloContext
     ) => {
-      const room = await RoomRepo.getRoomByID(args.roomID);
-      assert(room);
+      return ifAllowed(
+        [Privilege.MAKER, Privilege.LABBIE, Privilege.ADMIN],
+        async (currentUser) => {
 
-      let hashedUIDString = "";
+          const room = await RoomRepo.getRoomByID(args.roomID);
+          assert(room);
 
-      const users = await UserRepo.getUsers();
-      users.forEach(user => {
-        const hash = user.universityID.split(":");
-        const hashedUniversityID = hashUniversityID(args.universityID, hash[1]);
-        if (hashedUniversityID.hashedValue === hash[0]){
-          hashedUIDString = hashedUniversityID.hashedValue + ":" + hashedUniversityID.salt;
-        }
-      });
+          let hashedUIDString = "";
 
-      const user = await UserRepo.getUserByUniversityID(hashedUIDString);
+          const hash = currentUser.universityID.split(":");
+          const hashedUniversityID = hashUniversityID(args.universityID, hash[1]);
+          if (hashedUniversityID === currentUser.universityID) {
+            hashedUIDString = hashedUniversityID;
+          }
 
-      if (!user) return null;
+          const user = await UserRepo.getUserByUniversityID(hashedUIDString);
 
-      await RoomRepo.swipeIntoRoom(args.roomID, user.id);
+          if (!user) return null;
 
-      await createLog(
-        "{user} swiped into the {room}.",
-        { id: user.id, label: getUsersFullName(user) },
-        { id: room.id, label: room.name }
-      );
+          await RoomRepo.swipeIntoRoom(args.roomID, user.id);
 
-      return user;
+          await createLog(
+              "{user} swiped into the {room}.",
+              {id: user.id, label: getUsersFullName(user)},
+              {id: room.id, label: room.name}
+          );
+
+          return user;
+        })
     },
   },
 };
