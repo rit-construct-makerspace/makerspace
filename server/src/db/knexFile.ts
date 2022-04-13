@@ -41,15 +41,25 @@ module.exports = {
   },
 
   test: {
-    client: "sqlite3",
-    connection: ":memory:",
-    useNullAsDefault: true,
+    client: "pg",
+    connection: {
+      host: "localhost",
+      user: process.env.POSTGRES_USER,
+      database: process.env.POSTGRES_DB,
+      password: process.env.POSTGRES_PASSWORD,
+      port: 5433,
+    },
+    pool: {
+      min: 2,
+      max: 10,
+    },
     migrations: {
       tableName: "knex_migrations",
-      directory: "src/db/migrations",
+      directory: "dist/db/migrations",
     },
     seeds: {
       directory: "seeds",
     },
   },
+
 };

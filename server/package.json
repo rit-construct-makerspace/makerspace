@@ -36,7 +36,6 @@
     "passport": "^0.5.2",
     "passport-saml": "^3.2.1",
     "pg": "^8.7.1",
-    "sqlite3": "^5.0.2",
     "uuid": "^8.3.2"
   },
   "description": "",

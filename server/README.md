@@ -89,7 +89,7 @@ The issuer (also sometimes refered to as a domain or entityID) is an identifier 
 
 - Run the Transpiled code `npm run start`
 
-- Test with jest `npm run test`
+- Test with jest: tests will use a separate db container, build with `docker-compose build` and start with `docker-compose up -d testdb`, then run tests with `npm run test`
 
 - Test and watch `npm run test.watch`
 
