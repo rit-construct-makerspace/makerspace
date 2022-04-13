@@ -13,7 +13,7 @@ describe("InventoryRepository test set", () => {
     // reset tables...
     const tables = ["InventoryItem", "Label", "InventoryItemLabel"];
     tables.forEach(async (t) => {
-      await knex(t).del().where("id", "!=", "null");
+      await knex(t).del();
     });
   });
 

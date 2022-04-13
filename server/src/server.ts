@@ -1,12 +1,11 @@
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
-import { createServer } from "https";
+import { createServer } from "http";
 import compression from "compression";
 import cors from "cors";
 import { schema } from "./schema";
 import dotenv from "dotenv";
-import fs from "fs";
 import { setupAuth } from "./auth";
 import context from "./context";
 
@@ -40,19 +39,15 @@ async function startServer() {
     cors: CORS_CONFIG,
   });
 
-  const httpsServer = createServer(
-    {
-      key: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
-      cert: fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8"),
-    },
+  const httpServer = createServer(
     app
   );
 
   const PORT = process.env.PORT || 3000;
 
-  httpsServer.listen({ port: PORT }, (): void =>
+  httpServer.listen({ port: PORT }, (): void =>
     console.log(
-      `🚀 GraphQL-Server is running on https://localhost:${PORT}/graphql`
+      `🚀 GraphQL-Server is running on http://localhost:${PORT}/graphql`
     )
   );
 }

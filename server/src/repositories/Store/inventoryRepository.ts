@@ -29,7 +29,7 @@ export async function getItems(): Promise<InventoryItem[]> {
     "InventoryItem.count",
     "InventoryItem.pricePerUnit",
     "InventoryItem.threshold"
-  );
+  ).where('archived', false);
   return inventoryItemsToDomain(knexResult);
 }
 

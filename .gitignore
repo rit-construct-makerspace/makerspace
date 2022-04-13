@@ -11,3 +11,4 @@ process.env
 # Transpiled Server Files
 server/dist
 
+server/cert
