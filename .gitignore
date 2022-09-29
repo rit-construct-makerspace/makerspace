@@ -3,8 +3,9 @@
 process.env
 .env
 .vscode
-.pem
+*.pem
 /client/coverage
+/server/coverage
 /docs/.jekyll-cache
 /docs/_site
 

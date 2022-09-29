@@ -68,7 +68,11 @@ export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
   const location = useLocation();
 
   // If the current user is null, redirect to SSO login
-  if (!result.loading && !result.data.currentUser) {
+  if (
+    result &&
+    !result.loading &&
+    !result.data?.currentUser
+  ) {
     window.location.replace(loginUrl);
     return null;
   }
