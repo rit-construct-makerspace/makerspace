@@ -6,6 +6,7 @@ import Question from "./Question";
 import styled, { css } from "styled-components";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
+import { GET_CURRENT_USER } from "../../../common/CurrentUserProvider";
 
 const elevationTwoShadow = css`
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -54,6 +55,9 @@ export default function QuizTaker({ module }: QuizTakerProps) {
 
   const [submitModule, result] = useMutation(SUBMIT_MODULE, {
     variables: { moduleID: module.id, answerSheet },
+    refetchQueries: [
+      {query: GET_CURRENT_USER}
+    ]
   });
 
   const selectMultipleChoiceOption = (itemID: string, optionID: string) =>
