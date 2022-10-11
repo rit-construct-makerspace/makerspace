@@ -130,6 +130,17 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
         result={getUserResult}
         render={({ user }) => (
           <Stack>
+            <Button
+              sx={{ width: 2, height: 20 }}
+              onClick={() => navigate("/admin/people")}
+              style={{
+                position: 'absolute',
+                right: 5,
+                top: 20,
+                }}
+              >
+                X
+              </Button>
             <Stack direction="row" alignItems="center" spacing={2} mb={4}>
               <Avatar
                 alt=""
