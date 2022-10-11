@@ -43,7 +43,6 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
 
           return (
             <Stack>
-
               <Button
               sx={{ width: 2, height: 20 }}
               onClick={() => navigate("/maker/equipment")}
