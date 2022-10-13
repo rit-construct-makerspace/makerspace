@@ -43,17 +43,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
 
           return (
             <Stack>
-              <Button
-              sx={{ width: 2, height: 20 }}
-              onClick={() => navigate("/maker/equipment")}
-              style={{
-                position: 'absolute',
-                right: 5,
-                top: 20,
-                }}
-              >
-                X
-              </Button>
+             <CloseButton onClick={() => navigate("/maker/equipment")}/>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar
                   sx={{ width: 80, height: 80 }}

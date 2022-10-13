@@ -13,6 +13,7 @@ import PrivilegeControl from "./PrivilegeControl";
 import { useNavigate } from "react-router-dom";
 import HoldCard from "./HoldCard";
 import Privilege from "../../../types/Privilege";
+import CloseButton from "../../../common/CloseButton";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -130,17 +131,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
         result={getUserResult}
         render={({ user }) => (
           <Stack>
-            <Button
-              sx={{ width: 2, height: 20 }}
-              onClick={() => navigate("/admin/people")}
-              style={{
-                position: 'absolute',
-                right: 5,
-                top: 20,
-                }}
-              >
-                X
-              </Button>
+            <CloseButton onClick={() => navigate("/admin/people")}/>
             <Stack direction="row" alignItems="center" spacing={2} mb={4}>
               <Avatar
                 alt=""
