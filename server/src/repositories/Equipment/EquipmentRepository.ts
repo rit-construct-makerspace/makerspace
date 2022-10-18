@@ -1,5 +1,5 @@
 import { knex } from "../../db";
-import { TrainingModule } from "../../schemas/trainingSchema";
+import { TrainingModule } from "../../schemas/trainingModuleSchema";
 import { EntityNotFound } from "../../EntityNotFound";
 import { EquipmentRow, TrainingModuleRow } from "../../db/tables";
 import { EquipmentInput } from "../../schemas/equipmentSchema";

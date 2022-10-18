@@ -79,7 +79,7 @@ export async function addTrainingModuleAttemptToUser(
   moduleID: number,
   passed: boolean
 ) {
-  await knex("ModuleSubmissions").insert({ makerID, moduleID, passed });
+  return await knex("ModuleSubmissions").insert({ makerID, moduleID, passed }).returning('id');
 }
 
 export async function archiveUser(userID: number): Promise<UserRow> {

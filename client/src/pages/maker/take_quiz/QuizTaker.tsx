@@ -7,6 +7,7 @@ import styled, { css } from "styled-components";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import { GET_CURRENT_USER } from "../../../common/CurrentUserProvider";
+import { useNavigate } from "react-router-dom";
 
 const elevationTwoShadow = css`
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -79,6 +80,13 @@ export default function QuizTaker({ module }: QuizTakerProps) {
         : draft[itemIndex].optionIDs.splice(optionIndex, 1);
     });
 
+  const navigate = useNavigate();
+
+  const submitAndViewResults = async () => {
+    await submitModule();
+    navigate(`results`);
+  };
+
   return (
     <Stack spacing={4}>
       {module.quiz.map((quizItem) => {
@@ -128,7 +136,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
         loading={result.loading}
         variant="contained"
         sx={{ alignSelf: "flex-end" }}
-        onClick={() => submitModule()}
+        onClick={() => submitAndViewResults()}
       >
         Submit
       </LoadingButton>
