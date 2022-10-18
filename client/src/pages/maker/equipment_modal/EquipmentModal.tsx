@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENT } from "../../admin/manage_equipment/ExistingEquipment";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
-import { Avatar, Button, Divider, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Divider, Icon, Stack, Typography } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import TrainingModuleRow from "../../../common/TrainingModuleRow";
@@ -12,6 +12,8 @@ import {
   ModuleStatus,
   moduleStatusMapper,
 } from "../../../common/TrainingModuleUtils";
+import { HideSource } from "@mui/icons-material";
+import CloseButton from "../../../common/CloseButton";
 
 interface EquipmentModalProps {
   equipmentID: string;
@@ -41,6 +43,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
 
           return (
             <Stack>
+             <CloseButton onClick={() => navigate("/maker/equipment")}/>
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar
                   sx={{ width: 80, height: 80 }}
@@ -69,6 +72,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
               >
                 Create reservation
               </Button>
+              
             </Stack>
           );
         }}
