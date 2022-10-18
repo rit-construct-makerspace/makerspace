@@ -10,6 +10,8 @@ import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { useImmer } from "use-immer";
 import { QuizItem } from "../../../types/Quiz";
 import GET_TRAINING_MODULES from "../../../queries/getModules";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const GET_MODULE = gql`
   query GetModule($id: ID!) {
@@ -60,7 +62,20 @@ export default function EditModulePage() {
     onCompleted: () => navigate("/admin/training"),
   });
 
-  const handleSaveClicked = () =>
+  const trainingModSavedAnimation = () => {
+    toast.success('Training Module Saved', {
+      position: "bottom-left",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+  }
+
+  const handleSaveClicked = () => {
     updateModule({
       variables: { id, name, quiz },
       refetchQueries: [
@@ -68,6 +83,8 @@ export default function EditModulePage() {
         { query: GET_TRAINING_MODULES },
       ],
     });
+    trainingModSavedAnimation();
+  }
 
   const handleDeleteClicked = () => {
     if (!window.confirm("Are you sure you want to delete this module?")) return;
@@ -79,6 +96,18 @@ export default function EditModulePage() {
       result={queryResult}
       render={() => (
         <Page title="Edit training module" maxWidth="600px">
+          <ToastContainer
+            position="bottom-left"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            />
           <Stack direction="row" justifyContent="space-between" sx={{ mb: 8 }}>
             <TextField
               label="Module title"
