@@ -1,5 +1,5 @@
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import { AnswerInput } from "../schemas/trainingSchema";
+import { AnswerInput } from "../schemas/trainingModuleSchema";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
@@ -18,7 +18,7 @@ const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   }
 };
 
-const TrainingResolvers = {
+const TrainingModuleResolvers = {
   Query: {
     modules: async (
       _parent: any,
@@ -159,19 +159,19 @@ const TrainingResolvers = {
             user.id,
             args.moduleID,
             grade >= MODULE_PASSING_THRESHOLD
-          );
-
-          await createLog(
-            `{user} submitted attempt of {module} with a grade of ${grade}.`,
-            { id: user.id, label: getUsersFullName(user) },
-            { id: args.moduleID, label: name }
-          );
-
-          return grade;
+          ).then(async (id) => {
+            await createLog(
+              `{user} submitted attempt of {module} with a grade of ${grade}.`,
+              { id: user.id, label: getUsersFullName(user) },
+              { id: args.moduleID, label: name }
+            );
+  
+            return id;
+          });
         }
       );
     },
   },
 };
 
-export default TrainingResolvers;
+export default TrainingModuleResolvers;

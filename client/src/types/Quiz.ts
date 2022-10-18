@@ -24,3 +24,12 @@ export interface Module {
   name: string;
   quiz: QuizItem[];
 }
+
+export interface Submission {
+  id: number;
+  moduleID: number;
+  makerID: number;
+  submissionDate: string;
+  passed: boolean;
+  expirationDate: string;
+}

@@ -11,7 +11,7 @@ export interface AnswerInput {
   optionIDs: string[];
 }
 
-export const TrainingTypeDefs = gql`
+export const TrainingModuleTypeDefs = gql`
   scalar JSON
 
   type TrainingModule {
@@ -39,6 +39,6 @@ export const TrainingTypeDefs = gql`
     Submit a trainingModule for assessment, the attempt will be stored
     for the user and the grade will be returned as a Float out of 100
     """
-    submitModule(moduleID: ID!, answerSheet: [AnswerInput]): Float
+    submitModule(moduleID: ID!, answerSheet: [AnswerInput]): ID
   }
 `;
