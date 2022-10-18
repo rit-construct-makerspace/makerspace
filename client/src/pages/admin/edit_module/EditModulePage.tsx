@@ -10,6 +10,8 @@ import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { useImmer } from "use-immer";
 import { QuizItem } from "../../../types/Quiz";
 import GET_TRAINING_MODULES from "../../../queries/getModules";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const GET_MODULE = gql`
   query GetModule($id: ID!) {
@@ -53,6 +55,19 @@ export default function EditModulePage() {
   });
 
   const [updateModule, updateResult] = useMutation(UPDATE_MODULE);
+
+  const trainingModSavedNotify = () => toast("Training Module Saved");
+
+  toast.success('Training Module Saved', {
+    position: "bottom-left",
+    autoClose: 3000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+    });
 
   const [deleteModule] = useMutation(DELETE_MODULE, {
     variables: { id },
@@ -113,6 +128,18 @@ export default function EditModulePage() {
               <SaveIcon />
             )}
           </Fab>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={3000}
+            hideProgressBar={true}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+            />
         </Page>
       )}
     />
