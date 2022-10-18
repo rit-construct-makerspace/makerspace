@@ -6,6 +6,7 @@ import Question from "./Question";
 import styled, { css } from "styled-components";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const elevationTwoShadow = css`
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -32,7 +33,10 @@ export type AnswerSheet = { itemID: string; optionIDs: string[] }[];
 
 const SUBMIT_MODULE = gql`
   mutation SubmitModule($moduleID: ID!, $answerSheet: [AnswerInput]) {
-    submitModule(moduleID: $moduleID, answerSheet: $answerSheet)
+    submitModule(moduleID: $moduleID, answerSheet: $answerSheet) {
+      score
+      passed
+    }
   }
 `;
 
@@ -41,6 +45,9 @@ interface QuizTakerProps {
 }
 
 export default function QuizTaker({ module }: QuizTakerProps) {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const initialAnswerSheet = module.quiz
     .filter(
       (item) =>
@@ -54,6 +61,14 @@ export default function QuizTaker({ module }: QuizTakerProps) {
 
   const [submitModule, result] = useMutation(SUBMIT_MODULE, {
     variables: { moduleID: module.id, answerSheet },
+    onCompleted: ({ submitModule }) =>
+      navigate("/maker/quiz-result", {
+        state: {
+          equipmentID: (location.state as any).equipmentID,
+          score: submitModule.score,
+          passed: submitModule.passed,
+        },
+      }),
   });
 
   const selectMultipleChoiceOption = (itemID: string, optionID: string) =>

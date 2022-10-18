@@ -2,7 +2,6 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/admin/storefront_preview/StorefrontPreviewPage";
 import LeftNav from "./left_nav/LeftNav";
-import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 import EditModulePage from "./pages/admin/edit_module/EditModulePage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
 import ManageEquipmentPage from "./pages/admin/manage_equipment/ManageEquipmentPage";
@@ -14,10 +13,12 @@ import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/admin/users/UsersPage";
 import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
-import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
+import ReservationsPage from "./pages/both/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
+import QuizResultPage from "./pages/maker/quiz_result/QuizResultPage";
+import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -33,7 +34,10 @@ export default function AppRoutes() {
       />
 
       <Route path={"/"} element={<LeftNav />}>
-        <Route path="/create-reservation" element={<CreateReservationPage />} />
+        <Route
+          path="/maker/reservations"
+          element={<ReservationsPage isAdmin={false} />}
+        />
 
         <Route
           path="/maker/equipment"
@@ -45,9 +49,16 @@ export default function AppRoutes() {
           element={<EquipmentPage isAdmin={false} />}
         />
 
+        <Route
+          path="/maker/create-reservation/:id"
+          element={<CreateReservationPage />}
+        />
+
         <Route path="/maker/training" element={<TrainingPage />} />
 
         <Route path="/maker/training/:id" element={<QuizPage />} />
+
+        <Route path="/maker/quiz-result" element={<QuizResultPage />} />
 
         <Route path="/maker/materials" element={<InventoryPreviewPage />} />
 
@@ -64,7 +75,10 @@ export default function AppRoutes() {
 
         <Route path="/admin/inventory" element={<InventoryPage />} />
 
-        <Route path="/admin/reservations" element={<ReservationsPage />} />
+        <Route
+          path="/admin/reservations"
+          element={<ReservationsPage isAdmin={true} />}
+        />
 
         <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
 

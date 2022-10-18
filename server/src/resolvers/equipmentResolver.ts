@@ -1,14 +1,56 @@
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository";
-import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
+import * as ReservationRepo from "../repositories/Equipment/ReservationRepository";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
-import { EquipmentRow } from "../db/tables";
+import { EquipmentRow, ReservationRow } from "../db/tables";
 import { EquipmentInput } from "../schemas/equipmentSchema";
+import {
+  addDays,
+  addMinutes,
+  eachMinuteOfInterval,
+  endOfToday,
+  isPast,
+  startOfToday,
+} from "date-fns";
+import {
+  LAB_HOURS,
+  TIMESLOT_ADVANCE_DAYS,
+  TIMESLOT_DURATION,
+} from "../constants";
 
-const reservationRepo = new ReservationRepository();
+function withinLabHours(timeslot: Date) {
+  const labHours = LAB_HOURS[timeslot.getDay()];
+
+  const labOpen = new Date(timeslot);
+  labOpen.setHours(labHours.open, 0, 0);
+
+  const labClose = new Date(timeslot);
+  labClose.setHours(labHours.close, 0, 0);
+
+  return timeslot >= labOpen && timeslot < labClose;
+}
+
+function timeslotAvailable(
+  timeslot: Date,
+  existingReservations: ReservationRow[]
+) {
+  const start = timeslot;
+  const end = addMinutes(timeslot, TIMESLOT_DURATION - 1);
+
+  if (isPast(start)) return false;
+
+  return existingReservations.every((r) => {
+    const resStart = new Date(r.startTime);
+    const resEnd = new Date(r.endTime);
+
+    if (start >= resStart && start <= resEnd) return false;
+    if (end >= resStart && end <= resEnd) return false;
+    return !(resStart <= start && resEnd >= end);
+  });
+}
 
 const EquipmentResolvers = {
   Query: {
@@ -19,14 +61,6 @@ const EquipmentResolvers = {
     equipment: async (_: any, args: { id: number }, context: any) => {
       return await EquipmentRepo.getEquipmentByID(args.id);
     },
-
-    reservations: async (_: any, args: { Id: number }, context: any) => {
-      return await reservationRepo.getReservations();
-    },
-
-    reservation: async (_: any, args: { Id: number }, context: any) => {
-      return await reservationRepo.getReservationById(args.Id);
-    },
   },
 
   Equipment: {
@@ -36,6 +70,25 @@ const EquipmentResolvers = {
 
     trainingModules: (parent: EquipmentRow) => {
       return EquipmentRepo.getModulesByEquipment(parent.id);
+    },
+
+    timeslots: async (parent: EquipmentRow) => {
+      const start = startOfToday();
+      const end = addDays(endOfToday(), TIMESLOT_ADVANCE_DAYS);
+
+      const existingReservations =
+        await ReservationRepo.getReservationsByEquipmentID(
+          parent.id,
+          start,
+          end
+        );
+
+      return eachMinuteOfInterval({ start, end }, { step: TIMESLOT_DURATION })
+        .filter(withinLabHours)
+        .map((ts) => ({
+          time: ts,
+          available: timeslotAvailable(ts, existingReservations),
+        }));
     },
   },
 

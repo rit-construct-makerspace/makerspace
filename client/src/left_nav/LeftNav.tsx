@@ -63,6 +63,11 @@ export default function LeftNav() {
         <List component="nav">
           {!isMaker && <Divider textAlign="left">MAKER</Divider>}
           <NavLink
+            to="/maker/reservations"
+            primary="Reservations"
+            icon={<EventIcon />}
+          />
+          <NavLink
             to="/maker/equipment"
             primary="Equipment"
             icon={<HandymanIcon />}
