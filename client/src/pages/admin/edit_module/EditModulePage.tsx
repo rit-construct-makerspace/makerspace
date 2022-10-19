@@ -75,7 +75,21 @@ export default function EditModulePage() {
       });
   }
 
+  const trainingModDeletedAnimation = () => {
+    toast.error('Training Module Deleted', {
+      position: "bottom-left",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      });
+  }
+
   const handleSaveClicked = () => {
+    trainingModSavedAnimation();
     updateModule({
       variables: { id, name, quiz },
       refetchQueries: [
@@ -83,11 +97,11 @@ export default function EditModulePage() {
         { query: GET_TRAINING_MODULES },
       ],
     });
-    trainingModSavedAnimation();
   }
 
   const handleDeleteClicked = () => {
     if (!window.confirm("Are you sure you want to delete this module?")) return;
+    trainingModDeletedAnimation();
     deleteModule();
   };
 
