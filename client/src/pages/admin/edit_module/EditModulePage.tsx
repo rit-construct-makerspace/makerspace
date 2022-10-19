@@ -89,7 +89,6 @@ export default function EditModulePage() {
   }
 
   const handleSaveClicked = () => {
-    trainingModSavedAnimation();
     updateModule({
       variables: { id, name, quiz },
       refetchQueries: [
@@ -97,13 +96,16 @@ export default function EditModulePage() {
         { query: GET_TRAINING_MODULES },
       ],
     });
+    trainingModSavedAnimation();
   }
 
   const handleDeleteClicked = () => {
-    if (!window.confirm("Are you sure you want to delete this module?")) return;
+    if (!window.confirm("Are you sure you want to delete this module?")) {
+      return;
+    }
     trainingModDeletedAnimation();
     deleteModule();
-  };
+  }
 
   return (
     <RequestWrapper2
