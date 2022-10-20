@@ -112,18 +112,6 @@ export default function EditModulePage() {
       result={queryResult}
       render={() => (
         <Page title="Edit training module" maxWidth="600px">
-          <ToastContainer
-            position="bottom-left"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-            />
           <Stack direction="row" justifyContent="space-between" sx={{ mb: 8 }}>
             <TextField
               label="Module title"
