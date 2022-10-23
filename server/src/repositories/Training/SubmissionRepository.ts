@@ -2,8 +2,15 @@ import { knex } from "../../db";
 import { ModuleSubmissionRow } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";
 
+export async function addSubmission(
+    makerID: number,
+    moduleID: number,
+    passed: boolean
+) {
+    return await knex("ModuleSubmissions").insert({ makerID, moduleID, passed }).returning('id');
+}
+
 export async function getSubmission(
-    userID: number,
     submissionID: number
 ): Promise<ModuleSubmissionRow | undefined>  {
     const submission = await knex("ModuleSubmissions")
@@ -21,13 +28,13 @@ export async function getSubmission(
 }
 
 export async function getSubmissionsByUser(
-    userID: number
+    makerID: number
 ): Promise<ModuleSubmissionRow[]> {
     const submission = await knex("ModuleSubmissions")
         .select()
         .where(
             {
-                makerID: userID,
+                makerID: makerID,
             }
         );
 
@@ -37,40 +44,40 @@ export async function getSubmissionsByUser(
 }
 
 export async function getSubmissionsByModule(
-    userID: number,
+    makerID: number,
     moduleID: number
 ): Promise<ModuleSubmissionRow[]> {
     return await knex("ModuleSubmissions")
         .select()
         .where(
             {
-                makerID: userID,
+                makerID: makerID,
                 moduleID: moduleID
             }
         );
 }
 
 export async function getLatestSubmission(
-    userID: number
+    makerID: number
 ): Promise<ModuleSubmissionRow | undefined> {
     let res = await knex("ModuleSubmissions")
-        .where("makerID", userID)
+        .where("makerID", makerID)
         .orderBy("submissionDate", "desc")
         .first();
     return res;
 }
 
 export async function getLatestSubmissionByModule(
-    userID: number,
+    makerID: number,
     moduleID: number
 ): Promise<ModuleSubmissionRow | undefined> {
     const submission = await knex("ModuleSubmissions")
-        .where("makerID", userID)
+        .where("makerID", makerID)
         .andWhere("moduleID", moduleID)
         .orderBy("submissionDate", "desc")
         .first();
 
-    if (!submission) throw new EntityNotFound("Could not find submission for module ${moduleID}");
+    // if (!submission) throw new EntityNotFound("Could not find submission for module ${moduleID}");
   
     return submission;
 }

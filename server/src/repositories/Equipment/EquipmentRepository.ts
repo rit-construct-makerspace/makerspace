@@ -1,8 +1,10 @@
 import { knex } from "../../db";
-import { TrainingModule } from "../../schemas/trainingModuleSchema";
 import { EntityNotFound } from "../../EntityNotFound";
-import { EquipmentRow, TrainingModuleRow } from "../../db/tables";
+import { EquipmentRow, TrainingModuleRow, UserRow } from "../../db/tables";
 import { EquipmentInput } from "../../schemas/equipmentSchema";
+import * as ModuleRepo from "../Training/ModuleRepository";
+import * as HoldsRepo from "../Holds/HoldsRepository";
+import * as UserRepo from "../Users/UserRepository";
 
 export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   const equipment = await knex("Equipment").where({ id }).first();
@@ -30,10 +32,40 @@ export async function getEquipmentWithRoomID(
 export async function getModulesByEquipment(
   equipmentID: number
 ): Promise<TrainingModuleRow[]> {
-  return knex("ModulesForEquipment")
-    .join("TrainingModule", "TrainingModule.id", "ModulesForEquipment.moduleID")
-    .select("TrainingModule.*")
-    .where("ModulesForEquipment.equipmentID", equipmentID);
+  const result = await knex("ModulesForEquipment")
+  .join("TrainingModule", "TrainingModule.id", "ModulesForEquipment.moduleID")
+  .select("TrainingModule.*")
+  .where("ModulesForEquipment.equipmentID", equipmentID);
+  return result;
+}
+
+export async function hasTrainingModules(
+  user: UserRow,
+  equipmentID: number
+): Promise<boolean> {
+  let modules = await getModulesByEquipment(equipmentID);
+  let hasTraining = true;
+  // get last submission from maker for every module
+  for(let i = 0; i < modules.length; i++) {
+    if (await ModuleRepo.hasPassedModule(user.id, modules[i].id)) {
+      continue;
+    }
+    else {
+      hasTraining = false;
+      break;
+    }
+  }
+  return hasTraining;
+}
+
+export async function hasAccess(
+  uid: string,
+  equipmentID: number
+): Promise<boolean> {
+  const user = await UserRepo.getUserByUniversityID(uid);   // Get user for this university ID
+  return user !== undefined &&                              // Ensure user exists
+    !(await HoldsRepo.hasActiveHolds(user.id)) &&           // Ensure user has no holds
+    await hasTrainingModules(user, equipmentID);            // Ensure user has completed necessary training
 }
 
 export async function addModulesToEquipment(

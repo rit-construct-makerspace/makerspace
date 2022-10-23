@@ -47,8 +47,19 @@ export async function getPassedModulesByUser(
       "ModuleSubmissions.id",
       "ModuleSubmissions.moduleID",
       "TrainingModule.name as moduleName",
-      "ModuleSubmissions.submissionDate"
+      "ModuleSubmissions.submissionDate",
+      "ModuleSubmissions.expirationDate"
     )
     .where("ModuleSubmissions.makerID", userID)
     .andWhere("ModuleSubmissions.passed", true);
+}
+
+export async function hasPassedModule(
+  userID: number,
+  moduleID: number
+) : Promise<boolean> {
+  return (await getPassedModulesByUser(userID)).some((passedModule: PassedModule) => {
+    // User has this training if they have a passing and non-expired submission
+    return passedModule?.moduleID === moduleID && passedModule?.expirationDate > new Date();
+  });
 }

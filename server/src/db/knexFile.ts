@@ -19,6 +19,7 @@ module.exports = {
       tableName: "knex_migrations",
       directory: "migrations",
     },
+    asyncStackTraces: true
   },
 
   production: {

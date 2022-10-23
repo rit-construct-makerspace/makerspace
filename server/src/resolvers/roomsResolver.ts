@@ -63,8 +63,7 @@ const RoomResolvers = {
       const room = await RoomRepo.getRoomByID(args.roomID);
       assert(room);
 
-      const hashedUniversityID = hashUniversityID(args.universityID);
-      const user = await UserRepo.getUserByUniversityID(hashedUniversityID);
+      const user = await UserRepo.getUserByUniversityID(args.universityID);
 
       if (!user) return null;
 

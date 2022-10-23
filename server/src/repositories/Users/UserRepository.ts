@@ -1,7 +1,7 @@
-import { Privilege } from "../../schemas/usersSchema";
+import { PassedModule, Privilege } from "../../schemas/usersSchema";
 import { knex } from "../../db";
 import { createLog } from "../AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "../../resolvers/usersResolver";
+import { getUsersFullName, hashUniversityID } from "../../resolvers/usersResolver";
 import { EntityNotFound } from "../../EntityNotFound";
 import { UserRow } from "../../db/tables";
 
@@ -26,7 +26,8 @@ export async function getUserByRitUsername(
 export async function getUserByUniversityID(
   universityID: string
 ): Promise<UserRow | undefined> {
-  return knex("Users").first().where({ universityID });
+  const hashedUniversityID = hashUniversityID(universityID);
+  return knex("Users").first().where({ universityID: hashedUniversityID });
 }
 
 export async function createUser(user: {

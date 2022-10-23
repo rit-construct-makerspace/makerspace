@@ -9,7 +9,7 @@ const TrainingSubmissionResolvers = {
       { ifAuthenticated }: ApolloContext
     ) => 
       ifAuthenticated (async (user) => {
-        return SubmissionRepo.getSubmission(user.id, args.submissionID);
+        return SubmissionRepo.getSubmission(args.submissionID);
     }),
     submissions: async (
       _parent: any,
