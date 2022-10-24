@@ -1,10 +1,12 @@
 import { knex } from "../db";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
-import { EquipmentInput } from "../schemas/equipmentSchema";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
+import * as UserRepo from "../repositories/Users/UserRepository";
+import * as Holdsrepo from "../repositories/Holds/HoldsRepository";
+import { hashUniversityID } from "../repositories/Users/UserRepository";
 
-const tables = ["Equipment", "TrainingModule", "ModulesForEquipment", "Rooms"];
+const tables = ["ModuleSubmissions", "ModulesForEquipment", "Equipment", "TrainingModule", "Holds", "Rooms", "Users"];
 
 describe("EquipmentRepository tests", () => {
   beforeAll(() => {
@@ -13,18 +15,26 @@ describe("EquipmentRepository tests", () => {
   });
 
   beforeEach(() => {
-    // reset tables...
-    tables.forEach(async (t) => {
-      await knex(t).del();
-    });
+    try {
+      // reset tables...
+      tables.forEach(async (t) => {
+        await knex(t).del();
+      });
+    } catch (error) {
+      fail("Failed setup");
+    }
   });
 
   afterAll(() => {
-    // reset tables...
-    tables.forEach(async (t) => {
-        knex(t).del();
-    });
-    knex.destroy();
+    try {
+      // reset tables...
+      tables.forEach(async (t) => {
+          knex(t).del();
+      });
+      knex.destroy();
+    } catch (error) {
+      fail("Failed teardown");
+    }
   });
 
   test("getEquipments with no rows", async () => {
@@ -34,20 +44,17 @@ describe("EquipmentRepository tests", () => {
 
   test("addEquipment and get", async () => {
     // Add a room
-    let roomID = (await RoomRepo.addRoom({
+    const roomID = (await RoomRepo.addRoom({
         id: 0,
         name: "Test Room"
     })).id;
 
-    // Add equipment to the room
-    let equipment: EquipmentInput = {
-        name: "Test Equipment",
-        roomID: roomID,
-        moduleIDs: <number[]>[]
-    };
-
     // Add equipment
-    await EquipmentRepo.addEquipment(equipment);
+    await EquipmentRepo.addEquipment({
+      name: "Test Equipment",
+      roomID: roomID,
+      moduleIDs: <number[]>[]
+    });
 
     let equipmentRows = await EquipmentRepo.getEquipments();
     expect(equipmentRows.length).toBe(1);
@@ -55,35 +62,32 @@ describe("EquipmentRepository tests", () => {
 
   test("getEquipmentByID", async () => {
     // Add a room
-    let roomID = (await RoomRepo.addRoom({
+    const roomID = (await RoomRepo.addRoom({
         id: 0,
         name: "Test Room"
     })).id;
 
-    // Add equipment to the room
-    let equipment: EquipmentInput = {
-        name: "Test Equipment",
-        roomID: roomID,
-        moduleIDs: <number[]>[]
-    };
-
     // Add and get ID
-    let equipmentID = (await EquipmentRepo.addEquipment(equipment)).id;
+    const equipmentID = (await EquipmentRepo.addEquipment({
+      name: "Test Equipment",
+      roomID: roomID,
+      moduleIDs: <number[]>[]
+    })).id;
 
     // Get by ID
     let equipmentRow = await EquipmentRepo.getEquipmentByID(equipmentID);
-
+    expect(equipmentRow).toBeDefined();
   });
 
   test("updateEquipment", async () => {
     // Add a room
-    let roomID = (await RoomRepo.addRoom({
+    const roomID = (await RoomRepo.addRoom({
         id: 0,
         name: "Test Room"
     })).id;
 
     // Add equipment to the room
-    let equipmentID = (await EquipmentRepo.addEquipment({
+    const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
         moduleIDs: <number[]>[]
@@ -105,13 +109,13 @@ describe("EquipmentRepository tests", () => {
 
   test("archiveEquipment", async () => {
     // Add a room
-    let roomID = (await RoomRepo.addRoom({
+    const roomID = (await RoomRepo.addRoom({
         id: 0,
         name: "Test Room"
     })).id;
 
     // Add equipment to the room
-    let equipmentID = (await EquipmentRepo.addEquipment({
+    const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
         moduleIDs: <number[]>[]
@@ -129,19 +133,19 @@ describe("EquipmentRepository tests", () => {
 
   test("addModulesToEquipment and get", async () => {
     // Add a room
-    let roomID = (await RoomRepo.addRoom({
+    const roomID = (await RoomRepo.addRoom({
         id: 0,
         name: "Test Room"
     })).id;
 
     // Add equipment to the room
-    let equipmentID = (await EquipmentRepo.addEquipment({
+    const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
         moduleIDs: <number[]>[]
     })).id;
 
-    let moduleID = (await ModuleRepo.addModule("Test Module")).id;
+    const moduleID = (await ModuleRepo.addModule("Test Module")).id;
 
     // Check added
     expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
@@ -149,27 +153,27 @@ describe("EquipmentRepository tests", () => {
     // Add module to equipment
     await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
 
-    let modules = await EquipmentRepo.getModulesByEquipment(equipmentID);
+    const modules = await EquipmentRepo.getModulesByEquipment(equipmentID);
     expect(modules.length).toBe(1);
     expect(modules[0].name).toBe("Test Module");
   });
 
   test("updateModules", async () => {
     // Add a room
-    let roomID = (await RoomRepo.addRoom({
+    const roomID = (await RoomRepo.addRoom({
         id: 0,
         name: "Test Room"
     })).id;
 
     // Add equipment to the room
-    let equipmentID = (await EquipmentRepo.addEquipment({
+    const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
         moduleIDs: <number[]>[]
     })).id;
 
-    let moduleOneID = (await ModuleRepo.addModule("Test Module I")).id;
-    let moduleTwoID = (await ModuleRepo.addModule("Test Module II")).id;
+    const moduleOneID = (await ModuleRepo.addModule("Test Module I")).id;
+    const moduleTwoID = (await ModuleRepo.addModule("Test Module II")).id;
 
     // Check added
     expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
@@ -177,15 +181,251 @@ describe("EquipmentRepository tests", () => {
     // Add module to equipment
     await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleOneID]);
 
-    let modulesPreUpdate = await EquipmentRepo.getModulesByEquipment(equipmentID);
+    const modulesPreUpdate = await EquipmentRepo.getModulesByEquipment(equipmentID);
     expect(modulesPreUpdate.length).toBe(1);
     expect(modulesPreUpdate[0].name).toBe("Test Module I");
 
     // Update to use module II
     await EquipmentRepo.updateModules(equipmentID, [moduleTwoID]);
 
-    let modulesPostUpdate = await EquipmentRepo.getModulesByEquipment(equipmentID);
+    const modulesPostUpdate = await EquipmentRepo.getModulesByEquipment(equipmentID);
     expect(modulesPostUpdate.length).toBe(1);
     expect(modulesPostUpdate[0].name).toBe("Test Module II");
   });
+
+  test("hasAcccess no modules", async () => {
+    // Add a room
+    const roomID = (await RoomRepo.addRoom({
+        id: 0,
+        name: "Test Room"
+    })).id;
+
+    // Add equipment to the room
+    const equipmentID = (await EquipmentRepo.addEquipment({
+        name: "Test Equipment",
+        roomID: roomID,
+        moduleIDs: <number[]>[]
+    })).id;
+
+    // Check added
+    expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
+
+    // Create user
+    const userID = (await UserRepo.createUser({
+      firstName: "John",
+      lastName: "Doe",
+      ritUsername: "jd0000",
+      email: "jd0000@example.com",
+    })).id;
+
+    const uid = "000000000";
+
+    // Update with UID
+    const user = await UserRepo.updateStudentProfile({
+      userID: userID,
+      pronouns: "he/him",
+      college: "Test College",
+      expectedGraduation: "2050",
+      universityID: uid
+    });
+
+    expect(user.universityID).toBe(hashUniversityID(uid));
+
+    expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(true);
+  });
+
+  test("hasAcccess bad swipe", async () => {
+    // Add a room
+    const roomID = (await RoomRepo.addRoom({
+        id: 0,
+        name: "Test Room"
+    })).id;
+
+    // Add equipment to the room
+    const equipmentID = (await EquipmentRepo.addEquipment({
+        name: "Test Equipment",
+        roomID: roomID,
+        moduleIDs: <number[]>[]
+    })).id;
+
+    // Check added
+    expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
+
+    // Create user
+    const userID = (await UserRepo.createUser({
+      firstName: "John",
+      lastName: "Doe",
+      ritUsername: "jd0000",
+      email: "jd0000@example.com",
+    })).id
+
+    const uid = "000000000";
+
+    // Update with UID
+    const user = await UserRepo.updateStudentProfile({
+      userID: userID,
+      pronouns: "he/him",
+      college: "Test College",
+      expectedGraduation: "2050",
+      universityID: uid
+    });
+
+    expect(user.universityID).toBe(hashUniversityID(uid));
+
+    // Place a hold on themselves
+    await Holdsrepo.createHold(
+      userID,
+      userID,
+      "Test Hold"
+    );
+
+    // Check access for non-existent user
+    expect(await EquipmentRepo.hasAccess("111111111", equipmentID)).toBe(false);
+  });
+
+  test("hasAcccess with one module", async () => {
+    // Add a room
+    const roomID = (await RoomRepo.addRoom({
+        id: 0,
+        name: "Test Room"
+    })).id;
+
+    // Add equipment to the room
+    const equipmentID = (await EquipmentRepo.addEquipment({
+        name: "Test Equipment",
+        roomID: roomID,
+        moduleIDs: <number[]>[]
+    })).id;
+
+    // Check added
+    expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
+
+    // Create user
+    const userID = (await UserRepo.createUser({
+      firstName: "John",
+      lastName: "Doe",
+      ritUsername: "jd0000",
+      email: "jd0000@example.com",
+    })).id;
+
+    const uid = "000000000";
+
+    // Update with UID
+    const user = await UserRepo.updateStudentProfile({
+      userID: userID,
+      pronouns: "he/him",
+      college: "Test College",
+      expectedGraduation: "2050",
+      universityID: uid
+    });
+
+    expect(user.universityID).toBe(hashUniversityID(uid));
+
+    // Create module
+    const moduleID = (await ModuleRepo.addModule("Test Module")).id;
+
+    // Add module to equipment
+    await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
+
+    // Add passed attempt to user
+    await UserRepo.addTrainingModuleAttemptToUser(userID, moduleID, true);
+
+    expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(true);
+  });
+
+  test("hasAcccess with hold", async () => {
+    // Add a room
+    const roomID = (await RoomRepo.addRoom({
+        id: 0,
+        name: "Test Room"
+    })).id;
+
+    // Add equipment to the room
+    const equipmentID = (await EquipmentRepo.addEquipment({
+        name: "Test Equipment",
+        roomID: roomID,
+        moduleIDs: <number[]>[]
+    })).id;
+
+    // Check added
+    expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
+
+    // Create user
+    const userID = (await UserRepo.createUser({
+      firstName: "John",
+      lastName: "Doe",
+      ritUsername: "jd0000",
+      email: "jd0000@example.com",
+    })).id;
+
+    const uid = "000000000";
+
+    // Update with UID
+    const user = await UserRepo.updateStudentProfile({
+      userID: userID,
+      pronouns: "he/him",
+      college: "Test College",
+      expectedGraduation: "2050",
+      universityID: uid
+    });
+
+    expect(user.universityID).toBe(hashUniversityID(uid));
+
+    // Place a hold on themselves
+    await Holdsrepo.createHold(
+      userID,
+      userID,
+      "Test Hold"
+    );
+
+    expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(false);
+  });
+
+  test("hasAcccess with insufficient training", async () => {
+    // Add a room
+    const roomID = (await RoomRepo.addRoom({
+        id: 0,
+        name: "Test Room"
+    })).id;
+
+    // Add equipment to the room
+    const equipmentID = (await EquipmentRepo.addEquipment({
+        name: "Test Equipment",
+        roomID: roomID,
+        moduleIDs: <number[]>[]
+    })).id;
+
+    // Check added
+    expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
+
+    // Create user
+    const userID = (await UserRepo.createUser({
+      firstName: "John",
+      lastName: "Doe",
+      ritUsername: "jd0000",
+      email: "jd0000@example.com",
+    })).id;
+
+    const uid = "000000000";
+
+    // Update with UID
+    const user = await UserRepo.updateStudentProfile({
+      userID: userID,
+      pronouns: "he/him",
+      college: "Test College",
+      expectedGraduation: "2050",
+      universityID: uid
+    });
+
+    expect(user.universityID).toBe(hashUniversityID(uid));
+
+    // Create module
+    const moduleID = (await ModuleRepo.addModule("Test Module")).id;
+
+    // Add module to equipment
+    await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
+
+    expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(false);
+  });
+
 });

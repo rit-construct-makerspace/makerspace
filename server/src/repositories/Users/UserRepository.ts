@@ -1,9 +1,14 @@
 import { PassedModule, Privilege } from "../../schemas/usersSchema";
 import { knex } from "../../db";
 import { createLog } from "../AuditLogs/AuditLogRepository";
-import { getUsersFullName, hashUniversityID } from "../../resolvers/usersResolver";
+import { getUsersFullName } from "../../resolvers/usersResolver";
 import { EntityNotFound } from "../../EntityNotFound";
 import { UserRow } from "../../db/tables";
+import { createHash } from "crypto";
+
+export function hashUniversityID(universityID: string) {
+  return createHash("sha256").update(universityID).digest("hex");
+}
 
 export async function getUsers(): Promise<UserRow[]> {
   return knex("Users").select();
@@ -60,7 +65,7 @@ export async function updateStudentProfile(args: {
     pronouns: args.pronouns,
     college: args.college,
     expectedGraduation: args.expectedGraduation,
-    universityID: args.universityID,
+    universityID: hashUniversityID(args.universityID),
     setupComplete: true,
   });
 

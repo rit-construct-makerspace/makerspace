@@ -12,18 +12,26 @@ describe("InventoryRepository test set", () => {
   });
 
   beforeEach(() => {
-    // reset tables...
-    tables.forEach(async (t) => {
-      await knex(t).del();
-    });
+    try {
+      // reset tables...
+      tables.forEach(async (t) => {
+        await knex(t).del();
+      });
+    } catch (error) {
+      fail("Failed setup");
+    }
   });
 
   afterAll(() => {
-    // reset tables...
-    tables.forEach(async (t) => {
-      await knex(t).del();
-    });
-    knex.destroy();
+    try {
+      // reset tables...
+      tables.forEach(async (t) => {
+          knex(t).del();
+      });
+      knex.destroy();
+    } catch (error) {
+      fail("Failed teardown");
+    }
   });
 
   test("getAllInventoryItems with no items", async () => {
