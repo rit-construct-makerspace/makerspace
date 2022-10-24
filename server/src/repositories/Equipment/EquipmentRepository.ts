@@ -32,11 +32,10 @@ export async function getEquipmentWithRoomID(
 export async function getModulesByEquipment(
   equipmentID: number
 ): Promise<TrainingModuleRow[]> {
-  const result = await knex("ModulesForEquipment")
+  return await knex("ModulesForEquipment")
   .join("TrainingModule", "TrainingModule.id", "ModulesForEquipment.moduleID")
   .select("TrainingModule.*")
   .where("ModulesForEquipment.equipmentID", equipmentID);
-  return result;
 }
 
 export async function hasTrainingModules(
