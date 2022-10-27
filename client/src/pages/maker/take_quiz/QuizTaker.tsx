@@ -95,7 +95,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
     }
 
     const trainingCancelAnimation = () => {
-      toast.warn('Training Not Saved', {
+      toast.error('Training Not Saved', {
         position: "bottom-left",
         autoClose: 3000,
         hideProgressBar: false,
@@ -103,7 +103,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
-        theme: "colored",
+        theme: "light",
         });
     }
 
