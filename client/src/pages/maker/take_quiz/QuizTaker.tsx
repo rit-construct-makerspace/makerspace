@@ -8,6 +8,7 @@ import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import { GET_CURRENT_USER } from "../../../common/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const elevationTwoShadow = css`
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -80,11 +81,46 @@ export default function QuizTaker({ module }: QuizTakerProps) {
         : draft[itemIndex].optionIDs.splice(optionIndex, 1);
     });
 
+    const trainingSubmissionAnimation = () => {
+      toast.success('Training Module Submitted', {
+        position: "bottom-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+    }
+
+    const trainingCancelAnimation = () => {
+      toast.warn('Training Not Saved', {
+        position: "bottom-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+    }
+
   const navigate = useNavigate();
 
   const submitAndViewResults = async () => {
     await submitModule();
     navigate(`results`);
+    trainingSubmissionAnimation();
+  };
+
+  const cancelQuiz = async () => {
+    if (!window.confirm("Are you sure you want to cancel this quiz? Progress will be lost.")) {
+      return;
+    }
+    navigate('../maker/training')
+    trainingCancelAnimation();
   };
 
   return (
@@ -132,14 +168,24 @@ export default function QuizTaker({ module }: QuizTakerProps) {
         }
       })}
 
-      <LoadingButton
-        loading={result.loading}
-        variant="contained"
-        sx={{ alignSelf: "flex-end" }}
-        onClick={() => submitAndViewResults()}
-      >
-        Submit
-      </LoadingButton>
+      <Stack direction={"row-reverse"} spacing={2}>
+        <LoadingButton
+          loading={result.loading}
+          variant="contained"
+          sx={{ alignSelf: "flex-end" }}
+          onClick={() => submitAndViewResults()}
+        >
+          Submit
+        </LoadingButton>
+        <Button
+          variant="outlined"
+          sx={{ alignSelf: "flex-end" }}
+          onClick={() => cancelQuiz()}
+        >
+          Cancel
+        </Button>
+      </Stack>
+
     </Stack>
   );
 }
