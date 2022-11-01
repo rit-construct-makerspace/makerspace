@@ -23,9 +23,12 @@ const UsersResolvers = {
   },
 
   Query: {
-    users: async () => {
-      return await UserRepo.getUsers();
-    },
+    users: async (_: any,
+      args: {null: any},
+      {ifAllowed}: ApolloContext) =>
+        ifAllowed([Privilege.ADMIN], async (user) => {
+          return await UserRepo.getUsers();
+    }),
 
     user: async (_: any, args: { id: number }) => {
       return await UserRepo.getUserByID(args.id);
@@ -37,9 +40,11 @@ const UsersResolvers = {
   },
 
   Mutation: {
-    createUser: async (_: any, args: any, context: any) => {
-      return await UserRepo.createUser(args);
-    },
+    createUser: async (_: any, args: any, context: any,
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+        return await UserRepo.createUser(args);
+    }),
 
     updateStudentProfile: async (
       parent: any,
@@ -50,38 +55,39 @@ const UsersResolvers = {
         expectedGraduation: string;
         universityID: string;
       },
-      context: any
-    ) => {
-      const hashedUniversityID = hashUniversityID(args.universityID);
+      context: any,
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+        const hashedUniversityID = hashUniversityID(args.universityID);
 
-      return await UserRepo.updateStudentProfile({
-        ...args,
-        universityID: hashedUniversityID,
-      });
-    },
+        return await UserRepo.updateStudentProfile({
+          ...args,
+          universityID: hashedUniversityID,
+        });
+    }),
 
     setPrivilege: async (
       _: any,
       { userID, privilege }: { userID: number; privilege: Privilege },
-      context: ApolloContext
-    ) => {
-      assert(context.user);
+      context: ApolloContext,
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+        assert(context.user);
 
-      const userSubject = await UserRepo.setPrivilege(userID, privilege);
-      assert(userSubject);
+        const userSubject = await UserRepo.setPrivilege(userID, privilege);
+        assert(userSubject);
 
-      await createLog(
-        `{user} set {user}'s access level to ${privilege}.`,
-        { id: context.user.id, label: getUsersFullName(context.user) },
-        { id: userSubject.id, label: getUsersFullName(userSubject) }
-      );
-    },
+        await createLog(
+          `{user} set {user}'s access level to ${privilege}.`,
+          { id: context.user.id, label: getUsersFullName(context.user) },
+          { id: userSubject.id, label: getUsersFullName(userSubject) }
+        );
+    }),
 
     deleteUser: async (
       parents: any,
       args: { userID: number },
-      {ifAllowed}: ApolloContext
-    ) => {
+      {ifAllowed}: ApolloContext) => {
 
       return ifAllowed(
         [Privilege.ADMIN],
