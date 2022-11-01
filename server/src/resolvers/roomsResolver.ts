@@ -10,9 +10,13 @@ import { Privilege } from "../schemas/usersSchema";
 
 const RoomResolvers = {
   Query: {
-    rooms: async () => {
-      return await RoomRepo.getRooms();
-    },
+    rooms: async (
+      _:any,
+      args: {null:any},
+      {ifAllowed}: ApolloContext) =>
+      ifAllowed([Privilege.ADMIN], async (user) => {
+        return await RoomRepo.getRooms();
+    }),
 
     room: async (parent: any, args: { id: number }) => {
       return await RoomRepo.getRoomByID(args.id);
