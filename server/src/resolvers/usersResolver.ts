@@ -24,7 +24,7 @@ const UsersResolvers = {
 
   Query: {
     users: async (_: any,
-      args: {null: any},
+      _args: {null: any},
       {ifAllowed}: ApolloContext) =>
         ifAllowed([Privilege.ADMIN], async (user) => {
           return await UserRepo.getUsers();
@@ -69,9 +69,7 @@ const UsersResolvers = {
     setPrivilege: async (
       _: any,
       { userID, privilege }: { userID: number; privilege: Privilege },
-      context: ApolloContext,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      context: ApolloContext) => {
         assert(context.user);
 
         const userSubject = await UserRepo.setPrivilege(userID, privilege);
@@ -82,7 +80,7 @@ const UsersResolvers = {
           { id: context.user.id, label: getUsersFullName(context.user) },
           { id: userSubject.id, label: getUsersFullName(userSubject) }
         );
-    }),
+    },
 
     deleteUser: async (
       parents: any,
