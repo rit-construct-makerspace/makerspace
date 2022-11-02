@@ -60,14 +60,17 @@ const EquipmentResolvers = {
     updateEquipment: async (
       _: any,
       args: { id: number; equipment: EquipmentInput },
-      context: any
-    ) => {
-      return await EquipmentRepo.updateEquipment(args.id, args.equipment);
-    },
+      context: any,
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+        return await EquipmentRepo.updateEquipment(args.id, args.equipment);
+    }),
 
-    deleteEquipment: async (_: any, args: { id: number }, context: any) => {
-      return await EquipmentRepo.archiveEquipment(args.id);
-    },
+    deleteEquipment: async (_: any, args: { id: number }, context: any,
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+        return await EquipmentRepo.archiveEquipment(args.id);
+    }),
   },
 };
 
