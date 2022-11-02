@@ -18,8 +18,12 @@ export async function up(knex: Knex): Promise<void> {
       if (!exists) {
         return knex.schema.createTable("ModulesForEquipment", function (t) {
           t.increments("id").primary();
-          t.integer("equipmentID").references("id").inTable("Equipment");
-          t.integer("moduleID").references("id").inTable("TrainingModule");
+          t.integer("equipmentID").references("id").inTable("Equipment")
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+          t.integer("moduleID").references("id").inTable("TrainingModule")
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
         });
       }
     })
