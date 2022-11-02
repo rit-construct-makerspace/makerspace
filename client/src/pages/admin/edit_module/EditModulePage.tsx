@@ -1,56 +1,50 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import QuizBuilder from "./quiz/QuizBuilder";
-import { Button, CircularProgress, Fab, Stack, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Fab,
+  Grid,
+  TextField,
+  Switch,
+  FormControlLabel,
+  FormGroup,
+  Accordion,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,
+  IconButton
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Page from "../../Page";
 import SaveIcon from "@mui/icons-material/Save";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { useImmer } from "use-immer";
-import { QuizItem } from "../../../types/Quiz";
-import GET_TRAINING_MODULES from "../../../queries/getModules";
-import { ToastContainer, toast } from 'react-toastify';
+import { Module, ReservationPrompt } from "../../../types/Quiz";
+import { GET_MODULE, GET_TRAINING_MODULES, UPDATE_MODULE, DELETE_MODULE } from "../../../queries/modules";
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-export const GET_MODULE = gql`
-  query GetModule($id: ID!) {
-    module(id: $id) {
-      id
-      name
-      quiz
-    }
-  }
-`;
-
-export const UPDATE_MODULE = gql`
-  mutation UpdateModule($id: ID!, $name: String!, $quiz: JSON!) {
-    updateModule(id: $id, name: $name, quiz: $quiz) {
-      id
-    }
-  }
-`;
-
-export const DELETE_MODULE = gql`
-  mutation DeleteModule($id: ID!) {
-    deleteModule(id: $id) {
-      id
-    }
-  }
-`;
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import ReservationPromptDraft from "./reservation_prompt/ReservationPromptDraft";
+import { Drafts } from "@mui/icons-material";
 
 export default function EditModulePage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
-  const [quiz, setQuiz] = useImmer<QuizItem[]>([]);
+  const [module, setModuleDraft] = useImmer<Module | undefined>(undefined);
+  const [requiresReservation, setRequiresReservation] = useState(false);
 
   const queryResult = useQuery(GET_MODULE, {
     variables: { id },
     onCompleted: ({ module }) => {
       setName(module.name);
-      Array.isArray(module.quiz) && setQuiz(module.quiz);
+      Array.isArray(module.quiz) && setModuleDraft(module);
+      setRequiresReservation(module?.reservationPrompt?.enabled ? true : false);
     },
   });
 
@@ -90,7 +84,7 @@ export default function EditModulePage() {
 
   const handleSaveClicked = () => {
     updateModule({
-      variables: { id, name, quiz },
+      variables: { id, name, quiz: module?.quiz, reservationPrompt: module?.reservationPrompt },
       refetchQueries: [
         { query: GET_MODULE, variables: { id } },
         { query: GET_TRAINING_MODULES },
@@ -112,23 +106,106 @@ export default function EditModulePage() {
       result={queryResult}
       render={() => (
         <Page title="Edit training module" maxWidth="600px">
-          <Stack direction="row" justifyContent="space-between" sx={{ mb: 8 }}>
-            <TextField
-              label="Module title"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              sx={{ width: 400 }}
-            />
-            <Button
-              startIcon={<DeleteIcon />}
-              color="error"
-              onClick={handleDeleteClicked}
-            >
-              Delete
-            </Button>
-          </Stack>
+          <Grid container
+            rowSpacing={2}
+            columnSpacing={2}
+            sx={{ mb: 4 }}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Grid item
+              xs={12}
+              md={8}>
+              <TextField
+                label="Module title"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                fullWidth
+              />
+            </Grid>
+            <Grid item
+              xs={12}
+              md={4}
+              justifySelf="center">
+              <Button
+                startIcon={<DeleteIcon />}
+                color="error"
+                onClick={handleDeleteClicked}
+                sx={{ marginLeft: "auto" }}
+              >
+                Delete
+              </Button>
+            </Grid>
 
-          <QuizBuilder quiz={quiz} setQuiz={setQuiz} />
+            <Grid item xs={12} >
+              <Accordion
+                sx={{
+                  backgroundColor: 'transparent',
+                  boxShadow: 'none'
+                }}>
+                <AccordionSummary
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <ExpandMoreIcon/>
+                  <Typography >Options</Typography>
+                </AccordionSummary>
+                <AccordionDetails sx={{ borderTop: 1, borderColor: "#BBBBBB" }}>
+                  <FormGroup>
+                    <FormControlLabel
+                      label={<Typography sx={{ fontSize: 15 }}>Requires reservation</Typography>}
+                      labelPlacement="end"
+                      control={
+                        <Switch
+                            checked={ requiresReservation }
+                            aria-label="Requires reservation switch"
+                            onChange={(e) => {
+                              if (e.target.checked == true) {
+                                setRequiresReservation(true);
+                                setModuleDraft((draft) => {
+                                  draft!.reservationPrompt.enabled = true;
+                                });
+                              }
+                              else {
+                                setRequiresReservation(false);
+                                setModuleDraft((draft) => {
+                                  draft!.reservationPrompt.enabled = false;
+                                });
+                              }
+                            }}
+                            sx={{
+                              '& .MuiSwitch-thumb': {
+                                borderRadius: '2px',
+                              },
+                              '& .MuiSwitch-track': {
+                                borderRadius: '2px',
+                              },
+                            }}
+                        />
+                      }
+                    />
+                  </FormGroup>
+                </AccordionDetails>
+              </Accordion>
+            </Grid>
+          </Grid>
+
+          <QuizBuilder quiz={module?.quiz ? module?.quiz : []} setModuleDraft={setModuleDraft} />
+
+          {
+            requiresReservation ?
+                <Grid container sx={{ mt: 5 }}>
+                  <Grid item width={0.25}>
+                    <ReservationPromptDraft
+                      item={module?.reservationPrompt}
+                      updatePrompt={(prompt: ReservationPrompt) => setModuleDraft((draft) => {
+                        draft!.reservationPrompt = prompt;
+                      })}
+                    />
+                  </Grid>
+                </Grid>
+              : null
+          }
 
           <Fab
             color="primary"

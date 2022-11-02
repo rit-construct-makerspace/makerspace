@@ -90,6 +90,7 @@ export interface TrainingModuleRow {
   name: string;
   quiz: TrainingModuleItem[];
   archived: boolean;
+  reservationPrompt: ReservationPrompt;
 }
 
 // not a table but the json structure for a column on the table above
@@ -98,6 +99,10 @@ export interface TrainingModuleItem {
   type: string;
   text: string;
   options?: ModuleItemOption[];
+}
+
+export interface ReservationPrompt {
+  promptText: string;
 }
 
 export interface ModuleItemOption {

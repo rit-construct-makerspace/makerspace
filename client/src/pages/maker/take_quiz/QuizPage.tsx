@@ -2,7 +2,7 @@ import React from "react";
 import Page from "../../Page";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { GET_MODULE } from "../../admin/edit_module/EditModulePage";
+import { GET_MODULE } from "../../../queries/modules";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { Module } from "../../../types/Quiz";
 import QuizTaker from "./QuizTaker";

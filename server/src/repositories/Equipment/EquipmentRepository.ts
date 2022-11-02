@@ -36,6 +36,15 @@ export async function getModulesByEquipment(
     .where("ModulesForEquipment.equipmentID", equipmentID);
 }
 
+export async function getEquipmentForModule(
+  moduleID: number
+): Promise<EquipmentRow[]> {
+  return knex("ModulesForEquipment")
+    .join("Equipment", "Equipment.id", "ModulesForEquipment.equipmentID")
+    .select("Equipment.*")
+    .where("ModulesForEquipment.moduleID", moduleID);
+}
+
 export async function addModulesToEquipment(
   id: number,
   moduleIDs: number[]
