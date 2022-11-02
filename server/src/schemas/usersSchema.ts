@@ -11,6 +11,7 @@ export interface PassedModule {
   moduleID: number;
   moduleName: string;
   submissionDate: Date;
+  expirationDate: Date;
 }
 
 export const UsersTypeDefs = gql`

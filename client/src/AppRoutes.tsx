@@ -1,4 +1,3 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/admin/storefront_preview/StorefrontPreviewPage";
 import LeftNav from "./left_nav/LeftNav";
