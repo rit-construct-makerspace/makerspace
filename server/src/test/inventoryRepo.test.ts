@@ -3,6 +3,8 @@ import { InventoryItemInput } from "../schemas/storeFrontSchema";
 import * as InventoryRepo from "../repositories/Store/inventoryRepository";
 import * as LabelRepo from "../repositories/Store/labelRepository";
 
+const tables = ["InventoryItem", "Label", "InventoryItemLabel"];
+
 describe("InventoryRepository test set", () => {
   beforeAll(() => {
     return knex.migrate.latest();
@@ -10,15 +12,26 @@ describe("InventoryRepository test set", () => {
   });
 
   beforeEach(() => {
-    // reset tables...
-    const tables = ["InventoryItem", "Label", "InventoryItemLabel"];
-    tables.forEach(async (t) => {
-      await knex(t).del();
-    });
+    try {
+      // reset tables...
+      tables.forEach(async (t) => {
+        await knex(t).del();
+      });
+    } catch (error) {
+      fail("Failed setup");
+    }
   });
 
   afterAll(() => {
-    knex.destroy();
+    try {
+      // reset tables...
+      tables.forEach(async (t) => {
+          knex(t).del();
+      });
+      knex.destroy();
+    } catch (error) {
+      fail("Failed teardown");
+    }
   });
 
   test("getAllInventoryItems with no items", async () => {

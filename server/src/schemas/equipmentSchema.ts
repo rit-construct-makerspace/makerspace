@@ -3,7 +3,7 @@ import { gql } from "apollo-server-express";
 export interface EquipmentInput {
   name: string;
   roomID: number;
-  moduleIDs: [number];
+  moduleIDs: number[];
 }
 
 export const EquipmentTypeDefs = gql`
@@ -14,6 +14,7 @@ export const EquipmentTypeDefs = gql`
     trainingModules: [TrainingModule]
     addedAt: DateTime!
     inUse: Boolean!
+    hasAccess(uid: String): Boolean!
   }
 
   input EquipmentInput {
