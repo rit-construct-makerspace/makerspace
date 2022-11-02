@@ -3,7 +3,7 @@ import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
-import { createHash } from "crypto";
+import {createHash, randomBytes} from "crypto";
 import { ApolloContext } from "../context";
 import { UserRow } from "../db/tables";
 
@@ -11,8 +11,9 @@ export function getUsersFullName(user: UserRow) {
   return `${user.firstName} ${user.lastName}`;
 }
 
-export function hashUniversityID(universityID: string) {
-  return createHash("sha256").update(universityID).digest("hex");
+export function hashUniversityID(universityID: string, salt: string) {
+  const hashed = createHash("sha256").update(universityID + salt).digest("hex");
+  return hashed + ":" + salt;
 }
 
 const UsersResolvers = {
@@ -52,7 +53,9 @@ const UsersResolvers = {
       },
       context: any
     ) => {
-      const hashedUniversityID = hashUniversityID(args.universityID);
+
+      const salt = randomBytes(Math.ceil(16)).toString('hex')
+      const hashedUniversityID = hashUniversityID(args.universityID, salt);
 
       return await UserRepo.updateStudentProfile({
         ...args,
