@@ -5,6 +5,7 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
 import { ApolloContext } from "../context";
 import { UserRow } from "../db/tables";
+import { hashUniversityID } from "../repositories/Users/UserRepository";
 
 export function getUsersFullName(user: UserRow) {
   return `${user.firstName} ${user.lastName}`;
