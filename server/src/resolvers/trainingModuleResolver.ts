@@ -4,7 +4,7 @@ import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
-import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
+import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
 import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
@@ -168,7 +168,7 @@ const TrainingModuleResolvers = {
 
           const grade = (correct / (incorrect + correct)) * 100;
 
-          addTrainingModuleAttemptToUser(
+          SubmissionRepo.addSubmission(
             user.id,
             args.moduleID,
             grade >= MODULE_PASSING_THRESHOLD
