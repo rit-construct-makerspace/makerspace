@@ -32,6 +32,15 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
     });
   };
 
+  const duplicateItem = (item: QuizItem) => {
+    addItem({
+      id: uuidv4(),
+      type: item.type,
+      text: item.text,
+      options: item.options,
+    });
+  }
+
   const updateItem = (itemId: string, updatedItem: QuizItem) => {
     setModuleDraft((draft) => {
       const index = draft!.quiz.findIndex((i) => i.id === itemId);
@@ -96,6 +105,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
                           updateItem(item.id, updatedQuestion)
                         }
                         removeQuestion={() => removeItem(item.id)}
+                        duplicateQuestion={() => duplicateItem(item)}
                       />
                     );
                   case QuizItemType.Text:
@@ -108,6 +118,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
                           updateItem(item.id, updatedText);
                         }}
                         onRemove={() => removeItem(item.id)}
+                        onDuplicate={() => duplicateItem(item)}
                       />
                     );
                   case QuizItemType.YoutubeEmbed:
@@ -120,6 +131,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
                           updateItem(item.id, updatedYoutubeEmbed);
                         }}
                         onRemove={() => removeItem(item.id)}
+                        onDuplicate={() => duplicateItem(item)}
                       />
                     );
                   case QuizItemType.ImageEmbed:
@@ -132,6 +144,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
                           updateItem(item.id, updatedImageEmbed);
                         }}
                         onRemove={() => removeItem(item.id)}
+                        onDuplicate={() => duplicateItem(item)}
                       />
                     );
                   default:

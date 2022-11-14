@@ -48,6 +48,7 @@ interface QuestionDraftProps {
   item: QuizItem;
   updateQuestion: (updatedQuestion: QuizItem) => void;
   removeQuestion: () => void;
+  duplicateQuestion: () => void;
 }
 
 export default function QuestionDraft({
@@ -55,6 +56,7 @@ export default function QuestionDraft({
   item,
   updateQuestion,
   removeQuestion,
+  duplicateQuestion,
 }: QuestionDraftProps) {
   if (!item.options) {
     console.error("Tried to render question with undefined options");
@@ -68,6 +70,7 @@ export default function QuestionDraft({
       index={index}
       itemId={question.id}
       onRemove={removeQuestion}
+      onDuplicate={duplicateQuestion}
       extraActions={
         <Select
           value={question.type}
