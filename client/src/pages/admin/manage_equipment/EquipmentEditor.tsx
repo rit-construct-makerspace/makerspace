@@ -5,7 +5,7 @@ import EngineeringIcon from "@mui/icons-material/Engineering";
 import HistoryIcon from "@mui/icons-material/History";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useQuery } from "@apollo/client";
-import GET_TRAINING_MODULES from "../../../queries/getModules";
+import GET_TRAINING_MODULES from "../../../queries/modules";
 import RequestWrapper from "../../../common/RequestWrapper";
 import styled from "styled-components";
 import GET_ROOMS from "../../../queries/getRooms";

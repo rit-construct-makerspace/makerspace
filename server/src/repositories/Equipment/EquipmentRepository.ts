@@ -67,6 +67,15 @@ export async function hasAccess(
     await hasTrainingModules(user, equipmentID);            // Ensure user has completed necessary training
 }
 
+export async function getEquipmentForModule(
+  moduleID: number
+): Promise<EquipmentRow[]> {
+  return knex("ModulesForEquipment")
+    .join("Equipment", "Equipment.id", "ModulesForEquipment.equipmentID")
+    .select("Equipment.*")
+    .where("ModulesForEquipment.moduleID", moduleID);
+}
+
 export async function addModulesToEquipment(
   id: number,
   moduleIDs: number[]

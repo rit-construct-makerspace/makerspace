@@ -6,7 +6,8 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
 import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
-import { TrainingModuleItem } from "../db/tables";
+import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   for (let item of quiz) {
@@ -45,7 +46,18 @@ const TrainingModuleResolvers = {
         if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
 
         return module;
-      }),
+      })
+  },
+
+  TrainingModule: {
+    equipment: async (
+      parent: TrainingModuleRow,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        return EquipmentRepo.getEquipmentForModule(parent.id);
+      })
   },
 
   Mutation: {
@@ -68,14 +80,15 @@ const TrainingModuleResolvers = {
 
     updateModule: async (
       _parent: any,
-      args: { id: number; name: string; quiz: object },
+      args: { id: number; name: string; quiz: object; reservationPrompt: object },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.ADMIN], async (user) => {
         const module = await ModuleRepo.updateModule(
           args.id,
           args.name,
-          args.quiz
+          args.quiz,
+          args.reservationPrompt
         );
 
         await createLog(

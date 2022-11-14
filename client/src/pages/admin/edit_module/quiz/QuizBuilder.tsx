@@ -10,32 +10,32 @@ import ImageIcon from "@mui/icons-material/Image";
 import YouTubeEmbedDraft from "./YouTubeEmbedDraft";
 import ImageEmbedDraft from "./ImageEmbedDraft";
 import TextDraft from "./TextDraft";
-import { QuizItem, QuizItemType } from "../../../../types/Quiz";
+import { Module, QuizItem, QuizItemType } from "../../../../types/Quiz";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import EmptyPageSection from "../../../../common/EmptyPageSection";
 
 interface QuizBuilderProps {
   quiz: QuizItem[];
-  setQuiz: Updater<QuizItem[]>;
+  setModuleDraft: Updater<Module | undefined>;
 }
 
-export default function QuizBuilder({ quiz, setQuiz }: QuizBuilderProps) {
+export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: QuizBuilderProps) {
   const addItem = (item: QuizItem) =>
-    setQuiz((draft) => {
-      draft.push(item);
+    setModuleDraft((draft) => {
+      draft?.quiz.push(item);
     });
 
   const removeItem = (itemId: string) => {
-    setQuiz((draft) => {
-      const index = draft.findIndex((i) => i.id === itemId);
-      draft.splice(index, 1);
+    setModuleDraft((draft) => {
+      const index = draft!.quiz.findIndex((i) => i.id === itemId);
+      draft?.quiz.splice(index, 1);
     });
   };
 
   const updateItem = (itemId: string, updatedItem: QuizItem) => {
-    setQuiz((draft) => {
-      const index = draft.findIndex((i) => i.id === itemId);
-      draft[index] = updatedItem;
+    setModuleDraft((draft) => {
+      const index = draft!.quiz.findIndex((i) => i.id === itemId);
+      draft!.quiz[index] = updatedItem;
     });
   };
 
@@ -69,11 +69,11 @@ export default function QuizBuilder({ quiz, setQuiz }: QuizBuilderProps) {
     });
 
   const onDragEnd = (result: DropResult) => {
-    setQuiz((draft) => {
+    setModuleDraft((draft) => {
       if (!result.destination) return;
 
-      const [removed] = draft.splice(result.source.index, 1);
-      draft.splice(result.destination.index, 0, removed);
+      const [removed] = draft!.quiz.splice(result.source.index, 1);
+      draft!.quiz.splice(result.destination.index, 0, removed);
     });
   };
 
@@ -150,20 +150,20 @@ export default function QuizBuilder({ quiz, setQuiz }: QuizBuilderProps) {
           />
         )}
 
-        <ButtonGroup fullWidth sx={{ width: 600 }}>
-          <Button startIcon={<ContactSupportIcon />} onClick={createQuestion}>
+        <ButtonGroup fullWidth sx={{ width: 600, backgroundColor: "white" }}>
+          <Button sx={{fontSize: 13}} startIcon={<ContactSupportIcon />} onClick={createQuestion}>
             Question
           </Button>
 
-          <Button startIcon={<TextFieldsIcon />} onClick={createText}>
+          <Button sx={{fontSize: 13}} startIcon={<TextFieldsIcon />} onClick={createText}>
             Text
           </Button>
 
-          <Button startIcon={<YouTubeIcon />} onClick={createYoutubeEmbed}>
+          <Button sx={{fontSize: 13}} startIcon={<YouTubeIcon />} onClick={createYoutubeEmbed}>
             Video
           </Button>
 
-          <Button startIcon={<ImageIcon />} onClick={createImageEmbed}>
+          <Button sx={{fontSize: 13}} startIcon={<ImageIcon />} onClick={createImageEmbed}>
             Image
           </Button>
         </ButtonGroup>

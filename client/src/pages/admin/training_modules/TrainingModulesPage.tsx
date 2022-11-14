@@ -8,7 +8,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import RequestWrapper from "../../../common/RequestWrapper";
 import TrainingModule from "./TrainingModule";
-import GET_TRAINING_MODULES from "../../../queries/getModules";
+import GET_TRAINING_MODULES from "../../../queries/modules";
 
 export const CREATE_TRAINING_MODULE = gql`
   mutation CreateTrainingModule($name: String) {

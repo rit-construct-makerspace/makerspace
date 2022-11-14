@@ -18,6 +18,8 @@ export const TrainingModuleTypeDefs = gql`
     id: ID!
     name: String!
     quiz: JSON
+    reservationPrompt: JSON
+    equipment: [Equipment]
   }
 
   input AnswerInput {
@@ -32,7 +34,7 @@ export const TrainingModuleTypeDefs = gql`
 
   extend type Mutation {
     createModule(name: String): TrainingModule
-    updateModule(id: ID!, name: String!, quiz: JSON!): TrainingModule
+    updateModule(id: ID!, name: String!, quiz: JSON!, reservationPrompt: JSON): TrainingModule
     deleteModule(id: ID!): TrainingModule
 
     """

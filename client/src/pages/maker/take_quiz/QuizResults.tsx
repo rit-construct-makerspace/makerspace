@@ -1,9 +1,13 @@
 import { useQuery } from "@apollo/client";
+import { Grid } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { useImmer } from "use-immer";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { GET_LATEST_SUBMISSION, GET_SUBMISSION, GET_SUBMISSIONS } from "../../../queries/getSubmissions";
-import { GET_MODULE } from "../../admin/edit_module/EditModulePage";
+import { GET_MODULE } from "../../../queries/modules";
+import { Module } from "../../../types/Quiz";
 import Page from "../../Page";
+import ReservationPromptCard from "./ReservationPrompt";
 import SubmissionCard from "./SubmissionCard";
 
 export default function QuizResults() {
@@ -15,7 +19,16 @@ export default function QuizResults() {
       nextFetchPolicy: 'cache-first' // Caches this submission while we are using it
     }
   );
-  const moduleResult = useQuery(GET_MODULE, { variables: { id } });
+  const [reservation, setReservationDraft] = useImmer<{ dateTime: Date | null, equipmentID: number | undefined }>({
+    dateTime: new Date(),
+    equipmentID: undefined
+  });
+  const moduleResult = useQuery<{module: Module}>(
+    GET_MODULE,
+    {
+      variables: { id }
+    }
+  );
 
   return (
     <RequestWrapper
@@ -26,8 +39,24 @@ export default function QuizResults() {
           loading={ moduleResult.loading || moduleResult.data === undefined }
           error={ moduleResult.error }
         >
-        <Page title="Quiz Results" maxWidth="736px"> 
-         <SubmissionCard module={moduleResult.data?.module} submission={submissionResult.data?.latestSubmission}/>
+        <Page title="Quiz Results" maxWidth="800px">
+          <Grid container rowSpacing={3}>
+            <Grid item xs={12}>
+              <SubmissionCard module={moduleResult.data?.module!} submission={submissionResult.data?.latestSubmission}/>
+            </Grid>
+            {
+              moduleResult.data?.module?.reservationPrompt?.enabled && submissionResult.data?.latestSubmission?.passed ?
+                <Grid item xs={12}>
+                  <ReservationPromptCard
+                    moduleID={moduleResult.data?.module?.id}
+                    promptText={moduleResult.data.module.reservationPrompt.promptText}
+                    reservation={reservation}
+                    updateReservation={(reservation) => {setReservationDraft(reservation)}}
+                  />
+                </Grid>
+              : null
+            }
+          </Grid>
         </Page>
       </RequestWrapper>
     </RequestWrapper>
