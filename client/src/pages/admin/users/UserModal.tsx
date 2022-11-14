@@ -100,8 +100,11 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
   const handlePlaceHoldClicked = () => {
     const description = window.prompt("Enter hold description:");
-    if (!description) {
+    if (description == "") {
       window.alert("Description required.");
+      return;
+    }
+    else if (!description) {
       return;
     }
 
