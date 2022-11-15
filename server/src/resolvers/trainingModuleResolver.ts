@@ -19,6 +19,19 @@ const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   }
 };
 
+function submittedOptionIDsCorrect(
+  correct: string[],
+  submitted: string[] | undefined
+) {
+  if (!submitted || correct.length !== submitted.length) return false;
+
+  for (let i = 0; i < correct.length; i++) {
+    if (correct[i] !== submitted[i]) return false;
+  }
+
+  return true;
+}
+
 const TrainingModuleResolvers = {
   Query: {
     modules: async (
@@ -126,44 +139,30 @@ const TrainingModuleResolvers = {
           if (quiz.length === 0)
             throw Error("Provided module has no questions");
 
-          let correct = 0,
-            incorrect = 0;
+          let correct = 0;
+          let incorrect = 0;
 
-          for (let question of quiz) {
-            if (
-              question.type !== "CHECKBOXES" &&
-              question.type !== "MULTIPLE_CHOICE"
-            )
-              continue;
+          const questions = quiz.filter((i) =>
+            ["CHECKBOXES", "MULTIPLE_CHOICE"].includes(i.type)
+          );
 
+          for (let question of questions) {
             if (!question.options)
               throw Error(
                 `Module Item ${question.id} of type ${question.type} has no options`
               );
 
-            const correctOptions = question.options.filter(
-              (option) => option.correct
-            );
+            const correctOptionIDs = question.options
+              .filter((o) => o.correct)
+              .map((o) => o.id);
 
-            const correctOptionIds = correctOptions.map((option) => option.id);
-
-            const submittedItem = args.answerSheet.find(
+            const submittedOptionIDs = args.answerSheet.find(
               (item) => item.itemID === question.id
-            );
+            )?.optionIDs;
 
-            if (!submittedItem?.optionIDs) {
-              incorrect++;
-              continue;
-            }
-
-            const submittedOptionsSet = new Set(submittedItem.optionIDs);
-            const correctOptionsSet = new Set(correctOptionIds);
-
-            const areSetsEqual = (a: any, b: any) =>
-              a.size === b.size && [...a].every((value) => b.has(value));
-
-            if (areSetsEqual(submittedOptionsSet, correctOptionsSet)) correct++;
-            else incorrect++;
+            submittedOptionIDsCorrect(correctOptionIDs, submittedOptionIDs)
+              ? correct++
+              : incorrect++;
           }
 
           const grade = (correct / (incorrect + correct)) * 100;
