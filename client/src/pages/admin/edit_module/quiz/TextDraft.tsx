@@ -8,6 +8,7 @@ interface TextDraftProps {
   item: QuizItem;
   updateText: (updatedText: QuizItem) => void;
   onRemove: () => void;
+  onDuplicate: () => void;
 }
 
 export default function TextDraft({
@@ -15,9 +16,10 @@ export default function TextDraft({
   item,
   updateText,
   onRemove,
+  onDuplicate,
 }: TextDraftProps) {
   return (
-    <QuizItemDraft onRemove={onRemove} index={index} itemId={item.id}>
+    <QuizItemDraft onRemove={onRemove} onDuplicate={onDuplicate} index={index} itemId={item.id}>
       <TextField
         multiline
         sx={{ m: 2 }}
