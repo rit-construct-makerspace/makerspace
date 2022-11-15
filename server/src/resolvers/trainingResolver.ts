@@ -54,7 +54,7 @@ const TrainingResolvers = {
       args: { name: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (user) => {
         const module = await ModuleRepo.addModule(args.name);
 
         await createLog(
@@ -71,7 +71,7 @@ const TrainingResolvers = {
       args: { id: number; name: string; quiz: object },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (user) => {
         const module = await ModuleRepo.updateModule(
           args.id,
           args.name,
@@ -90,7 +90,7 @@ const TrainingResolvers = {
       args: { id: number },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (user) => {
         const module = await ModuleRepo.archiveModule(args.id);
 
         await createLog(
@@ -106,7 +106,7 @@ const TrainingResolvers = {
       { ifAllowed }: ApolloContext
     ) => {
       return ifAllowed(
-        [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
+        [Privilege.STAFF, Privilege.MENTOR, Privilege.MAKER],
         async (user) => {
           const { quiz, name } = await ModuleRepo.getModuleByID(args.moduleID);
 

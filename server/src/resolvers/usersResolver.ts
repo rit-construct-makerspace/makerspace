@@ -84,7 +84,7 @@ const UsersResolvers = {
     ) => {
 
       return ifAllowed(
-        [Privilege.ADMIN],
+        [Privilege.STAFF],
         async (user) => {
 
           const userSubject = await UserRepo.getUserByID(args.userID);

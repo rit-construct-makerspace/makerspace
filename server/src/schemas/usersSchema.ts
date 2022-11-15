@@ -2,9 +2,10 @@ import { gql } from "apollo-server-express";
 
 export enum Privilege {
   MAKER = "MAKER",
-  LABBIE = "LABBIE",
-  ADMIN = "ADMIN",
+  MENTOR = "MENTOR",  // Labbie
+  STAFF = "STAFF",  // Admin
 }
+
 
 export interface PassedModule {
   id: number;
@@ -16,8 +17,8 @@ export interface PassedModule {
 export const UsersTypeDefs = gql`
   enum Privilege {
     MAKER
-    LABBIE
-    ADMIN
+    MENTOR
+    STAFF
   }
 
   type PassedModule {

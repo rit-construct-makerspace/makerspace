@@ -194,7 +194,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             </Typography>
 
             <Stack direction="row" spacing={2}>
-              {getUserResult.data.user.privilege === Privilege.ADMIN &&
+              {getUserResult.data.user.privilege === Privilege.MENTOR &&
                   <Button
                       variant="outlined"
                       color="error"

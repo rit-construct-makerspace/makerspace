@@ -16,7 +16,7 @@ export default function PrivilegeChip({ privilege }: PrivilegeChipProps) {
   if (privilege === Privilege.MAKER) return null;
 
   const label = makeSentenceCase(privilege);
-  const color = privilege === Privilege.ADMIN ? "primary" : "secondary";
+  const color = privilege === Privilege.MENTOR ? "primary" : "secondary";
 
   return <Chip label={label} variant="outlined" size="small" color={color} />;
 }

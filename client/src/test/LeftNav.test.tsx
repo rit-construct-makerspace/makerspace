@@ -20,7 +20,7 @@ async function checkAdminLabbieNav() {
   expect(screen.getAllByRole("link", { name: "Materials" })).toHaveLength(2);
 
   // Admin/labbie section
-  screen.getByText("ADMIN");
+  screen.getByText("MENTOR");
   screen.getByRole("link", { name: "Storefront" });
   screen.getByRole("link", { name: "Rooms" });
   screen.getByRole("link", { name: "Reservations" });
@@ -29,13 +29,13 @@ async function checkAdminLabbieNav() {
 }
 
 test("render properly for admins", async () => {
-  editCurrentUser({ privilege: Privilege.ADMIN });
+  editCurrentUser({ privilege: Privilege.MENTOR });
   renderApp();
   await checkAdminLabbieNav();
 });
 
 test("render properly for labbies", async () => {
-  editCurrentUser({ privilege: Privilege.LABBIE });
+  editCurrentUser({ privilege: Privilege.STAFF });
   renderApp();
   await checkAdminLabbieNav();
 });
@@ -48,7 +48,7 @@ test("render properly for makers", async () => {
 
   // Don't show nav categories
   expect(screen.queryByText("MAKER")).toBeNull();
-  expect(screen.queryByText("ADMIN")).toBeNull();
+  expect(screen.queryByText("MENTOR")).toBeNull();
 
   // Show maker nav links
   screen.getByRole("link", { name: "Equipment" });
