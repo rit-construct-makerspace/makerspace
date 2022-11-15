@@ -16,7 +16,7 @@ export interface ApolloContext {
   ifAuthenticated: (callback: (user: CurrentUser) => any) => any;
 }
 
-const ifAllowed =
+export const ifAllowed =
   (expressUser: Express.User | undefined) =>
   (allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
     if (!expressUser) {
@@ -38,7 +38,7 @@ const ifAllowed =
   };
 
 // only checks if user is authenticated (for actions where holds or privileges do not matter)
-const ifAuthenticated =
+export const ifAuthenticated =
   (expressUser: Express.User | undefined) =>
   (callback: (user: CurrentUser) => any) => {
     if (!expressUser) {

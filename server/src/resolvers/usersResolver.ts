@@ -3,13 +3,10 @@ import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
-import { ApolloContext } from "../context";
+import { ApolloContext, CurrentUser, ifAuthenticated } from "../context";
 import { UserRow } from "../db/tables";
-import { hashUniversityID } from "../repositories/Users/UserRepository";
-
-export function getUsersFullName(user: UserRow) {
-  return `${user.firstName} ${user.lastName}`;
-}
+import { getUsersFullName, hashUniversityID } from "../repositories/Users/UserRepository";
+import { ForbiddenError } from "apollo-server-express";
 
 const UsersResolvers = {
   User: {
@@ -36,31 +33,58 @@ const UsersResolvers = {
   },
 
   Mutation: {
-    createUser: async (_: any, args: any, context: any,
+    createUser: async (
+      _: any,
+      args: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
-        return await UserRepo.createUser(args);
+        ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+          return await UserRepo.createUser(args);
     }),
 
     updateStudentProfile: async (
-      parent: any,
+      _: any,
       args: {
-        userID: number;
+        userID: string;
         pronouns: string;
         college: string;
         expectedGraduation: string;
         universityID: string;
       },
-      context: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
-        const hashedUniversityID = hashUniversityID(args.universityID);
-
-        return await UserRepo.updateStudentProfile({
-          ...args,
-          universityID: hashedUniversityID,
-        });
-    }),
+      {
+        try {
+          return ifAllowed([Privilege.MAKER, Privilege.LABBIE, Privilege.ADMIN], async (user) => {
+            console.log("Current: " + user.id);
+            console.log("Target: " + args.userID);
+            if (user.id === parseInt(args.userID)) {
+              const hashedUniversityID = hashUniversityID(args.universityID);
+  
+              return await UserRepo.updateStudentProfile({
+                userID: parseInt(args.userID),
+                pronouns: args.pronouns,
+                college: args.college,
+                expectedGraduation: args.expectedGraduation,
+                universityID: hashedUniversityID
+              });
+            }
+            else {
+              throw new ForbiddenError("User being modified does not match current user");
+            }
+          });
+        } catch (error) {
+          return ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+            const hashedUniversityID = hashUniversityID(args.universityID);
+  
+            return await UserRepo.updateStudentProfile({
+              userID: parseInt(args.userID),
+              pronouns: args.pronouns,
+              college: args.college,
+              expectedGraduation: args.expectedGraduation,
+              universityID: hashedUniversityID
+            });
+          })
+        }
+      },
 
     setPrivilege: async (
       _: any,
@@ -82,22 +106,21 @@ const UsersResolvers = {
       parents: any,
       args: { userID: number },
       {ifAllowed}: ApolloContext) => {
+        return ifAllowed(
+          [Privilege.ADMIN],
+          async (user) => {
 
-      return ifAllowed(
-        [Privilege.ADMIN],
-        async (user) => {
+            const userSubject = await UserRepo.getUserByID(args.userID);
 
-          const userSubject = await UserRepo.getUserByID(args.userID);
+            await createLog(
+              `{user} deleted {user}'s profile.`,
+              { id: user.id, label: getUsersFullName(user) },
+              { id: args.userID, label: getUsersFullName(userSubject) }
+            );
 
-          await createLog(
-            `{user} deleted {user}'s profile.`,
-            { id: user.id, label: getUsersFullName(user) },
-            { id: args.userID, label: getUsersFullName(userSubject) }
-          );
-
-          return await UserRepo.archiveUser(args.userID);
-        }
-      );
+            return await UserRepo.archiveUser(args.userID);
+          }
+        );
     },
   },
 };

@@ -3,7 +3,7 @@ import { ReservationRepository } from "../repositories/Equipment/ReservationRepo
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 
 const reservationRepo = new ReservationRepository();
 

@@ -3,7 +3,7 @@ import { Privilege } from "../schemas/usersSchema";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
 import * as UsersRepo from "../repositories/Users/UserRepository";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 import { HoldRow } from "../db/tables";
 
 const HoldsResolvers = {

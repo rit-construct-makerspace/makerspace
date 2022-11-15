@@ -2,7 +2,7 @@ import * as RoomRepo from "../repositories/Rooms/RoomRepository";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import * as UserRepo from "../repositories/Users/UserRepository";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 import assert from "assert";
 import { Room } from "../models/rooms/room";
 import { ApolloContext } from "../context";

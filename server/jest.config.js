@@ -11,6 +11,6 @@ module.exports = {
     testMatch: ["**/dist/test/**/*.test.(ts|js)"],
     testEnvironment: "node",
     moduleNameMapper: {
-      "src(.*)$": "<rootDir>/src/$1",
+      // "src(.*)$": "<rootDir>/src/$1"
     },
 };

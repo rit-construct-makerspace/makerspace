@@ -1,10 +1,13 @@
 import { PassedModule, Privilege } from "../../schemas/usersSchema";
 import { knex } from "../../db";
 import { createLog } from "../AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "../../resolvers/usersResolver";
 import { EntityNotFound } from "../../EntityNotFound";
 import { UserRow } from "../../db/tables";
 import { createHash } from "crypto";
+
+export function getUsersFullName(user: UserRow) {
+  return `${user.firstName} ${user.lastName}`;
+}
 
 export function hashUniversityID(universityID: string) {
   return createHash("sha256").update(universityID).digest("hex");

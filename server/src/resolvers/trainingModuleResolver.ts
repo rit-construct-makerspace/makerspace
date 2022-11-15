@@ -3,7 +3,7 @@ import { AnswerInput } from "../schemas/trainingModuleSchema";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
 import { TrainingModuleItem } from "../db/tables";
