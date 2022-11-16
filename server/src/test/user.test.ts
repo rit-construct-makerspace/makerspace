@@ -9,7 +9,8 @@ const request = require('request');
 
 const url = process.env.GRAPHQL_ENDPOINT ?? "https://localhost:3000";
 const tables = ["Users"];
-let admin: UserRow;
+let userZero: UserRow;
+let userZeroContext: any;
 
 const GET_USERS = `
     query GetUsers {
@@ -18,6 +19,10 @@ const GET_USERS = `
             firstName
             lastName
             privilege
+            pronouns
+            college
+            expectedGraduation
+            universityID
         }
     }
 `;
@@ -29,6 +34,10 @@ const GET_USER_BY_ID = `
             firstName
             lastName
             privilege
+            pronouns
+            college
+            expectedGraduation
+            universityID
         }
     }
 `;
@@ -85,13 +94,6 @@ export const DELETE_USER = `
   }
 `;
 
-const adminContext = () => ({
-    user: {...admin, hasHolds: false},
-    logout: () => {},
-    ifAllowed: ifAllowed(admin),
-    ifAuthenticated: ifAuthenticated(admin)
-});
-
 
 describe("User tests", () => {
   beforeAll(() => {
@@ -102,9 +104,9 @@ describe("User tests", () => {
   beforeEach(async () => {
     try {
         // reset tables...
-        tables.forEach(async (t) => {
-            await knex(t).del();
-        });
+        for(const t of tables) {
+          await knex(t).del();
+        }
 
         // Add user
         const userID = (await UserRepo.createUser({
@@ -115,25 +117,31 @@ describe("User tests", () => {
         })).id;
 
         // Get by ID
-        admin = await UserRepo.getUserByID(userID);
-        expect(admin).toBeDefined();
+        userZero = await UserRepo.getUserByID(userID);
+        expect(userZero).toBeDefined();
 
-        // Make user admin
-        admin  = await UserRepo.setPrivilege(admin.id, Privilege.ADMIN);
-        expect(admin.privilege).toBe(Privilege.ADMIN);
+        // Make user staff
+        userZero  = await UserRepo.setPrivilege(userZero.id, Privilege.ADMIN);
+        expect(userZero.privilege).toBe(Privilege.ADMIN);
 
+        userZeroContext = () => ({
+          user: {...userZero, hasHolds: false},
+          logout: () => {},
+          ifAllowed: ifAllowed(userZero),
+          ifAuthenticated: ifAuthenticated(userZero)
+        });
     } catch (error) {
         fail("Failed setup");
     }
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     try {
       // reset tables...
-      tables.forEach(async (t) => {
-          knex(t).del();
-      });
-      knex.destroy();
+      for(const t of tables) {
+        await knex(t).del();
+      }
+      await knex.destroy();
     } catch (error) {
       fail("Failed teardown");
     }
@@ -142,7 +150,7 @@ describe("User tests", () => {
   test("getUsers with no rows", async () => {
     let server = new ApolloServer({
         schema,
-        context: adminContext
+        context: userZeroContext
     });
 
     let res = (await server.executeOperation(
@@ -153,10 +161,10 @@ describe("User tests", () => {
     expect(res.errors).toBeUndefined();
   });
 
-  test("ADMIN addUser", async () => {
+  test("STAFF addUser", async () => {
     let server = new ApolloServer({
         schema,
-        context: adminContext
+        context: userZeroContext
     });
 
     let res = (await server.executeOperation(
@@ -185,10 +193,10 @@ describe("User tests", () => {
     expect(userRows.length).toBe(2);
   });
 
-  test("ADMIN getUserByID", async () => {
+  test("STAFF getUserByID", async () => {
     let server = new ApolloServer({
         schema,
-        context: adminContext
+        context: userZeroContext
     });
 
     let res = (await server.executeOperation(
@@ -219,10 +227,206 @@ describe("User tests", () => {
     expect(res.data?.user).toBeDefined();
   });
 
-  // test("User can update self", async () => {
+  test("MAKER update self", async () => {
+    let server = new ApolloServer({
+        schema,
+        context: userZeroContext
+    });
+
+    let res = (await server.executeOperation(
+        {
+            query: CREATE_USER,
+            variables: {
+                firstName: "Jane",
+                lastName: "Doe",
+                ritUsername: "jd1111",
+                email: "jd1111@example.com"
+            }
+        }
+    ));
+    expect(res.errors).toBeUndefined();
+
+    const userID = res.data?.createUser?.id;
+
+    res = (await server.executeOperation(
+        {
+            query: GET_USER_BY_ID,
+            variables: {
+                userID: userID
+            }
+        },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    let user: UserRow = res.data?.user;
+
+    const context = () => ({
+        user: {...user, hasHolds: false},
+        logout: () => {},
+        ifAllowed: ifAllowed(user),
+        ifAuthenticated: ifAuthenticated(user)
+    });
+
+    server = new ApolloServer({
+        schema,
+        context : context
+    });
+
+    res = (await server.executeOperation(
+        {
+            query: UPDATE_STUDENT_PROFILE,
+            variables: {
+                userID: userID,
+                pronouns: "she/her",
+                college: "CAD",
+                expectedGraduation: "2027",
+                universityID: "000000000"
+            }
+        },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    res = (await server.executeOperation(
+      {
+          query: GET_USER_BY_ID,
+          variables: {
+              userID: userID
+          }
+      },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    let updatedUser = res.data?.user;
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser.pronouns).toBe("she/her");
+    expect(updatedUser.college).toBe("CAD");
+    expect(updatedUser.expectedGraduation).toBe("2027");
+    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+  });
+
+  test("MENTOR update user", async () => {
+    // Make user mentor
+    userZero  = await UserRepo.setPrivilege(userZero.id, Privilege.LABBIE);
+    expect(userZero.privilege).toBe(Privilege.LABBIE);
+
+    let server = new ApolloServer({
+        schema,
+        context: userZeroContext
+    });
+
+    let res = (await server.executeOperation(
+        {
+            query: CREATE_USER,
+            variables: {
+                firstName: "Jane",
+                lastName: "Doe",
+                ritUsername: "jd1111",
+                email: "jd1111@example.com"
+            }
+        }
+    ));
+    expect(res.errors).toBeUndefined();
+
+    const userID = res.data?.createUser?.id;
+
+    res = (await server.executeOperation(
+        {
+            query: UPDATE_STUDENT_PROFILE,
+            variables: {
+                userID: userID,
+                pronouns: "she/her",
+                college: "CAD",
+                expectedGraduation: "2027",
+                universityID: "000000000"
+            }
+        },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    res = (await server.executeOperation(
+      {
+          query: GET_USER_BY_ID,
+          variables: {
+              userID: userID
+          }
+      },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    let updatedUser = res.data?.user;
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser.pronouns).toBe("she/her");
+    expect(updatedUser.college).toBe("CAD");
+    expect(updatedUser.expectedGraduation).toBe("2027");
+    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+  });
+
+  test("STAFF update user", async () => {
+    // User Zero starts as staff (see before each)
+
+    let server = new ApolloServer({
+        schema,
+        context: userZeroContext
+    });
+
+    let res = (await server.executeOperation(
+        {
+            query: CREATE_USER,
+            variables: {
+                firstName: "Jane",
+                lastName: "Doe",
+                ritUsername: "jd1111",
+                email: "jd1111@example.com"
+            }
+        }
+    ));
+    expect(res.errors).toBeUndefined();
+
+    const userID = res.data?.createUser?.id;
+
+    res = (await server.executeOperation(
+        {
+            query: UPDATE_STUDENT_PROFILE,
+            variables: {
+                userID: userID,
+                pronouns: "she/her",
+                college: "CAD",
+                expectedGraduation: "2027",
+                universityID: "000000000"
+            }
+        },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    res = (await server.executeOperation(
+      {
+          query: GET_USER_BY_ID,
+          variables: {
+              userID: userID
+          }
+      },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    let updatedUser = res.data?.user;
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser.pronouns).toBe("she/her");
+    expect(updatedUser.college).toBe("CAD");
+    expect(updatedUser.expectedGraduation).toBe("2027");
+    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+  });
+
+  // test("MENTOR place hold", async () => {
+  //   // Make user mentor
+  //   userZero  = await UserRepo.setPrivilege(userZero.id, Privilege.LABBIE);
+  //   expect(userZero.privilege).toBe(Privilege.LABBIE);
+
   //   let server = new ApolloServer({
   //       schema,
-  //       context: adminContext
+  //       context: userZeroContext
   //   });
 
   //   let res = (await server.executeOperation(
@@ -242,30 +446,6 @@ describe("User tests", () => {
 
   //   res = (await server.executeOperation(
   //       {
-  //           query: GET_USER_BY_ID,
-  //           variables: {
-  //               userID: userID
-  //           }
-  //       },
-  //   ));
-  //   expect(res.errors).toBeUndefined();
-
-  //   let user: UserRow = res.data?.user;
-
-  //   const context = () => ({
-  //       user: {...user, hasHolds: false},
-  //       logout: () => {},
-  //       ifAllowed: ifAllowed(user),
-  //       ifAuthenticated: ifAuthenticated(user)
-  //   });
-
-  //   server = new ApolloServer({
-  //       schema,
-  //       context : context
-  //   });
-
-  //   res = (await server.executeOperation(
-  //       {
   //           query: UPDATE_STUDENT_PROFILE,
   //           variables: {
   //               userID: userID,
@@ -278,12 +458,22 @@ describe("User tests", () => {
   //   ));
   //   expect(res.errors).toBeUndefined();
 
-  //   user = res.data?.user;
+  //   res = (await server.executeOperation(
+  //     {
+  //         query: GET_USER_BY_ID,
+  //         variables: {
+  //             userID: userID
+  //         }
+  //     },
+  //   ));
+  //   expect(res.errors).toBeUndefined();
 
-  //   expect(user).toBeDefined();
-  //   expect(user.pronouns).toBe("she/her");
-  //   expect(user.college).toBe("CAD");
-  //   expect(user.expectedGraduation).toBe("2027");
-  //   expect(user.universityID).toBe("000000000");
+  //   let updatedUser = res.data?.user;
+
+  //   expect(updatedUser).toBeDefined();
+  //   expect(updatedUser.pronouns).toBe("she/her");
+  //   expect(updatedUser.college).toBe("CAD");
+  //   expect(updatedUser.expectedGraduation).toBe("2027");
+  //   expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   // });
 });

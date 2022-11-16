@@ -6,7 +6,7 @@ export async function getAllLabels(): Promise<string[]> {
   return knexResult.map((i: any) => i.label);
 }
 
-export async function getLabelsForItem(itemId: number): Promise<string[]> {
+export async function getLabelsForItem(itemId: string): Promise<string[]> {
   return knex("InventoryItem")
     .leftJoin(
       "InventoryItemLabel",
@@ -27,6 +27,6 @@ export async function archiveLabel(label: string): Promise<void> {
   await knex("Label").where({ label }).update({ archived: true });
 }
 
-export async function archiveLabelById(labelId: number): Promise<void> {
+export async function archiveLabelById(labelId: string): Promise<void> {
   await knex("Label").where({ id: labelId }).update({ archived: true });
 }

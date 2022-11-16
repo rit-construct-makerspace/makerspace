@@ -1,9 +1,9 @@
 import { gql } from "apollo-server-express";
 
 export interface Submission {
-    id: number;
-    moduleID: number;
-    makerID: number;
+    id: string;
+    moduleID: string;
+    makerID: string;
     submissionDate: string;
     passed: boolean;
     expirationDate: string;

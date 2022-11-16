@@ -6,10 +6,10 @@ enum ReservationEventType {
 }
 
 export interface ReservationEvent {
-    id: number;
+    id: string;
     eventType: ReservationEventType;
-    reservationID: number,
-    userID: number;
+    reservationID: string,
+    userID: string;
     dateTime: Date;
     payload: string;
 }

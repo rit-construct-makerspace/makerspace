@@ -36,7 +36,7 @@ const TrainingModuleResolvers = {
 
     module: async (
       _parent: any,
-      args: { id: number },
+      args: { id: string },
       { ifAuthenticated }: ApolloContext
     ) =>
       ifAuthenticated(async (user) => {
@@ -68,7 +68,7 @@ const TrainingModuleResolvers = {
 
     updateModule: async (
       _parent: any,
-      args: { id: number; name: string; quiz: object },
+      args: { id: string; name: string; quiz: object },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.ADMIN], async (user) => {
@@ -87,7 +87,7 @@ const TrainingModuleResolvers = {
 
     deleteModule: async (
       _parent: any,
-      args: { id: number },
+      args: { id: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.ADMIN], async (user) => {
@@ -102,7 +102,7 @@ const TrainingModuleResolvers = {
 
     submitModule: async (
       _parent: any,
-      args: { moduleID: number; answerSheet: AnswerInput[] },
+      args: { moduleID: string; answerSheet: AnswerInput[] },
       { ifAllowed }: ApolloContext
     ) => {
       return ifAllowed(

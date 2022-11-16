@@ -1,10 +1,10 @@
 import { gql } from "apollo-server-express";
 
 export interface Swipe {
-  id: number;
+  id: string;
   dateTime: Date;
-  roomID: number;
-  userID: number;
+  roomID: string;
+  userID: string;
 }
 
 export const RoomTypeDefs = gql`

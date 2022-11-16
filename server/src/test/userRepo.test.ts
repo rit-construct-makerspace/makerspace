@@ -9,24 +9,24 @@ describe("UserRepository tests", () => {
     // we can here also seed our tables, if we have any seeding files
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     try {
       // reset tables...
-      tables.forEach(async (t) => {
+      for(const t of tables) {
         await knex(t).del();
-      });
+      }
     } catch (error) {
       fail("Failed setup");
     }
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     try {
       // reset tables...
-      tables.forEach(async (t) => {
-          knex(t).del();
-      });
-      knex.destroy();
+      for(const t of tables) {
+        await knex(t).del();
+      }
+      await knex.destroy();
     } catch (error) {
       fail("Failed teardown");
     }
@@ -39,7 +39,7 @@ describe("UserRepository tests", () => {
 
   test("addUser and get", async () => {
     // Add user
-    UserRepo.createUser({
+    await UserRepo.createUser({
         firstName: "John",
         lastName: "Doe",
         ritUsername: "jd0000",
@@ -52,7 +52,7 @@ describe("UserRepository tests", () => {
 
   test("addUser and get", async () => {
     // Add user
-    UserRepo.createUser({
+    await UserRepo.createUser({
         firstName: "John",
         lastName: "Doe",
         ritUsername: "jd0000",

@@ -3,14 +3,13 @@ import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
-import { ApolloContext, CurrentUser, ifAuthenticated } from "../context";
-import { UserRow } from "../db/tables";
+import { ApolloContext } from "../context";
 import { getUsersFullName, hashUniversityID } from "../repositories/Users/UserRepository";
 import { ForbiddenError } from "apollo-server-express";
 
 const UsersResolvers = {
   User: {
-    passedModules: (parent: { id: number }) => {
+    passedModules: (parent: { id: string }) => {
       return ModuleRepo.getPassedModulesByUser(parent.id);
     },
   },
@@ -23,7 +22,7 @@ const UsersResolvers = {
           return await UserRepo.getUsers();
     }),
 
-    user: async (_: any, args: { id: number }) => {
+    user: async (_: any, args: { id: string }) => {
       return await UserRepo.getUserByID(args.id);
     },
 
@@ -52,43 +51,33 @@ const UsersResolvers = {
       },
       { ifAllowed }: ApolloContext) =>
       {
-        try {
-          return ifAllowed([Privilege.MAKER, Privilege.LABBIE, Privilege.ADMIN], async (user) => {
-            console.log("Current: " + user.id);
-            console.log("Target: " + args.userID);
-            if (user.id === parseInt(args.userID)) {
-              const hashedUniversityID = hashUniversityID(args.universityID);
-  
-              return await UserRepo.updateStudentProfile({
-                userID: parseInt(args.userID),
-                pronouns: args.pronouns,
-                college: args.college,
-                expectedGraduation: args.expectedGraduation,
-                universityID: hashedUniversityID
-              });
-            }
-            else {
-              throw new ForbiddenError("User being modified does not match current user");
-            }
-          });
-        } catch (error) {
-          return ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
-            const hashedUniversityID = hashUniversityID(args.universityID);
-  
+        return ifAllowed([Privilege.MAKER, Privilege.LABBIE, Privilege.ADMIN], async (user) => {
+          if (user.id === args.userID) {  
             return await UserRepo.updateStudentProfile({
-              userID: parseInt(args.userID),
+              userID: args.userID,
               pronouns: args.pronouns,
               college: args.college,
               expectedGraduation: args.expectedGraduation,
-              universityID: hashedUniversityID
+              universityID: args.universityID
             });
-          })
-        }
+          }
+          else {
+            return ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {  
+              return await UserRepo.updateStudentProfile({
+                userID: args.userID,
+                pronouns: args.pronouns,
+                college: args.college,
+                expectedGraduation: args.expectedGraduation,
+                universityID: args.universityID
+              });
+            });
+          }
+        });
       },
 
     setPrivilege: async (
       _: any,
-      { userID, privilege }: { userID: number; privilege: Privilege },
+      { userID, privilege }: { userID: string; privilege: Privilege },
       context: ApolloContext) => {
         assert(context.user);
 
@@ -104,7 +93,7 @@ const UsersResolvers = {
 
     deleteUser: async (
       parents: any,
-      args: { userID: number },
+      args: { userID: string },
       {ifAllowed}: ApolloContext) => {
         return ifAllowed(
           [Privilege.ADMIN],

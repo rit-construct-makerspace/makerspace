@@ -7,8 +7,8 @@ export enum Privilege {
 }
 
 export interface PassedModule {
-  id: number;
-  moduleID: number;
+  id: string;
+  moduleID: string;
   moduleName: string;
   submissionDate: Date;
   expirationDate: Date;
@@ -57,7 +57,7 @@ export const UsersTypeDefs = gql`
     Sensitive information. Stored as a SHA256 hash in the database.
     Not to be confused with RIT usernames (ie. abc1234)
     """
-    universityID: String!
+    universityID: String
 
     """
     Has the user completed the signup form?

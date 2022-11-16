@@ -1,4 +1,4 @@
-import { PassedModule, Privilege } from "../../schemas/usersSchema";
+import { Privilege } from "../../schemas/usersSchema";
 import { knex } from "../../db";
 import { createLog } from "../AuditLogs/AuditLogRepository";
 import { EntityNotFound } from "../../EntityNotFound";
@@ -17,7 +17,7 @@ export async function getUsers(): Promise<UserRow[]> {
   return knex("Users").select();
 }
 
-export async function getUserByID(userID: number): Promise<UserRow> {
+export async function getUserByID(userID: string): Promise<UserRow> {
   const user = await knex("Users").first().where("id", userID);
 
   if (!user) throw new EntityNotFound(`User #${userID} not found`);
@@ -49,7 +49,7 @@ export async function createUser(user: {
 }
 
 export async function updateStudentProfile(args: {
-  userID: number;
+  userID: string;
   pronouns: string;
   college: string;
   expectedGraduation: string;
@@ -76,7 +76,7 @@ export async function updateStudentProfile(args: {
 }
 
 export async function setPrivilege(
-  userID: number,
+  userID: string,
   privilege: Privilege
 ): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ privilege });
@@ -84,14 +84,14 @@ export async function setPrivilege(
 }
 
 export async function addTrainingModuleAttemptToUser(
-  makerID: number,
-  moduleID: number,
+  makerID: string,
+  moduleID: string,
   passed: boolean
 ) {
   return await knex("ModuleSubmissions").insert({ makerID, moduleID, passed }).returning('id');
 }
 
-export async function archiveUser(userID: number): Promise<UserRow> {
+export async function archiveUser(userID: string): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ isArchived: true });
   return await getUserByID(userID);
 }

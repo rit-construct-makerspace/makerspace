@@ -10,11 +10,11 @@ const reservationRepo = new ReservationRepository();
 const ReservationResolvers = {
 
   Query: {
-    reservations: async (_: any, args: { id: number }, context: any) => {
+    reservations: async (_: any, args: { id: string }, context: any) => {
       return await reservationRepo.getReservations();
     },
 
-    reservation: async (_: any, args: { id: number }, context: any) => {
+    reservation: async (_: any, args: { id: string }, context: any) => {
       return await reservationRepo.getReservationById(args.id);
     }
   },
@@ -47,14 +47,14 @@ const ReservationResolvers = {
       })
     },
 
-    addComment: async (_parent: any, args: { resID: number, commentText: string },
+    addComment: async (_parent: any, args: { resID: string, commentText: string },
     { ifAllowed }: ApolloContext) => 
         ifAllowed([Privilege.MAKER], async (user) => {
           return await reservationRepo.addComment(args.resID, user.id, args.commentText);
     }),
 
     confirmReservation: async (_parent: any,
-      args: { resID: number },
+      args: { resID: string },
       { ifAllowed }: ApolloContext
     ) => {
       ifAllowed([Privilege.LABBIE], async (user) => {
@@ -63,7 +63,7 @@ const ReservationResolvers = {
     },
 
     cancelReservation: async (_parent: any,
-      args: { resID: number },
+      args: { resID: string },
       { ifAllowed }: ApolloContext
     ) => {
       ifAllowed([Privilege.LABBIE], async (user) => {

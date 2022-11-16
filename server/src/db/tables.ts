@@ -1,32 +1,36 @@
 import { Privilege } from "../schemas/usersSchema";
 
+
+
+export type RowIDType = string;
+
 export interface AuditLogRow {
-  id: number;
+  id: string;
   dateTime: Date;
   message: string;
 }
 
 export interface EquipmentRow {
-  id: number;
+  id: string;
   name: string;
   addedAt: Date;
   inUse: boolean;
-  roomID: number;
+  roomID: string;
   archived: boolean;
 }
 
 export interface HoldRow {
-  id: number;
-  creatorID: number;
-  removerID?: number;
-  userID: number;
+  id: string;
+  creatorID: string;
+  removerID?: string;
+  userID: string;
   description: string;
   createDate: Date;
   removeDate?: Date;
 }
 
 export interface InventoryItemRow {
-  id: number;
+  id: string;
   image?: string;
   name: string;
   unit: string;
@@ -38,55 +42,55 @@ export interface InventoryItemRow {
 }
 
 export interface ModuleSubmissionRow {
-  id: number;
-  moduleID: number;
-  makerID: number;
+  id: string;
+  moduleID: string;
+  makerID: string;
   submissionDate: Date;
   passed: boolean;
   expirationDate: Date;
 }
 
 export interface ModulesForEquipmentRow {
-  id: number;
-  equipmentID: number;
-  moduleID: number;
+  id: string;
+  equipmentID: string;
+  moduleID: string;
 }
 
 export interface ReservationEventRow {
-  id: number;
-  reservationID: number;
+  id: string;
+  reservationID: string;
   eventType: string;
-  userID: number;
+  userID: string;
   dateTime: Date;
   payload: string;
 }
 
 export interface ReservationRow {
-  id: number;
-  makerID: number;
+  id: string;
+  makerID: string;
   createDate: Date;
   startTime: Date;
   endTime: Date;
-  equipmentID: number;
+  equipmentID: string;
   status: string;
   lastUpdated: Date;
 }
 
 export interface RoomSwipeRow {
-  id: number;
+  id: string;
   dateTime: number;
-  roomID: number;
-  userID: number;
+  roomID: string;
+  userID: string;
 }
 
 export interface RoomRow {
-  id: number;
+  id: string;
   name: string;
   archived: boolean;
 }
 
 export interface TrainingModuleRow {
-  id: number;
+  id: string;
   name: string;
   quiz: TrainingModuleItem[];
   archived: boolean;
@@ -107,7 +111,7 @@ export interface ModuleItemOption {
 }
 
 export interface UserRow {
-  id: number;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
