@@ -18,6 +18,7 @@ import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPrevi
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
+import SwipePage from "./pages/admin/swipe/SwipePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -79,6 +80,8 @@ export default function AppRoutes() {
         <Route path="/admin/people" element={<UsersPage />} />
 
         <Route path="/admin/history" element={<AuditLogsPage />} />
+
+        <Route path="/admin/swipe" element={<SwipePage />} />
       </Route>
     </Routes>
   );
