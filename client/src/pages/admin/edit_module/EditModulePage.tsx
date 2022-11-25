@@ -30,6 +30,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ReservationPromptDraft from "./reservation_prompt/ReservationPromptDraft";
 import { Drafts } from "@mui/icons-material";
+import {getModules} from "../../../../../server/src/repositories/Training/ModuleRepository";
 
 export default function EditModulePage() {
   const { id } = useParams<{ id: string }>();
@@ -47,6 +48,7 @@ export default function EditModulePage() {
       setRequiresReservation(module?.reservationPrompt?.enabled ? true : false);
     },
   });
+
 
   const [updateModule, updateResult] = useMutation(UPDATE_MODULE);
 
@@ -66,8 +68,21 @@ export default function EditModulePage() {
       draggable: true,
       progress: undefined,
       theme: "colored",
-      });
-  }
+    });
+  };
+
+  const incompleteTrainingModuleAnimation = () => {
+    toast.error('Training Module Incomplete', {
+      position: "bottom-left",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  };
 
   const trainingModDeletedAnimation = () => {
     toast.error('Training Module Deleted', {
@@ -80,18 +95,25 @@ export default function EditModulePage() {
       progress: undefined,
       theme: "colored",
       });
-  }
+  };
 
   const handleSaveClicked = () => {
-    updateModule({
-      variables: { id, name, quiz: module?.quiz, reservationPrompt: module?.reservationPrompt },
-      refetchQueries: [
-        { query: GET_MODULE, variables: { id } },
-        { query: GET_TRAINING_MODULES },
-      ],
-    });
-    trainingModSavedAnimation();
-  }
+
+    if (Number(module?.quiz?.length) > 0) {
+      updateModule({
+        variables: {id, name, quiz: module?.quiz, reservationPrompt: module?.reservationPrompt},
+        refetchQueries: [
+          {query: GET_MODULE, variables: {id}},
+          {query: GET_TRAINING_MODULES},
+        ],
+      });
+      trainingModSavedAnimation();
+      navigate("/admin/training");
+    }
+    else {
+      incompleteTrainingModuleAnimation();
+    }
+  };
 
   const handleDeleteClicked = () => {
     if (!window.confirm("Are you sure you want to delete this module?")) {
@@ -99,7 +121,7 @@ export default function EditModulePage() {
     }
     trainingModDeletedAnimation();
     deleteModule();
-  }
+  };
 
   return (
     <RequestWrapper2
