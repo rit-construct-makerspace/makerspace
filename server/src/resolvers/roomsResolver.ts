@@ -36,7 +36,7 @@ const RoomResolvers = {
 
   Mutation: {
     addRoom: async (parent: any, args: any, { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.STAFF], async (user) => {
         const newRoom = await RoomRepo.addRoom(args.room);
 
         await createLog(

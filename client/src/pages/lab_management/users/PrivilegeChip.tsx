@@ -2,7 +2,7 @@ import React from "react";
 import Privilege from "../../../types/Privilege";
 import { Chip } from "@mui/material";
 
-// MAKER -> Maker, LABBIE -> Labbie, etc.
+// MAKER -> Maker, MENTOR -> Mentor, etc.
 export function makeSentenceCase(allCaps: string) {
   return allCaps.substring(0, 1) + allCaps.substring(1).toLocaleLowerCase();
 }
@@ -16,7 +16,7 @@ export default function PrivilegeChip({ privilege }: PrivilegeChipProps) {
   if (privilege === Privilege.MAKER) return null;
 
   const label = makeSentenceCase(privilege);
-  const color = privilege === Privilege.ADMIN ? "primary" : "secondary";
+  const color = privilege === Privilege.STAFF ? "primary" : "secondary";
 
   return <Chip label={label} variant="outlined" size="small" color={color} />;
 }

@@ -33,7 +33,7 @@ export default function PrivilegeControl({
   const currentUser = useCurrentUser();
   const [setPrivilege, setPrivilegeResult] = useMutation(SET_PRIVILEGE);
 
-  const isAdmin = currentUser.privilege === Privilege.ADMIN;
+  const isAdmin = currentUser.privilege === Privilege.STAFF;
 
   const handlePrivilegeChanged = (
     event: ChangeEvent<HTMLInputElement>,
@@ -68,14 +68,14 @@ export default function PrivilegeControl({
             label="Maker"
           />
           <FormControlLabel
-            value={Privilege.LABBIE}
+            value={Privilege.MENTOR}
             control={<Radio />}
-            label="Labbie"
+            label="Mentor"
           />
           <FormControlLabel
-            value={Privilege.ADMIN}
+            value={Privilege.STAFF}
             control={<Radio />}
-            label="Admin"
+            label="Staff"
           />
         </RadioGroup>
       </FormControl>

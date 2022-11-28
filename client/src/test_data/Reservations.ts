@@ -7,7 +7,7 @@ const reservations = {
         name: "Janice Smith",
         image:
           "https://t4.ftcdn.net/jpg/03/83/25/83/240_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg",
-        role: "Labbie",
+        role: "Mentor",
       },
       equipment: {
         id: 2,
