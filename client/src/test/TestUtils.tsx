@@ -24,7 +24,7 @@ export function resetMocks() {
             firstName: "John",
             lastName: "Smith",
             email: "jxs1234@rit.edu",
-            privilege: Privilege.MENTOR,
+            privilege: Privilege.STAFF,
             setupComplete: true,
             holds: [],
           },

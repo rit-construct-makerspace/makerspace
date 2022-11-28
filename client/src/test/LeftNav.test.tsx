@@ -19,8 +19,8 @@ async function checkAdminLabbieNav() {
   expect(screen.getAllByRole("link", { name: "Training" })).toHaveLength(2);
   expect(screen.getAllByRole("link", { name: "Materials" })).toHaveLength(2);
 
-  // Admin/labbie section
-  screen.getByText("MENTOR");
+  // Admin section
+  screen.getByText("STAFF");
   screen.getByRole("link", { name: "Storefront" });
   screen.getByRole("link", { name: "Rooms" });
   screen.getByRole("link", { name: "Reservations" });
@@ -49,6 +49,7 @@ test("render properly for makers", async () => {
   // Don't show nav categories
   expect(screen.queryByText("MAKER")).toBeNull();
   expect(screen.queryByText("MENTOR")).toBeNull();
+  expect(screen.queryByText("STAFF")).toBeNull();
 
   // Show maker nav links
   screen.getByRole("link", { name: "Equipment" });

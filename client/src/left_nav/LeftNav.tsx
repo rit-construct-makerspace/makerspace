@@ -81,7 +81,7 @@ export default function LeftNav() {
 
         {!isMaker && (
           <List component="nav">
-            <Divider textAlign="left">MENTOR</Divider>
+            <Divider textAlign="left">STAFF</Divider>
             <NavLink
               to="/admin/equipment"
               primary="Equipment"
