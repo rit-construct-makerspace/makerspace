@@ -1,6 +1,7 @@
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { mergeResolvers } from "@graphql-tools/merge";
-import { TrainingTypeDefs } from "./schemas/trainingSchema";
+import { TrainingModuleTypeDefs } from "./schemas/trainingModuleSchema";
+import { TrainingSubmissionTypeDefs } from "./schemas/trainingSubmissionSchema";
 import { StoreFrontTypeDefs } from "./schemas/storeFrontSchema";
 import { ReservationsTypeDefs } from "./schemas/reservationsSchema";
 import { UsersTypeDefs } from "./schemas/usersSchema";
@@ -13,7 +14,8 @@ import {
   JSONResolver,
 } from "graphql-scalars";
 import { AuditLogsTypeDefs } from "./schemas/auditLogsSchema";
-import trainingResolvers from "./resolvers/trainingResolver";
+import trainingModuleResolvers from "./resolvers/trainingModuleResolver";
+import trainingSubmissionsResolvers from "./resolvers/trainingSubmissionResolver";
 import storefrontResolvers from "./resolvers/storeFrontResolver";
 import roomsResolver from "./resolvers/roomsResolver";
 import EquipmentResolvers from "./resolvers/equipmentResolver";
@@ -32,7 +34,8 @@ export const schema = makeExecutableSchema({
     UsersTypeDefs,
     HoldsTypeDefs,
     EquipmentTypeDefs,
-    TrainingTypeDefs,
+    TrainingModuleTypeDefs,
+    TrainingSubmissionTypeDefs,
     StoreFrontTypeDefs,
     ReservationsTypeDefs,
     DateTimeTypeDefinition,
@@ -42,7 +45,8 @@ export const schema = makeExecutableSchema({
   resolvers: mergeResolvers([
     resolveFunctions,
     EquipmentResolvers,
-    trainingResolvers,
+    trainingModuleResolvers,
+    trainingSubmissionsResolvers,
     storefrontResolvers,
     roomsResolver,
     usersResolver,

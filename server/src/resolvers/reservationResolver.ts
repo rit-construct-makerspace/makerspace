@@ -3,19 +3,19 @@ import { ReservationRepository } from "../repositories/Equipment/ReservationRepo
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName, hashUniversityID } from "./usersResolver";
+import { getUsersFullName } from "./usersResolver";
 
 const reservationRepo = new ReservationRepository();
 
 const ReservationResolvers = {
 
   Query: {
-    reservations: async (_: any, args: { Id: number }, context: any) => {
+    reservations: async (_: any, args: { id: number }, context: any) => {
       return await reservationRepo.getReservations();
     },
 
-    reservation: async (_: any, args: { Id: number }, context: any) => {
-      return await reservationRepo.getReservationById(args.Id);
+    reservation: async (_: any, args: { id: number }, context: any) => {
+      return await reservationRepo.getReservationById(args.id);
     }
   },
 

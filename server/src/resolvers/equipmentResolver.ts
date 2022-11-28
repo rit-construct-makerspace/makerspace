@@ -20,22 +20,26 @@ const EquipmentResolvers = {
       return await EquipmentRepo.getEquipmentByID(args.id);
     },
 
-    reservations: async (_: any, args: { Id: number }, context: any) => {
+    reservations: async (_: any, args: { id: number }, context: any) => {
       return await reservationRepo.getReservations();
     },
 
-    reservation: async (_: any, args: { Id: number }, context: any) => {
-      return await reservationRepo.getReservationById(args.Id);
+    reservation: async (_: any, args: { id: number }, context: any) => {
+      return await reservationRepo.getReservationById(args.id);
     },
   },
 
   Equipment: {
-    room: (parent: EquipmentRow) => {
-      return RoomRepo.getRoomByID(parent.roomID);
+    room: async (parent: EquipmentRow) => {
+      return await RoomRepo.getRoomByID(parent.roomID);
     },
 
-    trainingModules: (parent: EquipmentRow) => {
-      return EquipmentRepo.getModulesByEquipment(parent.id);
+    hasAccess: async (parent: EquipmentRow, args: { uid: string }) => {
+      return await EquipmentRepo.hasAccess(args.uid, parent.id);
+    },
+
+    trainingModules: async (parent: EquipmentRow) => {
+      return await EquipmentRepo.getModulesByEquipment(parent.id);
     },
   },
 

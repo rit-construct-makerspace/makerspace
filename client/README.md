@@ -1,6 +1,6 @@
 # Makerspace Client
 
-This is a React JS web application used by makers, labbies, and admins alike.
+This is a React JS web application used by makers, mentors, and staff alike.
 
 ## Run locally
 

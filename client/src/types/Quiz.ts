@@ -4,6 +4,7 @@ export enum QuizItemType {
   Text = "TEXT",
   YoutubeEmbed = "YOUTUBE_EMBED",
   ImageEmbed = "IMAGE_EMBED",
+  ReservationPrompt = "RESERVATION PROMPT"
 }
 
 export interface Option {
@@ -12,15 +13,30 @@ export interface Option {
   correct: boolean;
 }
 
-export type QuizItem = {
+export interface QuizItem {
   id: string;
   type: QuizItemType;
   text: string;
   options?: Option[];
 };
 
+export interface ReservationPrompt {
+  promptText?: string;
+  enabled: boolean;
+}
+
 export interface Module {
   id: number;
   name: string;
   quiz: QuizItem[];
+  reservationPrompt: ReservationPrompt;
+};
+
+export interface Submission {
+  id: number;
+  moduleID: number;
+  makerID: number;
+  submissionDate: string;
+  passed: boolean;
+  expirationDate: string;
 }

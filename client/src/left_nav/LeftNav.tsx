@@ -21,6 +21,7 @@ import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 import HoldAlert from "./HoldAlert";
+import { ToastContainer } from "react-toastify";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -34,6 +35,18 @@ export default function LeftNav() {
 
   return (
     <Box display="flex">
+      <ToastContainer
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+        />
       <Drawer
         sx={{
           width: drawerWidth,

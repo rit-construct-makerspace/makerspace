@@ -10,6 +10,6 @@ process.env
 /docs/_site
 
 # Transpiled Server Files
-server/dist
+/server/dist
 
-server/cert
+/server/cert

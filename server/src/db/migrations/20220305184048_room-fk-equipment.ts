@@ -5,7 +5,9 @@ export async function up(knex: Knex): Promise<void> {
     if (!exists) return;
 
     return knex.schema.alterTable("Equipment", function (t) {
-      t.integer("roomID").references("id").inTable("Rooms");
+      t.integer("roomID").references("id").inTable("Rooms")
+        .onUpdate("CASCADE")
+        .onDelete("CASCADE");
     });
   });
 }

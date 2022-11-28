@@ -3,16 +3,11 @@ import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import assert from "assert";
-import { createHash } from "crypto";
 import { ApolloContext } from "../context";
 import { UserRow } from "../db/tables";
 
 export function getUsersFullName(user: UserRow) {
   return `${user.firstName} ${user.lastName}`;
-}
-
-export function hashUniversityID(universityID: string) {
-  return createHash("sha256").update(universityID).digest("hex");
 }
 
 const UsersResolvers = {
@@ -52,11 +47,8 @@ const UsersResolvers = {
       },
       context: any
     ) => {
-      const hashedUniversityID = hashUniversityID(args.universityID);
-
       return await UserRepo.updateStudentProfile({
         ...args,
-        universityID: hashedUniversityID,
       });
     },
 

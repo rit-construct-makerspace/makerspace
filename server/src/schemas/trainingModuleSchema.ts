@@ -11,13 +11,15 @@ export interface AnswerInput {
   optionIDs: string[];
 }
 
-export const TrainingTypeDefs = gql`
+export const TrainingModuleTypeDefs = gql`
   scalar JSON
 
   type TrainingModule {
     id: ID!
     name: String!
     quiz: JSON
+    reservationPrompt: JSON
+    equipment: [Equipment]
   }
 
   input AnswerInput {
@@ -32,13 +34,13 @@ export const TrainingTypeDefs = gql`
 
   extend type Mutation {
     createModule(name: String): TrainingModule
-    updateModule(id: ID!, name: String!, quiz: JSON!): TrainingModule
+    updateModule(id: ID!, name: String!, quiz: JSON!, reservationPrompt: JSON): TrainingModule
     deleteModule(id: ID!): TrainingModule
 
     """
     Submit a trainingModule for assessment, the attempt will be stored
     for the user and the grade will be returned as a Float out of 100
     """
-    submitModule(moduleID: ID!, answerSheet: [AnswerInput]): Float
+    submitModule(moduleID: ID!, answerSheet: [AnswerInput]): ID
   }
 `;

@@ -10,7 +10,7 @@ test("render logo and current user", async () => {
   screen.getByText("John Smith");
 });
 
-async function checkAdminLabbieNav() {
+async function checkMentorStaffNav() {
   await screen.findByText("MAKER");
 
   // Equipment, Training, & Materials links should show
@@ -31,13 +31,13 @@ async function checkAdminLabbieNav() {
 test("render properly for admins", async () => {
   editCurrentUser({ privilege: Privilege.MENTOR });
   renderApp();
-  await checkAdminLabbieNav();
+  await checkMentorStaffNav();
 });
 
-test("render properly for labbies", async () => {
+test("render properly for mentors", async () => {
   editCurrentUser({ privilege: Privilege.STAFF });
   renderApp();
-  await checkAdminLabbieNav();
+  await checkMentorStaffNav();
 });
 
 test("render properly for makers", async () => {
@@ -56,7 +56,7 @@ test("render properly for makers", async () => {
   screen.getByRole("link", { name: "Training" });
   screen.getByRole("link", { name: "Materials" });
 
-  // Don't show labbie/admin links
+  // Don't show mentor/staff links
   expect(screen.queryByRole("link", { name: "Storefront" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Rooms" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Reservations" })).toBeNull();

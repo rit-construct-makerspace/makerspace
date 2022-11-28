@@ -1,12 +1,13 @@
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import { AnswerInput } from "../schemas/trainingSchema";
+import { AnswerInput } from "../schemas/trainingModuleSchema";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "./usersResolver";
-import { addTrainingModuleAttemptToUser } from "../repositories/Users/UserRepository";
+import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
-import { TrainingModuleItem } from "../db/tables";
+import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   for (let item of quiz) {
@@ -18,7 +19,7 @@ const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   }
 };
 
-const TrainingResolvers = {
+const TrainingModuleResolvers = {
   Query: {
     modules: async (
       _parent: any,
@@ -45,7 +46,18 @@ const TrainingResolvers = {
         if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
 
         return module;
-      }),
+      })
+  },
+
+  TrainingModule: {
+    equipment: async (
+      parent: TrainingModuleRow,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        return EquipmentRepo.getEquipmentForModule(parent.id);
+      })
   },
 
   Mutation: {
@@ -68,14 +80,15 @@ const TrainingResolvers = {
 
     updateModule: async (
       _parent: any,
-      args: { id: number; name: string; quiz: object },
+      args: { id: number; name: string; quiz: object; reservationPrompt: object },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const module = await ModuleRepo.updateModule(
           args.id,
           args.name,
-          args.quiz
+          args.quiz,
+          args.reservationPrompt
         );
 
         await createLog(
@@ -155,23 +168,23 @@ const TrainingResolvers = {
 
           const grade = (correct / (incorrect + correct)) * 100;
 
-          addTrainingModuleAttemptToUser(
+          SubmissionRepo.addSubmission(
             user.id,
             args.moduleID,
             grade >= MODULE_PASSING_THRESHOLD
-          );
-
-          await createLog(
-            `{user} submitted attempt of {module} with a grade of ${grade}.`,
-            { id: user.id, label: getUsersFullName(user) },
-            { id: args.moduleID, label: name }
-          );
-
-          return grade;
+          ).then(async (id) => {
+            await createLog(
+              `{user} submitted attempt of {module} with a grade of ${grade}.`,
+              { id: user.id, label: getUsersFullName(user) },
+              { id: args.moduleID, label: name }
+            );
+  
+            return id;
+          });
         }
       );
     },
   },
 };
 
-export default TrainingResolvers;
+export default TrainingModuleResolvers;

@@ -13,6 +13,7 @@ interface ImageEmbedDraftProps {
   imageEmbed: QuizItem;
   updateImageEmbed: (updatedImageEmbed: QuizItem) => void;
   onRemove: () => void;
+  onDuplicate: () => void;
 }
 
 export default function ImageEmbedDraft({
@@ -20,9 +21,10 @@ export default function ImageEmbedDraft({
   imageEmbed,
   updateImageEmbed,
   onRemove,
+  onDuplicate,
 }: ImageEmbedDraftProps) {
   return (
-    <QuizItemDraft onRemove={onRemove} index={index} itemId={imageEmbed.id}>
+    <QuizItemDraft onRemove={onRemove} onDuplicate={onDuplicate} index={index} itemId={imageEmbed.id}>
       <Stack padding={2} spacing={2}>
         <TextField
           label="Image URL"

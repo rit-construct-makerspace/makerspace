@@ -1,9 +1,9 @@
 import { addMutationMock, addQueryMock, renderApp } from "../TestUtils";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import GET_TRAINING_MODULES from "../../queries/getModules";
-import { CREATE_TRAINING_MODULE } from "../../pages/admin/training_modules/TrainingModulesPage";
-import { GET_MODULE } from "../../pages/admin/edit_module/EditModulePage";
+import GET_TRAINING_MODULES from "../../queries/modules";
+import { CREATE_TRAINING_MODULE } from "../../pages/lab_management/training_modules/TrainingModulesPage";
+import { GET_MODULE } from "../../queries/modules";
 
 test("can navigate to page", async () => {
   addQueryMock(GET_TRAINING_MODULES, { modules: [] });

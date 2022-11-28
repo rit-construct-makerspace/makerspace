@@ -1,23 +1,23 @@
-import React from "react";
 import { Route, Routes } from "react-router-dom";
-import StorefrontPreviewPage from "./pages/admin/storefront_preview/StorefrontPreviewPage";
+import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
 import LeftNav from "./left_nav/LeftNav";
 import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
-import EditModulePage from "./pages/admin/edit_module/EditModulePage";
+import EditModulePage from "./pages/lab_management/edit_module/EditModulePage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
-import ManageEquipmentPage from "./pages/admin/manage_equipment/ManageEquipmentPage";
-import TrainingModulesPage from "./pages/admin/training_modules/TrainingModulesPage";
-import InventoryPage from "./pages/admin/inventory/InventoryPage";
-import SelectRoomPage from "./pages/admin/monitor/SelectRoomPage";
-import MonitorRoomPage from "./pages/admin/monitor/MonitorRoomPage";
-import StorefrontPage from "./pages/admin/storefront/StorefrontPage";
+import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
+import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
+import InventoryPage from "./pages/lab_management/inventory/InventoryPage";
+import SelectRoomPage from "./pages/lab_management/monitor/SelectRoomPage";
+import MonitorRoomPage from "./pages/lab_management/monitor/MonitorRoomPage";
+import StorefrontPage from "./pages/lab_management/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
-import UsersPage from "./pages/admin/users/UsersPage";
-import AuditLogsPage from "./pages/admin/audit_logs/AuditLogsPage";
-import ReservationsPage from "./pages/admin/reservations/ReservationsPage";
+import UsersPage from "./pages/lab_management/users/UsersPage";
+import AuditLogsPage from "./pages/lab_management/audit_logs/AuditLogsPage";
+import ReservationsPage from "./pages/lab_management/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
+import QuizResults from "./pages/maker/take_quiz/QuizResults";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -48,6 +48,8 @@ export default function AppRoutes() {
         <Route path="/maker/training" element={<TrainingPage />} />
 
         <Route path="/maker/training/:id" element={<QuizPage />} />
+
+        <Route path="maker/training/:id/results" element={<QuizResults />} />
 
         <Route path="/maker/materials" element={<InventoryPreviewPage />} />
 

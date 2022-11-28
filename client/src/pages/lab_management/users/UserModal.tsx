@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import HoldCard from "./HoldCard";
 import Privilege from "../../../types/Privilege";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import CloseButton from "../../../common/CloseButton";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -101,8 +102,11 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
   const handlePlaceHoldClicked = () => {
     const description = window.prompt("Enter hold description:");
-    if (!description) {
+    if (description == "") {
       window.alert("Description required.");
+      return;
+    }
+    else if (!description) {
       return;
     }
 
@@ -132,6 +136,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
         result={getUserResult}
         render={({ user }) => (
           <Stack>
+            <CloseButton onClick={() => navigate("/admin/people")}/>
             <Stack direction="row" alignItems="center" spacing={2} mb={4}>
               <Avatar
                 alt=""
