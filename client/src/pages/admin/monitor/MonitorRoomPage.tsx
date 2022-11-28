@@ -21,6 +21,7 @@ import CardReader from "./CardReader";
 import SwipedUserCard from "./SwipedUserCard";
 import styled from "styled-components";
 import HistoryIcon from "@mui/icons-material/History";
+import { GET_ROOM } from "../../../queries/getRooms";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -45,28 +46,9 @@ const StyledRecentSwipes = styled.div`
   }
 `;
 
-export const GET_ROOM = gql`
-  query GetRoom($id: ID!) {
-    room(id: $id) {
-      name
-      recentSwipes {
-        id
-        user {
-          id
-          firstName
-          lastName
-        }
-      }
-      equipment {
-        id
-        name
-      }
-    }
-  }
-`;
-
 export interface Swipe {
   id: string;
+  dateTime: string;
   user: {
     id: string;
     firstName: string;
@@ -79,20 +61,20 @@ export default function MonitorRoomPage() {
   const navigate = useNavigate();
   const queryResult = useQuery(GET_ROOM, { variables: { id } });
   const [loadingUser, setLoadingUser] = useState(false);
-  const [cardError, setCardError] = useState(false);
+  const [cardErrorCount, setCardErrorCount] = useState(0);
 
   return (
     <RequestWrapper2
       result={queryResult}
       render={({ room }) => (
         <Page title={room.name} maxWidth="1200px">
-          <Collapse in={cardError}>
+          <Collapse in={cardErrorCount > 0}>
             <Alert
               severity="error"
-              onClose={() => setCardError(false)}
+              onClose={() => setCardErrorCount(0)}
               sx={{ mb: 2 }}
             >
-              <b>Unrecognized card.</b> Has this person registered with The
+              <b>Unrecognized card{cardErrorCount > 1 ? " (" + cardErrorCount + ")" : null}.</b> Has this person registered with The
               Construct? Have they entered their university ID correctly?
             </Alert>
           </Collapse>
@@ -104,7 +86,7 @@ export default function MonitorRoomPage() {
             )}
             <CardReader
               setLoadingUser={setLoadingUser}
-              onCardError={() => setCardError(true)}
+              onCardError={() => setCardErrorCount(cardErrorCount + 1)}
             />
           </Stack>
 

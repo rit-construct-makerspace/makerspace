@@ -80,8 +80,6 @@ export default function AppRoutes() {
         <Route path="/admin/people" element={<UsersPage />} />
 
         <Route path="/admin/history" element={<AuditLogsPage />} />
-
-        <Route path="/admin/swipe" element={<SwipePage />} />
       </Route>
     </Routes>
   );

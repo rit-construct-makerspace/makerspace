@@ -12,13 +12,16 @@ export default function SwipedUserCard({ swipe }: SwipedUserCardProps) {
 
   const { user } = swipe;
 
+  console.log("Swipe: ");
+  console.log(swipe);
+
   return (
     <Card sx={{ flexShrink: 0, mr: 2 }}>
       <CardActionArea
         sx={{ p: 2 }}
         onClick={() => navigate(`/admin/people/${user.id}`)}
       >
-        <Stack alignItems="center" spacing={1.5}>
+        <Stack alignItems="center" spacing={1}>
           <Avatar
             alt=""
             src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
@@ -34,6 +37,18 @@ export default function SwipedUserCard({ swipe }: SwipedUserCardProps) {
           >
             {`${user.firstName} ${user.lastName}`}
           </Typography>
+          <Stack alignItems="left">
+            <Typography
+              color={"gray"}
+              fontSize={13}>
+              {`${new Date(swipe.dateTime).toLocaleDateString()}`}
+            </Typography>
+            <Typography
+              color={"gray"}
+              fontSize={13}>
+              {`${new Date(swipe.dateTime).toLocaleTimeString()}`}
+            </Typography>
+          </Stack>
         </Stack>
       </CardActionArea>
     </Card>

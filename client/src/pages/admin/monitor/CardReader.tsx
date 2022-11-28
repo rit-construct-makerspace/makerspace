@@ -2,15 +2,8 @@ import React, { useCallback, useEffect } from "react";
 import { Button } from "@mui/material";
 import { gql, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { GET_ROOM } from "./MonitorRoomPage";
-
-const SWIPE_INTO_ROOM = gql`
-  mutation SwipeIntoRoom($roomID: ID!, $universityID: String!) {
-    swipeIntoRoom(roomID: $roomID, universityID: $universityID) {
-      id
-    }
-  }
-`;
+import { GET_ROOM } from "../../../queries/getRooms";
+import { SWIPE_INTO_ROOM } from "../../../queries/swipes";
 
 const SWIPE_START_CHAR = ";";
 const SWIPE_END_CHAR = "?";
@@ -42,11 +35,11 @@ export default function CardReader({
         },
       });
     },
-    [id, onCardError, setLoadingUser, swipeIntoRoom]
+    [id, setLoadingUser, swipeIntoRoom, onCardError]
   );
 
-  useEffect(() => {
-    document.addEventListener("keydown", ({ key }) => {
+  const handleKeyDown = useCallback(
+    ({key}) => {
       if (readingSwipe) {
         swipeBuffer.push(key);
       }
@@ -62,7 +55,14 @@ export default function CardReader({
         const uidString = swipeBuffer.slice(0, 9).join("");
         handleSwipe(uidString);
       }
-    });
+    },
+    [handleSwipe]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [handleSwipe]);
 
   return (
