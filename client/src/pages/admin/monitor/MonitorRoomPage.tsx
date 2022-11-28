@@ -23,7 +23,7 @@ import styled from "styled-components";
 import HistoryIcon from "@mui/icons-material/History";
 import { GET_ROOM } from "../../../queries/getRooms";
 
-const StyledRecentSwipes = styled.div`
+export const StyledRecentSwipes = styled.div`
   display: flex;
   flex-flow: row nowrap;
   overflow-x: hidden;

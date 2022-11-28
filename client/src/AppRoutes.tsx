@@ -18,6 +18,7 @@ import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPrevi
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
+import SwipePage from "./pages/admin/monitor/SwipePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -27,10 +28,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/signup" element={<SignupPage />} />
 
-      <Route
-        path="/admin/storefront/preview"
-        element={<StorefrontPreviewPage />}
-      />
+      <Route path ="/admin/rooms/:id/swipe" element={<SwipePage />} />
 
       <Route path={"/"} element={<LeftNav />}>
         <Route path="/create-reservation" element={<CreateReservationPage />} />
@@ -67,6 +65,8 @@ export default function AppRoutes() {
         <Route path="/admin/inventory" element={<InventoryPage />} />
 
         <Route path="/admin/reservations" element={<ReservationsPage />} />
+
+        <Route path ="/admin/rooms/:id/swipe" element={<SwipePage />} />
 
         <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
 
