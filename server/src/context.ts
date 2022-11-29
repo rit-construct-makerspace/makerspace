@@ -14,6 +14,11 @@ export interface ApolloContext {
     callback: (user: CurrentUser) => any
   ) => any;
   ifAuthenticated: (callback: (user: CurrentUser) => any) => any;
+  ifAllowedOrSelf: (
+    targetedUserID: string,
+    allowedPrivileges: Privilege[],
+    callback: (user: CurrentUser) => any
+  ) => any;
 }
 
 export const ifAllowed =
@@ -37,6 +42,23 @@ export const ifAllowed =
     return callback(user);
   };
 
+export const ifAllowedOrSelf =
+  (expressUser: Express.User | undefined) =>
+  (targetedUserID: string, allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
+    if (!expressUser) {
+      throw new AuthenticationError("Unauthenticated - ifallowedorself");
+    }
+
+    const user = expressUser as CurrentUser;
+
+    if (user.id === targetedUserID) {
+      return callback(user);
+    }
+    else {
+      return ifAllowed(expressUser)(allowedPrivileges, callback);
+    }
+  };
+
 // only checks if user is authenticated (for actions where holds or privileges do not matter)
 export const ifAuthenticated =
   (expressUser: Express.User | undefined) =>
@@ -54,7 +76,8 @@ const context = ({ req }: { req: any }) => ({
   user: req.user,
   logout: () => req.logout(),
   ifAllowed: ifAllowed(req.user),
-  ifAuthenticated: ifAuthenticated(req.user),
+  ifAllowedOrSelf: ifAllowedOrSelf(req.user),
+  ifAuthenticated: ifAuthenticated(req.user)
 });
 
 export default context;
