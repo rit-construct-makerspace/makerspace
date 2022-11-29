@@ -18,6 +18,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import Page from "../../Page";
 import SaveIcon from "@mui/icons-material/Save";
+import ClearIcon from '@mui/icons-material/Clear';
 import { useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
@@ -91,6 +92,12 @@ export default function EditModulePage() {
       ],
     });
     trainingModSavedAnimation();
+  }
+
+  const handleExitClicked = () => {
+    if (window.confirm("Changes will not be saved. Are you sure you would like to exit?")) {
+      navigate("/admin/training");
+    }
   }
 
   const handleDeleteClicked = () => {
@@ -208,17 +215,34 @@ export default function EditModulePage() {
           }
 
           <Fab
+            color="error"
+            onClick={handleExitClicked}
+            sx={{
+            position: "absolute",
+            bottom: 40,
+            mr: -13,
+            alignSelf: "flex-end",
+          }}
+            >
+            {updateResult.loading ? (
+                <CircularProgress size={20} sx={{ color: "white" }} />
+            ) : (
+                <ClearIcon />
+            )}
+          </Fab>
+
+          <Fab
             color="primary"
             onClick={handleSaveClicked}
             sx={{
               position: "absolute",
               bottom: 40,
-              mr: -12,
+              mr: -22,
               alignSelf: "flex-end",
             }}
           >
             {updateResult.loading ? (
-              <CircularProgress size={20} sx={{ color: "white" }} />
+              <CircularProgress size={20} sx={{ color: "blue" }} />
             ) : (
               <SaveIcon />
             )}
