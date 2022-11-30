@@ -7,7 +7,7 @@ import {
 import assert from "assert";
 import { RoomSwipeRow } from "../../db/tables";
 
-export async function getRoomByID(roomID: number): Promise<Room | null> {
+export async function getRoomByID(roomID: string): Promise<Room | null> {
   const knexResult = await knex
     .first("id", "name")
     .from("Rooms")
@@ -35,13 +35,13 @@ export async function addRoom(room: Room): Promise<Room> {
   return newRoom;
 }
 
-export async function archiveRoom(roomID: number): Promise<Room | null> {
+export async function archiveRoom(roomID: string): Promise<Room | null> {
   await knex("Rooms").where({ id: roomID }).update({ archived: true });
   return getRoomByID(roomID);
 }
 
 export async function updateRoomName(
-  roomID: number,
+  roomID: string,
   name: string
 ): Promise<Room | null> {
   await knex("Rooms").where({ id: roomID }).update({
@@ -51,11 +51,11 @@ export async function updateRoomName(
   return await getRoomByID(roomID);
 }
 
-export async function swipeIntoRoom(roomID: number, userID: number) {
+export async function swipeIntoRoom(roomID: string, userID: string) {
   await knex("RoomSwipes").insert({ roomID, userID });
 }
 
-export async function getRecentSwipes(roomID: number): Promise<RoomSwipeRow[]> {
+export async function getRecentSwipes(roomID: string): Promise<RoomSwipeRow[]> {
   return knex("RoomSwipes")
     .select()
     .where({ roomID })

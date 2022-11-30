@@ -2,8 +2,8 @@ import { gql } from "apollo-server-express";
 
 export interface EquipmentInput {
   name: string;
-  roomID: number;
-  moduleIDs: number[];
+  roomID: string;
+  moduleIDs: string[];
 }
 
 export const EquipmentTypeDefs = gql`

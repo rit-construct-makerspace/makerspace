@@ -8,7 +8,7 @@ import { HoldRow } from "../db/tables";
 
 const HoldsResolvers = {
   User: {
-    holds: async (parent: { id: number }) =>
+    holds: async (parent: { id: string }) =>
       HoldsRepo.getHoldsByUser(parent.id),
   },
 
@@ -36,7 +36,7 @@ const HoldsResolvers = {
   Mutation: {
     createHold: async (
       _parent: any,
-      args: { userID: number; description: string },
+      args: { userID: string; description: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async (user) => {
@@ -53,7 +53,7 @@ const HoldsResolvers = {
 
     removeHold: async (
       _parent: any,
-      args: { holdID: number },
+      args: { holdID: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async (user) => {

@@ -3,15 +3,15 @@ import { ModuleSubmissionRow } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";
 
 export async function addSubmission(
-    makerID: number,
-    moduleID: number,
+    makerID: string,
+    moduleID: string,
     passed: boolean
 ) {
     return await knex("ModuleSubmissions").insert({ makerID, moduleID, passed }).returning('id');
 }
 
 export async function getSubmission(
-    submissionID: number
+    submissionID: string
 ): Promise<ModuleSubmissionRow | undefined>  {
     const submission = await knex("ModuleSubmissions")
     .select()
@@ -28,7 +28,7 @@ export async function getSubmission(
 }
 
 export async function getSubmissionsByUser(
-    makerID: number
+    makerID: string
 ): Promise<ModuleSubmissionRow[]> {
     const submission = await knex("ModuleSubmissions")
         .select()
@@ -44,8 +44,8 @@ export async function getSubmissionsByUser(
 }
 
 export async function getSubmissionsByModule(
-    makerID: number,
-    moduleID: number
+    makerID: string,
+    moduleID: string
 ): Promise<ModuleSubmissionRow[]> {
     return await knex("ModuleSubmissions")
         .select()
@@ -58,7 +58,7 @@ export async function getSubmissionsByModule(
 }
 
 export async function getLatestSubmission(
-    makerID: number
+    makerID: string
 ): Promise<ModuleSubmissionRow | undefined> {
     let res = await knex("ModuleSubmissions")
         .where("makerID", makerID)
@@ -68,8 +68,8 @@ export async function getLatestSubmission(
 }
 
 export async function getLatestSubmissionByModule(
-    makerID: number,
-    moduleID: number
+    makerID: string,
+    moduleID: string
 ): Promise<ModuleSubmissionRow | undefined> {
     const submission = await knex("ModuleSubmissions")
         .where("makerID", makerID)

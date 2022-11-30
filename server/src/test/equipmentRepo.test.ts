@@ -45,7 +45,7 @@ describe("EquipmentRepository tests", () => {
   test("addEquipment and get", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -53,7 +53,7 @@ describe("EquipmentRepository tests", () => {
     await EquipmentRepo.addEquipment({
       name: "Test Equipment",
       roomID: roomID,
-      moduleIDs: <number[]>[]
+      moduleIDs: <string[]>[]
     });
 
     let equipmentRows = await EquipmentRepo.getEquipments();
@@ -63,7 +63,7 @@ describe("EquipmentRepository tests", () => {
   test("getEquipmentByID", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -71,7 +71,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
       name: "Test Equipment",
       roomID: roomID,
-      moduleIDs: <number[]>[]
+      moduleIDs: <string[]>[]
     })).id;
 
     // Get by ID
@@ -82,7 +82,7 @@ describe("EquipmentRepository tests", () => {
   test("updateEquipment", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -90,7 +90,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     // Check added
@@ -100,7 +100,7 @@ describe("EquipmentRepository tests", () => {
     await EquipmentRepo.updateEquipment(equipmentID, {
         name: "Test Equipment Updated",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     });
 
     // Check name updated
@@ -110,7 +110,7 @@ describe("EquipmentRepository tests", () => {
   test("archiveEquipment", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -118,7 +118,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     // Check added
@@ -134,7 +134,7 @@ describe("EquipmentRepository tests", () => {
   test("addModulesToEquipment and get", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -142,7 +142,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     const moduleID = (await ModuleRepo.addModule("Test Module")).id;
@@ -161,7 +161,7 @@ describe("EquipmentRepository tests", () => {
   test("updateModules", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -169,7 +169,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     const moduleOneID = (await ModuleRepo.addModule("Test Module I")).id;
@@ -196,7 +196,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess no modules", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -204,7 +204,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     // Check added
@@ -237,7 +237,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess bad swipe", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -245,7 +245,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     // Check added
@@ -286,7 +286,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess with one module", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -294,7 +294,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     // Check added
@@ -336,7 +336,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess with hold", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -344,7 +344,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     // Check added
@@ -384,7 +384,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess with insufficient training", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: 0,
+        id: "0",
         name: "Test Room"
     })).id;
 
@@ -392,7 +392,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <string[]>[]
     })).id;
 
     // Check added

@@ -1,7 +1,7 @@
 import { gql } from "apollo-server-express";
 
 export interface TrainingModule {
-  id: number;
+  id: string;
   name: string;
   quiz: object;
 }

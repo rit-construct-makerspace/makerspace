@@ -83,7 +83,7 @@ describe("InventoryRepository test set", () => {
   });
 
   test("getInventoryItemsById with no items", async () => {
-    let item = await InventoryRepo.getItemById(0);
+    let item = await InventoryRepo.getItemById("0");
     expect(item).toBe(null);
   });
 

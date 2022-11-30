@@ -1,7 +1,7 @@
 import { gql } from "apollo-server-express";
 
 export interface InventoryItem {
-  id: number;
+  id: string;
   image: string;
   name: string;
   unit: string;

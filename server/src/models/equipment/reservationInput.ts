@@ -1,6 +1,6 @@
 export interface ReservationInput {
-    makerID: number;
-    equipmentID: number;
+    makerID: string;
+    equipmentID: string;
     startTime: Date;
     endTime: Date;
     startingMakerComment: string;

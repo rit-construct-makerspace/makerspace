@@ -7,7 +7,7 @@ import { getUsersFullName } from "../repositories/Users/UserRepository";
 
 const UsersResolvers = {
   User: {
-    passedModules: (parent: { id: number }) => {
+    passedModules: (parent: { id: string }) => {
       return ModuleRepo.getPassedModulesByUser(parent.id);
     },
   },
@@ -89,7 +89,7 @@ const UsersResolvers = {
 
     deleteUser: async (
       parents: any,
-      args: { userID: number },
+      args: { userID: string },
       {ifAllowed}: ApolloContext) => {
         return ifAllowed(
           [Privilege.ADMIN],

@@ -7,8 +7,8 @@ export enum Privilege {
 }
 
 export interface PassedModule {
-  id: number;
-  moduleID: number;
+  id: string;
+  moduleID: string;
   moduleName: string;
   submissionDate: Date;
   expirationDate: Date;

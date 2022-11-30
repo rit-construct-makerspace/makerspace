@@ -5,7 +5,7 @@ const TrainingSubmissionResolvers = {
   Query: {
     submission: async (
       parent: any,
-      args: { submissionID: number },
+      args: { submissionID: string },
       { ifAuthenticated }: ApolloContext
     ) => 
       ifAuthenticated (async (user) => {
@@ -13,7 +13,7 @@ const TrainingSubmissionResolvers = {
     }),
     submissions: async (
       _parent: any,
-      args: { moduleID: number },
+      args: { moduleID: string },
       { ifAuthenticated }: ApolloContext
     ) =>
       ifAuthenticated(async (user) => {
@@ -23,7 +23,7 @@ const TrainingSubmissionResolvers = {
     }),
     latestSubmission: async (
       _parent: any,
-      args: { moduleID: number },
+      args: { moduleID: string },
       { ifAuthenticated }: ApolloContext
     ) =>
       ifAuthenticated(async (user) => {
