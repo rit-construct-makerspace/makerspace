@@ -10,7 +10,7 @@ const reservationRepo = new ReservationRepository();
 const ReservationResolvers = {
 
   Query: {
-    reservations: async (_: any, args: { id: string }, context: any) => {
+    reservations: async (_: any, args: any, context: any) => {
       return await reservationRepo.getReservations();
     },
 

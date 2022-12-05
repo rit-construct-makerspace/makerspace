@@ -1,14 +1,13 @@
 import { knex } from "../db";
 import * as UserRepo from "../repositories/Users/UserRepository";
 import { Privilege } from "../schemas/usersSchema";
-import { ApolloContext, ifAllowed, ifAuthenticated } from "../context";
+import { ifAllowed, ifAllowedOrSelf, ifAuthenticated } from "../context";
 import { UserRow } from "../db/tables";
 import { ApolloServer } from "apollo-server-express";
 import { schema } from "../schema";
-const request = require('request');
 
 const url = process.env.GRAPHQL_ENDPOINT ?? "https://localhost:3000";
-const tables = ["Users"];
+const tables = ["Users", "AuditLogs"];
 let userZero: UserRow;
 let userZeroContext: any;
 
@@ -94,6 +93,12 @@ export const DELETE_USER = `
   }
 `;
 
+export const SET_PRIVILEGE = `
+  mutation SetPrivilege($userID: ID!, $privilege: Privilege) {
+    setPrivilege(userID: $userID, privilege: $privilege)
+  }
+`;
+
 
 describe("User tests", () => {
   beforeAll(() => {
@@ -121,13 +126,14 @@ describe("User tests", () => {
         expect(userZero).toBeDefined();
 
         // Make user staff
-        userZero  = await UserRepo.setPrivilege(userZero.id, Privilege.ADMIN);
+        userZero = await UserRepo.setPrivilege(userZero.id, Privilege.ADMIN);
         expect(userZero.privilege).toBe(Privilege.ADMIN);
 
         userZeroContext = () => ({
           user: {...userZero, hasHolds: false},
           logout: () => {},
           ifAllowed: ifAllowed(userZero),
+          ifAllowedOrSelf: ifAllowedOrSelf(userZero),
           ifAuthenticated: ifAuthenticated(userZero)
         });
     } catch (error) {
@@ -147,7 +153,7 @@ describe("User tests", () => {
     }
   });
 
-  test("getUsers with no rows", async () => {
+  test("STAFF getUsers", async () => {
     let server = new ApolloServer({
         schema,
         context: userZeroContext
@@ -159,6 +165,7 @@ describe("User tests", () => {
         }
     ));
     expect(res.errors).toBeUndefined();
+    expect(res.data?.users?.length).toBe(1);
   });
 
   test("STAFF addUser", async () => {
@@ -187,9 +194,13 @@ describe("User tests", () => {
         }
     ));
     expect(res.errors).toBeUndefined();
+    console.log("Context:");
+    console.log(userZero);
+    console.log(userZeroContext);
 
     const userRows = res.data?.users;
     expect(userRows).toBeDefined();
+    expect(userRows).not.toBeNull();
     expect(userRows.length).toBe(2);
   });
 
@@ -225,9 +236,92 @@ describe("User tests", () => {
     expect(res.errors).toBeUndefined();
 
     expect(res.data?.user).toBeDefined();
+    expect(res.data?.user).not.toBeNull();
   });
 
   test("MAKER update self", async () => {
+    let server = new ApolloServer({
+        schema,
+        context: userZeroContext
+    });
+
+    let res = (await server.executeOperation(
+        {
+            query: CREATE_USER,
+            variables: {
+                firstName: "Jane",
+                lastName: "Doe",
+                ritUsername: "jd1111",
+                email: "jd1111@example.com"
+            }
+        }
+    ));
+    expect(res.errors).toBeUndefined();
+
+    const userID = res.data?.createUser?.id;
+
+    res = (await server.executeOperation(
+        {
+            query: GET_USER_BY_ID,
+            variables: {
+                userID: userID
+            }
+        },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    let user: UserRow = res.data?.user;
+    expect(user).toBeDefined();
+    expect(user).not.toBeNull();
+
+    const context = () => ({
+        user: {...user, hasHolds: false},
+        logout: () => {},
+        ifAllowed: ifAllowed(user),
+        ifAllowedOrSelf: ifAllowedOrSelf(user),
+        ifAuthenticated: ifAuthenticated(user)
+    });
+
+    server = new ApolloServer({
+        schema,
+        context : context
+    });
+
+    res = (await server.executeOperation(
+        {
+            query: UPDATE_STUDENT_PROFILE,
+            variables: {
+                userID: userID,
+                pronouns: "she/her",
+                college: "CAD",
+                expectedGraduation: "2027",
+                universityID: "000000000"
+            }
+        },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    res = (await server.executeOperation(
+      {
+          query: GET_USER_BY_ID,
+          variables: {
+              userID: userID
+          }
+      },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    let updatedUser = res.data?.user;
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser.pronouns).toBe("she/her");
+    expect(updatedUser.college).toBe("CAD");
+    expect(updatedUser.expectedGraduation).toBe("2027");
+    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+  });
+
+  test("MAKER cannot update others", async () => {
     let server = new ApolloServer({
         schema,
         context: userZeroContext
@@ -264,6 +358,7 @@ describe("User tests", () => {
         user: {...user, hasHolds: false},
         logout: () => {},
         ifAllowed: ifAllowed(user),
+        ifAllowedOrSelf: ifAllowedOrSelf(user),
         ifAuthenticated: ifAuthenticated(user)
     });
 
@@ -276,7 +371,7 @@ describe("User tests", () => {
         {
             query: UPDATE_STUDENT_PROFILE,
             variables: {
-                userID: userID,
+                userID: userZero.id,
                 pronouns: "she/her",
                 college: "CAD",
                 expectedGraduation: "2027",
@@ -284,7 +379,7 @@ describe("User tests", () => {
             }
         },
     ));
-    expect(res.errors).toBeUndefined();
+    expect(res.errors).toBeDefined();
 
     res = (await server.executeOperation(
       {
@@ -296,13 +391,14 @@ describe("User tests", () => {
     ));
     expect(res.errors).toBeUndefined();
 
-    let updatedUser = res.data?.user;
+    user = res.data?.user;
 
-    expect(updatedUser).toBeDefined();
-    expect(updatedUser.pronouns).toBe("she/her");
-    expect(updatedUser.college).toBe("CAD");
-    expect(updatedUser.expectedGraduation).toBe("2027");
-    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+    expect(user).toBeDefined();
+    expect(user).not.toBeNull();
+    expect(user.pronouns).not.toBe("she/her");
+    expect(user.college).not.toBe("CAD");
+    expect(user.expectedGraduation).not.toBe("2027");
+    expect(user.universityID).not.toBe(UserRepo.hashUniversityID("000000000"));
   });
 
   test("MENTOR update user", async () => {
@@ -357,6 +453,7 @@ describe("User tests", () => {
     let updatedUser = res.data?.user;
 
     expect(updatedUser).toBeDefined();
+    expect(updatedUser).not.toBeNull();
     expect(updatedUser.pronouns).toBe("she/her");
     expect(updatedUser.college).toBe("CAD");
     expect(updatedUser.expectedGraduation).toBe("2027");
@@ -413,67 +510,84 @@ describe("User tests", () => {
     let updatedUser = res.data?.user;
 
     expect(updatedUser).toBeDefined();
+    expect(updatedUser).not.toBeNull();
     expect(updatedUser.pronouns).toBe("she/her");
     expect(updatedUser.college).toBe("CAD");
     expect(updatedUser.expectedGraduation).toBe("2027");
     expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
-  // test("MENTOR place hold", async () => {
-  //   // Make user mentor
-  //   userZero  = await UserRepo.setPrivilege(userZero.id, Privilege.LABBIE);
-  //   expect(userZero.privilege).toBe(Privilege.LABBIE);
+  test("MAKER cannot set privilege", async () => {
+    let server = new ApolloServer({
+        schema,
+        context: userZeroContext
+    });
 
-  //   let server = new ApolloServer({
-  //       schema,
-  //       context: userZeroContext
-  //   });
+    let res = (await server.executeOperation(
+        {
+            query: CREATE_USER,
+            variables: {
+                firstName: "Jane",
+                lastName: "Doe",
+                ritUsername: "jd1111",
+                email: "jd1111@example.com"
+            }
+        }
+    ));
+    expect(res.errors).toBeUndefined();
 
-  //   let res = (await server.executeOperation(
-  //       {
-  //           query: CREATE_USER,
-  //           variables: {
-  //               firstName: "Jane",
-  //               lastName: "Doe",
-  //               ritUsername: "jd1111",
-  //               email: "jd1111@example.com"
-  //           }
-  //       }
-  //   ));
-  //   expect(res.errors).toBeUndefined();
+    const userID = res.data?.createUser?.id;
 
-  //   const userID = res.data?.createUser?.id;
+    res = (await server.executeOperation(
+        {
+            query: GET_USER_BY_ID,
+            variables: {
+                userID: userID
+            }
+        },
+    ));
+    expect(res.errors).toBeUndefined();
 
-  //   res = (await server.executeOperation(
-  //       {
-  //           query: UPDATE_STUDENT_PROFILE,
-  //           variables: {
-  //               userID: userID,
-  //               pronouns: "she/her",
-  //               college: "CAD",
-  //               expectedGraduation: "2027",
-  //               universityID: "000000000"
-  //           }
-  //       },
-  //   ));
-  //   expect(res.errors).toBeUndefined();
+    let user: UserRow = res.data?.user;
 
-  //   res = (await server.executeOperation(
-  //     {
-  //         query: GET_USER_BY_ID,
-  //         variables: {
-  //             userID: userID
-  //         }
-  //     },
-  //   ));
-  //   expect(res.errors).toBeUndefined();
+    const context = () => ({
+        user: {...user, hasHolds: false},
+        logout: () => {},
+        ifAllowed: ifAllowed(user),
+        ifAllowedOrSelf: ifAllowedOrSelf(user),
+        ifAuthenticated: ifAuthenticated(user)
+    });
 
-  //   let updatedUser = res.data?.user;
+    server = new ApolloServer({
+        schema,
+        context : context
+    });
 
-  //   expect(updatedUser).toBeDefined();
-  //   expect(updatedUser.pronouns).toBe("she/her");
-  //   expect(updatedUser.college).toBe("CAD");
-  //   expect(updatedUser.expectedGraduation).toBe("2027");
-  //   expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
-  // });
+    res = (await server.executeOperation(
+        {
+            query: SET_PRIVILEGE,
+            variables: {
+                userID: userZero.id,
+                privilege: Privilege.MAKER
+            }
+        },
+    ));
+    expect(res.errors).toBeDefined();
+
+    res = (await server.executeOperation(
+      {
+          query: GET_USER_BY_ID,
+          variables: {
+              userID: userZero.id
+          }
+      },
+    ));
+    expect(res.errors).toBeUndefined();
+
+    userZero = res.data?.user;
+
+    expect(userZero).toBeDefined();
+    expect(userZero).not.toBeNull();
+    expect(userZero.privilege).toBe(Privilege.ADMIN);
+  });
 });

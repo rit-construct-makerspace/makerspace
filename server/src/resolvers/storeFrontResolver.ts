@@ -55,20 +55,20 @@ const StorefrontResolvers = {
 
     removeItemAmount: async (
       _: any,
-      args: { itemId: string; count: number },
+      args: { itemID: string; count: number },
       context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
-        return InventoryRepo.addItemAmount(args.itemId, args.count * -1);
+        return InventoryRepo.addItemAmount(args.itemID, args.count * -1);
     }),
 
     deleteInventoryItem: async (
       _: any,
-      args: { itemId: string },
+      args: { itemID: string },
       context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
-        return InventoryRepo.archiveItem(args.itemId);
+        return InventoryRepo.archiveItem(args.itemID);
     }),
 
     createLabel: async (_: any, args: { label: string }, context: any,

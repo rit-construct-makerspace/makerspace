@@ -49,7 +49,10 @@ describe("EquipmentRepository tests", () => {
 
   test("addEquipment and get", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment
     await EquipmentRepo.addEquipment({
@@ -64,7 +67,10 @@ describe("EquipmentRepository tests", () => {
 
   test("getEquipmentByID", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add and get ID
     const equipmentID = (await EquipmentRepo.addEquipment({
@@ -108,7 +114,10 @@ describe("EquipmentRepository tests", () => {
 
   test("archiveEquipment", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
@@ -129,7 +138,10 @@ describe("EquipmentRepository tests", () => {
 
   test("addModulesToEquipment and get", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
@@ -153,7 +165,10 @@ describe("EquipmentRepository tests", () => {
 
   test("updateModules", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
@@ -185,7 +200,10 @@ describe("EquipmentRepository tests", () => {
 
   test("hasAcccess no modules", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
@@ -223,7 +241,10 @@ describe("EquipmentRepository tests", () => {
 
   test("hasAcccess bad swipe", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
@@ -269,7 +290,10 @@ describe("EquipmentRepository tests", () => {
 
   test("hasAcccess with one module", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
@@ -316,7 +340,10 @@ describe("EquipmentRepository tests", () => {
 
   test("hasAcccess with hold", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
@@ -361,7 +388,10 @@ describe("EquipmentRepository tests", () => {
 
   test("hasAcccess with insufficient training", async () => {
     // Add a room
-    const roomID = (await RoomRepo.addRoom(testRoom)).id;
+    const roomID = (await RoomRepo.addRoom({
+        id: "0",
+        name: "Test Room"
+    })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
