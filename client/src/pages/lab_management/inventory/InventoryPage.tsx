@@ -51,6 +51,7 @@ export default function InventoryPage() {
             placeholder="Search inventory"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
+            onClear={() => setSearchText("")}
           />
           <Button
             variant="outlined"

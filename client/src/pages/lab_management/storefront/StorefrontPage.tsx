@@ -137,6 +137,7 @@ export default function StorefrontPage() {
           sx={{ mb: 2, alignSelf: "flex-start" }}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          onClear={() => setSearchText("")}
         />
 
         <Stack divider={<Divider flexItem />}>

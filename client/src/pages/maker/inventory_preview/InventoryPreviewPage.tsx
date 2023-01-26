@@ -21,6 +21,7 @@ export default function InventoryPreviewPage() {
           sx={{ alignSelf: "flex-start" }}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          onClear={() => setSearchText("")}
         />
 
         <Stack divider={<Divider flexItem />} mt={2}>
