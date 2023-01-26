@@ -25,7 +25,7 @@ export default function InventoryPreviewPage() {
 
         <Stack divider={<Divider flexItem />} mt={2}>
           {data?.InventoryItems?.filter((item: InventoryItem) =>
-            item.name.includes(searchText)
+            item.name.toLowerCase().includes(searchText.toLowerCase())
           ).map((item: InventoryItem) => (
             <PreviewInventoryRow item={item} key={item.id} />
           ))}

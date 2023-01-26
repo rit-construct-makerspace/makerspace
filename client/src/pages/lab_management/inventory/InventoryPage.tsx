@@ -27,7 +27,7 @@ export default function InventoryPage() {
   const safeData = data?.InventoryItems ?? [];
   const sortedItems = sortItemsByName(safeData);
   const lowItems = sortedItems.filter((i) => i.count < i.threshold);
-  const matchingItems = sortedItems.filter((i) => i.name.includes(searchText));
+  const matchingItems = sortedItems.filter((i) => i.name.toLowerCase().includes(searchText.toLowerCase()));
 
   return (
     <RequestWrapper loading={loading} error={error}>

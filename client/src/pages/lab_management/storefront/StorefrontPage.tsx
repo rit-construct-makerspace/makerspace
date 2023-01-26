@@ -141,7 +141,7 @@ export default function StorefrontPage() {
 
         <Stack divider={<Divider flexItem />}>
           {data?.InventoryItems?.filter((item: InventoryItem) =>
-            item.name.includes(searchText)
+            item.name.toLowerCase().includes(searchText.toLowerCase())
           ).map((item: InventoryItem) => (
             <InventoryRow
               item={item}
