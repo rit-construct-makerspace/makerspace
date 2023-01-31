@@ -9,7 +9,7 @@ const AuditLogResolvers = {
       args: { startDate: string; stopDate: string; searchText: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         const startDate = args.startDate ?? "2020-01-01";
         const stopDate = args.stopDate ?? "2200-01-01";
         const searchText = args.searchText ?? "";

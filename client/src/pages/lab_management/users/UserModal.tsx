@@ -13,6 +13,7 @@ import PrivilegeControl from "./PrivilegeControl";
 import { useNavigate } from "react-router-dom";
 import HoldCard from "./HoldCard";
 import Privilege from "../../../types/Privilege";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import CloseButton from "../../../common/CloseButton";
 
 const StyledInfo = styled.div`
@@ -90,6 +91,7 @@ interface UserModalProps {
 
 export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const navigate = useNavigate();
+  const currentUser = useCurrentUser();
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
   const [createHold] = useMutation(CREATE_HOLD);
   const [deleteUser] = useMutation(DELETE_USER);
@@ -199,7 +201,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             </Typography>
 
             <Stack direction="row" spacing={2}>
-              {getUserResult.data.user.privilege === Privilege.ADMIN &&
+              {currentUser.privilege === Privilege.STAFF &&
                   <Button
                       variant="outlined"
                       color="error"

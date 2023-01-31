@@ -19,7 +19,7 @@ export const RoomTypeDefs = gql`
     name: String!
     equipment: [Equipment]
     recentSwipes: [Swipe]
-    labbies: [User]
+    mentors: [User]
   }
 
   input RoomInput {

@@ -10,7 +10,7 @@ test("render logo and current user", async () => {
   screen.getByText("John Smith");
 });
 
-async function checkAdminLabbieNav() {
+async function checkMentorStaffNav() {
   await screen.findByText("MAKER");
 
   // Equipment, Training, & Materials links should show
@@ -19,8 +19,8 @@ async function checkAdminLabbieNav() {
   expect(screen.getAllByRole("link", { name: "Training" })).toHaveLength(2);
   expect(screen.getAllByRole("link", { name: "Materials" })).toHaveLength(2);
 
-  // Admin/labbie section
-  screen.getByText("ADMIN");
+  // Admin section
+  screen.getByText("STAFF");
   screen.getByRole("link", { name: "Storefront" });
   screen.getByRole("link", { name: "Rooms" });
   screen.getByRole("link", { name: "Reservations" });
@@ -29,15 +29,15 @@ async function checkAdminLabbieNav() {
 }
 
 test("render properly for admins", async () => {
-  editCurrentUser({ privilege: Privilege.ADMIN });
+  editCurrentUser({ privilege: Privilege.MENTOR });
   renderApp();
-  await checkAdminLabbieNav();
+  await checkMentorStaffNav();
 });
 
-test("render properly for labbies", async () => {
-  editCurrentUser({ privilege: Privilege.LABBIE });
+test("render properly for mentors", async () => {
+  editCurrentUser({ privilege: Privilege.STAFF });
   renderApp();
-  await checkAdminLabbieNav();
+  await checkMentorStaffNav();
 });
 
 test("render properly for makers", async () => {
@@ -48,14 +48,15 @@ test("render properly for makers", async () => {
 
   // Don't show nav categories
   expect(screen.queryByText("MAKER")).toBeNull();
-  expect(screen.queryByText("ADMIN")).toBeNull();
+  expect(screen.queryByText("MENTOR")).toBeNull();
+  expect(screen.queryByText("STAFF")).toBeNull();
 
   // Show maker nav links
   screen.getByRole("link", { name: "Equipment" });
   screen.getByRole("link", { name: "Training" });
   screen.getByRole("link", { name: "Materials" });
 
-  // Don't show labbie/admin links
+  // Don't show mentor/staff links
   expect(screen.queryByRole("link", { name: "Storefront" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Rooms" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Reservations" })).toBeNull();

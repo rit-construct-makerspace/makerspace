@@ -37,7 +37,7 @@ const UsersResolvers = {
     },
 
     updateStudentProfile: async (
-      parent: any,
+      _parent: any,
       args: {
         userID: number;
         pronouns: string;
@@ -53,7 +53,7 @@ const UsersResolvers = {
     },
 
     setPrivilege: async (
-      _: any,
+      _parent: any,
       { userID, privilege }: { userID: number; privilege: Privilege },
       context: ApolloContext
     ) => {
@@ -70,13 +70,13 @@ const UsersResolvers = {
     },
 
     deleteUser: async (
-      parents: any,
+      _parent: any,
       args: { userID: number },
       {ifAllowed}: ApolloContext
     ) => {
 
       return ifAllowed(
-        [Privilege.ADMIN],
+        [Privilege.STAFF],
         async (user) => {
 
           const userSubject = await UserRepo.getUserByID(args.userID);

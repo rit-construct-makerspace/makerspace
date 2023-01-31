@@ -57,7 +57,7 @@ const ReservationResolvers = {
       args: { resID: number },
       { ifAllowed }: ApolloContext
     ) => {
-      ifAllowed([Privilege.LABBIE], async (user) => {
+      ifAllowed([Privilege.MENTOR], async (user) => {
         return await reservationRepo.confirmReservation(args.resID);
     });
     },
@@ -66,7 +66,7 @@ const ReservationResolvers = {
       args: { resID: number },
       { ifAllowed }: ApolloContext
     ) => {
-      ifAllowed([Privilege.LABBIE], async (user) => {
+      ifAllowed([Privilege.MENTOR], async (user) => {
         return await reservationRepo.cancelReservation(args.resID);
     });
     }
