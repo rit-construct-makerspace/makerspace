@@ -6,7 +6,7 @@ import {
   Collapse,
   Stack,
 } from "@mui/material";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import PageSectionHeader from "../../../common/PageSectionHeader";
@@ -27,7 +27,6 @@ export interface Swipe {
 
 export default function SwipePage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const queryResult = useQuery(GET_ROOM, { variables: { id } });
   const [loadingUser, setLoadingUser] = useState(false);
   const [cardErrorCount, setCardErrorCount] = useState(0);
