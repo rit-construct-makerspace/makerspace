@@ -28,6 +28,7 @@ export default function TextDraft({
           updateText({ ...item, text: e.target.value });
         }}
         value={item.text}
+        autoFocus={item.newDraft === true}
       />
     </QuizItemDraft>
   );

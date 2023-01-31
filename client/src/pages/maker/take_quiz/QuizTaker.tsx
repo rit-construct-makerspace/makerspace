@@ -82,7 +82,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
     });
 
     const trainingSubmissionAnimation = useCallback(() => {
-      toast.success('Training Module Submitted', {
+      toast.success(`Submitted training module \"${module.name}\"`, {
         position: "bottom-left",
         autoClose: 3000,
         hideProgressBar: false,
@@ -95,7 +95,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
     }, []);
 
     const trainingCancelAnimation = useCallback(() => {
-      toast.error('Training Not Saved', {
+      toast.error(`Training module not saved: \"${module.name}\"`, {
         position: "bottom-left",
         autoClose: 3000,
         hideProgressBar: false,

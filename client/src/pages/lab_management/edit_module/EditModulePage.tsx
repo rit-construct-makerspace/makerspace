@@ -69,7 +69,7 @@ export default function EditModulePage() {
   }, [name]);
 
   const trainingModDeletedAnimation = useCallback(() => {
-    toast.error('Training Module Deleted', {
+    toast.error(`Deleted training module \"${name}\"`, {
       position: "bottom-left",
       autoClose: 3000,
       hideProgressBar: false,

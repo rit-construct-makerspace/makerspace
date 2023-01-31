@@ -132,7 +132,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
                       <YouTubeEmbedDraft
                         key={item.id}
                         index={index}
-                        youtubeEmbed={item}
+                        item={item}
                         updateYoutubeEmbed={(updatedYoutubeEmbed) => {
                           updateItem(item.id, updatedYoutubeEmbed);
                         }}
@@ -145,7 +145,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
                       <ImageEmbedDraft
                         key={item.id}
                         index={index}
-                        imageEmbed={item}
+                        item={item}
                         updateImageEmbed={(updatedImageEmbed) => {
                           updateItem(item.id, updatedImageEmbed);
                         }}

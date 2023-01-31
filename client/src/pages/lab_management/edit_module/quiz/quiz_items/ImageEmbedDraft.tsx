@@ -10,7 +10,7 @@ const StyledImage = styled.img`
 
 interface ImageEmbedDraftProps {
   index: number;
-  imageEmbed: QuizItem;
+  item: QuizItem;
   updateImageEmbed: (updatedImageEmbed: QuizItem) => void;
   onRemove: () => void;
   onDuplicate: () => void;
@@ -18,22 +18,23 @@ interface ImageEmbedDraftProps {
 
 export default function ImageEmbedDraft({
   index,
-  imageEmbed,
+  item,
   updateImageEmbed,
   onRemove,
   onDuplicate,
 }: ImageEmbedDraftProps) {
   return (
-    <QuizItemDraft onRemove={onRemove} onDuplicate={onDuplicate} index={index} itemId={imageEmbed.id}>
+    <QuizItemDraft onRemove={onRemove} onDuplicate={onDuplicate} index={index} itemId={item.id}>
       <Stack padding={2} spacing={2}>
         <TextField
           label="Image URL"
-          value={imageEmbed.text}
+          value={item.text}
           onChange={(e) => {
-            updateImageEmbed({ ...imageEmbed, text: e.target.value });
+            updateImageEmbed({ ...item, text: e.target.value });
           }}
+          autoFocus={item.newDraft === true}
         />
-        {imageEmbed.text && <StyledImage src={imageEmbed.text} alt="" />}
+        {item.text && <StyledImage src={item.text} alt="" />}
       </Stack>
     </QuizItemDraft>
   );
