@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Stack, TextField } from "@mui/material";
-import QuizItemDraft from "./QuizItemDraft";
-import { QuizItem } from "../../../../types/Quiz";
+import QuizItemDraft from "../QuizItemDraft";
+import { QuizItem } from "../../../../../types/Quiz";
 
 const StyledIFrame = styled.iframe`
   border-radius: 4px;

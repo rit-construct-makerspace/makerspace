@@ -8,10 +8,10 @@ import {
   TextField,
 } from "@mui/material";
 import OptionDraft from "./OptionDraft";
-import QuizItemDraft from "./QuizItemDraft";
+import QuizItemDraft from "../QuizItemDraft";
 import { v4 as uuidv4 } from "uuid";
 import produce, { Draft } from "immer";
-import { Option, QuizItem, QuizItemType } from "../../../../types/Quiz";
+import { Option, QuizItem, QuizItemType } from "../../../../../types/Quiz";
 
 function updateOptions(
   draft: Draft<Required<QuizItem>>,
@@ -102,6 +102,7 @@ export default function QuestionDraft({
           onChange={(e) =>
             updateQuestion({ ...question, text: e.target.value })
           }
+          autoFocus={item.newDraft === true}
         />
       </CardContent>
 
@@ -144,6 +145,7 @@ export default function QuestionDraft({
               id: uuidv4(),
               text: "",
               correct: false,
+              newDraft: true
             };
 
             const updatedQuestion = produce(question, (draft) => {

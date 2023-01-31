@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Module, QuizItem, QuizItemType } from "../../../types/Quiz";
 import { useImmer } from "use-immer";
 import { Button, Stack, Typography } from "@mui/material";
@@ -81,7 +81,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
         : draft[itemIndex].optionIDs.splice(optionIndex, 1);
     });
 
-    const trainingSubmissionAnimation = () => {
+    const trainingSubmissionAnimation = useCallback(() => {
       toast.success('Training Module Submitted', {
         position: "bottom-left",
         autoClose: 3000,
@@ -92,9 +92,9 @@ export default function QuizTaker({ module }: QuizTakerProps) {
         progress: undefined,
         theme: "colored",
         });
-    }
+    }, []);
 
-    const trainingCancelAnimation = () => {
+    const trainingCancelAnimation = useCallback(() => {
       toast.error('Training Not Saved', {
         position: "bottom-left",
         autoClose: 3000,
@@ -105,7 +105,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
         progress: undefined,
         theme: "light",
         });
-    }
+    }, []);
 
   const navigate = useNavigate();
 

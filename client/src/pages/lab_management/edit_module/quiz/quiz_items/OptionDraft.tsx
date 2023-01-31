@@ -5,7 +5,7 @@ import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import RadioButtonCheckedIcon from "@mui/icons-material/RadioButtonChecked";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import { Option, QuizItemType } from "../../../../types/Quiz";
+import { Option, QuizItemType } from "../../../../../types/Quiz";
 
 interface OptionDraftProps {
   questionType: QuizItemType;
@@ -47,6 +47,7 @@ export default function OptionDraft({
         value={option.text}
         onChange={onTextChange}
         sx={{ mx: 1 }}
+        autoFocus={option.newDraft === true}
       />
 
       <IconButton size="small" onClick={onRemove}>

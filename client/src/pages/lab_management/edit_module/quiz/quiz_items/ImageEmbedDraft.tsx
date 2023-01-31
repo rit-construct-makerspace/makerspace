@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import QuizItemDraft from "./QuizItemDraft";
+import QuizItemDraft from "../QuizItemDraft";
 import { Stack, TextField } from "@mui/material";
-import { QuizItem } from "../../../../types/Quiz";
+import { QuizItem } from "../../../../../types/Quiz";
 
 const StyledImage = styled.img`
   border-radius: 4px;

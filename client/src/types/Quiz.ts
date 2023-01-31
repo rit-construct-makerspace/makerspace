@@ -11,6 +11,7 @@ export interface Option {
   id: string;
   text: string;
   correct: boolean;
+  newDraft?: boolean;
 }
 
 export interface QuizItem {
@@ -18,6 +19,7 @@ export interface QuizItem {
   type: QuizItemType;
   text: string;
   options?: Option[];
+  newDraft?: boolean;
 };
 
 export interface ReservationPrompt {

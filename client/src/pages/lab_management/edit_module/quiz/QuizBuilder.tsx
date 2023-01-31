@@ -1,15 +1,15 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Updater } from "use-immer";
-import QuestionDraft from "./QuestionDraft";
+import QuestionDraft from "./quiz_items/QuestionDraft";
 import { Button, ButtonGroup, Stack } from "@mui/material";
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 import ImageIcon from "@mui/icons-material/Image";
-import YouTubeEmbedDraft from "./YouTubeEmbedDraft";
-import ImageEmbedDraft from "./ImageEmbedDraft";
-import TextDraft from "./TextDraft";
+import YouTubeEmbedDraft from "./quiz_items/YouTubeEmbedDraft";
+import ImageEmbedDraft from "./quiz_items/ImageEmbedDraft";
+import TextDraft from "./quiz_items/TextDraft";
 import { Module, QuizItem, QuizItemType } from "../../../../types/Quiz";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import EmptyPageSection from "../../../../common/EmptyPageSection";
@@ -38,6 +38,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
       type: item.type,
       text: item.text,
       options: item.options,
+      newDraft: true
     });
   }
 
@@ -54,6 +55,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
       type: QuizItemType.MultipleChoice,
       text: "",
       options: [],
+      newDraft: true
     });
 
   const createText = () =>
@@ -61,6 +63,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
       id: uuidv4(),
       type: QuizItemType.Text,
       text: "",
+      newDraft: true
     });
 
   const createYoutubeEmbed = () =>
@@ -68,6 +71,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
       id: uuidv4(),
       type: QuizItemType.YoutubeEmbed,
       text: "",
+      newDraft: true
     });
 
   const createImageEmbed = () =>
@@ -75,6 +79,7 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
       id: uuidv4(),
       type: QuizItemType.ImageEmbed,
       text: "",
+      newDraft: true
     });
 
   const onDragEnd = (result: DropResult) => {
@@ -101,8 +106,9 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
                         key={item.id}
                         index={index}
                         item={item}
-                        updateQuestion={(updatedQuestion) =>
-                          updateItem(item.id, updatedQuestion)
+                        updateQuestion={(updatedQuestion) => {
+                            updateItem(item.id, updatedQuestion);
+                          }
                         }
                         removeQuestion={() => removeItem(item.id)}
                         duplicateQuestion={() => duplicateItem(item)}
