@@ -18,8 +18,8 @@ export default function EquipmentCard({ name, to }: MachineCardProps) {
   const navigate = useNavigate();
 
   return (
-    <Grid item onClick={() => navigate(to)}>
-      <Card sx={{ width: 250 }}>
+    <Grid item >
+      <Card sx={{ width: 250 }} onClick={() => navigate(to)}>
         <CardActionArea>
           <CardMedia
             component="img"
