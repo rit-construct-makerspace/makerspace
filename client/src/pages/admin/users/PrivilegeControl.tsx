@@ -33,7 +33,7 @@ export default function PrivilegeControl({
   const currentUser = useCurrentUser();
   const [setPrivilege, setPrivilegeResult] = useMutation(SET_PRIVILEGE);
 
-  const isAdmin = currentUser.privilege === Privilege.MENTOR;
+  const isAdmin = currentUser.privilege === Privilege.STAFF;
 
   const handlePrivilegeChanged = (
     event: ChangeEvent<HTMLInputElement>,
