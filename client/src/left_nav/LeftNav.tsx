@@ -22,9 +22,13 @@ import { Outlet } from "react-router-dom";
 import { Box } from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const drawerWidth = 250;
@@ -32,6 +36,7 @@ const drawerWidth = 250;
 export default function LeftNav() {
   const currentUser = useCurrentUser();
   const isMaker = currentUser.privilege === Privilege.MAKER;
+  const navigate = useNavigate();
 
   return (
     <Box display="flex">
@@ -59,7 +64,7 @@ export default function LeftNav() {
         variant="permanent"
         anchor="left"
       >
-        <StyledLogo src={LogoSvg} alt="Construct logo" />
+        <StyledLogo src={LogoSvg} alt="Construct logo" onClick={() => navigate(`/`)} />
 
         <Stack direction="row" alignItems="center" spacing={2} padding={2}>
           <Avatar
