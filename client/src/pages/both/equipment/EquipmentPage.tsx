@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Grid, Stack } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";

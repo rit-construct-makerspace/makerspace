@@ -1,6 +1,5 @@
-import React, { createContext, ReactElement, useContext } from "react";
+import { createContext, ReactElement, useContext } from "react";
 import { gql, useQuery } from "@apollo/client";
-import { PartialUser } from "../queries/getUsers";
 import RequestWrapper2 from "./RequestWrapper2";
 import { Navigate, useLocation } from "react-router-dom";
 import Privilege from "../types/Privilege";

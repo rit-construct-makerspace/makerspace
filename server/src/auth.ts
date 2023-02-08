@@ -1,7 +1,7 @@
 import passport from "passport";
-import { Strategy as SamlStrategy } from "passport-saml";
+import { Strategy as SamlStrategy, ValidateInResponseTo, } from "@node-saml/passport-saml";
 import session from "express-session";
-import { v4 as uuid } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import assert from "assert";
 import fs from "fs";
 import express from "express";
@@ -11,6 +11,7 @@ import {
 } from "./repositories/Users/UserRepository";
 import { getHoldsByUser } from "./repositories/Holds/HoldsRepository";
 import { CurrentUser } from "./context";
+import path from "path";
 
 interface RitSsoUser {
   firstName: string;
@@ -34,38 +35,43 @@ export function setupAuth(app: express.Application) {
 
   const secret = process.env.SESSION_SECRET;
   const issuer = process.env.ISSUER;
-  const callback = process.env.CALLBACK_URL;
+  const callbackUrl = process.env.CALLBACK_URL;
   const entryPoint = process.env.ENTRY_POINT;
   const reactAppUrl = process.env.REACT_APP_URL;
+  const idpLogoutUrl = process.env.IDP_LOGOUT_URL;
 
   assert(secret, "SESSION_SECRET env value is null");
   assert(issuer, "ISSUER env value is null");
-  assert(callback, "CALLBACK_URL env value is null");
   assert(entryPoint, "ENTRY_POINT env value is null");
   assert(reactAppUrl, "REACT_APP_URL env value is null");
 
   app.use(
     session({
-      genid: (req) => uuid(),
+      genid: (req) => uuidv4(),
       secret: secret,
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: true }, // this will make cookies send only over https
+      cookie: {
+        secure: true,   // this will make cookies send only over https
+        maxAge: 900000  // 15 minutes in milliseconds
+      },
     })
   );
 
   const samlConfig = {
-    path: "/login/callback",
-    callbackUrl: callback,
-    entryPoint: entryPoint,
     issuer: issuer,
-    identifierFormat: null,
+    path: "/login/callback",
+    callbackUrl: callbackUrl,
+    entryPoint: entryPoint,
+    identifierFormat: undefined,
     decryptionPvk: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
     privateCert: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
     cert: fs.readFileSync(process.cwd() + "/cert/idp_cert.pem", "utf8"),
-    validateInResponseTo: false,
+    validateInResponseTo: ValidateInResponseTo.never,
     disableRequestedAuthnContext: true,
-    acceptedClockSkewMs: -1, // "SAML assertion not yet valid" fix
+    
+    // TODO production solution
+    acceptedClockSkewMs: 900000, // "SAML assertion not yet valid" fix
   };
 
   const samlStrategy = new SamlStrategy(
@@ -73,10 +79,13 @@ export function setupAuth(app: express.Application) {
     (profile: any, done: any) => {
       // your body implementation on success, this is where we get attributes from the idp
       return done(null, profile);
+    },
+    (profile: any, done: any) => {
+      // your body implementation on success, this is where we get attributes from the idp
+      return done(null, profile);
     }
   );
 
-  /* @ts-ignore */
   passport.use(samlStrategy);
 
   passport.serializeUser(async (user: any, done) => {
@@ -123,6 +132,26 @@ export function setupAuth(app: express.Application) {
     res.status(401).send("Login failed");
   });
 
+  app.post('/logout', (req, res) => {
+    console.log("Test");
+    console.log(req.user);
+    if (req.session) {
+      req.session.destroy(err => {
+        console.log("Session destroyed");
+        if (err) {
+          console.log("Err");
+          res.status(400).send('Logout failed');
+        } else {
+          console.log("Sending redirect...");
+          res.clearCookie("connect.sid");
+          res.redirect(reactAppUrl);
+        }
+      });
+    } else {
+      res.end();
+    }
+  });
+
   app.get("/Shibboleth.sso/Metadata", function (req, res) {
     res.type("application/xml");
     res
@@ -133,4 +162,6 @@ export function setupAuth(app: express.Application) {
         )
       );
   });
+
+  app.use(express.static(path.join(__dirname, '../../client/build')));
 }

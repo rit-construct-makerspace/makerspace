@@ -7,7 +7,7 @@ This is a React JS web application used by makers, mentors, and staff alike.
 1. Make sure you're in the `makerspace/client` directory
 2. Install dependencies: `npm install`
 3. Start dev server: `npm start`
-4. View app at http://localhost:3001/
+4. View app on localhost
 
 ## Run tests
 
