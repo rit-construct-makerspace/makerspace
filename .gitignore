@@ -13,3 +13,6 @@ process.env
 /server/dist
 
 /server/cert
+
+# React build
+/client/build
