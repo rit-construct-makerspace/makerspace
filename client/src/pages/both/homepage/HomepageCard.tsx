@@ -9,6 +9,10 @@ import { useCurrentUser } from "../../../common/CurrentUserProvider";
 
 export default function UpcomingEventsCard() {
 
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+
     return (
         <Stack direction={"row"} justifyContent={"space-between"} marginTop={2}>
 
@@ -27,7 +31,7 @@ export default function UpcomingEventsCard() {
             <Card sx={{ width: 300, padding: 2, border: 1, borderColor: "lightgrey" } } >
                     <Stack direction="column" alignItems="flex-start" spacing={1} justifyContent="space-evenly" >
                         <Typography variant="h4">Upcoming Events</Typography>
-                        <Typography variant="h6" color={"darkorange"}>Today 2/14</Typography>
+                        <Typography variant="h6" color={"darkorange"}>Today {month}/{day}</Typography>
                         <Typography variant="body1">6:00am: Get ready for work</Typography>
                         <Typography variant="body1">9:00am: Work day begins</Typography>
                         <Typography variant="body1">5:00pm: Return from work, greet wonderful wife</Typography>
