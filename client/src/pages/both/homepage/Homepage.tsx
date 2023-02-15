@@ -19,9 +19,9 @@ const Homepage: React.FC = () => {
 
     return (
         <Page title={welcomeMsg}>
-            <Stack direction="row">
-                <HomepageCard />
-            </Stack>
+            <HomepageCard />
+
+
         </Page>
     );
 };
