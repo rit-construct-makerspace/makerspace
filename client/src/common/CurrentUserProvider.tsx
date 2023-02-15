@@ -17,6 +17,7 @@ export const GET_CURRENT_USER = gql`
       email
       privilege
       setupComplete
+      balance
       holds {
         removeDate
       }
@@ -40,8 +41,9 @@ export interface CurrentUser {
   email: string;
   privilege: Privilege;
   setupComplete: boolean;
+  balance: string;
   hasHolds: boolean;
-  passedModules: PassedModule[];
+  passedModules: PassedModule[]
 }
 
 const CurrentUserContext = createContext<CurrentUser | undefined>(undefined);

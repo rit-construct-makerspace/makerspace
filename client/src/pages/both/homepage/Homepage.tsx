@@ -1,54 +1,26 @@
-// import React from "react";
-// import Page from "../../Page";
-// import { useQuery } from "@apollo/client";
-// import { useParams } from "react-router-dom";
-// import { GET_MODULE } from "../../../queries/modules";
-// import RequestWrapper2 from "../../../common/RequestWrapper2";
-// import RequestWrapper from "../../../common/RequestWrapper";
-// import {Button, Grid, Stack} from "@mui/material";
-// import BalanceCard from "../../both/homepage/BalanceCard";
-// // import { ReactEmbeddedGoogleCalendar } from 'react-embedded-google-calendar';
-// import Embed from "react-embed";
-//
-//
-// export default function Homepage() {
-//     const { id } = useParams<{ id: string }>();
-//     const result = useQuery(GET_MODULE, { variables: { id } });
-//
-//     return (
-//         <Page title="Home">
-//             <Stack direction="row" flexWrap="wrap">
-//                 <Embed url = "https://calendar.google.com/calendar/embed?src=theconstruct.rit%40gmail.com&ctz=America%2FNew_York"/>
-//             </Stack>
-//         </Page>
-//     );
-// }
-
 import React, { useState } from "react";
-import Iframe from "react-iframe";
 import {Stack} from "@mui/material";
 import Page from "../../Page";
+import PageSectionHeader from "../../../common/PageSectionHeader";
+import Reservations from "../../../test_data/Reservations";
+import HomepageCard from "./HomepageCard";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
+
+
+const API_KEY = "AIzaSyB_pJ1Aiw6PxzXbwoengIwtHbr-CALyfUc";
+const CALENDAR_ID = "jgf55spntac7p96ea6ql1uc710@group.calendar.google.com";
 
 const Homepage: React.FC = () => {
+    const currentUser = useCurrentUser();
+    const welcomeMsg = "Welcome, " + currentUser.firstName;
     const [calendarUrl, setCalendarUrl] = useState(
         "https://calendar.google.com/calendar/embed?src=theconstruct.rit%40gmail.com&ctz=America%2FNew_York"
     );
 
     return (
-        <Page title="Home">
+        <Page title={welcomeMsg}>
             <Stack direction="row">
-                    <Iframe
-                        url={calendarUrl}
-                        width="300"
-                        height="300"
-                        frameBorder={0}
-                        scrolling="no"
-                        styles={{
-                            position: "absolute",
-                            top: 100,
-                            right: 20
-                        }}
-                    />
+                <HomepageCard />
             </Stack>
         </Page>
     );
