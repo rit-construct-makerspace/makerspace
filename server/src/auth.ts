@@ -11,7 +11,6 @@ import {
 } from "./repositories/Users/UserRepository";
 import { getHoldsByUser } from "./repositories/Holds/HoldsRepository";
 import { CurrentUser } from "./context";
-import path from "path";
 
 interface RitSsoUser {
   firstName: string;
@@ -166,6 +165,4 @@ export function setupAuth(app: express.Application) {
     console.log("redirect");
     res.redirect('/login');
   });
-
-  app.use("/app", express.static(path.join(__dirname, "../../client/build")));
 }

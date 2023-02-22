@@ -10,6 +10,7 @@ import fs from "fs";
 import { setupAuth } from "./auth";
 import context from "./context";
 import { json } from "body-parser";
+import path from "path";
 var morgan = require('morgan');
 
 const CORS_CONFIG = {
@@ -35,6 +36,8 @@ async function startServer() {
   app.use(morgan('combined'));
 
   setupAuth(app);
+
+  app.use("/app", express.static(path.join(__dirname, "../../client/build")));
 
   const server = new ApolloServer({
     schema,
