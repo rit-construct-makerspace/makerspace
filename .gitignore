@@ -1,11 +1,25 @@
+# IDE
 .idea
+.vscode
+
+# node
 **/node_modules
 process.env
+
+# env
 .env
 .vscode
+.env.*
+
+# secret
 .pem
+/server/cert
+
+# coverage
 /client/coverage
 /server/coverage
+
+# docs
 /docs/.jekyll-cache
 /docs/_site
 
@@ -13,6 +27,5 @@ process.env
 /server/dist
 
 /server/cert
-
 # React build
 /client/build
