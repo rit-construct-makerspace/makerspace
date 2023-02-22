@@ -68,7 +68,7 @@ export async function hasAccess(
 }
 
 export async function getEquipmentForModule(
-  moduleID: number
+  moduleID: string
 ): Promise<EquipmentRow[]> {
   return knex("ModulesForEquipment")
     .join("Equipment", "Equipment.id", "ModulesForEquipment.equipmentID")
