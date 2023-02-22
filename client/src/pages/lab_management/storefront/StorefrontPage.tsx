@@ -137,11 +137,12 @@ export default function StorefrontPage() {
           sx={{ mb: 2, alignSelf: "flex-start" }}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          onClear={() => setSearchText("")}
         />
 
         <Stack divider={<Divider flexItem />}>
           {data?.InventoryItems?.filter((item: InventoryItem) =>
-            item.name.includes(searchText)
+            item.name.toLowerCase().includes(searchText.toLowerCase())
           ).map((item: InventoryItem) => (
             <InventoryRow
               item={item}
