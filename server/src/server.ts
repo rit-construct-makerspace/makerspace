@@ -13,7 +13,7 @@ import { json } from "body-parser";
 var morgan = require('morgan');
 
 const CORS_CONFIG = {
-  origin: process.env.REACT_APP_URL,
+  origin: process.env.REACT_APP_ORIGIN,
   credentials: true,
 };
 
@@ -23,18 +23,11 @@ async function startServer() {
   const app = express();
 
   app.use(cors(CORS_CONFIG));
-  
-  app.all('*', (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", CORS_CONFIG.origin);
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-  });
 
-  // app.all('/app/*', (req, res) => {
-  //   if (!req.user) {
-  //     console.log("redirect");
-  //     res.redirect('/login');
-  //   }
+  // app.all('*', (req, res, next) => {
+  //   res.header("Access-Control-Allow-Origin", CORS_CONFIG.origin);
+  //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  //   next();
   // });
 
   app.use(compression());

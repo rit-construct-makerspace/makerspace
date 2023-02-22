@@ -5,7 +5,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import Privilege from "../types/Privilege";
 
 const loginUrl =
-  process.env.REACT_APP_LOGIN_URL ?? "https://localhost:3000/login";
+  process.env.LOGIN_URL ?? "https://localhost:3000/login";
 
 export const GET_CURRENT_USER = gql`
   query GetCurrentUser {

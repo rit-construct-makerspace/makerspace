@@ -27,7 +27,7 @@ const UsersResolvers = {
     },
 
     currentUser: async (parent: any, args: any, context: ApolloContext) => {
-      return context.user;
+        return context.user;
     },
   },
 

@@ -27,7 +27,7 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
     firstName: testUser["urn:oid:2.5.4.42"],
     lastName: testUser["urn:oid:2.5.4.4"],
     email: testUser.email,
-    ritUsername: testUser.email.split("@")[0],
+    ritUsername: testUser.email.split("@")[0], // samltest format
   };
 }
 
@@ -71,7 +71,7 @@ export function setupAuth(app: express.Application) {
     disableRequestedAuthnContext: true,
     
     // TODO production solution
-    acceptedClockSkewMs: 900000, // "SAML assertion not yet valid" fix
+    acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
   };
 
   const samlStrategy = new SamlStrategy(
@@ -120,8 +120,9 @@ export function setupAuth(app: express.Application) {
   app.use(express.json());
 
   const authenticate = passport.authenticate("saml", {
-    successRedirect: reactAppUrl,
+    failureFlash: true,
     failureRedirect: "/login/fail",
+    successRedirect: reactAppUrl
   });
 
   app.get("/login", authenticate);
@@ -133,18 +134,13 @@ export function setupAuth(app: express.Application) {
   });
 
   app.post('/logout', (req, res) => {
-    console.log("Test");
-    console.log(req.user);
     if (req.session) {
       req.session.destroy(err => {
-        console.log("Session destroyed");
         if (err) {
-          console.log("Err");
           res.status(400).send('Logout failed');
         } else {
-          console.log("Sending redirect...");
-          res.clearCookie("connect.sid");
-          res.redirect(reactAppUrl);
+          // res.clearCookie("connect.sid");
+          res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
         }
       });
     } else {
@@ -163,5 +159,13 @@ export function setupAuth(app: express.Application) {
       );
   });
 
-  app.use(express.static(path.join(__dirname, '../../client/build')));
+  app.all('/app/*', (req, res, next) => {
+    if (req.user) {
+      return next();
+    }
+    console.log("redirect");
+    res.redirect('/login');
+  });
+
+  app.use("/app", express.static(path.join(__dirname, "../../client/build")));
 }

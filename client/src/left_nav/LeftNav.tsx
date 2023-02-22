@@ -31,10 +31,10 @@ const drawerWidth = 250;
 export default function LeftNav() {
   const currentUser = useCurrentUser();
   const isMaker = currentUser.privilege === Privilege.MAKER;
-  
+
   const logout = useCallback(() => {
     console.log("Logging out...")
-    fetch("https://localhost:3000/logout", {
+    fetch(process.env.LOGOUT_URL ?? "https://localhost:3000/logout", {
       mode: 'cors',
       method: 'POST',
       credentials: 'include',
