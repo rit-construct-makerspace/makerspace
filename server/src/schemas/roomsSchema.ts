@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-express";
+import { gql } from "graphql-tag";
 
 export interface Swipe {
   id: string;
@@ -19,7 +19,7 @@ export const RoomTypeDefs = gql`
     name: String!
     equipment: [Equipment]
     recentSwipes: [Swipe]
-    labbies: [User]
+    mentors: [User]
   }
 
   input RoomInput {

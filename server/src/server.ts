@@ -1,44 +1,53 @@
 import express from "express";
-import { ApolloServer } from "apollo-server-express";
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground";
 import { createServer } from "https";
 import compression from "compression";
 import cors from "cors";
 import { schema } from "./schema";
-import dotenv from "dotenv";
 import fs from "fs";
 import { setupAuth } from "./auth";
 import context from "./context";
+import { json } from "body-parser";
+import path from "path";
+var morgan = require('morgan');
 
 const CORS_CONFIG = {
-  origin: "https://localhost:3001",
+  origin: process.env.REACT_APP_ORIGIN,
   credentials: true,
 };
 
 async function startServer() {
-  dotenv.config({ path: __dirname + "/./../.env" });
+  require('dotenv').config({ path: __dirname + "/./../.env" });
 
   const app = express();
 
   app.use(cors(CORS_CONFIG));
 
+  // app.all('*', (req, res, next) => {
+  //   res.header("Access-Control-Allow-Origin", CORS_CONFIG.origin);
+  //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  //   next();
+  // });
+
   app.use(compression());
 
+  app.use(morgan('combined'));
+
   setupAuth(app);
+
+  app.use("/app", express.static(path.join(__dirname, "../../client/build")));
 
   const server = new ApolloServer({
     schema,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-    context,
   });
 
   await server.start();
-
-  server.applyMiddleware({
-    app,
-    path: "/graphql",
-    cors: CORS_CONFIG,
-  });
+  app.use('/graphql', cors<cors.CorsRequest>(CORS_CONFIG), json(),
+    expressMiddleware(server, {context: context})
+  );
 
   const httpsServer = createServer(
     {

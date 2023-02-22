@@ -9,7 +9,7 @@ module.exports = {
       user: process.env.POSTGRES_USER,
       database: process.env.POSTGRES_DB,
       password: process.env.POSTGRES_PASSWORD,
-      port: 5432,
+      port: 5433,
     },
     pool: {
       min: 2,
@@ -29,7 +29,7 @@ module.exports = {
       user: process.env.POSTGRES_USER,
       database: process.env.POSTGRES_DB,
       password: process.env.POSTGRES_PASSWORD,
-      port: 5432,
+      port: 5433,
     },
     pool: {
       min: 2,
@@ -48,7 +48,7 @@ module.exports = {
       user: process.env.POSTGRES_USER,
       database: process.env.POSTGRES_DB,
       password: process.env.POSTGRES_PASSWORD,
-      port: 5433,
+      port: 5434,
     },
     pool: {
       min: 2,

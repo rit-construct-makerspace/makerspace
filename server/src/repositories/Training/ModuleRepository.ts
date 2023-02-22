@@ -29,12 +29,13 @@ export async function addModule(name: string): Promise<TrainingModuleRow> {
 export async function updateModule(
   id: string,
   name: string,
-  quiz: object
+  quiz: object,
+  reservationPrompt: object
 ): Promise<TrainingModuleRow> {
   await knex("TrainingModule")
     .where({ id })
     // @ts-ignore
-    .update({ name, quiz: JSON.stringify(quiz) });
+    .update({ name, quiz: JSON.stringify(quiz), reservationPrompt: JSON.stringify(reservationPrompt) });
   return getModuleByID(id);
 }
 

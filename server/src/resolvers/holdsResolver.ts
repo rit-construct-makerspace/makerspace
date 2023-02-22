@@ -18,7 +18,7 @@ const HoldsResolvers = {
       _args: any,
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return UsersRepo.getUserByID(parent.creatorID);
       }),
 
@@ -28,7 +28,7 @@ const HoldsResolvers = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
-        [Privilege.LABBIE, Privilege.ADMIN],
+        [Privilege.MENTOR, Privilege.STAFF],
         async () => parent.removerID && UsersRepo.getUserByID(parent.removerID)
       ),
   },
@@ -39,7 +39,7 @@ const HoldsResolvers = {
       args: { userID: string; description: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const userWithHold = await UsersRepo.getUserByID(args.userID);
 
         await createLog(
@@ -56,7 +56,7 @@ const HoldsResolvers = {
       args: { holdID: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const hold = await HoldsRepo.getHold(args.holdID);
         const userWithHold = await UsersRepo.getUserByID(hold.userID);
 

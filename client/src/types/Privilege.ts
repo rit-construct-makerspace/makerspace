@@ -1,7 +1,7 @@
 enum Privilege {
   MAKER = "MAKER",
-  LABBIE = "LABBIE",
-  ADMIN = "ADMIN",
+  MENTOR = "MENTOR",
+  STAFF = "STAFF",
 }
 
 export default Privilege;

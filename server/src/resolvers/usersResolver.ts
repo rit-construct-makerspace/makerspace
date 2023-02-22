@@ -17,7 +17,7 @@ const UsersResolvers = {
       _parent: any,
       _args: any,
       {ifAllowed}: ApolloContext) => {
-        ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
           return await UserRepo.getUsers();
         });
     },
@@ -26,7 +26,7 @@ const UsersResolvers = {
       _parent: any,
       args: { id: string },
       {ifAllowedOrSelf} : ApolloContext) => {
-        ifAllowedOrSelf(args.id, [Privilege.LABBIE, Privilege.ADMIN], async () => {
+        ifAllowedOrSelf(args.id, [Privilege.MENTOR, Privilege.STAFF], async () => {
           return await UserRepo.getUserByID(args.id);
         });
     },
@@ -44,7 +44,7 @@ const UsersResolvers = {
       _parent: any,
       args: any,
       { ifAllowed }: ApolloContext) =>
-        ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
           return await UserRepo.createUser(args);
     }),
 
@@ -60,7 +60,7 @@ const UsersResolvers = {
       context: ApolloContext) =>
       {
         console.log(context.user);
-        return context.ifAllowedOrSelf(args.userID, [Privilege.LABBIE, Privilege.ADMIN], async (user) => {
+        return context.ifAllowedOrSelf(args.userID, [Privilege.MENTOR, Privilege.STAFF], async (user) => {
           return await UserRepo.updateStudentProfile({
             userID: args.userID,
             pronouns: args.pronouns,
@@ -72,11 +72,11 @@ const UsersResolvers = {
       },
 
     setPrivilege: async (
-      _: any,
+      _parent: any,
       { userID, privilege }: { userID: string; privilege: Privilege },
-      { ifAllowed }: ApolloContext) => {
-
-        let result = ifAllowed([Privilege.LABBIE, Privilege.MAKER], async (executingUser) => {
+      { ifAllowed }: ApolloContext
+    ) => {
+        let result = ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
           const userSubject = await UserRepo.setPrivilege(userID, privilege);
 
           await createLog(
@@ -88,24 +88,26 @@ const UsersResolvers = {
     },
 
     deleteUser: async (
-      parents: any,
+      _parent: any,
       args: { userID: string },
-      {ifAllowed}: ApolloContext) => {
-        return ifAllowed(
-          [Privilege.ADMIN],
-          async (user) => {
+      {ifAllowed}: ApolloContext
+    ) => {
 
-            const userSubject = await UserRepo.getUserByID(args.userID);
+      return ifAllowed(
+        [Privilege.STAFF],
+        async (user) => {
 
-            await createLog(
-              `{user} deleted {user}'s profile.`,
-              { id: user.id, label: getUsersFullName(user) },
-              { id: args.userID, label: getUsersFullName(userSubject) }
-            );
+          const userSubject = await UserRepo.getUserByID(args.userID);
 
-            return await UserRepo.archiveUser(args.userID);
-          }
-        );
+          await createLog(
+            `{user} deleted {user}'s profile.`,
+            { id: user.id, label: getUsersFullName(user) },
+            { id: args.userID, label: getUsersFullName(userSubject) }
+          );
+
+          return await UserRepo.archiveUser(args.userID);
+        }
+      );
     },
   },
 };

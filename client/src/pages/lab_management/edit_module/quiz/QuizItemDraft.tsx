@@ -22,6 +22,7 @@ interface QuizItemDraftProps {
   index: number;
   children: ReactNode;
   onRemove: () => void;
+  onDuplicate: () => void;
   extraActions?: ReactNode;
 }
 
@@ -30,6 +31,7 @@ export default function QuizItemDraft({
   index,
   children,
   onRemove,
+  onDuplicate,
   extraActions,
 }: QuizItemDraftProps) {
   return (
@@ -51,7 +53,7 @@ export default function QuizItemDraft({
             <IconButton aria-label="Delete" onClick={onRemove}>
               <DeleteOutlineIcon />
             </IconButton>
-            <IconButton aria-label="Duplicate">
+            <IconButton aria-label="Duplicate" onClick={onDuplicate}>
               <ContentCopyIcon />
             </IconButton>
             {extraActions}

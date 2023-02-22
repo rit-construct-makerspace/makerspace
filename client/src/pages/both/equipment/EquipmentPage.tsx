@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Grid, Stack } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
@@ -6,7 +5,7 @@ import EquipmentCard from "./EquipmentCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import GET_EQUIPMENTS from "../../../queries/getEquipments";
-import { NameAndID } from "../../admin/manage_equipment/ManageEquipmentPage";
+import { NameAndID } from "../../lab_management/manage_equipment/ManageEquipmentPage";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
 

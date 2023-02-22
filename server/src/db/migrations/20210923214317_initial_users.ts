@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
         t.string("lastName", 100);
         t.text("email").unique();
         t.boolean("isStudent").defaultTo(true);
-        t.enu("privilege", ["MAKER", "LABBIE", "ADMIN"]).defaultTo("MAKER");
+        t.enu("privilege", ["MAKER", "MENTOR", "STAFF"]).defaultTo("MAKER");
         t.date("registrationDate").defaultTo(knex.fn.now());
         t.text("expectedGraduation");
         t.text("college");
@@ -21,7 +21,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   knex.schema.hasTable("Users").then(function (exists) {
-    if (!exists) {
+    if (exists) {
       return knex.schema.dropTable("Users");
     }
   });

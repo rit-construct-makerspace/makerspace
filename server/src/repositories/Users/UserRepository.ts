@@ -80,7 +80,7 @@ export async function setPrivilege(
   privilege: Privilege
 ): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ privilege });
-  return getUserByID(userID);
+  return await getUserByID(userID);
 }
 
 export async function addTrainingModuleAttemptToUser(

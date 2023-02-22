@@ -6,7 +6,8 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { getUsersFullName } from "../repositories/Users/UserRepository";
 import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
-import { TrainingModuleItem } from "../db/tables";
+import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   for (let item of quiz) {
@@ -45,7 +46,18 @@ const TrainingModuleResolvers = {
         if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
 
         return module;
-      }),
+      })
+  },
+
+  TrainingModule: {
+    equipment: async (
+      parent: TrainingModuleRow,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        return EquipmentRepo.getEquipmentForModule(parent.id);
+      })
   },
 
   Mutation: {
@@ -54,7 +66,7 @@ const TrainingModuleResolvers = {
       args: { name: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const module = await ModuleRepo.addModule(args.name);
 
         await createLog(
@@ -68,14 +80,15 @@ const TrainingModuleResolvers = {
 
     updateModule: async (
       _parent: any,
-      args: { id: string; name: string; quiz: object },
+      args: { id: string; name: string; quiz: object; reservationPrompt: object },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const module = await ModuleRepo.updateModule(
           args.id,
           args.name,
-          args.quiz
+          args.quiz,
+          args.reservationPrompt
         );
 
         await createLog(
@@ -90,7 +103,7 @@ const TrainingModuleResolvers = {
       args: { id: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const module = await ModuleRepo.archiveModule(args.id);
 
         await createLog(
@@ -106,7 +119,7 @@ const TrainingModuleResolvers = {
       { ifAllowed }: ApolloContext
     ) => {
       return ifAllowed(
-        [Privilege.ADMIN, Privilege.LABBIE, Privilege.MAKER],
+        [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           const { quiz, name } = await ModuleRepo.getModuleByID(args.moduleID);
 

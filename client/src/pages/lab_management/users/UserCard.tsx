@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Card, CardActionArea, Stack, Typography } from "@mui/material";
+import { Avatar, Card, CardActionArea, Chip, Stack, Typography } from "@mui/material";
 import { PartialUser } from "../../../queries/getUsers";
 import PrivilegeChip from "./PrivilegeChip";
 

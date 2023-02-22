@@ -1,12 +1,11 @@
-import React, { createContext, ReactElement, useContext } from "react";
+import { createContext, ReactElement, useContext } from "react";
 import { gql, useQuery } from "@apollo/client";
-import { PartialUser } from "../queries/getUsers";
 import RequestWrapper2 from "./RequestWrapper2";
 import { Navigate, useLocation } from "react-router-dom";
 import Privilege from "../types/Privilege";
 
 const loginUrl =
-  process.env.REACT_APP_LOGIN_URL ?? "https://localhost:3000/login";
+  process.env.LOGIN_URL ?? "https://localhost:3000/login";
 
 export const GET_CURRENT_USER = gql`
   query GetCurrentUser {

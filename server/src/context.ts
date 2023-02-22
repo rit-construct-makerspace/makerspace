@@ -1,6 +1,6 @@
 import { Privilege } from "./schemas/usersSchema";
-import { AuthenticationError, ForbiddenError } from "apollo-server-express";
 import { UserRow } from "./db/tables";
+import { GraphQLError } from "graphql/error/GraphQLError";
 
 export interface CurrentUser extends UserRow {
   hasHolds: boolean;
@@ -25,18 +25,18 @@ export const ifAllowed =
   (expressUser: Express.User | undefined) =>
   (allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
     if (!expressUser) {
-      throw new AuthenticationError("Unauthenticated");
+      throw new GraphQLError("Unauthenticated");
     }
 
     const user = expressUser as CurrentUser;
 
     const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
     if (!sufficientPrivilege) {
-      throw new ForbiddenError("Insufficient privilege");
+      throw new GraphQLError("Insufficient privilege");
     }
 
     if (user.hasHolds) {
-      throw new ForbiddenError("User has outstanding account holds");
+      throw new GraphQLError("User has outstanding account holds");
     }
 
     return callback(user);
@@ -64,7 +64,7 @@ export const ifAuthenticated =
   (expressUser: Express.User | undefined) =>
   (callback: (user: CurrentUser) => any) => {
     if (!expressUser) {
-      throw new AuthenticationError("Unauthenticated");
+      throw new GraphQLError("Unauthenticated");
     }
 
     const user = expressUser as CurrentUser;
@@ -72,7 +72,7 @@ export const ifAuthenticated =
     return callback(user);
   };
 
-const context = ({ req }: { req: any }) => ({
+const context = async ({ req }: { req: any }) => ({
   user: req.user,
   logout: () => req.logout(),
   ifAllowed: ifAllowed(req.user),

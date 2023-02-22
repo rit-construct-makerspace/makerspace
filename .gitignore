@@ -8,7 +8,6 @@ process.env
 
 # env
 .env
-.vscode
 .env.*
 
 # secret
@@ -26,6 +25,5 @@ process.env
 # Transpiled Server Files
 /server/dist
 
-/server/cert
 # React build
 /client/build
