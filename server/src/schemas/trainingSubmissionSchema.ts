@@ -1,9 +1,9 @@
 import { gql } from "graphql-tag";
 
 export interface Submission {
-    id: string;
-    moduleID: string;
-    makerID: string;
+    id: number;
+    moduleID: number;
+    makerID: number;
     submissionDate: string;
     passed: boolean;
     expirationDate: string;

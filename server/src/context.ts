@@ -15,7 +15,7 @@ export interface ApolloContext {
   ) => any;
   ifAuthenticated: (callback: (user: CurrentUser) => any) => any;
   ifAllowedOrSelf: (
-    targetedUserID: string,
+    targetedUserID: number,
     allowedPrivileges: Privilege[],
     callback: (user: CurrentUser) => any
   ) => any;
@@ -44,7 +44,8 @@ export const ifAllowed =
 
 export const ifAllowedOrSelf =
   (expressUser: Express.User | undefined) =>
-  (targetedUserID: string, allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
+  (targetedUserID: number, allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
+
     if (!expressUser) {
       throw new GraphQLError("Unauthenticated - ifallowedorself");
     }

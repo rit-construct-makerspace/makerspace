@@ -1,10 +1,10 @@
 import { gql } from "graphql-tag";
 
 export interface Swipe {
-  id: string;
+  id: number;
   dateTime: Date;
-  roomID: string;
-  userID: string;
+  roomID: number;
+  userID: number;
 }
 
 export const RoomTypeDefs = gql`

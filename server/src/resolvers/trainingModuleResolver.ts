@@ -37,7 +37,7 @@ const TrainingModuleResolvers = {
 
     module: async (
       _parent: any,
-      args: { id: string },
+      args: { id: number },
       { ifAuthenticated }: ApolloContext
     ) =>
       ifAuthenticated(async (user) => {
@@ -85,7 +85,7 @@ const TrainingModuleResolvers = {
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const module = await ModuleRepo.updateModule(
-          args.id,
+          Number(args.id),
           args.name,
           args.quiz,
           args.reservationPrompt
@@ -104,7 +104,7 @@ const TrainingModuleResolvers = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const module = await ModuleRepo.archiveModule(args.id);
+        const module = await ModuleRepo.archiveModule(Number(args.id));
 
         await createLog(
           "{user} deleted the {module} module.",
@@ -121,7 +121,7 @@ const TrainingModuleResolvers = {
       return ifAllowed(
         [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
-          const { quiz, name } = await ModuleRepo.getModuleByID(args.moduleID);
+          const { quiz, name } = await ModuleRepo.getModuleByID(Number(args.moduleID));
 
           if (quiz.length === 0)
             throw Error("Provided module has no questions");
@@ -170,7 +170,7 @@ const TrainingModuleResolvers = {
 
           SubmissionRepo.addSubmission(
             user.id,
-            args.moduleID,
+            Number(args.moduleID),
             grade >= MODULE_PASSING_THRESHOLD
           ).then(async (id) => {
             await createLog(

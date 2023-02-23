@@ -1,7 +1,7 @@
 import { gql } from "graphql-tag";
 
 export interface TrainingModule {
-  id: string;
+  id: number;
   name: string;
   quiz: object;
 }

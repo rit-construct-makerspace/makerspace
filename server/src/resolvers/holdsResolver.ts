@@ -8,7 +8,7 @@ import { HoldRow } from "../db/tables";
 
 const HoldsResolvers = {
   User: {
-    holds: async (parent: { id: string }) =>
+    holds: async (parent: { id: number }) =>
       HoldsRepo.getHoldsByUser(parent.id),
   },
 
@@ -40,15 +40,15 @@ const HoldsResolvers = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const userWithHold = await UsersRepo.getUserByID(args.userID);
+        const userWithHold = await UsersRepo.getUserByID(Number(args.userID));
 
         await createLog(
           "{user} placed a hold on {user}'s account.",
           { id: user.id, label: getUsersFullName(user) },
-          { id: args.userID, label: getUsersFullName(userWithHold) }
+          { id: Number(args.userID), label: getUsersFullName(userWithHold) }
         );
 
-        return HoldsRepo.createHold(user.id, args.userID, args.description);
+        return HoldsRepo.createHold(user.id, Number(args.userID), args.description);
       }),
 
     removeHold: async (
@@ -57,7 +57,7 @@ const HoldsResolvers = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const hold = await HoldsRepo.getHold(args.holdID);
+        const hold = await HoldsRepo.getHold(Number(args.holdID));
         const userWithHold = await UsersRepo.getUserByID(hold.userID);
 
         await createLog(
@@ -66,7 +66,7 @@ const HoldsResolvers = {
           { id: userWithHold.id, label: getUsersFullName(userWithHold) }
         );
 
-        return HoldsRepo.removeHold(args.holdID, user.id);
+        return HoldsRepo.removeHold(Number(args.holdID), user.id);
       }),
   },
 };

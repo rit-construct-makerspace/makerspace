@@ -9,7 +9,7 @@ import {
 } from "../../schemas/storeFrontSchema";
 import { getEquipmentByID } from "../Equipment/EquipmentRepository";
 
-export async function getLabels(itemId: string): Promise<string[] | null> {
+export async function getLabels(itemId: number): Promise<string[] | null> {
   const knexResult = await knex("InventoryItemLabel")
     .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
     .select("Label.label")
@@ -34,7 +34,7 @@ export async function getItems(): Promise<InventoryItem[]> {
 }
 
 export async function getItemById(
-  itemId: string
+  itemId: number
 ): Promise<InventoryItem | null> {
   const knexResult = await knex
     .first(
@@ -54,7 +54,7 @@ export async function getItemById(
 }
 
 export async function updateItemById(
-  itemId: string,
+  itemId: number,
   item: InventoryItemInput
 ): Promise<InventoryItem | null> {
   await knex("InventoryItem").where({ id: itemId }).update({
@@ -94,7 +94,7 @@ export async function addItem(
 }
 
 export async function addItemAmount(
-  itemId: string,
+  itemId: number,
   amount: number
 ): Promise<InventoryItem | null> {
   const updateItem = (
@@ -112,14 +112,14 @@ export async function addItemAmount(
 }
 
 export async function archiveItem(
-  itemId: string
+  itemId: number
 ): Promise<InventoryItem | null> {
   await knex("InventoryItem").where({ id: itemId }).update({ archived: true });
   return getItemById(itemId);
 }
 
 export async function addLabels(
-  itemId: string,
+  itemId: number,
   labels: string[]
 ): Promise<void> {
   await knex
@@ -133,7 +133,7 @@ export async function addLabels(
 }
 
 export async function setLabels(
-  itemId: string,
+  itemId: number,
   labels: string[]
 ): Promise<void> {
   await knex("InventoryItemLabel").del().where({ item: itemId });
@@ -141,7 +141,7 @@ export async function setLabels(
 }
 
 export async function removeLabels(
-  itemId: string,
+  itemId: number,
   labels: string[]
 ): Promise<void> {
   const subquery = knex.select("id").from("Label").whereIn("label", labels);

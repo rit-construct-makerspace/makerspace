@@ -17,7 +17,7 @@ const EquipmentResolvers = {
     },
 
     equipment: async (_: any, args: { id: string }, context: any) => {
-      return await EquipmentRepo.getEquipmentByID(args.id);
+      return await EquipmentRepo.getEquipmentByID(Number(args.id));
     },
 
     reservations: async (_: any, args: { id: string }, context: any) => {
@@ -25,7 +25,7 @@ const EquipmentResolvers = {
     },
 
     reservation: async (_: any, args: { id: string }, context: any) => {
-      return await reservationRepo.getReservationById(args.id);
+      return await reservationRepo.getReservationById(Number(args.id));
     },
   },
 
@@ -67,10 +67,10 @@ const EquipmentResolvers = {
       context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await EquipmentRepo.updateEquipment(args.id, args.equipment);
+        return await EquipmentRepo.updateEquipment(Number(args.id), args.equipment);
     }),
 
-    deleteEquipment: async (_: any, args: { id: string }, context: any,
+    deleteEquipment: async (_: any, args: { id: number }, context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await EquipmentRepo.archiveEquipment(args.id);

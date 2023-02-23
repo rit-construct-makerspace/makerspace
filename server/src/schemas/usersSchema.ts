@@ -1,4 +1,5 @@
 import { gql } from "graphql-tag";
+import { UserRow } from "../db/tables";
 
 export enum Privilege {
   MAKER = "MAKER",    // Maker
@@ -8,11 +9,15 @@ export enum Privilege {
 
 
 export interface PassedModule {
-  id: string;
-  moduleID: string;
+  id: number;
+  moduleID: number;
   moduleName: string;
   submissionDate: Date;
   expirationDate: Date;
+}
+
+export interface UserResolver extends UserRow {
+  passedModules?: PassedModule[];
 }
 
 export const UsersTypeDefs = gql`

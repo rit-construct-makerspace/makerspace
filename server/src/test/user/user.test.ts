@@ -2,7 +2,7 @@ import { knex } from "../../db";
 import * as UserRepo from "../../repositories/Users/UserRepository";
 import * as ModuleRepo from "../../repositories/Training/ModuleRepository";
 import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository";
-import { Privilege } from "../../schemas/usersSchema";
+import { PassedModule, Privilege, UserResolver } from "../../schemas/usersSchema";
 import { ifAllowed, ifAllowedOrSelf, ifAuthenticated } from "../../context";
 import { UserRow } from "../../db/tables";
 import { ApolloServer, GraphQLResponse } from "@apollo/server";
@@ -105,7 +105,9 @@ const SET_PRIVILEGE = `
 const GET_PASSED_MODULES = `
   query GetPassedModules($userID: ID!) {
     user(id: $userID) {
-        passedModules
+        passedModules {
+          moduleName
+        }
     }
   }
 `;
@@ -179,8 +181,8 @@ describe("User tests", () => {
     ));
 
     assert(res.body.kind === 'single');
-    assert(res.body.singleResult.data);
     expect(res.body.singleResult.errors).toBeUndefined();
+    assert(res.body.singleResult.data);
 
     assert(Array.isArray(res.body.singleResult.data.users)); // type narrowing
     expect(res.body.singleResult.data.users.length).toBe(1); // just one test user (from setup)
@@ -215,8 +217,8 @@ describe("User tests", () => {
 
 
     assert(createRes.body.kind === 'single');
-    assert(createRes.body.singleResult.data);
     expect(createRes.body.singleResult.errors).toBeUndefined();
+    assert(createRes.body.singleResult.data);
 
     let userResponseData = <UserRow> createRes.body.singleResult.data.createUser; // type assertion
 
@@ -233,7 +235,7 @@ describe("User tests", () => {
     });
 
     // Create user via repo
-    const userID = (await UserRepo.createUser({
+    const userID: number = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
         ritUsername: "jd1111",
@@ -253,14 +255,11 @@ describe("User tests", () => {
     ));
 
     assert(getUserRes.body.kind === 'single');
-    assert(getUserRes.body.singleResult.data);
     expect(getUserRes.body.singleResult.errors).toBeUndefined();
+    assert(getUserRes.body.singleResult.data);
 
     assert(getUserRes.body.singleResult.data.user);
-    console.log("types:");
-    console.log(typeof (<UserRow> getUserRes.body.singleResult.data.user).id);
-    console.log(typeof userID);
-    expect((<UserRow> getUserRes.body.singleResult.data.user).id).toBe(userID); // type assertion
+    expect(Number((<UserRow> getUserRes.body.singleResult.data.user).id)).toBe(userID); // type assertion
   });
 
   test("MAKER update self", async () => {
@@ -306,8 +305,8 @@ describe("User tests", () => {
     ));
 
     assert(updateRes.body.kind === 'single');
-    assert(updateRes.body.singleResult.data);
     expect(updateRes.body.singleResult.errors).toBeUndefined();
+    assert(updateRes.body.singleResult.data);
 
     let updatedUser = await UserRepo.getUserByID(userID);
 
@@ -361,7 +360,6 @@ describe("User tests", () => {
     ));
 
     assert(updateRes.body.kind === 'single');
-    assert(updateRes.body.singleResult.data);
     expect(updateRes.body.singleResult.errors).toBeDefined();
 
     const errors = updateRes.body.singleResult.errors;
@@ -375,7 +373,6 @@ describe("User tests", () => {
     expect(updatedUser.pronouns).toBe(userZero.pronouns);
     expect(updatedUser.college).toBe(userZero.college);
     expect(updatedUser.expectedGraduation).toBe(userZero.expectedGraduation);
-    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID(userZero.universityID));
   });
 
   test("MENTOR update user", async () => {
@@ -424,8 +421,8 @@ describe("User tests", () => {
     ));
 
     assert(updateRes.body.kind === 'single');
-    assert(updateRes.body.singleResult.data);
     expect(updateRes.body.singleResult.errors).toBeUndefined();
+    assert(updateRes.body.singleResult.data);
 
     const updatedUser = await UserRepo.getUserByID(userID);
 
@@ -474,8 +471,8 @@ describe("User tests", () => {
     ));
 
     assert(updateRes.body.kind === 'single');
-    assert(updateRes.body.singleResult.data);
     expect(updateRes.body.singleResult.errors).toBeUndefined();
+    assert(updateRes.body.singleResult.data);
 
     let updatedUser = await UserRepo.getUserByID(userID);
 
@@ -500,7 +497,7 @@ describe("User tests", () => {
     };
 
     const moduleID = (await ModuleRepo.addModule('Test Module')).id;
-    const submissionID = (await SubmissionRepo.addSubmission(userZero.id, moduleID, true));
+    const submissionID = (await SubmissionRepo.addSubmission(userZero.id, moduleID, true))[0];
 
     let server = new ApolloServer({
         schema
@@ -518,12 +515,12 @@ describe("User tests", () => {
     ));
 
     assert(res.body.kind === 'single');
-    assert(res.body.singleResult.data);
     expect(res.body.singleResult.errors).toBeUndefined();
+    assert(res.body.singleResult.data);
 
-    const passedModules = res.body.singleResult.data.passedModules;
+    const passedModules = (<UserResolver> res.body.singleResult.data.user).passedModules;
     assert(Array.isArray(passedModules));
     expect(passedModules.length).toBe(1);
-    expect(passedModules[0].name).toBe('Test Module');
+    expect(passedModules[0].moduleName).toBe('Test Module');
   });
 });

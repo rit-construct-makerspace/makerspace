@@ -2,8 +2,8 @@ import { gql } from "graphql-tag";
 
 export interface EquipmentInput {
   name: string;
-  roomID: string;
-  moduleIDs: string[];
+  roomID: number;
+  moduleIDs: number[];
 }
 
 export const EquipmentTypeDefs = gql`

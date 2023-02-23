@@ -4,12 +4,12 @@ import { EntityNotFound } from "../../EntityNotFound";
 import { ReservationRow, ReservationEventRow } from "../../db/tables";
 
 export interface IReservationRepository {
-  getReservationById(id: string): Promise<ReservationRow>;
+  getReservationById(id: number): Promise<ReservationRow>;
   getReservations(): Promise<ReservationRow[]>;
   createReservation(reservation: ReservationInput): Promise<ReservationRow>;
-  addComment(resID: string, authorID: string, commentText: string): Promise<ReservationEventRow>;
-  confirmReservation(resID: string): Promise<ReservationRow>;
-  cancelReservation(resID: string): Promise<ReservationRow>;
+  addComment(resID: number, authorID: number, commentText: string): Promise<ReservationEventRow>;
+  confirmReservation(resID: number): Promise<ReservationRow>;
+  cancelReservation(resID: number): Promise<ReservationRow>;
 }
 
 export class ReservationRepository implements IReservationRepository {
@@ -19,7 +19,7 @@ export class ReservationRepository implements IReservationRepository {
     this.queryBuilder = queryBuilder || knex;
   }
 
-  public async getReservationById(id: string): Promise<ReservationRow> {
+  public async getReservationById(id: number): Promise<ReservationRow> {
     const reservation = await knex("Reservations").where({ id }).first();
     if (!reservation) throw new EntityNotFound("Could not find reservation #${id}");
     return reservation;
@@ -87,7 +87,7 @@ export class ReservationRepository implements IReservationRepository {
     }
 
 
-  public async addComment(resID: string, authorId: string, commentText: string): 
+  public async addComment(resID: number, authorId: number, commentText: string): 
   Promise<ReservationEventRow> {
     const [newId] = (
       await this.queryBuilder("ReservationEvents").insert(
@@ -106,14 +106,14 @@ export class ReservationRepository implements IReservationRepository {
     return commentID;
   }
 
-  public async confirmReservation(resID: string): Promise<ReservationRow> {
+  public async confirmReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
     .where("id", resID)
     .update({status: "CONFIRMED", lastUpdated: Date.now()});
     return this.getReservationById(resID);
   }
 
-  public async cancelReservation(resID: string): Promise<ReservationRow> {
+  public async cancelReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
     .where("id", resID)
     .update({status: "CANCELLED", lastUpdated: Date.now()});

@@ -15,7 +15,7 @@ const ReservationResolvers = {
     },
 
     reservation: async (_: any, args: { id: string }, context: any) => {
-      return await reservationRepo.getReservationById(args.id);
+      return await reservationRepo.getReservationById(Number(args.id));
     }
   },
 
@@ -50,7 +50,7 @@ const ReservationResolvers = {
     addComment: async (_parent: any, args: { resID: string, commentText: string },
     { ifAllowed }: ApolloContext) => 
         ifAllowed([Privilege.MAKER], async (user) => {
-          return await reservationRepo.addComment(args.resID, user.id, args.commentText);
+          return await reservationRepo.addComment(Number(args.resID), user.id, args.commentText);
     }),
 
     confirmReservation: async (_parent: any,
@@ -58,7 +58,7 @@ const ReservationResolvers = {
       { ifAllowed }: ApolloContext
     ) => {
       ifAllowed([Privilege.MENTOR], async (user) => {
-        return await reservationRepo.confirmReservation(args.resID);
+        return await reservationRepo.confirmReservation(Number(args.resID));
     });
     },
 
@@ -67,7 +67,7 @@ const ReservationResolvers = {
       { ifAllowed }: ApolloContext
     ) => {
       ifAllowed([Privilege.MENTOR], async (user) => {
-        return await reservationRepo.cancelReservation(args.resID);
+        return await reservationRepo.cancelReservation(Number(args.resID));
     });
     }
   }

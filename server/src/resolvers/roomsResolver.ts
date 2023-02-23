@@ -19,7 +19,7 @@ const RoomResolvers = {
     }),
 
     room: async (parent: any, args: { id: string }) => {
-      return await RoomRepo.getRoomByID(args.id);
+      return await RoomRepo.getRoomByID(Number(args.id));
     },
   },
 
@@ -64,14 +64,14 @@ const RoomResolvers = {
       _parent: any,
       args: { roomID: string; universityID: string }
     ) => {
-      const room = await RoomRepo.getRoomByID(args.roomID);
+      const room = await RoomRepo.getRoomByID(Number(args.roomID));
       assert(room);
 
       const user = await UserRepo.getUserByUniversityID(args.universityID);
 
       if (!user) return null;
 
-      await RoomRepo.swipeIntoRoom(args.roomID, user.id);
+      await RoomRepo.swipeIntoRoom(Number(args.roomID), user.id);
 
       await createLog(
         "{user} swiped into the {room}.",

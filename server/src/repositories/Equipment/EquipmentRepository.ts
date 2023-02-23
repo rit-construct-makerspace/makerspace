@@ -6,7 +6,7 @@ import * as ModuleRepo from "../Training/ModuleRepository";
 import * as HoldsRepo from "../Holds/HoldsRepository";
 import * as UserRepo from "../Users/UserRepository";
 
-export async function getEquipmentByID(id: string): Promise<EquipmentRow> {
+export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   const equipment = await knex("Equipment").where({ id }).first();
 
   if (!equipment) throw new EntityNotFound("Could not find equipment #${id}");
@@ -14,7 +14,7 @@ export async function getEquipmentByID(id: string): Promise<EquipmentRow> {
   return equipment;
 }
 
-export async function archiveEquipment(id: string): Promise<EquipmentRow> {
+export async function archiveEquipment(id: number): Promise<EquipmentRow> {
   await knex("Equipment").where({ id: id }).update({ archived: true });
   return getEquipmentByID(id);
 }
@@ -24,13 +24,13 @@ export async function getEquipments(): Promise<EquipmentRow[]> {
 }
 
 export async function getEquipmentWithRoomID(
-  roomID: string
+  roomID: number
 ): Promise<EquipmentRow[]> {
   return knex("Equipment").select().where("roomID", roomID);
 }
 
 export async function getModulesByEquipment(
-  equipmentID: string
+  equipmentID: number
 ): Promise<TrainingModuleRow[]> {
   return await knex("ModulesForEquipment")
   .join("TrainingModule", "TrainingModule.id", "ModulesForEquipment.moduleID")
@@ -40,7 +40,7 @@ export async function getModulesByEquipment(
 
 export async function hasTrainingModules(
   user: UserRow,
-  equipmentID: string
+  equipmentID: number
 ): Promise<boolean> {
   let modules = await getModulesByEquipment(equipmentID);
   let hasTraining = true;
@@ -59,7 +59,7 @@ export async function hasTrainingModules(
 
 export async function hasAccess(
   uid: string,
-  equipmentID: string
+  equipmentID: number
 ): Promise<boolean> {
   const user = await UserRepo.getUserByUniversityID(uid);   // Get user for this university ID
   return user !== undefined &&                              // Ensure user exists
@@ -68,7 +68,7 @@ export async function hasAccess(
 }
 
 export async function getEquipmentForModule(
-  moduleID: string
+  moduleID: number
 ): Promise<EquipmentRow[]> {
   return knex("ModulesForEquipment")
     .join("Equipment", "Equipment.id", "ModulesForEquipment.equipmentID")
@@ -77,8 +77,8 @@ export async function getEquipmentForModule(
 }
 
 export async function addModulesToEquipment(
-  id: string,
-  moduleIDs: string[]
+  id: number,
+  moduleIDs: number[]
 ): Promise<void> {
   await knex("ModulesForEquipment").insert(
     moduleIDs.map((trainingModule) => ({
@@ -89,8 +89,8 @@ export async function addModulesToEquipment(
 }
 
 export async function updateModules(
-  id: string,
-  moduleIDs: string[]
+  id: number,
+  moduleIDs: number[]
 ): Promise<void> {
   await knex("ModulesForEquipment").del().where("equipmentID", id);
   if (moduleIDs && moduleIDs.length > 0) {
@@ -99,7 +99,7 @@ export async function updateModules(
 }
 
 export async function updateEquipment(
-  id: string,
+  id: number,
   equipment: EquipmentInput
 ): Promise<EquipmentRow> {
   await knex("Equipment").where("id", id).update({

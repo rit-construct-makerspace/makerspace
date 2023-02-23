@@ -4,12 +4,12 @@ enum ReservationStatus {
     "CANCELLED"
 }
 export interface Reservation {
-    id: string;
-    makerID: string;
+    id: number;
+    makerID: number;
     createDate: Date;
     startTime: Date;
     endTime: Date;
-    equipmentID: string;
+    equipmentID: number;
     status: ReservationStatus;
     lastUpdated: Date;
 }

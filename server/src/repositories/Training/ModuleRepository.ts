@@ -3,7 +3,7 @@ import { TrainingModuleRow } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";
 import { PassedModule } from "../../schemas/usersSchema";
 
-export async function getModuleByID(id: string): Promise<TrainingModuleRow> {
+export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
   const trainingModule = await knex("TrainingModule").first().where({ id });
 
   if (!trainingModule)
@@ -16,7 +16,7 @@ export async function getModules(): Promise<TrainingModuleRow[]> {
   return knex("TrainingModule").select().where({ archived: false });
 }
 
-export async function archiveModule(id: string): Promise<TrainingModuleRow> {
+export async function archiveModule(id: number): Promise<TrainingModuleRow> {
   await knex("TrainingModule").where({ id: id }).update({ archived: true });
   return getModuleByID(id);
 }
@@ -27,7 +27,7 @@ export async function addModule(name: string): Promise<TrainingModuleRow> {
 }
 
 export async function updateModule(
-  id: string,
+  id: number,
   name: string,
   quiz: object,
   reservationPrompt: object
@@ -40,7 +40,7 @@ export async function updateModule(
 }
 
 export async function getPassedModulesByUser(
-  userID: string
+  userID: number
 ): Promise<PassedModule[]> {
   return knex("ModuleSubmissions")
     .join("TrainingModule", "TrainingModule.id", "ModuleSubmissions.moduleID")
@@ -56,8 +56,8 @@ export async function getPassedModulesByUser(
 }
 
 export async function hasPassedModule(
-  userID: string,
-  moduleID: string
+  userID: number,
+  moduleID: number
 ) : Promise<boolean> {
   return (await getPassedModulesByUser(userID)).some((passedModule: PassedModule) => {
     // User has this training if they have a passing and non-expired submission

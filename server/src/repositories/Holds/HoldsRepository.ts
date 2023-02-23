@@ -3,7 +3,7 @@ import { EntityNotFound } from "../../EntityNotFound";
 import { HoldRow } from "../../db/tables";
 
 export async function getHold(
-  id: string
+  id: number
 ): Promise<HoldRow> {
   const hold = await knex("Holds").first().where({ id });
 
@@ -13,8 +13,8 @@ export async function getHold(
 }
 
 export async function createHold(
-  creatorID: string,
-  userID: string,
+  creatorID: number,
+  userID: number,
   description: string
 ): Promise<HoldRow> {
   const [holdID] = await knex("Holds").insert(
@@ -30,8 +30,8 @@ export async function createHold(
 }
 
 export async function removeHold(
-  holdID: string,
-  removerID: string
+  holdID: number,
+  removerID: number
 ): Promise<HoldRow> {
   await knex("Holds")
     .update({
@@ -44,13 +44,13 @@ export async function removeHold(
 }
 
 export async function getHoldsByUser(
-  userID: string
+  userID: number
 ): Promise<HoldRow[]> {
   return await knex("Holds").select().where({ userID }).orderBy("createDate", "DESC");
 }
 
 export async function hasActiveHolds(
-  userID: string
+  userID: number
 ): Promise<boolean> {
   return (await getHoldsByUser(userID)).some((hold: HoldRow) => {
     // User has an active hold if its remove date does not exist or is greater than current time

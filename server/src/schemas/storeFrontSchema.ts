@@ -1,7 +1,7 @@
 import { gql } from "graphql-tag";
 
 export interface InventoryItem {
-  id: string;
+  id: number;
   image: string;
   name: string;
   unit: string;

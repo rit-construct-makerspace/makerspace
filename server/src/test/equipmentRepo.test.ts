@@ -10,7 +10,7 @@ import { hashUniversityID } from "../repositories/Users/UserRepository";
 const tables = ["ModuleSubmissions", "ModulesForEquipment", "Equipment", "TrainingModule", "Holds", "Rooms", "Users"];
 
 const testRoom = {
-  id: "0",
+  id: 0,
   name: "Test Room"
 };
 
@@ -51,7 +51,7 @@ describe("EquipmentRepository tests", () => {
   test("addEquipment and get", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -59,7 +59,7 @@ describe("EquipmentRepository tests", () => {
     await EquipmentRepo.addEquipment({
       name: "Test Equipment",
       roomID: roomID,
-      moduleIDs: <string[]>[]
+      moduleIDs: <number[]>[]
     });
 
     let equipmentRows = await EquipmentRepo.getEquipments();
@@ -69,7 +69,7 @@ describe("EquipmentRepository tests", () => {
   test("getEquipmentByID", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -77,7 +77,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
       name: "Test Equipment",
       roomID: roomID,
-      moduleIDs: <string[]>[]
+      moduleIDs: <number[]>[]
     })).id;
 
     // Get by ID
@@ -88,7 +88,7 @@ describe("EquipmentRepository tests", () => {
   test("updateEquipment", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -96,7 +96,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     // Check added
@@ -106,7 +106,7 @@ describe("EquipmentRepository tests", () => {
     await EquipmentRepo.updateEquipment(equipmentID, {
         name: "Test Equipment Updated",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     });
 
     // Check name updated
@@ -116,7 +116,7 @@ describe("EquipmentRepository tests", () => {
   test("archiveEquipment", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -124,7 +124,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     // Check added
@@ -140,7 +140,7 @@ describe("EquipmentRepository tests", () => {
   test("addModulesToEquipment and get", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -148,7 +148,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     const moduleID = (await ModuleRepo.addModule("Test Module")).id;
@@ -167,7 +167,7 @@ describe("EquipmentRepository tests", () => {
   test("updateModules", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -175,7 +175,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     const moduleOneID = (await ModuleRepo.addModule("Test Module I")).id;
@@ -202,7 +202,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess no modules", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -210,7 +210,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     // Check added
@@ -243,7 +243,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess bad swipe", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -251,7 +251,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     // Check added
@@ -292,7 +292,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess with one module", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -300,7 +300,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     // Check added
@@ -342,7 +342,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess with hold", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -350,7 +350,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     // Check added
@@ -390,7 +390,7 @@ describe("EquipmentRepository tests", () => {
   test("hasAcccess with insufficient training", async () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
-        id: "0",
+        id: 0,
         name: "Test Room"
     })).id;
 
@@ -398,7 +398,7 @@ describe("EquipmentRepository tests", () => {
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <string[]>[]
+        moduleIDs: <number[]>[]
     })).id;
 
     // Check added

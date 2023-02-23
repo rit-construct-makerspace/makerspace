@@ -1,36 +1,32 @@
 import { Privilege } from "../schemas/usersSchema";
 
-
-
-export type RowIDType = string;
-
 export interface AuditLogRow {
-  id: string;
+  id: number;
   dateTime: Date;
   message: string;
 }
 
 export interface EquipmentRow {
-  id: string;
+  id: number;
   name: string;
   addedAt: Date;
   inUse: boolean;
-  roomID: string;
+  roomID: number;
   archived: boolean;
 }
 
 export interface HoldRow {
-  id: string;
-  creatorID: string;
-  removerID?: string;
-  userID: string;
+  id: number;
+  creatorID: number;
+  removerID?: number;
+  userID: number;
   description: string;
   createDate: Date;
   removeDate?: Date;
 }
 
 export interface InventoryItemRow {
-  id: string;
+  id: number;
   image?: string;
   name: string;
   unit: string;
@@ -42,55 +38,55 @@ export interface InventoryItemRow {
 }
 
 export interface ModuleSubmissionRow {
-  id: string;
-  moduleID: string;
-  makerID: string;
+  id: number;
+  moduleID: number;
+  makerID: number;
   submissionDate: Date;
   passed: boolean;
   expirationDate: Date;
 }
 
 export interface ModulesForEquipmentRow {
-  id: string;
-  equipmentID: string;
-  moduleID: string;
+  id: number;
+  equipmentID: number;
+  moduleID: number;
 }
 
 export interface ReservationEventRow {
-  id: string;
-  reservationID: string;
+  id: number;
+  reservationID: number;
   eventType: string;
-  userID: string;
+  userID: number;
   dateTime: Date;
   payload: string;
 }
 
 export interface ReservationRow {
-  id: string;
-  makerID: string;
+  id: number;
+  makerID: number;
   createDate: Date;
   startTime: Date;
   endTime: Date;
-  equipmentID: string;
+  equipmentID: number;
   status: string;
   lastUpdated: Date;
 }
 
 export interface RoomSwipeRow {
-  id: string;
+  id: number;
   dateTime: number;
-  roomID: string;
-  userID: string;
+  roomID: number;
+  userID: number;
 }
 
 export interface RoomRow {
-  id: string;
+  id: number;
   name: string;
   archived: boolean;
 }
 
 export interface TrainingModuleRow {
-  id: string;
+  id: number;
   name: string;
   quiz: TrainingModuleItem[];
   archived: boolean;
@@ -116,7 +112,7 @@ export interface ModuleItemOption {
 }
 
 export interface UserRow {
-  id: string;
+  id: number;
   firstName: string;
   lastName: string;
   email: string;
@@ -129,7 +125,7 @@ export interface UserRow {
   setupComplete: boolean;
   ritUsername: string;
   pronouns: string;
-  isArchived: boolean; // TODO: rename to archived
+  isArchived: boolean;
 }
 
 declare module "knex/types/tables" {
