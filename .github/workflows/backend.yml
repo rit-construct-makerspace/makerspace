@@ -79,3 +79,7 @@ jobs:
 
       - name: Run Tests
         run: cd server && npm run test:watch
+        env:
+          POSTGRES_USER: pguser
+          POSTGRES_PASSWORD: pgpassword
+          POSTGRES_DB: pgdb
