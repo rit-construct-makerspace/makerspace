@@ -26,7 +26,7 @@ export async function getEquipments(): Promise<EquipmentRow[]> {
 export async function getEquipmentWithRoomID(
   roomID: number
 ): Promise<EquipmentRow[]> {
-  return knex("Equipment").select().where({ roomID });
+  return knex("Equipment").select().where("roomID", roomID);
 }
 
 export async function getModulesByEquipment(

@@ -1,4 +1,5 @@
-import { gql } from "apollo-server-express";
+import { gql } from "graphql-tag";
+import { UserRow } from "../db/tables";
 
 export enum Privilege {
   MAKER = "MAKER",    // Maker
@@ -6,13 +7,16 @@ export enum Privilege {
   STAFF = "STAFF",    // Staff
 }
 
-
 export interface PassedModule {
   id: number;
   moduleID: number;
   moduleName: string;
   submissionDate: Date;
   expirationDate: Date;
+}
+
+export interface User extends UserRow {
+  passedModules?: PassedModule[];
 }
 
 export const UsersTypeDefs = gql`
@@ -58,7 +62,7 @@ export const UsersTypeDefs = gql`
     Sensitive information. Stored as a SHA256 hash in the database.
     Not to be confused with RIT usernames (ie. abc1234)
     """
-    universityID: String!
+    universityID: String
 
     """
     Has the user completed the signup form?

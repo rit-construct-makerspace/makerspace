@@ -1,10 +1,13 @@
-import { PassedModule, Privilege } from "../../schemas/usersSchema";
+import { Privilege } from "../../schemas/usersSchema";
 import { knex } from "../../db";
 import { createLog } from "../AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "../../resolvers/usersResolver";
 import { EntityNotFound } from "../../EntityNotFound";
 import { UserRow } from "../../db/tables";
 import { createHash } from "crypto";
+
+export function getUsersFullName(user: UserRow) {
+  return `${user.firstName} ${user.lastName}`;
+}
 
 export function hashUniversityID(universityID: string) {
   return createHash("sha256").update(universityID).digest("hex");
@@ -16,7 +19,7 @@ export async function getUsers(): Promise<UserRow[]> {
 
 export async function getUserByID(userID: number): Promise<UserRow> {
   const user = await knex("Users").first().where("id", userID);
-
+  
   if (!user) throw new EntityNotFound(`User #${userID} not found`);
 
   return user;
@@ -78,14 +81,6 @@ export async function setPrivilege(
 ): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ privilege });
   return await getUserByID(userID);
-}
-
-export async function addTrainingModuleAttemptToUser(
-  makerID: number,
-  moduleID: number,
-  passed: boolean
-) {
-  return await knex("ModuleSubmissions").insert({ makerID, moduleID, passed }).returning('id');
 }
 
 export async function archiveUser(userID: number): Promise<UserRow> {

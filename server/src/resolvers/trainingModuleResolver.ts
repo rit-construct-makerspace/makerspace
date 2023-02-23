@@ -3,7 +3,7 @@ import { AnswerInput } from "../schemas/trainingModuleSchema";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
 import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
@@ -80,12 +80,12 @@ const TrainingModuleResolvers = {
 
     updateModule: async (
       _parent: any,
-      args: { id: number; name: string; quiz: object; reservationPrompt: object },
+      args: { id: string; name: string; quiz: object; reservationPrompt: object },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const module = await ModuleRepo.updateModule(
-          args.id,
+          Number(args.id),
           args.name,
           args.quiz,
           args.reservationPrompt
@@ -100,11 +100,11 @@ const TrainingModuleResolvers = {
 
     deleteModule: async (
       _parent: any,
-      args: { id: number },
+      args: { id: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const module = await ModuleRepo.archiveModule(args.id);
+        const module = await ModuleRepo.archiveModule(Number(args.id));
 
         await createLog(
           "{user} deleted the {module} module.",
@@ -115,13 +115,13 @@ const TrainingModuleResolvers = {
 
     submitModule: async (
       _parent: any,
-      args: { moduleID: number; answerSheet: AnswerInput[] },
+      args: { moduleID: string; answerSheet: AnswerInput[] },
       { ifAllowed }: ApolloContext
     ) => {
       return ifAllowed(
         [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
-          const { quiz, name } = await ModuleRepo.getModuleByID(args.moduleID);
+          const { quiz, name } = await ModuleRepo.getModuleByID(Number(args.moduleID));
 
           if (quiz.length === 0)
             throw Error("Provided module has no questions");
@@ -170,7 +170,7 @@ const TrainingModuleResolvers = {
 
           SubmissionRepo.addSubmission(
             user.id,
-            args.moduleID,
+            Number(args.moduleID),
             grade >= MODULE_PASSING_THRESHOLD
           ).then(async (id) => {
             await createLog(

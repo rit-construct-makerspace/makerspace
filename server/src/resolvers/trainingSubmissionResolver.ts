@@ -5,30 +5,30 @@ const TrainingSubmissionResolvers = {
   Query: {
     submission: async (
       parent: any,
-      args: { submissionID: number },
+      args: { submissionID: string },
       { ifAuthenticated }: ApolloContext
     ) => 
       ifAuthenticated (async (user) => {
-        return SubmissionRepo.getSubmission(args.submissionID);
+        return SubmissionRepo.getSubmission(Number(args.submissionID));
     }),
     submissions: async (
       _parent: any,
-      args: { moduleID: number },
+      args: { moduleID: string },
       { ifAuthenticated }: ApolloContext
     ) =>
       ifAuthenticated(async (user) => {
         return args.moduleID ? 
-          await SubmissionRepo.getSubmissionsByModule(user.id, args.moduleID) :
+          await SubmissionRepo.getSubmissionsByModule(user.id, Number(args.moduleID)) :
           await SubmissionRepo.getSubmissionsByUser(user.id)
     }),
     latestSubmission: async (
       _parent: any,
-      args: { moduleID: number },
+      args: { moduleID: string },
       { ifAuthenticated }: ApolloContext
     ) =>
       ifAuthenticated(async (user) => {
         return args.moduleID ? 
-          await SubmissionRepo.getLatestSubmissionByModule(user.id, args.moduleID) :
+          await SubmissionRepo.getLatestSubmissionByModule(user.id, Number(args.moduleID)) :
           await SubmissionRepo.getLatestSubmission(user.id)
     })
   }
