@@ -21,7 +21,7 @@ export const GET_ALL_TRAINING_MODULES = gql`
   }
 `;
 
-export default function ExpiringSoon() {
+export default function ExpiringSoonCard() {
     const { passedModules } = useCurrentUser();
     const result = useQuery(GET_ALL_TRAINING_MODULES);
     const [searchText] = useState("");
@@ -45,8 +45,9 @@ export default function ExpiringSoon() {
                 const reordered = [...expired];
 
                 return (
-                    <Card sx={{ width: 350, padding: 2, border: 1, borderColor: "lightgrey" }} >
-                        <Typography variant="h4">Expired Trainings</Typography>
+                    <Card sx={{ width: 350, padding: 2, spacing: 5, border: 1, borderColor: "lightgrey" }} >
+                        <Typography variant="h4">Expiring Soon</Typography>
+                        <Typography variant="body1">You're all caught up!</Typography>
                         {reordered.map((ms: ModuleStatus) => (
                             <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
                         ))}

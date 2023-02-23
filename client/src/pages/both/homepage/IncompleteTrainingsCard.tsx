@@ -21,7 +21,7 @@ export const GET_ALL_TRAINING_MODULES = gql`
   }
 `;
 
-export default function TrainingsCard() {
+export default function IncompleteTrainingsCard() {
     const { passedModules } = useCurrentUser();
     const result = useQuery(GET_ALL_TRAINING_MODULES);
     const [searchText] = useState("");
@@ -37,13 +37,6 @@ export default function TrainingsCard() {
                     moduleStatuses,
                     (ms: ModuleStatus) => ms.moduleName
                 );
-
-                // const expired = matching.filter(
-                //     (ms: ModuleStatus) => ms.status === "Expired"
-                // );
-                // const passed = matching.filter(
-                //     (ms: ModuleStatus) => ms.status === "Passed"
-                // );
                 const notTaken = matching.filter(
                     (ms: ModuleStatus) => ms.status === "Not taken"
                 );
