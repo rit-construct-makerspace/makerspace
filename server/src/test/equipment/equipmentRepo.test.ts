@@ -1,11 +1,11 @@
-import { knex } from "../db";
-import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
-import * as RoomRepo from "../repositories/Rooms/RoomRepository";
-import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
-import * as UserRepo from "../repositories/Users/UserRepository";
-import * as Holdsrepo from "../repositories/Holds/HoldsRepository";
-import { hashUniversityID } from "../repositories/Users/UserRepository";
+import { knex } from "../../db";
+import * as EquipmentRepo from "../../repositories/Equipment/EquipmentRepository";
+import * as RoomRepo from "../../repositories/Rooms/RoomRepository";
+import * as ModuleRepo from "../../repositories/Training/ModuleRepository";
+import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository";
+import * as UserRepo from "../../repositories/Users/UserRepository";
+import * as Holdsrepo from "../../repositories/Holds/HoldsRepository";
+import { hashUniversityID } from "../../repositories/Users/UserRepository";
 
 const tables = ["ModuleSubmissions", "ModulesForEquipment", "Equipment", "TrainingModule", "Holds", "Rooms", "Users"];
 
