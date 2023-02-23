@@ -1,5 +1,6 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
+import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { ApolloContext } from "../context";
@@ -7,13 +8,19 @@ import { getUsersFullName } from "../repositories/Users/UserRepository";
 
 const UsersResolvers = {
   User: {
+    holds: async (
+      parent: { id: string },
+      _args: any,
+      _context: ApolloContext) => {
+        return HoldsRepo.getHoldsByUser(Number(parent.id));
+      },
+
     passedModules: async (
       parent: { id: string },
       _args: any,
-      {ifAllowedOrSelf}: ApolloContext) => 
-      ifAllowedOrSelf(Number(parent.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
+      _context: ApolloContext) => {
         return ModuleRepo.getPassedModulesByUser(Number(parent.id));
-      }),
+      },
   },
 
   Query: {
@@ -28,17 +35,18 @@ const UsersResolvers = {
     user: async (
       _parent: any,
       args: { id: string },
-      {ifAllowedOrSelf} : ApolloContext) => {
-        return ifAllowedOrSelf(Number(args.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
+      {ifAllowedOrSelf} : ApolloContext) =>
+        ifAllowedOrSelf(Number(args.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
           return await UserRepo.getUserByID(Number(args.id));
-      })},
+        }),
 
     currentUser: async (
       _parent: any,
       _args: any,
-      context: ApolloContext) => {
-        return context.user;
-      },
+      { user, ifAuthenticated }: ApolloContext) =>
+        ifAuthenticated(async () => {
+          return user;
+        }),
   },
 
   Mutation: {
@@ -88,7 +96,7 @@ const UsersResolvers = {
     deleteUser: async (
       _parent: any,
       args: { userID: string },
-      {ifAllowed}: ApolloContext
+      { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
         [Privilege.STAFF],

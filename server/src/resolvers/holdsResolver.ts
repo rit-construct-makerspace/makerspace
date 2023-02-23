@@ -7,11 +7,6 @@ import { getUsersFullName } from "../repositories/Users/UserRepository";
 import { HoldRow } from "../db/tables";
 
 const HoldsResolvers = {
-  User: {
-    holds: async (parent: { id: number }) =>
-      HoldsRepo.getHoldsByUser(parent.id),
-  },
-
   Hold: {
     creator: async (
       parent: HoldRow,

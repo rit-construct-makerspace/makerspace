@@ -7,7 +7,6 @@ export enum Privilege {
   STAFF = "STAFF",    // Staff
 }
 
-
 export interface PassedModule {
   id: number;
   moduleID: number;
@@ -16,7 +15,7 @@ export interface PassedModule {
   expirationDate: Date;
 }
 
-export interface UserResolver extends UserRow {
+export interface User extends UserRow {
   passedModules?: PassedModule[];
 }
 

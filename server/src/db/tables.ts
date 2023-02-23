@@ -115,6 +115,7 @@ export interface UserRow {
   id: number;
   firstName: string;
   lastName: string;
+  pronouns: string;
   email: string;
   isStudent: boolean;
   privilege: Privilege;
@@ -124,7 +125,6 @@ export interface UserRow {
   universityID: string;
   setupComplete: boolean;
   ritUsername: string;
-  pronouns: string;
   isArchived: boolean;
 }
 

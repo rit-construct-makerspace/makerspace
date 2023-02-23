@@ -2,7 +2,7 @@ import { knex } from "../../db";
 import * as UserRepo from "../../repositories/Users/UserRepository";
 import * as ModuleRepo from "../../repositories/Training/ModuleRepository";
 import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository";
-import { PassedModule, Privilege, UserResolver } from "../../schemas/usersSchema";
+import { PassedModule, Privilege, User } from "../../schemas/usersSchema";
 import { ifAllowed, ifAllowedOrSelf, ifAuthenticated } from "../../context";
 import { UserRow } from "../../db/tables";
 import { ApolloServer, GraphQLResponse } from "@apollo/server";
@@ -484,6 +484,49 @@ describe("User tests", () => {
     expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
+  test("STAFF delete user", async () => {
+    // User Zero starts as staff (see setup)
+
+    let server = new ApolloServer({
+      schema
+    });
+
+    // Create user via repo
+    const userID = (await UserRepo.createUser({
+        firstName: "Jane",
+        lastName: "Doe",
+        ritUsername: "jd1111",
+        email: "jd1111@example.com"
+    })).id;
+
+    let user = await UserRepo.getUserByID(userID);
+
+    expect(user).toBeDefined();
+    expect(user).not.toBeNull();
+
+    const deleteRes = (await server.executeOperation(
+      {
+          query: DELETE_USER,
+          variables: {
+              userID: userID
+          }
+      },
+      {
+          contextValue: userZeroContext // Staff member performs delete
+      }
+    ));
+
+    assert(deleteRes.body.kind === 'single');
+    expect(deleteRes.body.singleResult.errors).toBeUndefined();
+    assert(deleteRes.body.singleResult.data);
+
+    let updatedUser = await UserRepo.getUserByID(userID);
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser.id).toBe(userID);
+  });
+
   test("MAKER get own passed modules", async () => {
     // make test user a Maker
     await UserRepo.setPrivilege(userZero.id, Privilege.MAKER);
@@ -518,7 +561,7 @@ describe("User tests", () => {
     expect(res.body.singleResult.errors).toBeUndefined();
     assert(res.body.singleResult.data);
 
-    const passedModules = (<UserResolver> res.body.singleResult.data.user).passedModules;
+    const passedModules = (<User> res.body.singleResult.data.user).passedModules;
     assert(Array.isArray(passedModules));
     expect(passedModules.length).toBe(1);
     expect(passedModules[0].moduleName).toBe('Test Module');
