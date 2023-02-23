@@ -31,7 +31,7 @@ const StorefrontResolvers = {
       args: { item: InventoryItemInput },
       context: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await InventoryRepo.addItem(args.item);
     }),
 
@@ -40,7 +40,7 @@ const StorefrontResolvers = {
       args: { itemId: string; item: InventoryItemInput },
       context: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await InventoryRepo.updateItemById(args.itemId, args.item);
     }),
 
@@ -49,7 +49,7 @@ const StorefrontResolvers = {
       args: { itemId: string; count: number },
       context: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return InventoryRepo.addItemAmount(args.itemId, args.count);
     }),
 
@@ -58,7 +58,7 @@ const StorefrontResolvers = {
       args: { itemID: string; count: number },
       context: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return InventoryRepo.addItemAmount(args.itemID, args.count * -1);
     }),
 
@@ -67,19 +67,19 @@ const StorefrontResolvers = {
       args: { itemID: string },
       context: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return InventoryRepo.archiveItem(args.itemID);
     }),
 
     createLabel: async (_: any, args: { label: string }, context: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         await LabelRepo.addLabel(args.label);
     }),
 
     deleteLabel: async (_: any, args: { label: string }, context: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.LABBIE, Privilege.ADMIN], async () => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         await LabelRepo.archiveLabel(args.label);
     }),
   },

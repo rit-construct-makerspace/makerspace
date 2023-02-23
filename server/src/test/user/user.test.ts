@@ -1,0 +1,529 @@
+import { knex } from "../../db";
+import * as UserRepo from "../../repositories/Users/UserRepository";
+import * as ModuleRepo from "../../repositories/Training/ModuleRepository";
+import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository";
+import { Privilege } from "../../schemas/usersSchema";
+import { ifAllowed, ifAllowedOrSelf, ifAuthenticated } from "../../context";
+import { UserRow } from "../../db/tables";
+import { ApolloServer, GraphQLResponse } from "@apollo/server";
+import { schema } from "../../schema";
+import assert from "assert";
+
+const url = process.env.GRAPHQL_ENDPOINT ?? "https://localhost:3000";
+const tables = ["ModuleSubmissions", "TrainingModule", "Users", "AuditLogs"];
+let userZero: UserRow;
+let userZeroContext: any;
+
+const GET_USERS = `
+    query GetUsers {
+        users {
+            id
+            firstName
+            lastName
+            privilege
+            pronouns
+            college
+            expectedGraduation
+            universityID
+        }
+    }
+`;
+
+const GET_USER_BY_ID = `
+    query GetUserByID($userID: ID!) {
+        user(id: $userID) {
+            id
+            firstName
+            lastName
+            privilege
+            pronouns
+            college
+            expectedGraduation
+            universityID
+        }
+    }
+`;
+
+const CREATE_USER = `
+    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String, $email: String) {
+        createUser(
+            firstName: $firstName
+            lastName: $lastName
+            ritUsername: $ritUsername
+            email: $email
+          ) {
+            id
+            firstName
+            lastName
+            privilege
+        }
+    }
+`;
+
+const UPDATE_STUDENT_PROFILE = `
+  mutation UpdateStudentProfile(
+    $userID: ID!
+    $pronouns: String
+    $college: String
+    $expectedGraduation: String
+    $universityID: String
+  ) {
+    updateStudentProfile(
+      userID: $userID
+      pronouns: $pronouns
+      college: $college
+      expectedGraduation: $expectedGraduation
+      universityID: $universityID
+    ) {
+      id
+    }
+  }
+`;
+
+const CREATE_HOLD = `
+  mutation CreateHold($userID: ID!, $description: String!) {
+    createHold(userID: $userID, description: $description) {
+      id
+    }
+  }
+`;
+
+const DELETE_USER = `
+  mutation DeleteUser($userID: ID!) {
+    deleteUser(userID: $userID) {
+      id
+    }
+  }
+`;
+
+const SET_PRIVILEGE = `
+  mutation SetPrivilege($userID: ID!, $privilege: Privilege) {
+    setPrivilege(userID: $userID, privilege: $privilege)
+  }
+`;
+
+const GET_PASSED_MODULES = `
+  query GetPassedModules($userID: ID!) {
+    user(id: $userID) {
+        passedModules
+    }
+  }
+`;
+
+describe("User tests", () => {
+  beforeAll(() => {
+    return knex.migrate.latest();
+    // we can here also seed our tables, if we have any seeding files
+  });
+
+  beforeEach(async () => {
+    try {
+        // reset tables...
+        for(const t of tables) {
+          await knex(t).del();
+        }
+
+        // Add user
+        const userID = (await UserRepo.createUser({
+            firstName: "John",
+            lastName: "Doe",
+            ritUsername: "jd0000",
+            email: "jd0000@example.com"
+        })).id;
+
+        // Get by ID
+        userZero = await UserRepo.getUserByID(userID);
+        expect(userZero).toBeDefined();
+
+        // Make user staff
+        userZero = await UserRepo.setPrivilege(userZero.id, Privilege.STAFF);
+        expect(userZero.privilege).toBe(Privilege.STAFF);
+
+        userZeroContext = {
+            user: {...userZero, hasHolds: false},
+            logout: () => {},
+            ifAllowed: ifAllowed(userZero),
+            ifAllowedOrSelf: ifAllowedOrSelf(userZero),
+            ifAuthenticated: ifAuthenticated(userZero)
+        };
+    } catch (error) {
+        console.error("Failed setup: " + error);
+        fail();
+    }
+  });
+
+  afterAll(async () => {
+    try {
+      // reset tables...
+      for(const t of tables) {
+        await knex(t).del();
+      }
+      await knex.destroy();
+    } catch (error) {
+      fail("Failed teardown");
+    }
+  });
+
+  test("STAFF getUsers", async () => {
+    let server = new ApolloServer({
+        schema
+    });
+
+    const res: GraphQLResponse = (await server.executeOperation(
+        {
+            query: GET_USERS
+        },
+        {
+            contextValue: userZeroContext
+        }
+    ));
+
+    assert(res.body.kind === 'single');
+    assert(res.body.singleResult.data);
+    expect(res.body.singleResult.errors).toBeUndefined();
+
+    assert(Array.isArray(res.body.singleResult.data.users)); // type narrowing
+    expect(res.body.singleResult.data.users.length).toBe(1); // just one test user (from setup)
+  });
+
+  test("STAFF addUser", async () => {
+    let server = new ApolloServer({
+        schema
+    });
+
+    let userRequestData = {
+        firstName: "Jane",
+        lastName: "Doe",
+        ritUsername: "jd1111",
+        email: "jd1111@example.com"
+    }
+
+    let createRes: GraphQLResponse = (await server.executeOperation(
+        {
+            query: CREATE_USER,
+            variables: {
+                firstName: userRequestData.firstName,
+                lastName: userRequestData.lastName,
+                ritUsername: userRequestData.ritUsername,
+                email: userRequestData.email
+            }
+        },
+        {
+            contextValue: userZeroContext
+        }
+    ));
+
+
+    assert(createRes.body.kind === 'single');
+    assert(createRes.body.singleResult.data);
+    expect(createRes.body.singleResult.errors).toBeUndefined();
+
+    let userResponseData = <UserRow> createRes.body.singleResult.data.createUser; // type assertion
+
+    expect(userResponseData.firstName).toBe(userRequestData.firstName);
+    expect(userResponseData.lastName).toBe(userRequestData.lastName);
+
+    const users = await UserRepo.getUsers();
+    expect(users.length).toBe(2); // a user was added
+  });
+
+  test("STAFF getUserByID", async () => {
+    let server = new ApolloServer({
+        schema
+    });
+
+    // Create user via repo
+    const userID = (await UserRepo.createUser({
+        firstName: "Jane",
+        lastName: "Doe",
+        ritUsername: "jd1111",
+        email: "jd1111@example.com"
+    })).id;
+
+    const getUserRes = (await server.executeOperation(
+        {
+            query: GET_USER_BY_ID,
+            variables: {
+                userID: userID
+            }
+        },
+        {
+            contextValue: userZeroContext
+        }
+    ));
+
+    assert(getUserRes.body.kind === 'single');
+    assert(getUserRes.body.singleResult.data);
+    expect(getUserRes.body.singleResult.errors).toBeUndefined();
+
+    assert(getUserRes.body.singleResult.data.user);
+    console.log("types:");
+    console.log(typeof (<UserRow> getUserRes.body.singleResult.data.user).id);
+    console.log(typeof userID);
+    expect((<UserRow> getUserRes.body.singleResult.data.user).id).toBe(userID); // type assertion
+  });
+
+  test("MAKER update self", async () => {
+    let server = new ApolloServer({
+        schema
+    });
+
+    // Create user via repo
+    const userID = (await UserRepo.createUser({
+        firstName: "Jane",
+        lastName: "Doe",
+        ritUsername: "jd1111",
+        email: "jd1111@example.com"
+    })).id;
+
+    let user = await UserRepo.getUserByID(userID);
+
+    expect(user).toBeDefined();
+    expect(user).not.toBeNull();
+
+    const newUserContext = {
+        user: {...user, hasHolds: false},
+        logout: () => {},
+        ifAllowed: ifAllowed(user),
+        ifAllowedOrSelf: ifAllowedOrSelf(user),
+        ifAuthenticated: ifAuthenticated(user)
+    };
+
+    const updateRes = (await server.executeOperation(
+        {
+            query: UPDATE_STUDENT_PROFILE,
+            variables: {
+                userID: userID,
+                pronouns: "she/her",
+                college: "CAD",
+                expectedGraduation: "2027",
+                universityID: "000000000"
+            }
+        },
+        {
+            contextValue: newUserContext
+        }
+    ));
+
+    assert(updateRes.body.kind === 'single');
+    assert(updateRes.body.singleResult.data);
+    expect(updateRes.body.singleResult.errors).toBeUndefined();
+
+    let updatedUser = await UserRepo.getUserByID(userID);
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser.pronouns).toBe("she/her");
+    expect(updatedUser.college).toBe("CAD");
+    expect(updatedUser.expectedGraduation).toBe("2027");
+    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+  });
+
+  test("MAKER cannot update others", async () => {
+    let server = new ApolloServer({
+        schema
+    });
+
+    // Create user via repo
+    const userID = (await UserRepo.createUser({
+        firstName: "Jane",
+        lastName: "Doe",
+        ritUsername: "jd1111",
+        email: "jd1111@example.com"
+    })).id;
+
+    let user = await UserRepo.getUserByID(userID);
+    expect(user).toBeDefined();
+    expect(user).not.toBeNull();
+
+    const newUserContext = {
+        user: {...user, hasHolds: false},
+        logout: () => {},
+        ifAllowed: ifAllowed(user),
+        ifAllowedOrSelf: ifAllowedOrSelf(user),
+        ifAuthenticated: ifAuthenticated(user)
+    };
+
+    const updateRes = (await server.executeOperation(
+        {
+            query: UPDATE_STUDENT_PROFILE,
+            variables: {
+                userID: userZero.id, // tries to update a different user
+                pronouns: "she/her",
+                college: "CAD",
+                expectedGraduation: "2027",
+                universityID: "222222222"
+            }
+        },
+        {
+            contextValue: newUserContext
+        }
+    ));
+
+    assert(updateRes.body.kind === 'single');
+    assert(updateRes.body.singleResult.data);
+    expect(updateRes.body.singleResult.errors).toBeDefined();
+
+    const errors = updateRes.body.singleResult.errors;
+    assert(Array.isArray(errors));
+    expect(errors[0].message).toBe('Insufficient privilege');
+
+    const updatedUser = await UserRepo.getUserByID(userID);
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser.pronouns).toBe(userZero.pronouns);
+    expect(updatedUser.college).toBe(userZero.college);
+    expect(updatedUser.expectedGraduation).toBe(userZero.expectedGraduation);
+    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID(userZero.universityID));
+  });
+
+  test("MENTOR update user", async () => {
+    // Make user mentor
+    userZero  = await UserRepo.setPrivilege(userZero.id, Privilege.MENTOR);
+    expect(userZero.privilege).toBe(Privilege.MENTOR);
+
+    userZeroContext = {
+        user: {...userZero, hasHolds: false},
+        logout: () => {},
+        ifAllowed: ifAllowed(userZero),
+        ifAllowedOrSelf: ifAllowedOrSelf(userZero),
+        ifAuthenticated: ifAuthenticated(userZero)
+    };
+
+    let server = new ApolloServer({
+        schema
+    });
+
+    // Create user via repo
+    const userID = (await UserRepo.createUser({
+        firstName: "Jane",
+        lastName: "Doe",
+        ritUsername: "jd1111",
+        email: "jd1111@example.com"
+    })).id;
+
+    const user = await UserRepo.getUserByID(userID);
+    expect(user).toBeDefined();
+    expect(user).not.toBeNull();
+
+    const updateRes = (await server.executeOperation(
+        {
+            query: UPDATE_STUDENT_PROFILE,
+            variables: {
+                userID: userID,
+                pronouns: "she/her",
+                college: "CAD",
+                expectedGraduation: "2027",
+                universityID: "000000000"
+            }
+        },
+        {
+            contextValue: userZeroContext // Mentor performs update
+        }
+    ));
+
+    assert(updateRes.body.kind === 'single');
+    assert(updateRes.body.singleResult.data);
+    expect(updateRes.body.singleResult.errors).toBeUndefined();
+
+    const updatedUser = await UserRepo.getUserByID(userID);
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser.pronouns).toBe("she/her");
+    expect(updatedUser.college).toBe("CAD");
+    expect(updatedUser.expectedGraduation).toBe("2027");
+    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+  });
+
+  test("STAFF update user", async () => {
+    // User Zero starts as staff (see setup)
+
+    let server = new ApolloServer({
+        schema
+    });
+
+    // Create user via repo
+    const userID = (await UserRepo.createUser({
+        firstName: "Jane",
+        lastName: "Doe",
+        ritUsername: "jd1111",
+        email: "jd1111@example.com"
+    })).id;
+
+    let user = await UserRepo.getUserByID(userID);
+
+    expect(user).toBeDefined();
+    expect(user).not.toBeNull();
+
+    const updateRes = (await server.executeOperation(
+        {
+            query: UPDATE_STUDENT_PROFILE,
+            variables: {
+                userID: userID,
+                pronouns: "she/her",
+                college: "CAD",
+                expectedGraduation: "2027",
+                universityID: "000000000"
+            }
+        },
+        {
+            contextValue: userZeroContext // Staff member performs update
+        }
+    ));
+
+    assert(updateRes.body.kind === 'single');
+    assert(updateRes.body.singleResult.data);
+    expect(updateRes.body.singleResult.errors).toBeUndefined();
+
+    let updatedUser = await UserRepo.getUserByID(userID);
+
+    expect(updatedUser).toBeDefined();
+    expect(updatedUser).not.toBeNull();
+    expect(updatedUser.pronouns).toBe("she/her");
+    expect(updatedUser.college).toBe("CAD");
+    expect(updatedUser.expectedGraduation).toBe("2027");
+    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+  });
+
+  test("MAKER get own passed modules", async () => {
+    // make test user a Maker
+    await UserRepo.setPrivilege(userZero.id, Privilege.MAKER);
+
+    userZeroContext = {
+        user: {...userZero, hasHolds: false},
+        logout: () => {},
+        ifAllowed: ifAllowed(userZero),
+        ifAllowedOrSelf: ifAllowedOrSelf(userZero),
+        ifAuthenticated: ifAuthenticated(userZero)
+    };
+
+    const moduleID = (await ModuleRepo.addModule('Test Module')).id;
+    const submissionID = (await SubmissionRepo.addSubmission(userZero.id, moduleID, true));
+
+    let server = new ApolloServer({
+        schema
+    });
+
+    let res = (await server.executeOperation({
+            query: GET_PASSED_MODULES,
+            variables: {
+                userID: userZero.id
+            }
+        },
+        {
+            contextValue: userZeroContext
+        }
+    ));
+
+    assert(res.body.kind === 'single');
+    assert(res.body.singleResult.data);
+    expect(res.body.singleResult.errors).toBeUndefined();
+
+    const passedModules = res.body.singleResult.data.passedModules;
+    assert(Array.isArray(passedModules));
+    expect(passedModules.length).toBe(1);
+    expect(passedModules[0].name).toBe('Test Module');
+  });
+});

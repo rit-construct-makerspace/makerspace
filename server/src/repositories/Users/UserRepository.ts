@@ -19,7 +19,7 @@ export async function getUsers(): Promise<UserRow[]> {
 
 export async function getUserByID(userID: string): Promise<UserRow> {
   const user = await knex("Users").first().where("id", userID);
-
+  
   if (!user) throw new EntityNotFound(`User #${userID} not found`);
 
   return user;
@@ -81,14 +81,6 @@ export async function setPrivilege(
 ): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ privilege });
   return await getUserByID(userID);
-}
-
-export async function addTrainingModuleAttemptToUser(
-  makerID: string,
-  moduleID: string,
-  passed: boolean
-) {
-  return await knex("ModuleSubmissions").insert({ makerID, moduleID, passed }).returning('id');
 }
 
 export async function archiveUser(userID: string): Promise<UserRow> {

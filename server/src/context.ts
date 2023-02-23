@@ -46,7 +46,7 @@ export const ifAllowedOrSelf =
   (expressUser: Express.User | undefined) =>
   (targetedUserID: string, allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
     if (!expressUser) {
-      throw new AuthenticationError("Unauthenticated - ifallowedorself");
+      throw new GraphQLError("Unauthenticated - ifallowedorself");
     }
 
     const user = expressUser as CurrentUser;

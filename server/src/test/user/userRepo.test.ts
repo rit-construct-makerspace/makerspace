@@ -1,5 +1,5 @@
-import { knex } from "../db";
-import * as UserRepo from "../repositories/Users/UserRepository";
+import { knex } from "../../db";
+import * as UserRepo from "../../repositories/Users/UserRepository";
 
 const tables = ["Users"];
 

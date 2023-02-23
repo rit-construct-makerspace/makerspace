@@ -2,6 +2,7 @@ import { knex } from "../db";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
+import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import * as UserRepo from "../repositories/Users/UserRepository";
 import * as Holdsrepo from "../repositories/Holds/HoldsRepository";
 import { hashUniversityID } from "../repositories/Users/UserRepository";
@@ -333,7 +334,7 @@ describe("EquipmentRepository tests", () => {
     await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
 
     // Add passed attempt to user
-    await UserRepo.addTrainingModuleAttemptToUser(userID, moduleID, true);
+    await SubmissionRepo.addSubmission(userID, moduleID, true);
 
     expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(true);
   });

@@ -14,7 +14,7 @@ const RoomResolvers = {
       _:any,
       args: {null:any},
       {ifAllowed}: ApolloContext) =>
-      ifAllowed([Privilege.ADMIN], async (user) => {
+      ifAllowed([Privilege.STAFF], async (user) => {
         return await RoomRepo.getRooms();
     }),
 

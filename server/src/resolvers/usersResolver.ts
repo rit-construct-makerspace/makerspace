@@ -2,41 +2,43 @@ import * as UserRepo from "../repositories/Users/UserRepository";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { ApolloContext, ifAllowed } from "../context";
+import { ApolloContext, ifAllowed, ifAllowedOrSelf } from "../context";
 import { getUsersFullName } from "../repositories/Users/UserRepository";
 
 const UsersResolvers = {
   User: {
-    passedModules: (parent: { id: string }) => {
-      return ModuleRepo.getPassedModulesByUser(parent.id);
-    },
+    passedModules: async (
+      parent: { id: string },
+      _args: any,
+      {ifAllowedOrSelf}: ApolloContext) => 
+      ifAllowedOrSelf(parent.id, [Privilege.MENTOR, Privilege.STAFF], async () => {
+        return ModuleRepo.getPassedModulesByUser(parent.id);
+      }),
   },
 
   Query: {
     users: async (
       _parent: any,
       _args: any,
-      {ifAllowed}: ApolloContext) => {
+      {ifAllowed}: ApolloContext) =>
         ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
           return await UserRepo.getUsers();
-        });
-    },
+        }),
 
     user: async (
       _parent: any,
       args: { id: string },
-      {ifAllowedOrSelf} : ApolloContext) => {
+      {ifAllowedOrSelf} : ApolloContext) =>
         ifAllowedOrSelf(args.id, [Privilege.MENTOR, Privilege.STAFF], async () => {
           return await UserRepo.getUserByID(args.id);
-        });
-    },
+      }),
 
     currentUser: async (
       _parent: any,
       _args: any,
       context: ApolloContext) => {
         return context.user;
-    },
+      },
   },
 
   Mutation: {
@@ -46,7 +48,7 @@ const UsersResolvers = {
       { ifAllowed }: ApolloContext) =>
         ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
           return await UserRepo.createUser(args);
-    }),
+      }),
 
     updateStudentProfile: async (
       _: any,
@@ -57,10 +59,8 @@ const UsersResolvers = {
         expectedGraduation: string;
         universityID: string;
       },
-      context: ApolloContext) =>
-      {
-        console.log(context.user);
-        return context.ifAllowedOrSelf(args.userID, [Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { ifAllowedOrSelf }: ApolloContext) =>
+      ifAllowedOrSelf(args.userID, [Privilege.MENTOR, Privilege.STAFF], async (user) => {
           return await UserRepo.updateStudentProfile({
             userID: args.userID,
             pronouns: args.pronouns,
@@ -68,15 +68,14 @@ const UsersResolvers = {
             expectedGraduation: args.expectedGraduation,
             universityID: args.universityID
           });
-        });
-      },
+      }),
 
     setPrivilege: async (
       _parent: any,
       { userID, privilege }: { userID: string; privilege: Privilege },
       { ifAllowed }: ApolloContext
-    ) => {
-        let result = ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
+    ) =>
+        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
           const userSubject = await UserRepo.setPrivilege(userID, privilege);
 
           await createLog(
@@ -84,16 +83,14 @@ const UsersResolvers = {
             { id: executingUser.id, label: getUsersFullName(executingUser) },
             { id: userSubject.id, label: getUsersFullName(userSubject) }
           );
-        });
-    },
+        }),
 
     deleteUser: async (
       _parent: any,
       args: { userID: string },
       {ifAllowed}: ApolloContext
-    ) => {
-
-      return ifAllowed(
+    ) =>
+      ifAllowed(
         [Privilege.STAFF],
         async (user) => {
 
@@ -107,9 +104,8 @@ const UsersResolvers = {
 
           return await UserRepo.archiveUser(args.userID);
         }
-      );
-    },
-  },
+      ),
+  }
 };
 
 export default UsersResolvers;
