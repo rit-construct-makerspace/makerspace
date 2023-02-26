@@ -19,6 +19,7 @@ import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
 import Homepage from "./pages/both/homepage/Homepage";
+import LoggedOutPage from "./pages/both/equipment/LoggedOutPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -26,35 +27,31 @@ import Homepage from "./pages/both/homepage/Homepage";
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/signup" element={<SignupPage />} />
-
-      <Route
-        path="/admin/storefront/preview"
-        element={<StorefrontPreviewPage />}
-      />
-
-      <Route path={"/"} element={<LeftNav />}>
-        <Route path="/create-reservation" element={<CreateReservationPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
         <Route
-          path="/maker/equipment"
-          element={<EquipmentPage isAdmin={false} />}
+          path="/admin/storefront/preview"
+          element={<StorefrontPreviewPage />}
         />
 
-        <Route
-          path="/maker/equipment/:id"
-          element={<EquipmentPage isAdmin={false} />}
-        />
+        <Route path="/loggedOut" element={<LoggedOutPage />}/>
 
-        <Route path="/maker/training" element={<TrainingPage />} />
+        <Route path={"/"} element={<LeftNav />}>
+          <Route path="/create-reservation" element={<CreateReservationPage />} />
 
-        <Route path="/maker/training/:id" element={<QuizPage />} />
+          <Route
+            path="/maker/equipment"
+            element={<EquipmentPage isAdmin={false} />}
+          />
 
-        <Route path="maker/training/:id/results" element={<QuizResults />} />
+          <Route
+            path="/maker/equipment/:id"
+            element={<EquipmentPage isAdmin={false} />}
+          />
 
-        <Route path="/maker/materials" element={<InventoryPreviewPage />} />
+          <Route path="/maker/training" element={<TrainingPage />} />
 
-        <Route path="/admin/equipment/:id" element={<ManageEquipmentPage />} />
+          <Route path="/maker/training/:id" element={<QuizPage />} />
 
         <Route path="/" element={<Homepage />} />
 
@@ -62,27 +59,32 @@ export default function AppRoutes() {
           path="/admin/equipment"
           element={<EquipmentPage isAdmin={true} />}
         />
+          <Route path="maker/training/:id/results" element={<QuizResults />} />
 
-        <Route path="/admin/training/:id" element={<EditModulePage />} />
+          <Route path="/maker/materials" element={<InventoryPreviewPage />} />
 
-        <Route path="/admin/training" element={<TrainingModulesPage />} />
+          <Route path="/admin/equipment/:id" element={<ManageEquipmentPage />} />
 
-        <Route path="/admin/inventory" element={<InventoryPage />} />
+          <Route path="/admin/training/:id" element={<EditModulePage />} />
 
-        <Route path="/admin/reservations" element={<ReservationsPage />} />
+          <Route path="/admin/training" element={<TrainingModulesPage />} />
 
-        <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
+          <Route path="/admin/inventory" element={<InventoryPage />} />
 
-        <Route path="/admin/rooms" element={<SelectRoomPage />} />
+          <Route path="/admin/reservations" element={<ReservationsPage />} />
 
-        <Route path="/admin/storefront" element={<StorefrontPage />} />
+          <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
 
-        <Route path="/admin/people/:id" element={<UsersPage />} />
+          <Route path="/admin/rooms" element={<SelectRoomPage />} />
 
-        <Route path="/admin/people" element={<UsersPage />} />
+          <Route path="/admin/storefront" element={<StorefrontPage />} />
 
-        <Route path="/admin/history" element={<AuditLogsPage />} />
-      </Route>
+          <Route path="/admin/people/:id" element={<UsersPage />} />
+
+          <Route path="/admin/people" element={<UsersPage />} />
+
+          <Route path="/admin/history" element={<AuditLogsPage />} />
+        </Route>
     </Routes>
   );
 }

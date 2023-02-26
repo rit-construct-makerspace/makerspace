@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { ApolloError } from "@apollo/client";
 import { Alert, CircularProgress, Stack } from "@mui/material";
 

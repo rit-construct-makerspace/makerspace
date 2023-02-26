@@ -28,7 +28,7 @@
     "react-embed": "^3.6.0",
     "react-google-calendar-api": "^2.1.0",
     "react-iframe": "^1.8.5",
-    "react-router-dom": "^6.2.2",
+    "react-router-dom": "^6.8.0",
     "react-scripts": "5.0.0",
     "react-string-replace": "^1.0.0",
     "react-toastify": "^9.0.8",

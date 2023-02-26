@@ -12,8 +12,7 @@ import {
   Accordion,
   AccordionSummary,
   Typography,
-  AccordionDetails,
-  IconButton
+  AccordionDetails
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Page from "../../Page";
@@ -27,9 +26,7 @@ import { GET_MODULE, GET_TRAINING_MODULES, UPDATE_MODULE, DELETE_MODULE } from "
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import ReservationPromptDraft from "./reservation_prompt/ReservationPromptDraft";
-import { Drafts } from "@mui/icons-material";
 
 export default function EditModulePage() {
   const { id } = useParams<{ id: string }>();
@@ -160,7 +157,7 @@ export default function EditModulePage() {
                             checked={ requiresReservation }
                             aria-label="Requires reservation switch"
                             onChange={(e) => {
-                              if (e.target.checked == true) {
+                              if (e.target.checked === true) {
                                 setRequiresReservation(true);
                                 setModuleDraft((draft) => {
                                   draft!.reservationPrompt.enabled = true;

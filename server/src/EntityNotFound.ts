@@ -1,7 +1,9 @@
-import { ApolloError } from "apollo-server-errors";
+import { GraphQLError } from "graphql";
 
-export class EntityNotFound extends ApolloError {
+export class EntityNotFound extends GraphQLError  {
   constructor(message: string) {
-    super(message, "ENTITY_NOT_FOUND");
+    super(message, {
+      extensions: { code: "ENTITY_NOT_FOUND" },
+    });
   }
 }

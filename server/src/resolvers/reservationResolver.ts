@@ -3,19 +3,19 @@ import { ReservationRepository } from "../repositories/Equipment/ReservationRepo
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 
 const reservationRepo = new ReservationRepository();
 
 const ReservationResolvers = {
 
   Query: {
-    reservations: async (_: any, args: { id: number }, context: any) => {
+    reservations: async (_: any, args: any, context: any) => {
       return await reservationRepo.getReservations();
     },
 
-    reservation: async (_: any, args: { id: number }, context: any) => {
-      return await reservationRepo.getReservationById(args.id);
+    reservation: async (_: any, args: { id: string }, context: any) => {
+      return await reservationRepo.getReservationById(Number(args.id));
     }
   },
 
@@ -47,27 +47,27 @@ const ReservationResolvers = {
       })
     },
 
-    addComment: async (_parent: any, args: { resID: number, commentText: string },
+    addComment: async (_parent: any, args: { resID: string, commentText: string },
     { ifAllowed }: ApolloContext) => 
         ifAllowed([Privilege.MAKER], async (user) => {
-          return await reservationRepo.addComment(args.resID, user.id, args.commentText);
+          return await reservationRepo.addComment(Number(args.resID), user.id, args.commentText);
     }),
 
     confirmReservation: async (_parent: any,
-      args: { resID: number },
+      args: { resID: string },
       { ifAllowed }: ApolloContext
     ) => {
       ifAllowed([Privilege.MENTOR], async (user) => {
-        return await reservationRepo.confirmReservation(args.resID);
+        return await reservationRepo.confirmReservation(Number(args.resID));
     });
     },
 
     cancelReservation: async (_parent: any,
-      args: { resID: number },
+      args: { resID: string },
       { ifAllowed }: ApolloContext
     ) => {
       ifAllowed([Privilege.MENTOR], async (user) => {
-        return await reservationRepo.cancelReservation(args.resID);
+        return await reservationRepo.cancelReservation(Number(args.resID));
     });
     }
   }
