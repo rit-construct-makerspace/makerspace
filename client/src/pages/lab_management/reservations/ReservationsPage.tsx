@@ -6,7 +6,7 @@ import Reservations from "../../../test_data/Reservations";
 
 export default function ReservationsPage() {
   return (
-    <Page title="Reservations">
+    <Page title="Reservations" maxWidth="1250px">
       <PageSectionHeader top>Your Pending Reservations</PageSectionHeader>
 
       {Reservations.pending.map((r) => (

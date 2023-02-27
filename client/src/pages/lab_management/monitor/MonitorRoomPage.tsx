@@ -85,7 +85,7 @@ export default function MonitorRoomPage() {
     <RequestWrapper2
       result={queryResult}
       render={({ room }) => (
-        <Page title={room.name} maxWidth="1200px">
+        <Page title={room.name} maxWidth="1250px">
           <Collapse in={cardError}>
             <Alert
               severity="error"
