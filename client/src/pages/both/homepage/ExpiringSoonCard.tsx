@@ -38,16 +38,18 @@ export default function ExpiringSoonCard() {
                     (ms: ModuleStatus) => ms.moduleName
                 );
 
-                const expired = matching.filter(
-                    (ms: ModuleStatus) => ms.status === "Expired"
+                const expiringSoon = matching.filter(
+                    (ms: ModuleStatus) => ms.status === "Expiring Soon"
                 );
 
-                const reordered = [...expired];
+                const reordered = [...expiringSoon];
 
                 return (
                     <Card sx={{ width: 350, padding: 2, spacing: 5, border: 1, borderColor: "lightgrey" }} >
                         <Typography variant="h4">Expiring Soon</Typography>
-                        <Typography variant="body1">You're all caught up!</Typography>
+                        {reordered.length === 0 && (
+                             <Typography variant="body1">You're all caught up!</Typography>
+                        )}
                         {reordered.map((ms: ModuleStatus) => (
                             <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
                         ))}

@@ -3,6 +3,7 @@ import { CardActionArea, Stack, Typography } from "@mui/material";
 import WarningIcon from "@mui/icons-material/Warning";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import { format, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { ModuleStatus } from "./TrainingModuleUtils";
@@ -27,6 +28,7 @@ export default function TrainingModuleRow({
         )}
         {moduleStatus.status === "Expired" && <WarningIcon color="warning" />}
         {moduleStatus.status === "Not taken" && <CloseIcon color="error" />}
+        {moduleStatus.status === "Expiring Soon" && <HourglassBottomIcon color="warning" />}
 
         <Typography
           variant="body2"
@@ -36,8 +38,23 @@ export default function TrainingModuleRow({
         </Typography>
 
         <Typography>{moduleStatus.moduleName}</Typography>
+        
+        {moduleStatus.status === "Expiring Soon"  && (
+          <Stack sx={{ ml: "auto !important" }} >
+            <Typography variant="body2"
+            color="text.secondary"
+            sx={{ ml: "auto !important" }}>Exp Date:</Typography>
+            <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ ml: "auto !important" }}
+            >
+              {format(parseISO(moduleStatus.expirationDate), "MM/dd/yyyy")}
+            </Typography>
+          </Stack>
+        )}
 
-        {moduleStatus.submissionDate && (
+        {moduleStatus.status === "Passed" && (
           <Typography
             variant="body2"
             color="text.secondary"
