@@ -25,8 +25,8 @@ const Homepage: React.FC = () => {
                 <Stack direction={"row"} justifyContent={"space-between"} marginTop={2}>
                     <Stack direction={"column"} spacing={5}>
                         <AccountBalanceCard />
-                            <IncompleteTrainingsCard />
                             <ExpiringSoonCard />
+                            <IncompleteTrainingsCard />
                     </Stack>
 
                         <Stack direction={"column"} spacing={5}>
