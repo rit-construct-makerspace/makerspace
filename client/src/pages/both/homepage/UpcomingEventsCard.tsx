@@ -18,7 +18,7 @@ export default function UpcomingEventsCard() {
 
                     <Stack direction="column" alignItems="flex-start" spacing={0} justifyContent="space-evenly">
                         <Typography variant="h4">Upcoming Events</Typography>
-                        <Button sx={{ color:"darkorange" }} href={"https://calendar.google.com/calendar/embed?src=jgf55spntac7p96ea6ql1uc710%40group.calendar.google.com&ctz=America%2FNew_York"} target="_blank">View Full Calendar</Button>
+                        <Button style={{paddingLeft:'0px'}} sx={{ color:"darkorange" }} href={"https://calendar.google.com/calendar/embed?src=jgf55spntac7p96ea6ql1uc710%40group.calendar.google.com&ctz=America%2FNew_York"} target="_blank">View Full Calendar</Button>
                     </Stack>
 
                     <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={5}>
