@@ -4,7 +4,7 @@ import { AuditLog } from "../../schemas/auditLogsSchema";
 
 export async function createLog(
   message: string,
-  ...entities: { id: number; label: string }[]
+  ...entities: { id: any; label: string }[]
 ) {
   let formattedMessage = message;
 

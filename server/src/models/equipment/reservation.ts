@@ -1,5 +1,3 @@
-import { ReservationEvent } from "./reservationEvent";
-
 enum ReservationStatus {
     "PENDING",
     "CONFIRMED",

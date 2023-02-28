@@ -2,7 +2,7 @@ import * as RoomRepo from "../repositories/Rooms/RoomRepository";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import * as UserRepo from "../repositories/Users/UserRepository";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 import assert from "assert";
 import { Room } from "../models/rooms/room";
 import { ApolloContext } from "../context";
@@ -10,12 +10,16 @@ import { Privilege } from "../schemas/usersSchema";
 
 const RoomResolvers = {
   Query: {
-    rooms: async () => {
-      return await RoomRepo.getRooms();
-    },
+    rooms: async (
+      _:any,
+      args: {null:any},
+      {ifAllowed}: ApolloContext) =>
+      ifAllowed([Privilege.STAFF], async (user) => {
+        return await RoomRepo.getRooms();
+    }),
 
-    room: async (parent: any, args: { id: number }) => {
-      return await RoomRepo.getRoomByID(args.id);
+    room: async (parent: any, args: { id: string }) => {
+      return await RoomRepo.getRoomByID(Number(args.id));
     },
   },
 
@@ -58,16 +62,16 @@ const RoomResolvers = {
 
     swipeIntoRoom: async (
       _parent: any,
-      args: { roomID: number; universityID: string }
+      args: { roomID: string; universityID: string }
     ) => {
-      const room = await RoomRepo.getRoomByID(args.roomID);
+      const room = await RoomRepo.getRoomByID(Number(args.roomID));
       assert(room);
 
       const user = await UserRepo.getUserByUniversityID(args.universityID);
 
       if (!user) return null;
 
-      await RoomRepo.swipeIntoRoom(args.roomID, user.id);
+      await RoomRepo.swipeIntoRoom(Number(args.roomID), user.id);
 
       await createLog(
         "{user} swiped into the {room}.",

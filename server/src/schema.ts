@@ -1,3 +1,8 @@
+import {
+  DateTimeResolver,
+  DateTimeTypeDefinition,
+  JSONResolver,
+} from "graphql-scalars";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { mergeResolvers } from "@graphql-tools/merge";
 import { TrainingModuleTypeDefs } from "./schemas/trainingModuleSchema";
@@ -8,12 +13,8 @@ import { UsersTypeDefs } from "./schemas/usersSchema";
 import { HoldsTypeDefs } from "./schemas/holdsSchema";
 import { EquipmentTypeDefs } from "./schemas/equipmentSchema";
 import { RoomTypeDefs } from "./schemas/roomsSchema";
-import {
-  DateTimeResolver,
-  DateTimeTypeDefinition,
-  JSONResolver,
-} from "graphql-scalars";
 import { AuditLogsTypeDefs } from "./schemas/auditLogsSchema";
+import { CalendarEventsTypeDefs } from "./schemas/calendarEventsSchema";
 import trainingModuleResolvers from "./resolvers/trainingModuleResolver";
 import trainingSubmissionsResolvers from "./resolvers/trainingSubmissionResolver";
 import storefrontResolvers from "./resolvers/storeFrontResolver";
@@ -22,6 +23,7 @@ import EquipmentResolvers from "./resolvers/equipmentResolver";
 import usersResolver from "./resolvers/usersResolver";
 import auditLogsResolver from "./resolvers/auditLogsResolver";
 import holdsResolver from "./resolvers/holdsResolver";
+import calendarEventsResolver from "./resolvers/calendarEventsResolver";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -41,6 +43,7 @@ export const schema = makeExecutableSchema({
     DateTimeTypeDefinition,
     RoomTypeDefs,
     AuditLogsTypeDefs,
+    CalendarEventsTypeDefs
   ],
   resolvers: mergeResolvers([
     resolveFunctions,
@@ -52,5 +55,6 @@ export const schema = makeExecutableSchema({
     usersResolver,
     holdsResolver,
     auditLogsResolver,
+    calendarEventsResolver
   ]),
 });

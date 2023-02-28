@@ -21,11 +21,12 @@ export default function InventoryPreviewPage() {
           sx={{ alignSelf: "flex-start" }}
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          onClear={() => setSearchText("")}
         />
 
         <Stack divider={<Divider flexItem />} mt={2}>
           {data?.InventoryItems?.filter((item: InventoryItem) =>
-            item.name.includes(searchText)
+            item.name.toLowerCase().includes(searchText.toLowerCase())
           ).map((item: InventoryItem) => (
             <PreviewInventoryRow item={item} key={item.id} />
           ))}

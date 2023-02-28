@@ -1,15 +1,32 @@
+# IDE
 .idea
+.vscode
+
+# node
 **/node_modules
 process.env
+
+# env
 .env
-.vscode
+.env.*
+
+# secret
 .pem
+/server/cert
+
+# google api
+**/credentials.json
+
+# coverage
 /client/coverage
 /server/coverage
+
+# docs
 /docs/.jekyll-cache
 /docs/_site
 
 # Transpiled Server Files
 /server/dist
 
-/server/cert
+# React build
+/client/build

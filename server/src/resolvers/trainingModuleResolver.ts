@@ -3,7 +3,7 @@ import { AnswerInput } from "../schemas/trainingModuleSchema";
 import { ApolloContext } from "../context";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
 import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
@@ -18,6 +18,19 @@ const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
     }
   }
 };
+
+function submittedOptionIDsCorrect(
+  correct: string[],
+  submitted: string[] | undefined
+) {
+  if (!submitted || correct.length !== submitted.length) return false;
+
+  for (let i = 0; i < correct.length; i++) {
+    if (correct[i] !== submitted[i]) return false;
+  }
+
+  return true;
+}
 
 const TrainingModuleResolvers = {
   Query: {
@@ -80,12 +93,12 @@ const TrainingModuleResolvers = {
 
     updateModule: async (
       _parent: any,
-      args: { id: number; name: string; quiz: object; reservationPrompt: object },
+      args: { id: string; name: string; quiz: object; reservationPrompt: object },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const module = await ModuleRepo.updateModule(
-          args.id,
+          Number(args.id),
           args.name,
           args.quiz,
           args.reservationPrompt
@@ -100,11 +113,11 @@ const TrainingModuleResolvers = {
 
     deleteModule: async (
       _parent: any,
-      args: { id: number },
+      args: { id: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const module = await ModuleRepo.archiveModule(args.id);
+        const module = await ModuleRepo.archiveModule(Number(args.id));
 
         await createLog(
           "{user} deleted the {module} module.",
@@ -115,62 +128,48 @@ const TrainingModuleResolvers = {
 
     submitModule: async (
       _parent: any,
-      args: { moduleID: number; answerSheet: AnswerInput[] },
+      args: { moduleID: string; answerSheet: AnswerInput[] },
       { ifAllowed }: ApolloContext
     ) => {
       return ifAllowed(
         [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
-          const { quiz, name } = await ModuleRepo.getModuleByID(args.moduleID);
+          const { quiz, name } = await ModuleRepo.getModuleByID(Number(args.moduleID));
 
           if (quiz.length === 0)
             throw Error("Provided module has no questions");
 
-          let correct = 0,
-            incorrect = 0;
+          let correct = 0;
+          let incorrect = 0;
 
-          for (let question of quiz) {
-            if (
-              question.type !== "CHECKBOXES" &&
-              question.type !== "MULTIPLE_CHOICE"
-            )
-              continue;
+          const questions = quiz.filter((i) =>
+            ["CHECKBOXES", "MULTIPLE_CHOICE"].includes(i.type)
+          );
 
+          for (let question of questions) {
             if (!question.options)
               throw Error(
                 `Module Item ${question.id} of type ${question.type} has no options`
               );
 
-            const correctOptions = question.options.filter(
-              (option) => option.correct
-            );
+            const correctOptionIDs = question.options
+              .filter((o) => o.correct)
+              .map((o) => o.id);
 
-            const correctOptionIds = correctOptions.map((option) => option.id);
-
-            const submittedItem = args.answerSheet.find(
+            const submittedOptionIDs = args.answerSheet.find(
               (item) => item.itemID === question.id
-            );
+            )?.optionIDs;
 
-            if (!submittedItem?.optionIDs) {
-              incorrect++;
-              continue;
-            }
-
-            const submittedOptionsSet = new Set(submittedItem.optionIDs);
-            const correctOptionsSet = new Set(correctOptionIds);
-
-            const areSetsEqual = (a: any, b: any) =>
-              a.size === b.size && [...a].every((value) => b.has(value));
-
-            if (areSetsEqual(submittedOptionsSet, correctOptionsSet)) correct++;
-            else incorrect++;
+            submittedOptionIDsCorrect(correctOptionIDs, submittedOptionIDs)
+              ? correct++
+              : incorrect++;
           }
 
           const grade = (correct / (incorrect + correct)) * 100;
 
           SubmissionRepo.addSubmission(
             user.id,
-            args.moduleID,
+            Number(args.moduleID),
             grade >= MODULE_PASSING_THRESHOLD
           ).then(async (id) => {
             await createLog(
