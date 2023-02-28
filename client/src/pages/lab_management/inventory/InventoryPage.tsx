@@ -31,7 +31,7 @@ export default function InventoryPage() {
 
   return (
     <RequestWrapper loading={loading} error={error}>
-      <Page title="Inventory" maxWidth="1000px">
+      <Page title="Inventory" maxWidth="1250px">
         <PageSectionHeader top>Running Low</PageSectionHeader>
 
         <Stack divider={<Divider flexItem />}>

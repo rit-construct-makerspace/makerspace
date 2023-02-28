@@ -5,11 +5,11 @@ import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
 import AccountBalanceCard from "./AccountBalanceCard";
 import OperationHoursCard from "./OperationHoursCard";
-//import UpcomingEventsCard from "./UpcomingEventsCard";
+import UpcomingEventsCard from "./UpcomingEventsCard";
 import IncompleteTrainingsCard from "./IncompleteTrainingsCard";
 import ExpiringSoonCard from "./ExpiringSoonCard";
 import AnnouncementsCard from "./AnnouncementsCard";
-import UpcomingEventsCard from "./GoogleCalendarAPI";
+//import UpcomingEventsCard from "./GoogleCalendarAPI";
 
 
 const API_KEY = "AIzaSyB_pJ1Aiw6PxzXbwoengIwtHbr-CALyfUc";
@@ -25,8 +25,8 @@ const Homepage: React.FC = () => {
                 <Stack direction={"row"} justifyContent={"space-between"} marginTop={2}>
                     <Stack direction={"column"} spacing={5}>
                         <AccountBalanceCard />
-                            <IncompleteTrainingsCard />
                             <ExpiringSoonCard />
+                            <IncompleteTrainingsCard />
                     </Stack>
 
                         <Stack direction={"column"} spacing={5}>

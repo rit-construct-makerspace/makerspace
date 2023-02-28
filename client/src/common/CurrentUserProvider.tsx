@@ -23,6 +23,7 @@ export const GET_CURRENT_USER = gql`
       passedModules {
         moduleID
         submissionDate
+        expirationDate
       }
     }
   }
@@ -31,6 +32,7 @@ export const GET_CURRENT_USER = gql`
 export interface PassedModule {
   moduleID: string;
   submissionDate: string;
+  expirationDate: string;
 }
 
 export interface CurrentUser {

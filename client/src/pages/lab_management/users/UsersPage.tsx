@@ -23,7 +23,7 @@ export default function UsersPage() {
       loading={getUsersResult.loading}
       error={getUsersResult.error}
     >
-      <Page title="People">
+      <Page title="People" maxWidth="1250px">
         <SearchBar placeholder="Search people" sx={{ mb: 2, maxWidth: 300 }} />
         <Stack direction="row" flexWrap="wrap">
           {getUsersResult.data?.users.map((user: PartialUser) => (

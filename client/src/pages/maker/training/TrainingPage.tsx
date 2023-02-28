@@ -50,7 +50,7 @@ export default function TrainingPage() {
         const reordered = [...expired, ...passed, ...notTaken];
 
         return (
-          <Page title="Training" maxWidth="736px">
+          <Page title="Training" maxWidth="1250px">
             <Explainer />
 
             <SearchBar

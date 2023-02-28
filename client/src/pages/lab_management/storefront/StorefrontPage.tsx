@@ -109,7 +109,7 @@ export default function StorefrontPage() {
     <RequestWrapper loading={loading} error={error}>
       <Page
         title="Storefront"
-        maxWidth="800px"
+        maxWidth="1250px"
         topRightAddons={
           <Button
             variant="outlined"

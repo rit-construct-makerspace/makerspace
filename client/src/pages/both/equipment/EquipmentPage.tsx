@@ -26,7 +26,7 @@ export default function EquipmentPage({ isAdmin }: MakerEquipmentPageProps) {
       loading={getEquipmentsResult.loading}
       error={getEquipmentsResult.error}
     >
-      <Page title="Equipment">
+      <Page title="Equipment" maxWidth="1250px">
         <Stack direction="row" spacing={2}>
           <SearchBar placeholder="Search equipment" />
           {isAdmin && (

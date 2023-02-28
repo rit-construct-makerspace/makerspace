@@ -15,7 +15,7 @@ export default function InventoryPreviewPage() {
 
   return (
     <RequestWrapper loading={loading} error={error}>
-      <Page title="Inventory" maxWidth="800px">
+      <Page title="Inventory" maxWidth="1250px">
         <SearchBar
           placeholder="Search inventory"
           sx={{ alignSelf: "flex-start" }}

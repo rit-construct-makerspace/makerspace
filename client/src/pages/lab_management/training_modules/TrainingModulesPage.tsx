@@ -43,7 +43,7 @@ export default function TrainingModulesPage() {
       loading={getModuleResults.loading}
       error={getModuleResults.error}
     >
-      <Page title="Training modules" maxWidth="800px">
+      <Page title="Training modules" maxWidth="1250px">
         <Stack direction="row" alignItems="center" spacing={1}>
           <SearchBar
             placeholder="Search training modules"
