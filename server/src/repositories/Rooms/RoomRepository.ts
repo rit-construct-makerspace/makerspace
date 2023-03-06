@@ -6,6 +6,7 @@ import {
 } from "../../mappers/rooms/roomMapper";
 import assert from "assert";
 import { RoomSwipeRow } from "../../db/tables";
+import { EntityNotFound } from "../../EntityNotFound";
 
 export async function getRoomByID(roomID: number): Promise<Room | null> {
   const knexResult = await knex
@@ -36,8 +37,11 @@ export async function addRoom(room: Room): Promise<Room> {
 }
 
 export async function archiveRoom(roomID: number): Promise<Room | null> {
-  await knex("Rooms").where({ id: roomID }).update({ archived: true });
-  return getRoomByID(roomID);
+  const updatedRooms: Room[] = await knex("Rooms").where({ id: roomID }).update({ archived: true }).returning("*");
+
+  if (updatedRooms.length < 1) throw new EntityNotFound(`Could not find room #${roomID}`);
+
+  return updatedRooms[0];
 }
 
 export async function updateRoomName(

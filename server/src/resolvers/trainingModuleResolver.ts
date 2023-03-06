@@ -111,7 +111,7 @@ const TrainingModuleResolvers = {
         );
       }),
 
-    deleteModule: async (
+    archiveModule: async (
       _parent: any,
       args: { id: string },
       { ifAllowed }: ApolloContext
@@ -120,7 +120,7 @@ const TrainingModuleResolvers = {
         const module = await ModuleRepo.archiveModule(Number(args.id));
 
         await createLog(
-          "{user} deleted the {module} module.",
+          "{user} archived the {module} module.",
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );

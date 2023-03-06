@@ -25,7 +25,7 @@ const RoomResolvers = {
 
   Room: {
     equipment: async (parent: Room) => {
-      return await EquipmentRepo.getEquipmentWithRoomID(parent.id);
+      return await EquipmentRepo.getEquipmentWithRoomID(parent.id, false);
     },
 
     recentSwipes: async (parent: Room) => {

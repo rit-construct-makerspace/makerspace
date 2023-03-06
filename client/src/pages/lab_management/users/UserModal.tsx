@@ -76,9 +76,9 @@ export const CREATE_HOLD = gql`
   }
 `;
 
-export const DELETE_USER = gql`
-  mutation DeleteUser($userID: ID!) {
-    deleteUser(userID: $userID) {
+export const ARCHIVE_USER = gql`
+  mutation ArchiveUser($userID: ID!) {
+    archiveUser(userID: $userID) {
       id
     }
   }
@@ -94,7 +94,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const currentUser = useCurrentUser();
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
   const [createHold] = useMutation(CREATE_HOLD);
-  const [deleteUser] = useMutation(DELETE_USER);
+  const [deleteUser] = useMutation(ARCHIVE_USER);
 
   useEffect(() => {
     if (selectedUserID) getUser({ variables: { id: selectedUserID } });

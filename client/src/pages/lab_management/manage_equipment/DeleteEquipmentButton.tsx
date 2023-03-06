@@ -5,9 +5,9 @@ import GET_EQUIPMENTS from "../../../queries/getEquipments";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate, useParams } from "react-router-dom";
 
-const DELETE_EQUIPMENT = gql`
-  mutation DeleteEquipment($id: ID!) {
-    removeEquipment(id: $id) {
+const ARCHIVE_EQUIPMENT = gql`
+  mutation ArchiveEquipment($id: ID!) {
+    archiveEquipment(id: $id) {
       id
     }
   }
@@ -17,7 +17,7 @@ export default function DeleteEquipmentButton() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [deleteEquipment, { loading }] = useMutation(DELETE_EQUIPMENT, {
+  const [deleteEquipment, { loading }] = useMutation(ARCHIVE_EQUIPMENT, {
     variables: { id },
     refetchQueries: [{ query: GET_EQUIPMENTS }],
   });

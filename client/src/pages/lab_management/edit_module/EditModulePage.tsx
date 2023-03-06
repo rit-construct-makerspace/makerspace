@@ -22,7 +22,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { useImmer } from "use-immer";
 import { Module, ReservationPrompt } from "../../../types/Quiz";
-import { GET_MODULE, GET_TRAINING_MODULES, UPDATE_MODULE, DELETE_MODULE } from "../../../queries/modules";
+import { GET_MODULE, GET_TRAINING_MODULES, UPDATE_MODULE, ARCHIVE_MODULE } from "../../../queries/modules";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -47,7 +47,7 @@ export default function EditModulePage() {
 
   const [updateModule, updateResult] = useMutation(UPDATE_MODULE);
 
-  const [deleteModule] = useMutation(DELETE_MODULE, {
+  const [deleteModule] = useMutation(ARCHIVE_MODULE, {
     variables: { id },
     refetchQueries: [{ query: GET_TRAINING_MODULES }],
     onCompleted: () => navigate("/admin/training"),

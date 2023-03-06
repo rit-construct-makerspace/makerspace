@@ -17,8 +17,11 @@ export async function getModules(): Promise<TrainingModuleRow[]> {
 }
 
 export async function archiveModule(id: number): Promise<TrainingModuleRow> {
-  await knex("TrainingModule").where({ id: id }).update({ archived: true });
-  return getModuleByID(id);
+  const updatedModules: TrainingModuleRow[] = await knex("TrainingModule").where({ id: id }).update({ archived: true });
+  
+  if (updatedModules.length < 1) throw new EntityNotFound(`Training module #${id} not found`);
+
+  return updatedModules[0];
 }
 
 export async function addModule(name: string): Promise<TrainingModuleRow> {

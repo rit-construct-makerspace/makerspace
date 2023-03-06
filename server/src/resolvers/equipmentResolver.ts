@@ -13,7 +13,7 @@ const reservationRepo = new ReservationRepository();
 const EquipmentResolvers = {
   Query: {
     equipments: async (_: any, args: any, context: any) => {
-      return await EquipmentRepo.getEquipments();
+      return await EquipmentRepo.getEquipment();
     },
 
     equipment: async (_: any, args: { id: string }, context: any) => {
@@ -64,13 +64,12 @@ const EquipmentResolvers = {
     updateEquipment: async (
       _: any,
       args: { id: string; equipment: EquipmentInput },
-      context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await EquipmentRepo.updateEquipment(Number(args.id), args.equipment);
     }),
 
-    deleteEquipment: async (_: any, args: { id: number }, context: any,
+    archiveEquipment: async (_: any, args: { id: number },
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await EquipmentRepo.archiveEquipment(args.id);

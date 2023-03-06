@@ -28,9 +28,9 @@ export const UPDATE_MODULE = gql`
   }
 `;
 
-export const DELETE_MODULE = gql`
-  mutation DeleteModule($id: ID!) {
-    deleteModule(id: $id) {
+export const ARCHIVE_MODULE = gql`
+  mutation ArchiveModule($id: ID!) {
+    archiveModule(id: $id) {
       id
     }
   }

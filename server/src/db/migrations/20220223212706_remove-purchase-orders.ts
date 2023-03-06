@@ -26,6 +26,7 @@ export async function down(knex: Knex): Promise<void> {
         t.integer("item").references("InventoryItem.id");
         t.integer("purchaseOrder")
           .references("PurchaseOrder.id")
+          .onUpdate('CASCADE')
           .onDelete("CASCADE");
         t.integer("count");
       });
@@ -38,6 +39,7 @@ export async function down(knex: Knex): Promise<void> {
         t.increments("id").primary();
         t.integer("purchaseOrder")
           .references("PurchaseOrder.id")
+          .onUpdate('CASCADE')
           .onDelete("CASCADE");
         t.text("attachment");
       });

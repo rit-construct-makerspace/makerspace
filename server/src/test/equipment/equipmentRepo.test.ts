@@ -44,7 +44,7 @@ describe("EquipmentRepository tests", () => {
   });
 
   test("getEquipments with no rows", async () => {
-    let equipmentRows = await EquipmentRepo.getEquipments();
+    let equipmentRows = await EquipmentRepo.getEquipment();
     expect(equipmentRows.length).toBe(0);
   });
 
@@ -62,7 +62,7 @@ describe("EquipmentRepository tests", () => {
       moduleIDs: <number[]>[]
     });
 
-    let equipmentRows = await EquipmentRepo.getEquipments();
+    let equipmentRows = await EquipmentRepo.getEquipment();
     expect(equipmentRows.length).toBe(1);
   });
 

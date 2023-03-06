@@ -62,7 +62,7 @@ const StorefrontResolvers = {
         return InventoryRepo.addItemAmount(Number(args.itemID), args.count * -1);
     }),
 
-    deleteInventoryItem: async (
+    archiveInventoryItem: async (
       _: any,
       args: { itemID: string },
       context: any,
@@ -77,7 +77,7 @@ const StorefrontResolvers = {
         await LabelRepo.addLabel(args.label);
     }),
 
-    deleteLabel: async (_: any, args: { label: string }, context: any,
+    archiveLabel: async (_: any, args: { label: string }, context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         await LabelRepo.archiveLabel(args.label);

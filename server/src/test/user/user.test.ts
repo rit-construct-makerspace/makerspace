@@ -88,9 +88,9 @@ const CREATE_HOLD = `
   }
 `;
 
-const DELETE_USER = `
-  mutation DeleteUser($userID: ID!) {
-    deleteUser(userID: $userID) {
+const ARCHIVE_USER = `
+  mutation ArchiveUser($userID: ID!) {
+    archiveUser(userID: $userID) {
       id
     }
   }
@@ -484,7 +484,7 @@ describe("User tests", () => {
     expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
-  test("STAFF delete user", async () => {
+  test("STAFF archive user", async () => {
     // User Zero starts as staff (see setup)
 
     let server = new ApolloServer({
@@ -504,21 +504,21 @@ describe("User tests", () => {
     expect(user).toBeDefined();
     expect(user).not.toBeNull();
 
-    const deleteRes = (await server.executeOperation(
+    const archiveRes = (await server.executeOperation(
       {
-          query: DELETE_USER,
+          query: ARCHIVE_USER,
           variables: {
               userID: userID
           }
       },
       {
-          contextValue: userZeroContext // Staff member performs delete
+          contextValue: userZeroContext // Staff member performs archive
       }
     ));
 
-    assert(deleteRes.body.kind === 'single');
-    expect(deleteRes.body.singleResult.errors).toBeUndefined();
-    assert(deleteRes.body.singleResult.data);
+    assert(archiveRes.body.kind === 'single');
+    expect(archiveRes.body.singleResult.errors).toBeUndefined();
+    assert(archiveRes.body.singleResult.data);
 
     let updatedUser = await UserRepo.getUserByID(userID);
 
