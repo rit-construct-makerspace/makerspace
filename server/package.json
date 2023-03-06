@@ -5,7 +5,7 @@
   "scripts": {
     "fix": "ts-jest config:migrate jest.config.js",
     "start": "node 'dist/server.js'",
-    "build": "tsc --build --clean && tsc -p .",
+    "build": "rm -rf src/dist && tsc --build --clean && tsc -p .",
     "test": "npm run build && jest",
     "test:coverage": "npm run build && jest --coverage",
     "test:watch": "npm run build && jest --silent false --verbose --detectOpenHandles",
