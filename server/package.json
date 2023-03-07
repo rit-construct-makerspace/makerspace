@@ -5,7 +5,8 @@
   "scripts": {
     "fix": "ts-jest config:migrate jest.config.js",
     "start": "node 'dist/server.js'",
-    "build": "rm -rf src/dist && tsc --build --clean && tsc -p .",
+    "clean": "rm -rf dist && tsc --build --clean",
+    "build": "tsc --build --clean && tsc -p .",
     "test": "npm run build && jest",
     "test:coverage": "npm run build && jest --coverage",
     "test:watch": "npm run build && jest --silent false --verbose --detectOpenHandles",
@@ -18,7 +19,9 @@
     "knex:migrate:latest": "npm run build && knex --knexfile dist/db/knexFile.js migrate:latest",
     "knex:migrate:rollback": "knex --knexfile dist/db/knexFile.js migrate:rollback",
     "knex:migrate:unlock": "knex --knexfile dist/db/knexFile.js migrate:unlock",
-    "knex:seed:make": "knex --knexfile dist/db/knexFile.js seed:make"
+    "knex:seed:make": "knex --knexfile dist/db/knexFile.js seed:make",
+    "knex:seed:run-all": "npm run build && knex --knexfile dist/db/knexFile.js seed:run",
+    "knex:seed:help": "knex seed:make -h"
   },
   "keywords": [],
   "author": "",

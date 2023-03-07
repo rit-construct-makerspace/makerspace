@@ -56,14 +56,16 @@ describe("EquipmentRepository tests", () => {
     })).id;
 
     // Add equipment
-    await EquipmentRepo.addEquipment({
+    const equipmentData = await EquipmentRepo.addEquipment({
       name: "Test Equipment",
       roomID: roomID,
       moduleIDs: <number[]>[]
     });
 
+    // Expect one equipment
     let equipmentRows = await EquipmentRepo.getEquipment();
     expect(equipmentRows.length).toBe(1);
+    expect(equipmentRows[0]).toEqual(equipmentData);
   });
 
   test("getEquipmentByID", async () => {
@@ -128,13 +130,20 @@ describe("EquipmentRepository tests", () => {
     })).id;
 
     // Check added
-    expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
+    let targetEquipment = await EquipmentRepo.getEquipmentByID(equipmentID);
+    expect(targetEquipment).toBeDefined();
 
     // Update name
     await EquipmentRepo.archiveEquipment(equipmentID);
 
     // Check archived
     expect((await EquipmentRepo.getEquipmentByID(equipmentID)).archived).toBe(true);
+
+    // Not returned as active equipment
+    expect((await EquipmentRepo.getEquipment()).map((equipment) => equipment.id)).not.toContainEqual(targetEquipment.id);
+
+    // Returned as archived equipment
+    expect((await EquipmentRepo.getArchivedEquipment()).map((equipment) => equipment.id)).toContainEqual(targetEquipment.id);
   });
 
   test("addModulesToEquipment and get", async () => {
@@ -212,9 +221,6 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[]
     })).id;
-
-    // Check added
-    expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
 
     // Create user
     const userID = (await UserRepo.createUser({

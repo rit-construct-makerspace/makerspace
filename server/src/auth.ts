@@ -124,6 +124,7 @@ export function setupAuth(app: express.Application) {
     successRedirect: reactAppUrl
   });
 
+  // TODO add authentication logging
   app.get("/login", authenticate);
 
   app.post("/login/callback", authenticate);
