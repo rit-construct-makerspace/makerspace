@@ -8,9 +8,11 @@ import express from "express";
 import {
   createUser,
   getUserByRitUsername,
+  getUsersFullName,
 } from "./repositories/Users/UserRepository";
 import { getHoldsByUser } from "./repositories/Holds/HoldsRepository";
 import { CurrentUser } from "./context";
+import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
 
 interface RitSsoUser {
   firstName: string;
@@ -127,7 +129,15 @@ export function setupAuth(app: express.Application) {
   // TODO add authentication logging
   app.get("/login", authenticate);
 
-  app.post("/login/callback", authenticate);
+  app.post("/login/callback", authenticate, async (req, res) => {
+    console.log("Logged in")
+    if (req.user && 'id' in req.user && 'firstName' in req.user && 'lastName' in req.user) {
+      await createLog(
+        `{user} logged in.`,
+        { id: req.user.id, label: `${req.user.firstName} ${req.user.lastName}` }
+      );
+    }
+  });
 
   app.get("/login/fail", function (req, res) {
     res.status(401).send("Login failed");
