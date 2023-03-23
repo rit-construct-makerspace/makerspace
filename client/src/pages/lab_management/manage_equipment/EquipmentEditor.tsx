@@ -12,6 +12,7 @@ import GET_ROOMS from "../../../queries/getRooms";
 import { EquipmentInput, NameAndID } from "./ManageEquipmentPage";
 import AttachedModule from "./AttachedModule";
 import DeleteEquipmentButton from "./DeleteEquipmentButton";
+import { useNavigate } from "react-router-dom";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -34,6 +35,7 @@ export default function EquipmentEditor({
 }: EquipmentEditorProps) {
   const getRoomsResult = useQuery(GET_ROOMS);
   const getModulesResult = useQuery(GET_TRAINING_MODULES);
+  const navigate = useNavigate();
 
   const getModuleOptions = (): NameAndID[] => {
     if (!getModulesResult.data) return [];
@@ -147,6 +149,15 @@ export default function EquipmentEditor({
           getOptionLabel={(option) => option.name}
           onChange={handleModuleAdded}
         />
+
+        <Button
+          variant="contained"
+          size="large"
+          sx={{ mt: 4, alignSelf: "flex-end" }}
+          onClick={() => navigate("/admin/equipment")}
+        >
+          Cancel
+        </Button>
 
         <Button
           variant="contained"
