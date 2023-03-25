@@ -1,21 +1,34 @@
 import {
-    Card, CardContent, Stack,
+    Card, CardActionArea, Stack,
     Typography
 } from "@mui/material";
-import {useCurrentUser} from "../../../common/CurrentUserProvider";
 import React from "react";
+import { useQuery } from "@apollo/client";
+import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
+import RequestWrapper from "../../../common/RequestWrapper";
 
-export default function AccountBalanceCard() {
+export default function AnnouncementsCard() {
+    const getAnnouncementsResult = useQuery(GET_ANNOUNCEMENTS);
+
     return (
-        <Card sx={{ width: 350, height: 400, padding: 2, justifyContent: "space-between", border: 1, borderColor: "lightgrey" }} >
-            <Stack direction={"column"} spacing={1}>
-                <Typography variant="h4">Announcements</Typography>
-                <Stack>
-                    <Typography variant="h5" color={"darkorange"}>Big news, huge news</Typography>
-                    <Typography variant="body1">I'm announcing something important, but I can't say what
-                        it is. It's a secret. But I am announcing it. As an example.</Typography>
+        <RequestWrapper
+        loading={getAnnouncementsResult.loading}
+        error={getAnnouncementsResult.error}
+        >
+            <Card elevation={2} sx={{ width: 350, height: 400, padding: 2, justifyContent: "space-between", border: 1, borderColor: "lightgrey" }}>
+                <Stack direction={"column"} spacing={1}>
+                    <Typography variant="h4">Announcements</Typography>
+                    <Stack spacing={1}>
+                        {getAnnouncementsResult.data?.announcements.map((announcement: Announcement) => (
+                            <Stack>
+                                <Typography variant="h5" color={"darkorange"}>{announcement.title}</Typography>
+                                <Typography variant="body1">{announcement.description}</Typography>
+                            </Stack>
+                        ))}
+                    </Stack>
                 </Stack>
-            </Stack>
-        </Card>
+            </Card>
+        </RequestWrapper>
     );
 }
+

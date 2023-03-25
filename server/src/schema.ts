@@ -4,6 +4,7 @@ import {
   JSONResolver,
 } from "graphql-scalars";
 import { makeExecutableSchema } from "@graphql-tools/schema";
+import { AnnouncementsTypeDefs } from "./schemas/announcementsSchema"; 
 import { mergeResolvers } from "@graphql-tools/merge";
 import { TrainingModuleTypeDefs } from "./schemas/trainingModuleSchema";
 import { TrainingSubmissionTypeDefs } from "./schemas/trainingSubmissionSchema";
@@ -24,6 +25,7 @@ import usersResolver from "./resolvers/usersResolver";
 import auditLogsResolver from "./resolvers/auditLogsResolver";
 import holdsResolver from "./resolvers/holdsResolver";
 import calendarEventsResolver from "./resolvers/calendarEventsResolver";
+import AnnouncementsResolver from "./resolvers/announcementsResolver";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -43,7 +45,8 @@ export const schema = makeExecutableSchema({
     DateTimeTypeDefinition,
     RoomTypeDefs,
     AuditLogsTypeDefs,
-    CalendarEventsTypeDefs
+    CalendarEventsTypeDefs,
+    AnnouncementsTypeDefs
   ],
   resolvers: mergeResolvers([
     resolveFunctions,
@@ -55,6 +58,7 @@ export const schema = makeExecutableSchema({
     usersResolver,
     holdsResolver,
     auditLogsResolver,
-    calendarEventsResolver
+    calendarEventsResolver,
+    AnnouncementsResolver
   ]),
 });

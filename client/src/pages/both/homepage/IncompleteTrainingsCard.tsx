@@ -10,7 +10,8 @@ import {
 } from "../../../common/TrainingModuleUtils";
 import TrainingModuleRow from "../../../common/TrainingModuleRow";
 import { searchFilter } from "../../../common/SearchBar";
-import {Card, Typography} from "@mui/material";
+import {Card, CardActionArea, Typography} from "@mui/material";
+
 
 export const GET_ALL_TRAINING_MODULES = gql`
   query GetAllTrainingModules {
@@ -21,7 +22,11 @@ export const GET_ALL_TRAINING_MODULES = gql`
   }
 `;
 
-export default function IncompleteTrainingsCard() {
+interface IncompleteTrainingsCardProps {
+    onClick: () => void;
+  }
+
+export default function IncompleteTrainingsCard({onClick}: IncompleteTrainingsCardProps) {
     const { passedModules } = useCurrentUser();
     const result = useQuery(GET_ALL_TRAINING_MODULES);
     const [searchText] = useState("");
@@ -44,11 +49,13 @@ export default function IncompleteTrainingsCard() {
                 const reordered = [...notTaken];
 
                 return (
-                    <Card sx={{ width: 350, padding: 2, border: 1, borderColor: "lightgrey" }} >
-                        <Typography variant="h4">Incomplete Trainings</Typography>
-                        {reordered.map((ms: ModuleStatus) => (
-                            <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
-                        ))}
+                    <Card sx={{ width: 350, padding: 2, border: 1, borderColor: "lightgrey" }} onClick={onClick} >
+                        <CardActionArea onClick={onClick}>
+                            <Typography variant="h4">Incomplete Trainings</Typography>
+                            {reordered.map((ms: ModuleStatus) => (
+                                <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
+                            ))}
+                        </CardActionArea>
                     </Card>
                 );
             }}
