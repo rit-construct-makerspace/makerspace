@@ -134,7 +134,7 @@ describe("EquipmentRepository tests", () => {
     expect(targetEquipment).toBeDefined();
 
     // Update name
-    await EquipmentRepo.archiveEquipment(equipmentID);
+    await EquipmentRepo.setEquipmentArchived(equipmentID);
 
     // Check archived
     expect((await EquipmentRepo.getEquipmentByID(equipmentID)).archived).toBe(true);

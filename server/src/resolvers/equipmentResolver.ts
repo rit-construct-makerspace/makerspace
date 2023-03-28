@@ -12,19 +12,29 @@ const reservationRepo = new ReservationRepository();
 
 const EquipmentResolvers = {
   Query: {
-    equipments: async (_: any, args: any, context: any) => {
+    equipments: async (_parent: any, _args: any, _context: any) => {
       return await EquipmentRepo.getEquipment();
     },
 
-    equipment: async (_: any, args: { id: string }, context: any) => {
+    equipment: async (_parent: any, args: { id: string }, _context: any) => {
       return await EquipmentRepo.getEquipmentByID(Number(args.id));
     },
 
-    reservations: async (_: any, args: { id: string }, context: any) => {
+    archivedEquipments: async (_parent: any, _args: any, { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await EquipmentRepo.getArchivedEquipment();
+      }),
+
+    archivedEquipment: async (_parent: any, args: { id: string }, { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await EquipmentRepo.getArchivedEquipmentByID(Number(args.id));
+      }),
+
+    reservations: async (_parent: any, _args: any, _context: any) => {
       return await reservationRepo.getReservations();
     },
 
-    reservation: async (_: any, args: { id: string }, context: any) => {
+    reservation: async (_parent: any, args: { id: string }, _context: any) => {
       return await reservationRepo.getReservationById(Number(args.id));
     },
   },
@@ -72,7 +82,13 @@ const EquipmentResolvers = {
     archiveEquipment: async (_: any, args: { id: number },
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await EquipmentRepo.archiveEquipment(args.id);
+        return await EquipmentRepo.setEquipmentArchived(args.id, true);
+    }),
+
+    publishEquipment: async (_: any, args: { id: number },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await EquipmentRepo.setEquipmentArchived(args.id, false);
     }),
   },
 };

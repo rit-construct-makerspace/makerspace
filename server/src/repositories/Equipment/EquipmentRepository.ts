@@ -6,22 +6,6 @@ import * as ModuleRepo from "../Training/ModuleRepository";
 import * as HoldsRepo from "../Holds/HoldsRepository";
 import * as UserRepo from "../Users/UserRepository";
 
-export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
-  const equipment = await knex("Equipment").where({ id }).first();
-
-  if (!equipment) throw new EntityNotFound("Could not find equipment #${id}");
-
-  return equipment;
-}
-
-export async function archiveEquipment(id: number): Promise<EquipmentRow> {
-  const updatedEquipment: EquipmentRow[] = await knex("Equipment").where({ id: id }).update({ archived: true }).returning("*");
-
-  if (updateEquipment.length < 1) throw new EntityNotFound(`Could not find equipment #${id}`);
-
-  return updatedEquipment[0];
-}
-
 export async function getEquipment(): Promise<EquipmentRow[]> {
   return knex("Equipment")
           .select()
@@ -32,6 +16,56 @@ export async function getArchivedEquipment(): Promise<EquipmentRow[]> {
   return knex("Equipment")
           .select()
           .where({archived: true});
+}
+
+export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
+  const equipment = await knex("Equipment")
+                            .where({
+                              id: id,
+                              archived: false
+                            })
+                            .first();
+
+  if (!equipment) throw new EntityNotFound(`Could not find equipment #${id}`);
+
+  return equipment;
+}
+
+export async function getArchivedEquipmentByID(id: number): Promise<EquipmentRow> {
+  const equipment = await knex("Equipment")
+                            .where({
+                              id: id,
+                              archived: true
+                            })
+                            .first();
+
+  if (!equipment) throw new EntityNotFound(`Could not find equipment #${id}`);
+
+  return equipment;
+}
+
+export async function setEquipmentArchived(equipmentID: number, archived: boolean): Promise<EquipmentRow> {
+  const updatedEquipment = await knex("Equipment")
+                                  .where({ id: equipmentID })
+                                  .update({ archived: archived })
+                                  .returning("*");
+
+  if (updatedEquipment.length < 1) throw new EntityNotFound(`Could not find equipment #${equipmentID}`);
+
+  return updatedEquipment[0];
+}
+
+export async function publishEquipment(
+  equipmentID: number
+): Promise<EquipmentRow> {
+  const updatedEquipment = await knex("Equipment")
+                                  .where({ id: equipmentID })
+                                  .update({ archived: false })
+                                  .returning("*");
+
+  if (updatedEquipment.length < 1) throw new EntityNotFound(`Could not find equipment #${equipmentID}`);
+
+  return updatedEquipment[0];
 }
 
 export async function getEquipmentWithRoomID(
@@ -136,6 +170,7 @@ export async function addEquipment(
     {
       name: equipment.name,
       roomID: equipment.roomID,
+      archived: true
     },
     "id"
   );

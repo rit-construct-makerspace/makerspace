@@ -1,5 +1,5 @@
 import React from "react";
-import { NameAndID } from "./ManageEquipmentPage";
+import { NameAndID } from "./ManageEquipmentModal";
 import { IconButton, Stack, Typography } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CloseIcon from "@mui/icons-material/Close";

@@ -1,10 +1,10 @@
-import { Route, Routes, BrowserRouter } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
 import LeftNav from "./left_nav/LeftNav";
 import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 import EditModulePage from "./pages/lab_management/edit_module/EditModulePage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
-import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
+import ManageEquipmentModal from "./pages/lab_management/manage_equipment/ManageEquipmentModal";
 import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
 import InventoryPage from "./pages/lab_management/inventory/InventoryPage";
 import SelectRoomPage from "./pages/lab_management/monitor/SelectRoomPage";
@@ -19,12 +19,15 @@ import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
 import LoggedOutPage from "./pages/both/equipment/LoggedOutPage";
+import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
 
 export default function AppRoutes() {
   return (
+    <div className="app">
+
     <Routes>
         <Route path="/signup" element={<SignupPage />} />
 
@@ -40,12 +43,12 @@ export default function AppRoutes() {
 
           <Route
             path="/maker/equipment"
-            element={<EquipmentPage isAdmin={false} />}
+            element={<EquipmentPage />}
           />
 
           <Route
             path="/maker/equipment/:id"
-            element={<EquipmentPage isAdmin={false} />}
+            element={<EquipmentPage />}
           />
 
           <Route path="/maker/training" element={<TrainingPage />} />
@@ -56,12 +59,14 @@ export default function AppRoutes() {
 
           <Route path="/maker/materials" element={<InventoryPreviewPage />} />
 
-          <Route path="/admin/equipment/:id" element={<ManageEquipmentPage />} />
-
           <Route
             path="/admin/equipment"
-            element={<EquipmentPage isAdmin={true} />}
+            element={<ManageEquipmentPage />}
           />
+
+          <Route path="/admin/equipment/:id" element={<ManageEquipmentModal archived={false} />} />
+
+          <Route path="/admin/equipment/archived/:id" element={<ManageEquipmentModal archived={true} />} />
 
           <Route path="/admin/training/:id" element={<EditModulePage />} />
 
@@ -84,5 +89,6 @@ export default function AppRoutes() {
           <Route path="/admin/history" element={<AuditLogsPage />} />
         </Route>
     </Routes>
+    </div>
   );
 }
