@@ -20,6 +20,7 @@ import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
 import LoggedOutPage from "./pages/both/equipment/LoggedOutPage";
 import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -87,6 +88,8 @@ export default function AppRoutes() {
           <Route path="/admin/people" element={<UsersPage />} />
 
           <Route path="/admin/history" element={<AuditLogsPage />} />
+
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
     </Routes>
     </div>

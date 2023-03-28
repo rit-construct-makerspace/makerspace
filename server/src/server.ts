@@ -25,11 +25,11 @@ async function startServer() {
 
   app.use(cors(CORS_CONFIG));
 
-  // app.all('*', (req, res, next) => {
-  //   res.header("Access-Control-Allow-Origin", CORS_CONFIG.origin);
-  //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  //   next();
-  // });
+  app.all('*', (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", CORS_CONFIG.origin);
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
   app.use(compression());
 
@@ -38,6 +38,10 @@ async function startServer() {
   setupAuth(app);
 
   app.use("/app", express.static(path.join(__dirname, "../../client/build")));
+
+  app.get('/app/*', function (req, res) {
+    res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
+  });
 
   const server = new ApolloServer({
     schema,
