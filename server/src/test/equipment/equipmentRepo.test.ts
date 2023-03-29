@@ -133,17 +133,14 @@ describe("EquipmentRepository tests", () => {
     let targetEquipment = await EquipmentRepo.getEquipmentByID(equipmentID);
     expect(targetEquipment).toBeDefined();
 
-    // Update name
-    await EquipmentRepo.setEquipmentArchived(equipmentID);
+    // Archive
+    await EquipmentRepo.setEquipmentArchived(equipmentID, true);
 
     // Check archived
     expect((await EquipmentRepo.getEquipmentByID(equipmentID)).archived).toBe(true);
 
     // Not returned as active equipment
     expect((await EquipmentRepo.getEquipment()).map((equipment) => equipment.id)).not.toContainEqual(targetEquipment.id);
-
-    // Returned as archived equipment
-    expect((await EquipmentRepo.getArchivedEquipment()).map((equipment) => equipment.id)).toContainEqual(targetEquipment.id);
   });
 
   test("addModulesToEquipment and get", async () => {

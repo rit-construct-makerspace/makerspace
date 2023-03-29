@@ -5,7 +5,7 @@ import EquipmentCard from "../../both/equipment/EquipmentCard";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENTS, GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipments";
-import { NameAndID } from "../../lab_management/manage_equipment/ManageEquipmentModal";
+import { ObjectSummary } from "../../../types/Common";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
 import EditableEquipmentCard from "./EditableEquipmentCard";
@@ -43,7 +43,7 @@ export default function ManageEquipmentPage() {
                 error={getEquipmentsResult.error}
             >
                 <Grid container spacing={3} mt={2}>
-                    {getEquipmentsResult.data?.equipments.map((e: NameAndID) => (
+                    {getEquipmentsResult.data?.equipments.map((e: ObjectSummary) => (
                         <Grid key={e.id} item>
                             <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} />
                         </Grid>
@@ -60,7 +60,7 @@ export default function ManageEquipmentPage() {
                 error={getArchivedEquipmentsResult.error}
             >
                 <Grid container spacing={3} mt={2}>
-                    {getArchivedEquipmentsResult.data?.archivedEquipments.map((e: NameAndID) => (
+                    {getArchivedEquipmentsResult.data?.archivedEquipments.map((e: ObjectSummary) => (
                         <Grid key={e.id} item>
                             <EditableEquipmentCard id={e.id} name={e.name} to={url + "/archived/" + e.id} archived={true} />
                         </Grid>

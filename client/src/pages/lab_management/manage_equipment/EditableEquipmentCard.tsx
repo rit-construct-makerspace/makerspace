@@ -49,14 +49,11 @@ export default function EditableEquipmentCard({ id, name, to, archived }: Archiv
             mt: 0,
             padding: 0.25
           }}>
-            <Tooltip title={archived ? "Publish Equipment" : "Archive Equipment"} arrow>
-              <div>
-                {archived
+              {
+                archived
                   ? <PublishEquipmentButton equipmentID={id} appearance="icon-only" />
                   : <ArchiveEquipmentButton equipmentID={id} appearance="icon-only" />
-                }
-              </div>
-            </Tooltip>
+              }
         </CardActions>
       </Card>
   );

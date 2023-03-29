@@ -1,6 +1,6 @@
-import React from "react";
 import { gql, useMutation } from "@apollo/client";
 import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipments";
+import { ObjectSummary } from "../../../types/Common";
 import EquipmentEditor from "./EquipmentEditor";
 import { Equipment, MutationCallback } from "./ManageEquipmentModal";
 
@@ -41,7 +41,7 @@ export default function NewEquipmentEditor({
         onSave(createEquipment, {
           name: equipment.name,
           roomID: equipment.room?.id,
-          moduleIDs: equipment.trainingModules.map((m) => m.id),
+          moduleIDs: equipment.trainingModules.map((m: ObjectSummary) => m.id),
         })
       }
     />

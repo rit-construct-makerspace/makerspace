@@ -3,19 +3,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import NewEquipmentEditor from "./NewEquipmentEditor";
 import ExistingEquipmentEditor from "./ExistingEquipmentEditor";
 import ArchivedEquipmentEditor from "./ArchivedEquipmentEditor";
+import { ObjectSummary } from "../../../types/Common";
 
 export type MutationCallback = (options: object) => void;
-
-export interface NameAndID {
-  id: number;
-  name: string;
-}
 
 export interface Equipment {
   id: number | null;
   name: string;
-  room: NameAndID | null;
-  trainingModules: NameAndID[];
+  room: ObjectSummary | null;
+  trainingModules: ObjectSummary[];
   archived: boolean;
 }
 

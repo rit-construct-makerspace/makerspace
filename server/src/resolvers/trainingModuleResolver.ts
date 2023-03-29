@@ -139,7 +139,22 @@ const TrainingModuleResolvers = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const module = await ModuleRepo.archiveModule(Number(args.id));
+        const module = await ModuleRepo.setModuleArchived(Number(args.id), true);
+
+        await createLog(
+          "{user} archived the {module} module.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: module.id, label: module.name }
+        );
+      }),
+
+    publishModule: async (
+      _parent: any,
+      args: { id: string },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        const module = await ModuleRepo.setModuleArchived(Number(args.id), false);
 
         await createLog(
           "{user} archived the {module} module.",

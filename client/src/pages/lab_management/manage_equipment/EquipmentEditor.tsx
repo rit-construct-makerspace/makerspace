@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, SyntheticEvent } from "react";
+import { ChangeEventHandler, SyntheticEvent } from "react";
 import Page from "../../Page";
 import { Autocomplete, Button, Divider, Stack, TextField } from "@mui/material";
 import EngineeringIcon from "@mui/icons-material/Engineering";
@@ -9,10 +9,11 @@ import { GET_TRAINING_MODULES } from "../../../queries/modules";
 import RequestWrapper from "../../../common/RequestWrapper";
 import styled from "styled-components";
 import GET_ROOMS from "../../../queries/getRooms";
-import { Equipment, NameAndID } from "./ManageEquipmentModal";
+import { Equipment } from "./ManageEquipmentModal";
 import AttachedModule from "./AttachedModule";
 import ArchiveEquipmentButton from "./ArchiveEquipmentButton";
 import PublishEquipmentButton from "./PublishEquipmentButton";
+import { ObjectSummary } from "../../../types/Common";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -36,13 +37,13 @@ export default function EquipmentEditor({
   const getRoomsResult = useQuery(GET_ROOMS);
   const getModulesResult = useQuery(GET_TRAINING_MODULES);
 
-  const getModuleOptions = (): NameAndID[] => {
+  const getModuleOptions = (): ObjectSummary[] => {
     if (!getModulesResult.data) return [];
 
     const attachedIDs = equipment.trainingModules.map((m) => m.id);
 
     return getModulesResult.data.modules.filter(
-      (m: NameAndID) => !attachedIDs.includes(m.id)
+      (m: ObjectSummary) => !attachedIDs.includes(m.id)
     );
   };
 
@@ -50,7 +51,7 @@ export default function EquipmentEditor({
     setEquipment({ ...equipment, name: e.target.value });
   };
 
-  const handleRoomChanged = (e: SyntheticEvent, value: NameAndID | null) => {
+  const handleRoomChanged = (e: SyntheticEvent, value: ObjectSummary | null) => {
     if (!value) return;
     setEquipment({
       ...equipment,
@@ -58,7 +59,7 @@ export default function EquipmentEditor({
     });
   };
 
-  const handleModuleAdded = (e: SyntheticEvent, value: NameAndID | null) => {
+  const handleModuleAdded = (e: SyntheticEvent, value: ObjectSummary | null) => {
     if (!value) return;
     setEquipment({
       ...equipment,

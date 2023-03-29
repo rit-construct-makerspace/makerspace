@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Equipment, MutationCallback } from "./ManageEquipmentModal";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS, GET_EQUIPMENT_BY_ID, UPDATE_EQUIPMENT } from "../../../queries/equipments";
 import EquipmentEditor from "./EquipmentEditor";
 import RequestWrapper from "../../../common/RequestWrapper";
+import { ObjectSummary } from "../../../types/Common";
 
 interface ExistingEquipmentProps {
   equipment: Equipment;
@@ -51,7 +52,7 @@ export default function ExistingEquipmentEditor({
             id,
             name: equipment.name,
             roomID: equipment.room?.id,
-            moduleIDs: equipment.trainingModules.map((m) => m.id),
+            moduleIDs: equipment.trainingModules.map((m: ObjectSummary) => m.id),
           })
         }
       />

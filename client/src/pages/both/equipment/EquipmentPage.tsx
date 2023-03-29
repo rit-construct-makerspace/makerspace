@@ -5,9 +5,9 @@ import EquipmentCard from "./EquipmentCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENTS } from "../../../queries/equipments";
-import { NameAndID } from "../../lab_management/manage_equipment/ManageEquipmentModal";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
+import { ObjectSummary } from "../../../types/Common";
 
 export default function EquipmentPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,7 +29,7 @@ export default function EquipmentPage() {
       error={getEquipmentsResult.error}
     >
       <Grid container spacing={3} mt={2}>
-        {getEquipmentsResult.data?.equipments.map((e: NameAndID) => (
+        {getEquipmentsResult.data?.equipments.map((e: ObjectSummary) => (
           <Grid key={e.id} item>
             <EquipmentCard id={e.id} name={e.name} to={url + e.id} />
           </Grid>

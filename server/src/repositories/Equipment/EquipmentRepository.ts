@@ -53,19 +53,6 @@ export async function setEquipmentArchived(equipmentID: number, archived: boolea
   return updatedEquipment[0];
 }
 
-export async function publishEquipment(
-  equipmentID: number
-): Promise<EquipmentRow> {
-  const updatedEquipment = await knex("Equipment")
-                                  .where({ id: equipmentID })
-                                  .update({ archived: false })
-                                  .returning("*");
-
-  if (updatedEquipment.length < 1) throw new EntityNotFound(`Could not find equipment #${equipmentID}`);
-
-  return updatedEquipment[0];
-}
-
 export async function getEquipmentWithRoomID(
   roomID: number,
   archived: boolean

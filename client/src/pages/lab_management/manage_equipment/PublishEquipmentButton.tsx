@@ -1,9 +1,7 @@
-import SendIcon from "@mui/icons-material/Send";
 import { useMutation } from "@apollo/client";
 import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS, GET_EQUIPMENT_BY_ID, PUBLISH_EQUIPMENT } from "../../../queries/equipments";
-import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress, IconButton } from "@mui/material";
+import PublishButton from "../../../common/PublishButton";
 
 interface PublishEquipmentButtonProps {
   equipmentID: number;
@@ -27,48 +25,12 @@ export default function PublishEquipmentButton(props: PublishEquipmentButtonProp
     navigate("/admin/equipment");
   };
 
-  let size: "small" | "medium" | "large";
-  switch(props.appearance) {
-    case "large":
-      size = "large"
-      break;
-    case "medium":
-      size = "medium"
-      break;
-    default:
-      size = "small"
-  }
-
-  const iconSize = 22.5;
-
-  if (props.appearance !== "icon-only") {
-    return (
-      <LoadingButton
-        loading={loading}
-        variant="outlined"
-        startIcon={<SendIcon />}
-        color="success"
-        onClick={handleClick}
-        loadingPosition="start"
-      >
-        Publish
-      </LoadingButton>
-    );
-  }
-  else {
-    return (
-      <IconButton
-        color="success"
-        onClick={handleClick}>
-        {
-          loading
-            ? <CircularProgress
-            color="success"
-            size={iconSize}
-          />
-            : <SendIcon sx={{fontSize: iconSize}} />
-        }
-      </IconButton>
-    );
-  }
+  return (
+    <PublishButton
+      appearance={props.appearance}
+      handleClick={handleClick}
+      loading={loading}
+      tooltipText="Publish Equipment"
+    />
+  );
 }
