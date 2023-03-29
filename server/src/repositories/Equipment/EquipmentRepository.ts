@@ -8,21 +8,19 @@ import * as UserRepo from "../Users/UserRepository";
 
 export async function getEquipment(): Promise<EquipmentRow[]> {
   return knex("Equipment")
-          .select()
-          .where({archived: false});
+          .select();
 }
 
-export async function getArchivedEquipment(): Promise<EquipmentRow[]> {
+export async function getEquipmentWhereArchived(archived: boolean): Promise<EquipmentRow[]> {
   return knex("Equipment")
           .select()
-          .where({archived: true});
+          .where({archived: archived});
 }
 
 export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   const equipment = await knex("Equipment")
                             .where({
-                              id: id,
-                              archived: false
+                              id: id
                             })
                             .first();
 
@@ -31,11 +29,11 @@ export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   return equipment;
 }
 
-export async function getArchivedEquipmentByID(id: number): Promise<EquipmentRow> {
+export async function getEquipmentByIDWhereArchived(id: number, archived: boolean): Promise<EquipmentRow> {
   const equipment = await knex("Equipment")
                             .where({
                               id: id,
-                              archived: true
+                              archived: archived
                             })
                             .first();
 

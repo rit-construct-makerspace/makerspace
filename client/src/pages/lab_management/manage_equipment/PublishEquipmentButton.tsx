@@ -1,10 +1,9 @@
 import SendIcon from "@mui/icons-material/Send";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS, GET_EQUIPMENT_BY_ID, PUBLISH_EQUIPMENT } from "../../../queries/equipments";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress, IconButton } from "@mui/material";
-import { useState } from "react";
 
 interface PublishEquipmentButtonProps {
   equipmentID: number;

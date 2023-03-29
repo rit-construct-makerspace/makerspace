@@ -13,21 +13,21 @@ const reservationRepo = new ReservationRepository();
 const EquipmentResolvers = {
   Query: {
     equipments: async (_parent: any, _args: any, _context: any) => {
-      return await EquipmentRepo.getEquipment();
+      return await EquipmentRepo.getEquipmentWhereArchived(false);
     },
 
     equipment: async (_parent: any, args: { id: string }, _context: any) => {
-      return await EquipmentRepo.getEquipmentByID(Number(args.id));
+      return await EquipmentRepo.getEquipmentByIDWhereArchived(Number(args.id), false);
     },
 
     archivedEquipments: async (_parent: any, _args: any, { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await EquipmentRepo.getArchivedEquipment();
+        return await EquipmentRepo.getEquipmentWhereArchived(true);
       }),
 
     archivedEquipment: async (_parent: any, args: { id: string }, { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await EquipmentRepo.getArchivedEquipmentByID(Number(args.id));
+        return await EquipmentRepo.getEquipmentByIDWhereArchived(Number(args.id), true);
       }),
 
     reservations: async (_parent: any, _args: any, _context: any) => {
