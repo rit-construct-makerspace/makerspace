@@ -3,6 +3,16 @@ import { TrainingModuleRow } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";
 import { PassedModule } from "../../schemas/usersSchema";
 
+export async function getModules(): Promise<TrainingModuleRow[]> {
+  return knex("TrainingModule").select();
+}
+
+export async function getModulesWhereArchived(archived: boolean): Promise<TrainingModuleRow[]> {
+  return knex("TrainingModule")
+          .select()
+          .where({ archived: archived });
+}
+
 export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
   const trainingModule = await knex("TrainingModule").first().where({ id });
 
@@ -12,13 +22,28 @@ export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
   return trainingModule;
 }
 
-export async function getModules(): Promise<TrainingModuleRow[]> {
-  return knex("TrainingModule").select().where({ archived: false });
+export async function getModuleByIDWhereArchived(id: number, archived: boolean): Promise<TrainingModuleRow> {
+  const trainingModule = await knex("TrainingModule")
+                                .first()
+                                .where({
+                                  id: id,
+                                  archived: archived
+                                });
+
+  if (!trainingModule)
+    throw new EntityNotFound(`Training module #${id} not found`);
+
+  return trainingModule;
 }
 
 export async function archiveModule(id: number): Promise<TrainingModuleRow> {
-  const updatedModules: TrainingModuleRow[] = await knex("TrainingModule").where({ id: id }).update({ archived: true });
-  
+  const updatedModules: TrainingModuleRow[] = await knex("TrainingModule")
+                                                      .where({ id: id })
+                                                      .update({ archived: true });
+
+  // TODO: Detatch equipment that require this module?
+  // await knex("ModulesForEquipment").delete().where({moduleID: id});
+
   if (updatedModules.length < 1) throw new EntityNotFound(`Training module #${id} not found`);
 
   return updatedModules[0];

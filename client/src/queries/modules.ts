@@ -20,6 +20,14 @@ export const GET_TRAINING_MODULES = gql`
   }
 `;
 
+export const CREATE_TRAINING_MODULE = gql`
+  mutation CreateTrainingModule($name: String) {
+    createModule(name: $name) {
+      id
+    }
+  }
+`;
+
 export const UPDATE_MODULE = gql`
   mutation UpdateModule($id: ID!, $name: String!, $quiz: JSON!, $reservationPrompt: JSON) {
     updateModule(id: $id, name: $name, quiz: $quiz, reservationPrompt: $reservationPrompt) {
@@ -35,5 +43,3 @@ export const ARCHIVE_MODULE = gql`
     }
   }
 `;
-
-export default GET_TRAINING_MODULES;

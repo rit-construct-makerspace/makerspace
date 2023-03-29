@@ -30,6 +30,8 @@ export const TrainingModuleTypeDefs = gql`
   extend type Query {
     modules: [TrainingModule]
     module(id: ID!): TrainingModule
+    archivedModules: [TrainingModule]
+    archivedModule(id: ID!): TrainingModule
   }
 
   extend type Mutation {
