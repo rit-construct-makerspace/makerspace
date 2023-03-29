@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardActionArea,
@@ -45,7 +45,9 @@ export default function EditableEquipmentCard({ id, name, to, archived }: Archiv
         <CardActions
           sx={{
             minHeight: 0.12,
-            justifyContent: "flex-end"
+            justifyContent: "flex-end",
+            mt: 0,
+            padding: 0.25
           }}>
             <Tooltip title={archived ? "Publish Equipment" : "Archive Equipment"} arrow>
               <div>

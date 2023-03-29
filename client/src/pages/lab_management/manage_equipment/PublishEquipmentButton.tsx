@@ -39,7 +39,7 @@ export default function PublishEquipmentButton(props: PublishEquipmentButtonProp
       size = "small"
   }
 
-  const iconSize = 25;
+  const iconSize = 22.5;
 
   if (props.appearance !== "icon-only") {
     return (
