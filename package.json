@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "fix": "ts-jest config:migrate jest.config.js",
-    "start": "node 'dist/server.js'",
-    "build": "tsc --build --clean && tsc -p .",
+    "start": "node 'server/dist/server.js'",
+    "build": "cd server/ && tsc --build --clean && tsc -p . && cd ../client && npm install && npm run build",
     "test": "npm run build && jest",
     "test:coverage": "npm run build && jest --coverage",
     "test:watch": "npm run build && jest --silent false --verbose --detectOpenHandles",
