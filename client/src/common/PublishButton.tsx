@@ -14,7 +14,7 @@ export default function PublishEquipmentButton(props: PublishEquipmentButtonProp
       iconSize={22.5}
       tooltipText={props.tooltipText}
       buttonText="Publish"
-      appearance="icon-only"
+      appearance={props.appearance}
       color="success"
       handleClick={props.handleClick}
       loading={props.loading}

@@ -114,8 +114,8 @@ export default function EditModulePage({
               justifySelf="center">
               {
                 moduleDraft.archived
-                  ? <PublishTrainingModuleButton moduleID={moduleDraft.id} appearance="medium" />
-                  : <ArchiveTrainingModuleButton moduleID={moduleDraft.id} appearance="medium" />
+                  ? <PublishTrainingModuleButton moduleID={moduleDraft.id} appearance="large" />
+                  : <ArchiveTrainingModuleButton moduleID={moduleDraft.id} appearance="large" />
               }
             </Grid>
           </Grid>
