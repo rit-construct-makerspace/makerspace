@@ -43,7 +43,7 @@ export async function setModuleArchived(id: number, archived: boolean): Promise<
                                                       .returning("*");
 
   // TODO: Detatch equipment that require this module?
-  // await knex("ModulesForEquipment").delete().where({moduleID: id});
+  await knex("ModulesForEquipment").delete().where({moduleID: id});
 
   if (updatedModules.length < 1) throw new EntityNotFound(`Training module #${id} not found`);
 
