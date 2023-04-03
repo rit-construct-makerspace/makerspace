@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ObjectSummary } from "../../../types/Common";
 import PublishTrainingModuleButton from "./PublishTrainingModuleButton";
 import ArchiveTrainingModuleButton from "./ArchiveTrainingModuleButton";
+import { DocumentNode } from "@apollo/client";
 
 interface TrainingModuleProps {
   module: ObjectSummary;
@@ -10,11 +11,15 @@ interface TrainingModuleProps {
 
 export default function TrainingModuleRow({ module }: TrainingModuleProps) {
   const navigate = useNavigate();
+  const url = module.archived ? "/admin/training/archived/" + module.id : "/admin/training/" + module.id
 
   return (
     <CardActionArea
-      sx={{ p: 1, pl: 2 }}
-      onClick={() => navigate("/admin/training/" + module.id)}
+      sx={{
+        p: 1,
+        pl: 2
+      }}
+      onClick={() => navigate(url)}
     >
       <Stack direction="row" alignItems="center" spacing={2}>
         <Typography

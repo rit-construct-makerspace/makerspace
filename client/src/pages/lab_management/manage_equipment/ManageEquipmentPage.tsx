@@ -1,13 +1,11 @@
 import { Button, Grid, Stack, Typography } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import EquipmentCard from "../../both/equipment/EquipmentCard";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENTS, GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipments";
 import { ObjectSummary } from "../../../types/Common";
 import RequestWrapper from "../../../common/RequestWrapper";
-import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
 import EditableEquipmentCard from "./EditableEquipmentCard";
 
 export default function ManageEquipmentPage() {
@@ -39,7 +37,7 @@ export default function ManageEquipmentPage() {
             </Typography>
 
             <RequestWrapper
-                loading={getEquipmentsResult.loading}
+                loading={getEquipmentsResult.loading && getArchivedEquipmentsResult.loading}
                 error={getEquipmentsResult.error}
             >
                 <Grid container spacing={3} mt={2}>
@@ -56,7 +54,7 @@ export default function ManageEquipmentPage() {
             </Typography>
 
             <RequestWrapper
-                loading={getArchivedEquipmentsResult.loading}
+                loading={getEquipmentsResult.loading && getArchivedEquipmentsResult.loading}
                 error={getArchivedEquipmentsResult.error}
             >
                 <Grid container spacing={3} mt={2}>

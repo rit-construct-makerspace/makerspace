@@ -15,11 +15,11 @@ export interface Equipment {
   archived: boolean;
 }
 
-interface ManageEquipmentModalProps {
+interface EditEquipmentPageProps {
   archived: boolean;
 }
 
-export default function ManageEquipmentModal(props: ManageEquipmentModalProps) {
+export default function EditEquipmentPage(props: EditEquipmentPageProps) {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 

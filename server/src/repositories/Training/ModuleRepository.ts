@@ -39,7 +39,8 @@ export async function getModuleByIDWhereArchived(id: number, archived: boolean):
 export async function setModuleArchived(id: number, archived: boolean): Promise<TrainingModuleRow> {
   const updatedModules: TrainingModuleRow[] = await knex("TrainingModule")
                                                       .where({ id: id })
-                                                      .update({ archived: archived });
+                                                      .update({ archived: archived })
+                                                      .returning("*");
 
   // TODO: Detatch equipment that require this module?
   // await knex("ModulesForEquipment").delete().where({moduleID: id});

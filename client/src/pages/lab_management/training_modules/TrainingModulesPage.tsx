@@ -4,7 +4,7 @@ import SearchBar from "../../../common/SearchBar";
 import { Divider, Stack, Typography } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import { useNavigate } from "react-router-dom";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import RequestWrapper from "../../../common/RequestWrapper";
 import TrainingModuleRow from "./TrainingModuleRow";
@@ -59,6 +59,7 @@ export default function TrainingModulesPage() {
     >
         Active Modules
     </Typography>
+
     <RequestWrapper
       loading={getModuleResults.loading}
       error={getModuleResults.error}
@@ -79,7 +80,7 @@ export default function TrainingModulesPage() {
               .includes(searchText.toLocaleLowerCase())
           )
           .map((m: ObjectSummary) => (
-            <TrainingModuleRow key={m.id} module={m}/>
+            <TrainingModuleRow key={m.id} module={m} />
           ))}
       </Stack>
     </RequestWrapper>
@@ -87,6 +88,7 @@ export default function TrainingModulesPage() {
     <Typography variant="h5">
         Archived Modules
     </Typography>
+
     <RequestWrapper
       loading={getArchivedModuleResults.loading}
       error={getArchivedModuleResults.error}

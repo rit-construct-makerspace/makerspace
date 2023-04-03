@@ -66,7 +66,7 @@ const TrainingModuleResolvers = {
       _args: any,
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (_user) => {
         let modules = await ModuleRepo.getModulesWhereArchived(true);
 
         return modules;
@@ -77,8 +77,8 @@ const TrainingModuleResolvers = {
       args: { id: number },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, false);
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (_user) => {
+        let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, true);
 
         return module;
       }),
@@ -146,6 +146,8 @@ const TrainingModuleResolvers = {
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
+
+        return module;
       }),
 
     publishModule: async (
@@ -161,6 +163,8 @@ const TrainingModuleResolvers = {
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
+
+        return module;
       }),
 
     submitModule: async (

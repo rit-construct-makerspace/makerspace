@@ -2,7 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipments";
 import { ObjectSummary } from "../../../types/Common";
 import EquipmentEditor from "./EquipmentEditor";
-import { Equipment, MutationCallback } from "./ManageEquipmentModal";
+import { Equipment, MutationCallback } from "./EditEquipmentPage";
 
 const CREATE_EQUIPMENT = gql`
   mutation CreateEquipment($name: String!, $roomID: ID!, $moduleIDs: [ID]!) {

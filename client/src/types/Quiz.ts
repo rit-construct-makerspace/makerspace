@@ -28,6 +28,7 @@ export interface ReservationPrompt {
 export interface Module {
   id: number;
   name: string;
+  archived: boolean;
   quiz: QuizItem[];
   reservationPrompt: ReservationPrompt;
 };

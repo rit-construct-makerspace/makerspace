@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Equipment, MutationCallback } from "./ManageEquipmentModal";
+import { Equipment, MutationCallback } from "./EditEquipmentPage";
 import { useMutation, useQuery } from "@apollo/client";
 import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS, GET_ARCHIVED_EQUIPMENT_BY_ID, UPDATE_EQUIPMENT } from "../../../queries/equipments";
 import EquipmentEditor from "./EquipmentEditor";

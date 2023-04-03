@@ -11,7 +11,7 @@ interface PublishEquipmentButtonProps {
 export default function PublishEquipmentButton(props: PublishEquipmentButtonProps) {
   const navigate = useNavigate();
 
-  const [deleteEquipment, { loading }] = useMutation(PUBLISH_EQUIPMENT, {
+  const [publishEquipment, { loading }] = useMutation(PUBLISH_EQUIPMENT, {
     variables: { id: props.equipmentID },
     refetchQueries: [
       { query: GET_EQUIPMENTS },
@@ -21,7 +21,7 @@ export default function PublishEquipmentButton(props: PublishEquipmentButtonProp
   });
 
   const handleClick = async () => {
-    await deleteEquipment();
+    await publishEquipment();
     navigate("/admin/equipment");
   };
 

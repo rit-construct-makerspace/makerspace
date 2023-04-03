@@ -9,7 +9,7 @@ import { GET_TRAINING_MODULES } from "../../../queries/modules";
 import RequestWrapper from "../../../common/RequestWrapper";
 import styled from "styled-components";
 import GET_ROOMS from "../../../queries/getRooms";
-import { Equipment } from "./ManageEquipmentModal";
+import { Equipment } from "./EditEquipmentPage";
 import AttachedModule from "./AttachedModule";
 import ArchiveEquipmentButton from "./ArchiveEquipmentButton";
 import PublishEquipmentButton from "./PublishEquipmentButton";

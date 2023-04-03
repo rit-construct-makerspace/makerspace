@@ -1,73 +1,25 @@
 import ArchiveIcon from "@mui/icons-material/Archive";
-import { LoadingButton } from "@mui/lab";
-import { CircularProgress, IconButton, Tooltip } from "@mui/material";
+import ActionButton from "./ActionButton";
 
-interface ArchiveEquipmentButtonProps {
+interface ArchiveButtonProps {
   appearance: "icon-only" | "small" | "medium" | "large";
   handleClick: () => Promise<void>;
   loading: boolean;
   tooltipText: string;
 }
 
-export default function ArchiveEquipmentButton(props: ArchiveEquipmentButtonProps) {
-  let size: "small" | "medium" | "large";
-  switch(props.appearance) {
-    case "large":
-      size = "large"
-      break;
-    case "medium":
-      size = "medium"
-      break;
-    default:
-      size = "small"
-  }
-
-  const iconSize = 25;
-
+export default function ArchiveButton(props: ArchiveButtonProps) {
   return (
-    <Tooltip
-      title={props.tooltipText}
-      arrow
-      PopperProps={{
-        modifiers: [
-            {
-                name: "offset",
-                options: {
-                    offset: [0, -15],
-                },
-            },
-        ],
-    }}
+    <ActionButton
+      iconSize={25}
+      tooltipText={props.tooltipText}
+      buttonText="Archive"
+      appearance="icon-only"
+      color="error"
+      handleClick={props.handleClick}
+      loading={props.loading}
     >
-      {
-        props.appearance === "icon-only"
-          ? (
-            <IconButton
-              color="error"
-              onClick={props.handleClick}>
-              {
-                props.loading
-                  ? <CircularProgress
-                  color="error"
-                  size={iconSize}
-                />
-                  : <ArchiveIcon sx={{fontSize: iconSize}} />
-              }
-            </IconButton>
-            )
-          : (
-              <LoadingButton
-                loading={props.loading}
-                variant="outlined"
-                startIcon={<ArchiveIcon />}
-                color="error"
-                onClick={props.handleClick}
-                loadingPosition="start"
-              >
-                Archive
-              </LoadingButton>
-            )
-      }
-    </Tooltip>
+      <ArchiveIcon />
+    </ActionButton>
   );
 }

@@ -2,9 +2,8 @@ import { Route, Routes } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
 import LeftNav from "./left_nav/LeftNav";
 import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
-import EditModulePage from "./pages/lab_management/edit_module/EditModulePage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
-import ManageEquipmentModal from "./pages/lab_management/manage_equipment/ManageEquipmentModal";
+import EditEquipmentPage from "./pages/lab_management/manage_equipment/EditEquipmentPage";
 import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
 import InventoryPage from "./pages/lab_management/inventory/InventoryPage";
 import SelectRoomPage from "./pages/lab_management/monitor/SelectRoomPage";
@@ -21,6 +20,8 @@ import QuizResults from "./pages/maker/take_quiz/QuizResults";
 import LoggedOutPage from "./pages/both/equipment/LoggedOutPage";
 import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import EditActiveModulePage from "./pages/lab_management/edit_module/EditActiveModulePage";
+import EditArchivedModulePage from "./pages/lab_management/edit_module/EditArchivedModulePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -65,13 +66,15 @@ export default function AppRoutes() {
             element={<ManageEquipmentPage />}
           />
 
-          <Route path="/admin/equipment/:id" element={<ManageEquipmentModal archived={false} />} />
+          <Route path="/admin/equipment/:id" element={<EditEquipmentPage archived={false} />} />
 
-          <Route path="/admin/equipment/archived/:id" element={<ManageEquipmentModal archived={true} />} />
-
-          <Route path="/admin/training/:id" element={<EditModulePage />} />
+          <Route path="/admin/equipment/archived/:id" element={<EditEquipmentPage archived={true} />} />
 
           <Route path="/admin/training" element={<TrainingModulesPage />} />
+
+          <Route path="/admin/training/:id" element={<EditActiveModulePage />} />
+
+          <Route path="/admin/training/archived/:id" element={<EditArchivedModulePage />} />
 
           <Route path="/admin/inventory" element={<InventoryPage />} />
 

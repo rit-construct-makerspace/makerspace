@@ -68,10 +68,12 @@ export const ARCHIVE_MODULE = gql`
   }
 `;
 
-export const PUBLISH_TRAINING_MODULE = gql`
+export const PUBLISH_MODULE = gql`
   mutation PublishModule($id: ID!) {
     publishModule(id: $id) {
       id
     }
   }
 `;
+
+export default GET_TRAINING_MODULES;
