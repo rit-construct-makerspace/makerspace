@@ -22,6 +22,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.3.3",
+    "@apollo/server-plugin-landing-page-graphql-playground": "^4.0.0",
     "@node-saml/passport-saml": "~4.0.2",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
@@ -42,7 +43,6 @@
   },
   "description": "",
   "devDependencies": {
-    "@apollo/server-plugin-landing-page-graphql-playground": "^4.0.0",
     "@graphql-tools/schema": "^8.2.0",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
