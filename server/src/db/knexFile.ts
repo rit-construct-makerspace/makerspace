@@ -5,7 +5,7 @@ module.exports = {
   development: {
     client: "pg",
     connection: {
-      hconnectionString: process.env.DATABASE_URL,
+      connectionString: process.env.DATABASE_URL,
       ssl: { rejectUnauthorized: false },
     },
     pool: {
@@ -22,7 +22,7 @@ module.exports = {
   production: {
     client: "pg",
     connection: {
-      hconnectionString: process.env.DATABASE_URL,
+      connectionString: process.env.DATABASE_URL,
       ssl: { rejectUnauthorized: false },
     },
     pool: {
@@ -38,7 +38,7 @@ module.exports = {
   test: {
     client: "pg",
     connection: {
-      hconnectionString: process.env.DATABASE_URL,
+      connectionString: process.env.DATABASE_URL,
       ssl: { rejectUnauthorized: false },
     },
     pool: {
