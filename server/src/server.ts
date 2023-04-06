@@ -52,11 +52,11 @@ async function startServer() {
     expressMiddleware(server, { context: context })
   );
 
-  const httpsServer = createServer(app);
+  const httpServer = createServer(app);
 
   const PORT = process.env.PORT || 3000;
 
-  httpsServer.listen({ port: PORT }, (): void =>
+  httpServer.listen({ port: PORT }, (): void =>
     console.log(
       `🚀 GraphQL-Server is running on https://localhost:${PORT}/graphql`
     )
