@@ -1,5 +1,8 @@
 import passport from "passport";
-import { Strategy as SamlStrategy, ValidateInResponseTo, } from "@node-saml/passport-saml";
+import {
+  Strategy as SamlStrategy,
+  ValidateInResponseTo,
+} from "@node-saml/passport-saml";
 import session from "express-session";
 import { v4 as uuidv4 } from "uuid";
 import assert from "assert";
@@ -31,7 +34,6 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
 }
 
 export function setupAuth(app: express.Application) {
-
   const secret = process.env.SESSION_SECRET;
   const issuer = process.env.ISSUER;
   const callbackUrl = process.env.CALLBACK_URL;
@@ -51,11 +53,16 @@ export function setupAuth(app: express.Application) {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true,   // this will make cookies send only over https
-        maxAge: 900000  // 15 minutes in milliseconds
+        secure: true, // this will make cookies send only over https
+        httpOnly: true,
+        maxAge: 900000, // 15 minutes in milliseconds
       },
     })
   );
+
+  if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1); // trust first proxy
+  }
 
   const samlConfig = {
     issuer: issuer,
@@ -68,7 +75,7 @@ export function setupAuth(app: express.Application) {
     cert: fs.readFileSync(process.cwd() + "/cert/idp_cert.pem", "utf8"),
     validateInResponseTo: ValidateInResponseTo.never,
     disableRequestedAuthnContext: true,
-    
+
     // TODO production solution
     acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
   };
@@ -121,7 +128,7 @@ export function setupAuth(app: express.Application) {
   const authenticate = passport.authenticate("saml", {
     failureFlash: true,
     failureRedirect: "/login/fail",
-    successRedirect: reactAppUrl
+    successRedirect: reactAppUrl,
   });
 
   app.get("/login", authenticate);
@@ -132,11 +139,11 @@ export function setupAuth(app: express.Application) {
     res.status(401).send("Login failed");
   });
 
-  app.post('/logout', (req, res) => {
+  app.post("/logout", (req, res) => {
     if (req.session) {
-      req.session.destroy(err => {
+      req.session.destroy((err) => {
         if (err) {
-          res.status(400).send('Logout failed');
+          res.status(400).send("Logout failed");
         } else {
           // res.clearCookie("connect.sid");
           res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
@@ -158,11 +165,11 @@ export function setupAuth(app: express.Application) {
       );
   });
 
-  app.all('/app/*', (req, res, next) => {
+  app.all("/app/*", (req, res, next) => {
     if (req.user) {
       return next();
     }
     console.log("redirect");
-    res.redirect('/login');
+    res.redirect("/login");
   });
 }
