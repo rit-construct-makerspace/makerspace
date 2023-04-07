@@ -10,6 +10,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import PeopleIcon from "@mui/icons-material/People";
 import HistoryIcon from "@mui/icons-material/History";
 import Avatar from "@mui/material/Avatar";
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 import Typography from "@mui/material/Typography";
 import NavLink from "./NavLink";
 import LogoSvg from "../assets/logo.svg";
@@ -146,6 +147,11 @@ export default function LeftNav() {
               to="/admin/reservations"
               primary="Reservations"
               icon={<EventIcon />}
+            />
+            <NavLink
+              to="/admin/announcements"
+              primary="Announcements"
+              icon={<AnnouncementIcon />}
             />
             <NavLink
               to="/admin/people"
