@@ -60,25 +60,25 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: "14"
+          node-version: "16"
           cache: npm
           cache-dependency-path: client/package-lock.json
 
       - name: Install Node modules
-        run: cd server && npm ci
+        run: npm ci
 
       - name: Run Knex migrations
-        run: cd server && npm run knex:migrate:latest
+        run: npm run knex:migrate:latest
         env:
           POSTGRES_USER: pguser
           POSTGRES_PASSWORD: pgpassword
           POSTGRES_DB: pgdb
 
       - name: Run Tests
-        run: cd server && npm run test:watch
+        run: npm run test:watch
         env:
           POSTGRES_USER: pguser
           POSTGRES_PASSWORD: pgpassword
