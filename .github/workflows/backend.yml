@@ -57,9 +57,9 @@ jobs:
       - name: Run Knex migrations
         run: npm run knex:migrate:latest
         env:
-          DATABASE_URL: postgresql://pgdb:pgpassword@localhost:5433/pguser
+          DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
 
       - name: Run Tests
         run: npm run test:watch
         env:
-          DATABASE_URL: postgresql://pgdb:pgpassword@localhost:5433/pguser
+          DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
