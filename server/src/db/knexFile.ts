@@ -6,7 +6,7 @@ module.exports = {
     client: "pg",
     connection: {
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      // ssl: { rejectUnauthorized: false }, No SSL in development by default
     },
     pool: {
       min: 2,
@@ -39,7 +39,7 @@ module.exports = {
     client: "pg",
     connection: {
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      // ssl: { rejectUnauthorized: false }, No SSL in testing by default
     },
     pool: {
       min: 2,

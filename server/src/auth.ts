@@ -53,8 +53,8 @@ export function setupAuth(app: express.Application) {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true, // this will make cookies send only over https
-        httpOnly: true,
+        secure: process.env.NODE_ENV === "production" ? true : false, // this will make cookies send only over https
+        httpOnly: true, // cookies are sent in requests, but not accessible to client-side JS
         maxAge: 900000, // 15 minutes in milliseconds
       },
     })
@@ -70,9 +70,10 @@ export function setupAuth(app: express.Application) {
     callbackUrl: callbackUrl,
     entryPoint: entryPoint,
     identifierFormat: undefined,
-    decryptionPvk: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
-    privateCert: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
-    cert: fs.readFileSync(process.cwd() + "/cert/idp_cert.pem", "utf8"),
+    decryptionPvk: process.env.SSL_PVKEY ?? "",
+    // privateKey: process.env.SSL_PVKEY ?? "",
+    privateCert: process.env.SSL_PVKEY ?? "",
+    cert: process.env.IDP_PUBKEY ?? "",
     validateInResponseTo: ValidateInResponseTo.never,
     disableRequestedAuthnContext: true,
 
@@ -160,7 +161,7 @@ export function setupAuth(app: express.Application) {
       .status(200)
       .send(
         samlStrategy.generateServiceProviderMetadata(
-          fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8")
+          process.env.SSL_PUBKEY ?? ""
         )
       );
   });
