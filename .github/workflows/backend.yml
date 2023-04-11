@@ -60,6 +60,6 @@ jobs:
           DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
 
       - name: Run Tests
-        run: npm run test:watch
+        run: npm run test:server:watch
         env:
           DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
