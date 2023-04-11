@@ -10,7 +10,7 @@
     "build:client": "cd client/ && npm install && npm run build",
     "test": "npm run build && jest",
     "test:coverage": "npm run build && jest --coverage",
-    "test:watch": "npm run build && jest --silent false --verbose --detectOpenHandles",
+    "test:watch": "npm run build:server && jest --silent false --verbose --detectOpenHandles",
     "start:dev": "npm run build:dev",
     "start:debug": "npm run build && nodemon --exec node --inspect=0.0.0.0:9229 server/dist/server.js",
     "build:dev": "nodemon server/src/server.ts --exec ts-node server/src/server.ts -e ts,graphql",
