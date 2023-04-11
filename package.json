@@ -15,7 +15,7 @@
     "start:debug": "npm run build && nodemon --exec node --inspect=0.0.0.0:9229 server/dist/server.js",
     "build:dev": "nodemon server/src/server.ts --exec ts-node server/src/server.ts -e ts,graphql",
     "knex:migrate:make": "knex --migrations-directory server/src/db/migrations migrate:make -x ts",
-    "knex:migrate:latest": "npm run build:server && knex --knexfile server/dist/db/knexFile.js migrate:latest",
+    "knex:migrate:latest": "knex --knexfile server/dist/db/knexFile.js migrate:latest",
     "knex:migrate:rollback": "knex --knexfile server/dist/db/knexFile.js migrate:rollback",
     "knex:migrate:unlock": "knex --knexfile server/dist/db/knexFile.js migrate:unlock"
   },
