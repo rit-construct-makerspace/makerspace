@@ -39,23 +39,6 @@ jobs:
           POSTGRES_USER: pguser
           POSTGRES_PASSWORD: pgpassword
           POSTGRES_DB: pgdb
-      # Label used to access the services container
-      postgres-test:
-        # Docker Hub image
-        image: postgres
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5434:5432
-        env:
-          POSTGRES_USER: pguser
-          POSTGRES_PASSWORD: pgpassword
-          POSTGRES_DB: pgdb
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -73,13 +56,9 @@ jobs:
       - name: Run Knex migrations
         run: cd server && npm run knex:migrate:latest
         env:
-          POSTGRES_USER: pguser
-          POSTGRES_PASSWORD: pgpassword
-          POSTGRES_DB: pgdb
+          DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
 
       - name: Run Tests
         run: cd server && npm run test:watch
         env:
-          POSTGRES_USER: pguser
-          POSTGRES_PASSWORD: pgpassword
-          POSTGRES_DB: pgdb
+          DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
