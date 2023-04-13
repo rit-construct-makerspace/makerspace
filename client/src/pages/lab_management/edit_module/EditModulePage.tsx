@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import QuizBuilder from "./quiz/QuizBuilder";
 import {
   Button,
@@ -29,14 +29,15 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ReservationPromptDraft from "./reservation_prompt/ReservationPromptDraft";
 
 export default function EditModulePage() {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
 
   const [name, setName] = useState("");
   const [module, setModuleDraft] = useImmer<Module | undefined>(undefined);
   const [requiresReservation, setRequiresReservation] = useState(false);
+  const [doSave, setDoSave] = useState(false);
 
-  const queryResult = useQuery(GET_MODULE, {
+  const moduleQueryResult = useQuery(GET_MODULE, {
     variables: { id },
     onCompleted: ({ module }) => {
       setName(module.name);
@@ -53,8 +54,8 @@ export default function EditModulePage() {
     onCompleted: () => navigate("/admin/training"),
   });
 
-  const trainingModSavedAnimation = () => {
-    toast.success('Training Module Saved', {
+  const trainingModSavedAnimation = useCallback(() => {
+    toast.success(`Saved training module \"${name}\"`, {
       position: "bottom-left",
       autoClose: 3000,
       hideProgressBar: false,
@@ -64,10 +65,10 @@ export default function EditModulePage() {
       progress: undefined,
       theme: "colored",
       });
-  }
+  }, [name]);
 
-  const trainingModDeletedAnimation = () => {
-    toast.error('Training Module Deleted', {
+  const trainingModDeletedAnimation = useCallback(() => {
+    toast.error(`Deleted training module \"${name}\"`, {
       position: "bottom-left",
       autoClose: 3000,
       hideProgressBar: false,
@@ -77,9 +78,17 @@ export default function EditModulePage() {
       progress: undefined,
       theme: "colored",
       });
-  }
+  }, []);
 
-  const handleSaveClicked = () => {
+  const normalizeModuleForSave = useCallback(() => {
+    setModuleDraft((draft) => {
+      draft?.quiz.forEach(quizItem => {
+        quizItem.newDraft = undefined;
+      });
+    });
+  }, [module]);
+
+  const saveModule = useCallback(() => {
     updateModule({
       variables: { id, name, quiz: module?.quiz, reservationPrompt: module?.reservationPrompt },
       refetchQueries: [
@@ -88,7 +97,20 @@ export default function EditModulePage() {
       ],
     });
     trainingModSavedAnimation();
-  }
+  }, [module]);
+
+  /* Allows us to save after the module is normalized and the component rerenders */
+  useEffect(() => {
+    if (doSave) {
+      saveModule();
+      setDoSave(false);
+    }
+  }, [doSave]);
+
+  const handleSaveClicked = useCallback(() => {
+    normalizeModuleForSave();
+    setDoSave(true);
+  }, []);
 
   const handleDeleteClicked = () => {
     if (!window.confirm("Are you sure you want to delete this module?")) {
@@ -100,7 +122,7 @@ export default function EditModulePage() {
 
   return (
     <RequestWrapper2
-      result={queryResult}
+      result={moduleQueryResult}
       render={() => (
         <Page title="Edit training module" maxWidth="600px">
           <Grid container
