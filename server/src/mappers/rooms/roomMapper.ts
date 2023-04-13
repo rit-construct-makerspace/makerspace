@@ -10,7 +10,7 @@ export function singleRoomToDomain(raw: any): Room | null {
   if (!raw) return null;
 
   return {
-    id: parseInt(raw.id),
+    id: raw.id,
     name: raw.name,
   };
 }

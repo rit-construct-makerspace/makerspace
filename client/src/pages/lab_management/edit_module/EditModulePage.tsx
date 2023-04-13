@@ -12,8 +12,7 @@ import {
   Accordion,
   AccordionSummary,
   Typography,
-  AccordionDetails,
-  IconButton
+  AccordionDetails
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Page from "../../Page";
@@ -180,7 +179,7 @@ export default function EditModulePage() {
                             checked={ requiresReservation }
                             aria-label="Requires reservation switch"
                             onChange={(e) => {
-                              if (e.target.checked == true) {
+                              if (e.target.checked === true) {
                                 setRequiresReservation(true);
                                 setModuleDraft((draft) => {
                                   draft!.reservationPrompt.enabled = true;

@@ -18,7 +18,7 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
     knex.schema.hasTable('AuditLogs').then(function(exists) {
-        if (!exists) {
+        if (exists) {
             return knex.schema.dropTable('AuditLogs');
         }
     });

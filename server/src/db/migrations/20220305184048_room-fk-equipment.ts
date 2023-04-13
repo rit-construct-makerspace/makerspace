@@ -14,10 +14,10 @@ export async function up(knex: Knex): Promise<void> {
 
 export async function down(knex: Knex): Promise<void> {
   knex.schema.hasTable("Users").then(function (exists) {
-    if (!exists) return;
-
-    return knex.schema.alterTable("users", function (t) {
-      t.dropColumn("roomID");
-    });
+    if (exists) {
+      return knex.schema.alterTable("users", function (t) {
+        t.dropColumn("roomID");
+      });
+    }
   });
 }

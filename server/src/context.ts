@@ -1,6 +1,6 @@
 import { Privilege } from "./schemas/usersSchema";
-import { AuthenticationError, ForbiddenError } from "apollo-server-express";
 import { UserRow } from "./db/tables";
+import { GraphQLError } from "graphql/error/GraphQLError";
 
 export interface CurrentUser extends UserRow {
   hasHolds: boolean;
@@ -14,35 +14,58 @@ export interface ApolloContext {
     callback: (user: CurrentUser) => any
   ) => any;
   ifAuthenticated: (callback: (user: CurrentUser) => any) => any;
+  ifAllowedOrSelf: (
+    targetedUserID: number,
+    allowedPrivileges: Privilege[],
+    callback: (user: CurrentUser) => any
+  ) => any;
 }
 
-const ifAllowed =
+export const ifAllowed =
   (expressUser: Express.User | undefined) =>
   (allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
     if (!expressUser) {
-      throw new AuthenticationError("Unauthenticated");
+      throw new GraphQLError("Unauthenticated");
     }
 
     const user = expressUser as CurrentUser;
 
     const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
     if (!sufficientPrivilege) {
-      throw new ForbiddenError("Insufficient privilege");
+      throw new GraphQLError("Insufficient privilege");
     }
 
     if (user.hasHolds) {
-      throw new ForbiddenError("User has outstanding account holds");
+      throw new GraphQLError("User has outstanding account holds");
     }
 
     return callback(user);
   };
 
+export const ifAllowedOrSelf =
+  (expressUser: Express.User | undefined) =>
+  (targetedUserID: number, allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
+
+    if (!expressUser) {
+      throw new GraphQLError("Unauthenticated - ifallowedorself");
+    }
+
+    const user = expressUser as CurrentUser;
+
+    if (user.id === targetedUserID) {
+      return callback(user);
+    }
+    else {
+      return ifAllowed(expressUser)(allowedPrivileges, callback);
+    }
+  };
+
 // only checks if user is authenticated (for actions where holds or privileges do not matter)
-const ifAuthenticated =
+export const ifAuthenticated =
   (expressUser: Express.User | undefined) =>
   (callback: (user: CurrentUser) => any) => {
     if (!expressUser) {
-      throw new AuthenticationError("Unauthenticated");
+      throw new GraphQLError("Unauthenticated");
     }
 
     const user = expressUser as CurrentUser;
@@ -50,11 +73,12 @@ const ifAuthenticated =
     return callback(user);
   };
 
-const context = ({ req }: { req: any }) => ({
+const context = async ({ req }: { req: any }) => ({
   user: req.user,
   logout: () => req.logout(),
   ifAllowed: ifAllowed(req.user),
-  ifAuthenticated: ifAuthenticated(req.user),
+  ifAllowedOrSelf: ifAllowedOrSelf(req.user),
+  ifAuthenticated: ifAuthenticated(req.user)
 });
 
 export default context;

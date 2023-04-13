@@ -1,7 +1,7 @@
 import passport from "passport";
-import { Strategy as SamlStrategy } from "passport-saml";
+import { Strategy as SamlStrategy, ValidateInResponseTo, } from "@node-saml/passport-saml";
 import session from "express-session";
-import { v4 as uuid } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import assert from "assert";
 import fs from "fs";
 import express from "express";
@@ -26,7 +26,7 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
     firstName: testUser["urn:oid:2.5.4.42"],
     lastName: testUser["urn:oid:2.5.4.4"],
     email: testUser.email,
-    ritUsername: testUser.email.split("@")[0],
+    ritUsername: testUser.email.split("@")[0], // samltest format
   };
 }
 
@@ -34,38 +34,43 @@ export function setupAuth(app: express.Application) {
 
   const secret = process.env.SESSION_SECRET;
   const issuer = process.env.ISSUER;
-  const callback = process.env.CALLBACK_URL;
+  const callbackUrl = process.env.CALLBACK_URL;
   const entryPoint = process.env.ENTRY_POINT;
   const reactAppUrl = process.env.REACT_APP_URL;
+  const idpLogoutUrl = process.env.IDP_LOGOUT_URL;
 
   assert(secret, "SESSION_SECRET env value is null");
   assert(issuer, "ISSUER env value is null");
-  assert(callback, "CALLBACK_URL env value is null");
   assert(entryPoint, "ENTRY_POINT env value is null");
   assert(reactAppUrl, "REACT_APP_URL env value is null");
 
   app.use(
     session({
-      genid: (req) => uuid(),
+      genid: (req) => uuidv4(),
       secret: secret,
       resave: false,
       saveUninitialized: false,
-      cookie: { secure: true }, // this will make cookies send only over https
+      cookie: {
+        secure: true,   // this will make cookies send only over https
+        maxAge: 900000  // 15 minutes in milliseconds
+      },
     })
   );
 
   const samlConfig = {
-    path: "/login/callback",
-    callbackUrl: callback,
-    entryPoint: entryPoint,
     issuer: issuer,
-    identifierFormat: null,
+    path: "/login/callback",
+    callbackUrl: callbackUrl,
+    entryPoint: entryPoint,
+    identifierFormat: undefined,
     decryptionPvk: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
     privateCert: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
     cert: fs.readFileSync(process.cwd() + "/cert/idp_cert.pem", "utf8"),
-    validateInResponseTo: false,
+    validateInResponseTo: ValidateInResponseTo.never,
     disableRequestedAuthnContext: true,
-    acceptedClockSkewMs: -1, // "SAML assertion not yet valid" fix
+    
+    // TODO production solution
+    acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
   };
 
   const samlStrategy = new SamlStrategy(
@@ -73,10 +78,13 @@ export function setupAuth(app: express.Application) {
     (profile: any, done: any) => {
       // your body implementation on success, this is where we get attributes from the idp
       return done(null, profile);
+    },
+    (profile: any, done: any) => {
+      // your body implementation on success, this is where we get attributes from the idp
+      return done(null, profile);
     }
   );
 
-  /* @ts-ignore */
   passport.use(samlStrategy);
 
   passport.serializeUser(async (user: any, done) => {
@@ -111,8 +119,9 @@ export function setupAuth(app: express.Application) {
   app.use(express.json());
 
   const authenticate = passport.authenticate("saml", {
-    successRedirect: reactAppUrl,
+    failureFlash: true,
     failureRedirect: "/login/fail",
+    successRedirect: reactAppUrl
   });
 
   app.get("/login", authenticate);
@@ -121,6 +130,21 @@ export function setupAuth(app: express.Application) {
 
   app.get("/login/fail", function (req, res) {
     res.status(401).send("Login failed");
+  });
+
+  app.post('/logout', (req, res) => {
+    if (req.session) {
+      req.session.destroy(err => {
+        if (err) {
+          res.status(400).send('Logout failed');
+        } else {
+          // res.clearCookie("connect.sid");
+          res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
+        }
+      });
+    } else {
+      res.end();
+    }
   });
 
   app.get("/Shibboleth.sso/Metadata", function (req, res) {
@@ -132,5 +156,13 @@ export function setupAuth(app: express.Application) {
           fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8")
         )
       );
+  });
+
+  app.all('/app/*', (req, res, next) => {
+    if (req.user) {
+      return next();
+    }
+    console.log("redirect");
+    res.redirect('/login');
   });
 }

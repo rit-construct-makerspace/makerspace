@@ -3,15 +3,10 @@ import { Privilege } from "../schemas/usersSchema";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
 import * as UsersRepo from "../repositories/Users/UserRepository";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "./usersResolver";
+import { getUsersFullName } from "../repositories/Users/UserRepository";
 import { HoldRow } from "../db/tables";
 
 const HoldsResolvers = {
-  User: {
-    holds: async (parent: { id: number }) =>
-      HoldsRepo.getHoldsByUser(parent.id),
-  },
-
   Hold: {
     creator: async (
       parent: HoldRow,
@@ -36,28 +31,28 @@ const HoldsResolvers = {
   Mutation: {
     createHold: async (
       _parent: any,
-      args: { userID: number; description: string },
+      args: { userID: string; description: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const userWithHold = await UsersRepo.getUserByID(args.userID);
+        const userWithHold = await UsersRepo.getUserByID(Number(args.userID));
 
         await createLog(
           "{user} placed a hold on {user}'s account.",
           { id: user.id, label: getUsersFullName(user) },
-          { id: args.userID, label: getUsersFullName(userWithHold) }
+          { id: Number(args.userID), label: getUsersFullName(userWithHold) }
         );
 
-        return HoldsRepo.createHold(user.id, args.userID, args.description);
+        return HoldsRepo.createHold(user.id, Number(args.userID), args.description);
       }),
 
     removeHold: async (
       _parent: any,
-      args: { holdID: number },
+      args: { holdID: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const hold = await HoldsRepo.getHold(args.holdID);
+        const hold = await HoldsRepo.getHold(Number(args.holdID));
         const userWithHold = await UsersRepo.getUserByID(hold.userID);
 
         await createLog(
@@ -66,7 +61,7 @@ const HoldsResolvers = {
           { id: userWithHold.id, label: getUsersFullName(userWithHold) }
         );
 
-        return HoldsRepo.removeHold(args.holdID, user.id);
+        return HoldsRepo.removeHold(Number(args.holdID), user.id);
       }),
   },
 };

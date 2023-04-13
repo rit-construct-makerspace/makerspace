@@ -1,12 +1,18 @@
-import { knex } from "../db";
-import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
-import * as RoomRepo from "../repositories/Rooms/RoomRepository";
-import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import * as UserRepo from "../repositories/Users/UserRepository";
-import * as Holdsrepo from "../repositories/Holds/HoldsRepository";
-import { hashUniversityID } from "../repositories/Users/UserRepository";
+import { knex } from "../../db";
+import * as EquipmentRepo from "../../repositories/Equipment/EquipmentRepository";
+import * as RoomRepo from "../../repositories/Rooms/RoomRepository";
+import * as ModuleRepo from "../../repositories/Training/ModuleRepository";
+import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository";
+import * as UserRepo from "../../repositories/Users/UserRepository";
+import * as Holdsrepo from "../../repositories/Holds/HoldsRepository";
+import { hashUniversityID } from "../../repositories/Users/UserRepository";
 
 const tables = ["ModuleSubmissions", "ModulesForEquipment", "Equipment", "TrainingModule", "Holds", "Rooms", "Users"];
+
+const testRoom = {
+  id: 0,
+  name: "Test Room"
+};
 
 describe("EquipmentRepository tests", () => {
   beforeAll(() => {
@@ -14,24 +20,24 @@ describe("EquipmentRepository tests", () => {
     // we can here also seed our tables, if we have any seeding files
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     try {
       // reset tables...
-      tables.forEach(async (t) => {
+      for(const t of tables) {
         await knex(t).del();
-      });
+      }
     } catch (error) {
       fail("Failed setup");
     }
   });
 
-  afterAll(() => {
+  afterAll(async () => {
     try {
       // reset tables...
-      tables.forEach(async (t) => {
-          knex(t).del();
-      });
-      knex.destroy();
+      for(const t of tables) {
+        await knex(t).del();
+      }
+      await knex.destroy();
     } catch (error) {
       fail("Failed teardown");
     }
@@ -328,7 +334,7 @@ describe("EquipmentRepository tests", () => {
     await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
 
     // Add passed attempt to user
-    await UserRepo.addTrainingModuleAttemptToUser(userID, moduleID, true);
+    await SubmissionRepo.addSubmission(userID, moduleID, true);
 
     expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(true);
   });

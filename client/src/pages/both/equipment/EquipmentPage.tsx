@@ -1,4 +1,3 @@
-import React from "react";
 import { Button, Grid, Stack } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
@@ -9,6 +8,7 @@ import GET_EQUIPMENTS from "../../../queries/getEquipments";
 import { NameAndID } from "../../lab_management/manage_equipment/ManageEquipmentPage";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
+import { useState } from "react";
 
 interface MakerEquipmentPageProps {
   isAdmin: boolean;
@@ -20,6 +20,8 @@ export default function EquipmentPage({ isAdmin }: MakerEquipmentPageProps) {
 
   const getEquipmentsResult = useQuery(GET_EQUIPMENTS);
 
+  const [searchText, setSearchText] = useState("");
+
   const url = isAdmin ? "/admin/equipment/" : "/maker/equipment/";
 
   return (
@@ -29,7 +31,11 @@ export default function EquipmentPage({ isAdmin }: MakerEquipmentPageProps) {
     >
       <Page title="Equipment">
         <Stack direction="row" spacing={2}>
-          <SearchBar placeholder="Search equipment" />
+          <SearchBar 
+            placeholder="Search equipment"
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)} 
+          />
           {isAdmin && (
             <Button
               variant="contained"
@@ -41,7 +47,11 @@ export default function EquipmentPage({ isAdmin }: MakerEquipmentPageProps) {
         </Stack>
 
         <Grid container spacing={2} mt={2}>
-          {getEquipmentsResult.data?.equipments.map((e: NameAndID) => (
+          {getEquipmentsResult.data?.equipments?.filter((m: { id: number; name: string }) =>
+              m.name
+                .toLocaleLowerCase()
+                .includes(searchText.toLocaleLowerCase())
+            ).map((e: NameAndID) => (
             <EquipmentCard key={e.id} name={e.name} to={url + e.id} />
           ))}
         </Grid>
