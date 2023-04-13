@@ -140,7 +140,10 @@ describe("EquipmentRepository tests", () => {
     expect((await EquipmentRepo.getEquipmentByID(equipmentID)).archived).toBe(true);
 
     // Not returned as active equipment
-    expect((await EquipmentRepo.getEquipment()).map((equipment) => equipment.id)).not.toContainEqual(targetEquipment.id);
+    expect((await EquipmentRepo.getEquipmentWhereArchived(false)).map((equipment) => equipment.id)).not.toContainEqual(targetEquipment.id);
+
+    // Is returned as archived equipment
+    expect((await EquipmentRepo.getEquipmentWhereArchived(true)).map((equipment) => equipment.id)).toContainEqual(targetEquipment.id);
   });
 
   test("addModulesToEquipment and get", async () => {
