@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import { Stack } from "@mui/material";
@@ -18,15 +18,26 @@ export default function UsersPage() {
     navigate("/admin/people");
   };
 
+  const [searchText, setSearchText] = useState("");
+
   return (
     <RequestWrapper
       loading={getUsersResult.loading}
       error={getUsersResult.error}
     >
-      <Page title="People" maxWidth="1250px">
-        <SearchBar placeholder="Search people" sx={{ mb: 2, maxWidth: 300 }} />
+      <Page title="People">
+        <SearchBar 
+          placeholder="Search people" sx={{ mb: 2, maxWidth: 300 }} 
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
         <Stack direction="row" flexWrap="wrap">
-          {getUsersResult.data?.users.map((user: PartialUser) => (
+          {getUsersResult.data?.users
+            ?.filter((m: { id: number; firstName: string; lastName: string }) =>
+              (m.firstName + " " + m.lastName)
+                .toLocaleLowerCase()
+                .includes(searchText.toLocaleLowerCase())
+            ).map((user: PartialUser) => (
             <UserCard
               user={user}
               key={user.id}
