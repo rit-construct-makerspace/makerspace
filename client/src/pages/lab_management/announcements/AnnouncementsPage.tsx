@@ -25,7 +25,7 @@ export default function AnnouncementsPage() {
   const navigate = useNavigate();
 
   const [createAnnouncement, { loading }] = useMutation(CREATE_ANNOUNCEMENT, {
-    variables: { name: "New Announcement" },
+    variables: { name: "New Announcement", description: "New description" },
     refetchQueries: [{ query: GET_ANNOUNCEMENTS }],
   });
 
@@ -34,11 +34,12 @@ export default function AnnouncementsPage() {
   const [searchText, setSearchText] = useState("");
 
   const handleNewAnnouncementClicked = async () => {
-    const result = await createAnnouncement();
-    const announcementID = result?.data?.createAnnouncement?.id;
+    //const result = await createAnnouncement();
+    //const announcementID = result?.data?.createAnnouncement?.id;
 
     // Redirect to the announcement editor after creation
-    navigate(`/admin/announcements/${announcementID}`);
+    //navigate(`/admin/announcements/${announcementID}`);
+    navigate(`/admin/announcements/sample`);
   };
 
   return (
@@ -70,8 +71,8 @@ export default function AnnouncementsPage() {
           divider={<Divider flexItem />}
         >
           {getAnnouncementsResults.data?.modules
-            ?.filter((m: { id: number; name: string }) =>
-              m.name
+            ?.filter((m: { id: number; title: string }) =>
+              m.title
                 .toLocaleLowerCase()
                 .includes(searchText.toLocaleLowerCase())
             )

@@ -48,7 +48,7 @@ export default function ExpiringSoonCard() {
                     <Card sx={{ width: 350, padding: 2, spacing: 5, border: 1, borderColor: "lightgrey" }} >
                         <Typography variant="h4">Expiring Soon</Typography>
                         {reordered.length === 0 && (
-                             <Typography variant="body1">You're all caught up!</Typography>
+                             <Typography variant="body1" style={{ color: "grey" }}>You're all caught up!</Typography>
                         )}
                         {reordered.map((ms: ModuleStatus) => (
                             <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />

@@ -3,7 +3,6 @@ import {
     Card, CardContent, Stack,
     Typography
 } from "@mui/material";
-import React from "react";
 
 export default function UpcomingEventsCard() {
 
@@ -12,7 +11,7 @@ export default function UpcomingEventsCard() {
     const day = today.getDate();
 
     return (
-        <Card sx={{ width: 350, padding: 2, border: 1, borderColor: "lightgrey" } } >
+        <Card sx={{ width: 350, minHeight: 580, padding: 2, border: 1, borderColor: "lightgrey" } } >
             <CardContent>
                 <Stack direction="column" alignItems="flex-start" spacing={2} justifyContent="space-evenly" >
 
@@ -21,7 +20,9 @@ export default function UpcomingEventsCard() {
                         <Button style={{paddingLeft:'0px'}} sx={{ color:"darkorange" }} href={"https://calendar.google.com/calendar/embed?src=jgf55spntac7p96ea6ql1uc710%40group.calendar.google.com&ctz=America%2FNew_York"} target="_blank">View Full Calendar</Button>
                     </Stack>
 
-                    <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={5}>
+                    <Typography variant={"h5"} style={{ color: "grey" }}>No upcoming events!</Typography>
+
+                    {/* <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={5}>
                         <Typography variant="h5">{month}/{day}</Typography>
                         <Stack direction="column" spacing={1}>
                             <Typography variant="h6">11:00 AM</Typography>
@@ -51,7 +52,7 @@ export default function UpcomingEventsCard() {
                             <Typography variant="h6">3:00 PM</Typography>
                             <Typography variant={"h5"}>Q&A With Student Staff</Typography>
                         </Stack>
-                    </Stack>
+                    </Stack> */}
                 </Stack>
             </CardContent>
         </Card>

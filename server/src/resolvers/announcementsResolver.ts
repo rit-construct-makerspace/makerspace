@@ -1,4 +1,4 @@
-import * as UserRepo from "../repositories/Users/UserRepository";
+import * as AnnouncementsRepo from "../repositories/Announcements/AnnouncementsRepository";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
 import { Privilege } from "../schemas/usersSchema";
@@ -17,16 +17,18 @@ const AnnouncementsResolver = {
           ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
             return await getAnnouncements();
           }),
-    }
+    },
   
-    // Mutation: {
-    //   createUser: async (
-    //     _parent: any,
-    //     args: any,
-    //     { ifAllowed }: ApolloContext) =>
-    //       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-    //         return await UserRepo.createUser(args);
-    //     }),
+    Mutation: {
+      createAnnouncement: async (
+        _parent: any,
+        args: any,
+        { ifAllowed }: ApolloContext) =>
+          ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+            return await AnnouncementsRepo.createAnnouncement(args);
+        })
+      }
+        //,
   
     //   updateStudentProfile: async (
     //     _: any,

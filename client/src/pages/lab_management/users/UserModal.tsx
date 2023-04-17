@@ -116,18 +116,6 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
     });
   };
 
-  const handleMakePurchaseClicked = () => {
-    const amount = window.prompt("Enter purchase amount:");
-    if (amount == "") {
-      window.alert("Amount required.");
-      return;
-    }
-    else if (!amount) {
-      return;
-    }
-
-  }
-
   const handleDeleteUserClicked = () => {
     const fName = getUserResult.data.user.firstName;
     const lName = getUserResult.data.user.lastName;
@@ -180,18 +168,6 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             </StyledInfo>
 
             <PrivilegeControl userID={user.id} privilege={user.privilege} />
-
-            <Typography variant="h6" component="div" mt={6} mb={1}>
-              Purchases
-            </Typography>
-
-            <Button
-              sx={{ mt: 2, alignSelf: "flex-start" }}
-              variant="outlined"
-              onClick={handleMakePurchaseClicked}
-            >
-              Make a purchase
-            </Button>
 
             <Typography variant="h6" component="div" mt={6} mb={1}>
               Account Holds

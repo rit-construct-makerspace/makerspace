@@ -21,6 +21,8 @@ import QuizResults from "./pages/maker/take_quiz/QuizResults";
 import Homepage from "./pages/both/homepage/Homepage";
 import LoggedOutPage from "./pages/both/equipment/LoggedOutPage";
 import AnnouncementsPage from "./pages/lab_management/announcements/AnnouncementsPage";
+import EditAnnouncement from "./pages/lab_management/announcements/EditAnnouncement";
+import EditAnnouncementSample from "./pages/lab_management/announcements/EditAnnouncementPage_sample";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -85,6 +87,8 @@ export default function AppRoutes() {
           <Route path="/admin/people" element={<UsersPage />} />
 
           <Route path="/admin/announcements" element={<AnnouncementsPage />} />
+
+          <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
 
           <Route path="/admin/history" element={<AuditLogsPage />} />
         </Route>
