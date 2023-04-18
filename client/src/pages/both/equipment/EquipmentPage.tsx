@@ -28,14 +28,6 @@ export default function EquipmentPage() {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)} 
         />
-        {isAdmin && (
-          <Button
-            variant="contained"
-            onClick={() => navigate("/admin/equipment/new")}
-          >
-            + Add Equipment
-          </Button>
-        )}
     </Stack>
 
     <RequestWrapper
