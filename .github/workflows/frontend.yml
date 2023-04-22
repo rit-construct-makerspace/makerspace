@@ -4,11 +4,11 @@ name: Frontend
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master ]
-    paths: ['client/**']
+    branches: [master, heroku-deploy]
+    paths: ["client/**"]
   pull_request:
-    branches: [ master ]
-    paths: ['client/**']
+    branches: [master, heroku-deploy]
+    paths: ["client/**"]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -23,13 +23,13 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: '14'
+          node-version: "16"
           cache: npm
           cache-dependency-path: client/package-lock.json
-      
+
       - name: Install Node modules
         run: cd client && npm ci
 

@@ -1,8 +1,8 @@
 import express from "express";
 import { ApolloServer } from "@apollo/server";
-import { expressMiddleware } from '@apollo/server/express4';
+import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground";
-import { createServer } from "https";
+import { createServer } from "http";
 import compression from "compression";
 import cors from "cors";
 import { schema } from "./schema";
@@ -11,7 +11,7 @@ import { setupAuth } from "./auth";
 import context from "./context";
 import { json } from "body-parser";
 import path from "path";
-var morgan = require('morgan');
+var morgan = require("morgan");
 
 const CORS_CONFIG = {
   origin: process.env.REACT_APP_ORIGIN,
@@ -19,7 +19,7 @@ const CORS_CONFIG = {
 };
 
 async function startServer() {
-  require('dotenv').config({ path: __dirname + "/./../.env" });
+  require("dotenv").config({ path: __dirname + "/./../.env" });
 
   const app = express();
 
@@ -33,7 +33,7 @@ async function startServer() {
 
   app.use(compression());
 
-  app.use(morgan('combined'));
+  app.use(morgan("combined"));
 
   setupAuth(app);
 
@@ -53,21 +53,18 @@ async function startServer() {
   });
 
   await server.start();
-  app.use('/graphql', cors<cors.CorsRequest>(CORS_CONFIG), json(),
-    expressMiddleware(server, {context: context})
+  app.use(
+    "/graphql",
+    cors<cors.CorsRequest>(CORS_CONFIG),
+    json(),
+    expressMiddleware(server, { context: context })
   );
 
-  const httpsServer = createServer(
-    {
-      key: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
-      cert: fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8"),
-    },
-    app
-  );
+  const httpServer = createServer(app);
 
   const PORT = process.env.PORT || 3000;
 
-  httpsServer.listen({ port: PORT }, (): void =>
+  httpServer.listen({ port: PORT }, (): void =>
     console.log(
       `🚀 GraphQL-Server is running on https://localhost:${PORT}/graphql`
     )

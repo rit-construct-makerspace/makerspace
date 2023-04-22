@@ -15,14 +15,14 @@ module.exports = {
       tableName: "knex_migrations",
       directory: "migrations",
     },
-    asyncStackTraces: true
+    asyncStackTraces: true,
   },
 
   production: {
     client: "pg",
     connection: {
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false }
+      ssl: { rejectUnauthorized: false },
     },
     pool: {
       min: 2,
@@ -51,5 +51,4 @@ module.exports = {
       directory: "seeds",
     },
   },
-
 };
