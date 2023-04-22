@@ -8,7 +8,6 @@
     "build": "npm run build:server && npm run build:client",
     "build:server": "cd server/ && tsc --build --clean && tsc -p .",
     "build:client": "cd client/ && npm install && npm run build",
-    "clean": "rm -rf server/dist && rm -rf client/build && tsc --build --clean",
     "test": "npm run build && jest",
     "test:coverage": "npm run build && jest --coverage",
     "test:server:watch": "npm run build:server && cd server/ && jest --silent false --verbose --detectOpenHandles",
