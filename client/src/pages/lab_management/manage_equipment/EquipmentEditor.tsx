@@ -1,17 +1,19 @@
-import React, { ChangeEventHandler, SyntheticEvent } from "react";
+import { ChangeEventHandler, SyntheticEvent } from "react";
 import Page from "../../Page";
 import { Autocomplete, Button, Divider, Stack, TextField } from "@mui/material";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import HistoryIcon from "@mui/icons-material/History";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useQuery } from "@apollo/client";
-import GET_TRAINING_MODULES from "../../../queries/modules";
+import { GET_TRAINING_MODULES } from "../../../queries/modules";
 import RequestWrapper from "../../../common/RequestWrapper";
 import styled from "styled-components";
 import GET_ROOMS from "../../../queries/getRooms";
-import { EquipmentInput, NameAndID } from "./ManageEquipmentPage";
+import { Equipment } from "./EditEquipmentPage";
 import AttachedModule from "./AttachedModule";
-import DeleteEquipmentButton from "./DeleteEquipmentButton";
+import ArchiveEquipmentButton from "./ArchiveEquipmentButton";
+import PublishEquipmentButton from "./PublishEquipmentButton";
+import { ObjectSummary } from "../../../types/Common";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -21,8 +23,8 @@ const StyledMachineImage = styled.img`
 
 interface EquipmentEditorProps {
   newEquipment: boolean;
-  equipment: EquipmentInput;
-  setEquipment: (equipment: EquipmentInput) => void;
+  equipment: Equipment;
+  setEquipment: (equipment: Equipment) => void;
   onSave: () => void;
 }
 
@@ -35,13 +37,13 @@ export default function EquipmentEditor({
   const getRoomsResult = useQuery(GET_ROOMS);
   const getModulesResult = useQuery(GET_TRAINING_MODULES);
 
-  const getModuleOptions = (): NameAndID[] => {
+  const getModuleOptions = (): ObjectSummary[] => {
     if (!getModulesResult.data) return [];
 
     const attachedIDs = equipment.trainingModules.map((m) => m.id);
 
     return getModulesResult.data.modules.filter(
-      (m: NameAndID) => !attachedIDs.includes(m.id)
+      (m: ObjectSummary) => !attachedIDs.includes(m.id)
     );
   };
 
@@ -49,7 +51,7 @@ export default function EquipmentEditor({
     setEquipment({ ...equipment, name: e.target.value });
   };
 
-  const handleRoomChanged = (e: SyntheticEvent, value: NameAndID | null) => {
+  const handleRoomChanged = (e: SyntheticEvent, value: ObjectSummary | null) => {
     if (!value) return;
     setEquipment({
       ...equipment,
@@ -57,7 +59,7 @@ export default function EquipmentEditor({
     });
   };
 
-  const handleModuleAdded = (e: SyntheticEvent, value: NameAndID | null) => {
+  const handleModuleAdded = (e: SyntheticEvent, value: ObjectSummary | null) => {
     if (!value) return;
     setEquipment({
       ...equipment,
@@ -89,7 +91,16 @@ export default function EquipmentEditor({
             <Button variant="outlined" startIcon={<HistoryIcon />}>
               View Logs
             </Button>
-            <DeleteEquipmentButton />
+            {
+              equipment.id ?
+                equipment.archived
+                  ? <PublishEquipmentButton equipmentID={equipment.id} appearance="medium" /> 
+                  : <ArchiveEquipmentButton equipmentID={equipment.id} appearance="medium" />
+                : null
+            }
+            {
+              console.log(equipment.id + ": " + equipment.archived)
+            }
           </Stack>
         )}
 
@@ -105,6 +116,9 @@ export default function EquipmentEditor({
               label="Name"
               value={equipment.name}
               onChange={handleNameChanged}
+              inputProps={{
+                maxLength: 50
+              }}
             />
             <Autocomplete
               renderInput={(params) => (
@@ -139,8 +153,13 @@ export default function EquipmentEditor({
 
         <Autocomplete
           key={equipment.trainingModules.length}
+          renderOption={(params, module) => (
+            <li {...params} key={module.id}>
+              {module.name}
+            </li>
+          )}
           renderInput={(params) => (
-            <TextField {...params} label="Attach module" />
+            <TextField {...params} label="Attach module" key={module.id} />
           )}
           options={getModuleOptions()}
           isOptionEqualToValue={(option, value) => option.id === value.id}

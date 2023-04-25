@@ -33,9 +33,11 @@ export async function up(knex: Knex): Promise<void> {
                 t.increments('id').primary();
                 t.integer('item')
                     .references('InventoryItem.id')
+                    .onUpdate('CASCADE')
                     .onDelete('CASCADE');
                 t.integer('label')
                     .references('Label.id')
+                    .onUpdate('CASCADE')
                     .onDelete('CASCADE');
             });
         }
@@ -60,6 +62,7 @@ export async function up(knex: Knex): Promise<void> {
                     .references('InventoryItem.id');
                 t.integer('purchaseOrder')
                     .references('PurchaseOrder.id')
+                    .onUpdate('CASCADE')
                     .onDelete('CASCADE');;
                 t.integer('count');
             });
@@ -72,6 +75,7 @@ export async function up(knex: Knex): Promise<void> {
                 t.increments('id').primary();
                 t.integer('purchaseOrder')
                     .references('PurchaseOrder.id')
+                    .onUpdate('CASCADE')
                     .onDelete('CASCADE');
                 t.text('attachment');
             });

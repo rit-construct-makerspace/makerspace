@@ -24,6 +24,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.3.3",
+    "@google-cloud/local-auth": "^2.1.1",
     "@apollo/server-plugin-landing-page-graphql-playground": "^4.0.0",
     "@graphql-tools/schema": "^8.2.0",
     "@node-saml/passport-saml": "~4.0.2",
@@ -33,6 +34,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
+    "googleapis": "^111.0.0",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.13.6",
     "graphql-tag": "^2.12.6",

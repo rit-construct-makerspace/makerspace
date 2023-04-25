@@ -1,4 +1,5 @@
 import { knex } from "../../db";
+import { EntityNotFound } from "../../EntityNotFound";
 import {
   inventoryItemsToDomain,
   singleInventoryItemToDomain,
@@ -114,8 +115,11 @@ export async function addItemAmount(
 export async function archiveItem(
   itemId: number
 ): Promise<InventoryItem | null> {
-  await knex("InventoryItem").where({ id: itemId }).update({ archived: true });
-  return getItemById(itemId);
+  let updatedInventoryItems: InventoryItem[] = await knex("InventoryItem").where({ id: itemId }).update({ archived: true });
+
+  if (updatedInventoryItems.length < 1) throw new EntityNotFound(`Could not find inventory item #${itemId}`);
+
+  return updatedInventoryItems[0];
 }
 
 export async function addLabels(

@@ -36,11 +36,11 @@ const TrainingModuleResolvers = {
   Query: {
     modules: async (
       _parent: any,
-      args: any,
-      { ifAuthenticated }: ApolloContext
+      _args: any,
+      { ifAllowed }: ApolloContext
     ) =>
-      ifAuthenticated(async (user) => {
-        let modules = await ModuleRepo.getModules();
+      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        let modules = await ModuleRepo.getModulesWhereArchived(false);
 
         if (user.privilege === "MAKER")
           for (let module of modules) removeAnswersFromQuiz(module.quiz);
@@ -51,15 +51,37 @@ const TrainingModuleResolvers = {
     module: async (
       _parent: any,
       args: { id: number },
-      { ifAuthenticated }: ApolloContext
+      { ifAllowed }: ApolloContext
     ) =>
-      ifAuthenticated(async (user) => {
-        let module = await ModuleRepo.getModuleByID(args.id);
+      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, false);
 
         if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
 
         return module;
-      })
+      }),
+
+    archivedModules: async (
+      _parent: any,
+      _args: any,
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (_user) => {
+        let modules = await ModuleRepo.getModulesWhereArchived(true);
+
+        return modules;
+      }),
+
+    archivedModule: async (
+      _parent: any,
+      args: { id: number },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (_user) => {
+        let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, true);
+
+        return module;
+      }),
   },
 
   TrainingModule: {
@@ -111,19 +133,38 @@ const TrainingModuleResolvers = {
         );
       }),
 
-    deleteModule: async (
+    archiveModule: async (
       _parent: any,
       args: { id: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const module = await ModuleRepo.archiveModule(Number(args.id));
+        const module = await ModuleRepo.setModuleArchived(Number(args.id), true);
 
         await createLog(
-          "{user} deleted the {module} module.",
+          "{user} archived the {module} module.",
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
+
+        return module;
+      }),
+
+    publishModule: async (
+      _parent: any,
+      args: { id: string },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        const module = await ModuleRepo.setModuleArchived(Number(args.id), false);
+
+        await createLog(
+          "{user} archived the {module} module.",
+          { id: user.id, label: getUsersFullName(user) },
+          { id: module.id, label: module.name }
+        );
+
+        return module;
       }),
 
     submitModule: async (
@@ -134,15 +175,20 @@ const TrainingModuleResolvers = {
       return ifAllowed(
         [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
-          const { quiz, name } = await ModuleRepo.getModuleByID(Number(args.moduleID));
+          const module = await ModuleRepo.getModuleByIDWhereArchived(Number(args.moduleID), false);
 
-          if (quiz.length === 0)
-            throw Error("Provided module has no questions");
+          if (!module || module.archived) {
+            throw Error(`Cannot access module #${args.moduleID}`);
+          }
+
+          if (module.quiz.length === 0) {
+              throw Error("Provided module has no questions");
+          }
 
           let correct = 0;
           let incorrect = 0;
 
-          const questions = quiz.filter((i) =>
+          const questions = module.quiz.filter((i) =>
             ["CHECKBOXES", "MULTIPLE_CHOICE"].includes(i.type)
           );
 
@@ -175,9 +221,9 @@ const TrainingModuleResolvers = {
             await createLog(
               `{user} submitted attempt of {module} with a grade of ${grade}.`,
               { id: user.id, label: getUsersFullName(user) },
-              { id: args.moduleID, label: name }
+              { id: args.moduleID, label: module.name }
             );
-  
+
             return id;
           });
         }

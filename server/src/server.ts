@@ -39,6 +39,14 @@ async function startServer() {
 
   app.use("/app", express.static(path.join(__dirname, "../../client/build")));
 
+  app.get("/", function(req, res) {
+    res.redirect("/app");
+  });
+
+  app.get("/app/*", function (req, res) {
+    res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
+  });
+
   const server = new ApolloServer({
     schema,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],

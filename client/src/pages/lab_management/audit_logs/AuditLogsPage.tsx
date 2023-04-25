@@ -91,7 +91,7 @@ export default function LogPage() {
     startDateString || stopDateString || search.includes("q=");
 
   return (
-    <Page title="History" maxWidth="800px">
+    <Page title="History" maxWidth="1250px">
       <Stack direction="row" spacing={2}>
         <TextField
           label="Start"

@@ -4,6 +4,7 @@ import { createLog } from "../AuditLogs/AuditLogRepository";
 import { EntityNotFound } from "../../EntityNotFound";
 import { UserRow } from "../../db/tables";
 import { createHash } from "crypto";
+import { use } from "passport";
 
 export function getUsersFullName(user: UserRow) {
   return `${user.firstName} ${user.lastName}`;
@@ -84,6 +85,6 @@ export async function setPrivilege(
 }
 
 export async function archiveUser(userID: number): Promise<UserRow> {
-  await knex("Users").where({ id: userID }).update({ isArchived: true });
+  await knex("Users").where({ id: userID }).update({ archived: true });
   return await getUserByID(userID);
 }

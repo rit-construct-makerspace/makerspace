@@ -125,7 +125,16 @@ export interface UserRow {
   universityID: string;
   setupComplete: boolean;
   ritUsername: string;
-  isArchived: boolean;
+  archived: boolean;
+  balance: string;
+}
+
+export interface AnnouncementRow {
+  id: number;
+  title: string;
+  description: string;
+  postDate: Date;
+  expDate: Date;
 }
 
 declare module "knex/types/tables" {
