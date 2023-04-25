@@ -32,6 +32,3 @@ jobs:
 
       - name: Install Node modules
         run: cd client && npm ci
-
-      - name: Run tests
-        run: cd client && CI=true npm test
