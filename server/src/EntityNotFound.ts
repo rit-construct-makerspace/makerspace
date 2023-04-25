@@ -7,3 +7,9 @@ export class EntityNotFound extends GraphQLError  {
     });
   }
 }
+
+export function buildEntityNotFoundError(message: string): GraphQLError {
+  return new GraphQLError(message, {
+    extensions: { code: "ENTITY_NOT_FOUND" },
+  })
+}

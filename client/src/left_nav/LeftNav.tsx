@@ -32,19 +32,6 @@ export default function LeftNav() {
   const currentUser = useCurrentUser();
   const isMaker = currentUser.privilege === Privilege.MAKER;
 
-  const logout = useCallback(() => {
-    console.log("Logging out...")
-    fetch(process.env.LOGOUT_URL ?? "https://localhost:3000/logout", {
-      mode: 'cors',
-      method: 'POST',
-      credentials: 'include',
-      redirect: 'follow'
-    })
-    .catch(function(err) {
-        console.info(err);
-    });
-  }, []);
-
   return (
     <Box display="flex">
       <ToastContainer
@@ -81,11 +68,6 @@ export default function LeftNav() {
           <Typography variant="body1" sx={{ fontWeight: "bold" }}>
             {`${currentUser.firstName} ${currentUser.lastName}`}
           </Typography>
-          <Button
-            variant="contained"
-            onClick={logout}>
-            Logout
-          </Button>
         </Stack>
 
         {currentUser.hasHolds && <HoldAlert />}

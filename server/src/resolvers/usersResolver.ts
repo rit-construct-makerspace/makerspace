@@ -93,7 +93,7 @@ const UsersResolvers = {
           );
         }),
 
-    deleteUser: async (
+    archiveUser: async (
       _parent: any,
       args: { userID: string },
       { ifAllowed }: ApolloContext
@@ -105,7 +105,7 @@ const UsersResolvers = {
           const userSubject = await UserRepo.getUserByID(Number(args.userID));
 
           await createLog(
-            `{user} deleted {user}'s profile.`,
+            `{user} archived {user}'s profile.`,
             { id: user.id, label: getUsersFullName(user) },
             { id: args.userID, label: getUsersFullName(userSubject) }
           );

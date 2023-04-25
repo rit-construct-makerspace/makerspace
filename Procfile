@@ -1,0 +1,1 @@
+release: npm run knex:migrate:latest

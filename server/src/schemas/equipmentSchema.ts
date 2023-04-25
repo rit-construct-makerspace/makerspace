@@ -10,6 +10,7 @@ export const EquipmentTypeDefs = gql`
   type Equipment {
     id: ID!
     name: String!
+    archived: Boolean!
     room: Room!
     trainingModules: [TrainingModule]
     addedAt: DateTime!
@@ -24,13 +25,16 @@ export const EquipmentTypeDefs = gql`
   }
 
   extend type Query {
-    equipment(id: ID!): Equipment
     equipments: [Equipment]
+    equipment(id: ID!): Equipment
+    archivedEquipments: [Equipment]
+    archivedEquipment(id: ID!): Equipment
   }
 
   extend type Mutation {
     addEquipment(equipment: EquipmentInput): Equipment
     updateEquipment(id: ID!, equipment: EquipmentInput): Equipment
-    deleteEquipment(id: ID!): Equipment
+    archiveEquipment(id: ID!): Equipment
+    publishEquipment(id: ID!): Equipment
   }
 `;

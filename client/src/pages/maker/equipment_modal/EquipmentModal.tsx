@@ -1,7 +1,7 @@
 import PrettyModal from "../../../common/PrettyModal";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { GET_EQUIPMENT } from "../../lab_management/manage_equipment/ExistingEquipment";
+import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipments";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { Avatar, Button, Divider, Icon, Stack, Typography } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
@@ -11,7 +11,6 @@ import {
   ModuleStatus,
   moduleStatusMapper,
 } from "../../../common/TrainingModuleUtils";
-import { HideSource } from "@mui/icons-material";
 import CloseButton from "../../../common/CloseButton";
 
 interface EquipmentModalProps {
@@ -22,7 +21,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
   const navigate = useNavigate();
   const { passedModules } = useCurrentUser();
 
-  const result = useQuery(GET_EQUIPMENT, { variables: { id: equipmentID } });
+  const result = useQuery(GET_EQUIPMENT_BY_ID, { variables: { id: equipmentID } });
 
   return (
     <PrettyModal

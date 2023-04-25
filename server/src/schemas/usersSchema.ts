@@ -70,7 +70,7 @@ export const UsersTypeDefs = gql`
     setupComplete: Boolean
 
     """
-    Is the user's account suspended/deleted?
+    Is the user's account suspended/archived?
     """
     isArchived: Boolean
   }
@@ -116,6 +116,6 @@ export const UsersTypeDefs = gql`
 
     setPrivilege(userID: ID!, privilege: Privilege): User
 
-    deleteUser(userID: ID!): User
+    archiveUser(userID: ID!): User
   }
 `;

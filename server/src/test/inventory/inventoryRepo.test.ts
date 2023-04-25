@@ -112,7 +112,7 @@ describe("InventoryRepository test set", () => {
     }
   });
 
-  test("deleteItemById", async () => {
+  test("archiveItemById", async () => {
     let item1: InventoryItemInput = {
       count: 10,
       image: "url",

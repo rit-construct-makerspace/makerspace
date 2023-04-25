@@ -1,11 +1,11 @@
 import React from "react";
-import { NameAndID } from "./ManageEquipmentPage";
+import { ObjectSummary } from "../../../types/Common";
 import { IconButton, Stack, Typography } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CloseIcon from "@mui/icons-material/Close";
 
 interface AttachedModuleProps {
-  module: NameAndID;
+  module: ObjectSummary;
   onRemove: () => void;
 }
 

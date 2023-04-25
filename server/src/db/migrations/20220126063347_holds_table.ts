@@ -6,8 +6,10 @@ export async function up(knex: Knex): Promise<void> {
       return knex.schema.createTable("Holds", function (t) {
         t.increments("id");
         t.integer("creatorID").references("id").inTable("Users")
+          .onUpdate('CASCADE')
           .onDelete("SET NULL");
         t.integer("removerID").references("id").inTable("Users")
+          .onUpdate('CASCADE')
           .onDelete("SET NULL");
         t.integer("userID").references("id").inTable("Users")
           .onUpdate("CASCADE")

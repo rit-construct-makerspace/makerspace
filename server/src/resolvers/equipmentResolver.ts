@@ -12,19 +12,29 @@ const reservationRepo = new ReservationRepository();
 
 const EquipmentResolvers = {
   Query: {
-    equipments: async (_: any, args: any, context: any) => {
-      return await EquipmentRepo.getEquipments();
+    equipments: async (_parent: any, _args: any, _context: any) => {
+      return await EquipmentRepo.getEquipmentWhereArchived(false);
     },
 
-    equipment: async (_: any, args: { id: string }, context: any) => {
-      return await EquipmentRepo.getEquipmentByID(Number(args.id));
+    equipment: async (_parent: any, args: { id: string }, _context: any) => {
+      return await EquipmentRepo.getEquipmentByIDWhereArchived(Number(args.id), false);
     },
 
-    reservations: async (_: any, args: { id: string }, context: any) => {
+    archivedEquipments: async (_parent: any, _args: any, { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await EquipmentRepo.getEquipmentWhereArchived(true);
+      }),
+
+    archivedEquipment: async (_parent: any, args: { id: string }, { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await EquipmentRepo.getEquipmentByIDWhereArchived(Number(args.id), true);
+      }),
+
+    reservations: async (_parent: any, _args: any, _context: any) => {
       return await reservationRepo.getReservations();
     },
 
-    reservation: async (_: any, args: { id: string }, context: any) => {
+    reservation: async (_parent: any, args: { id: string }, _context: any) => {
       return await reservationRepo.getReservationById(Number(args.id));
     },
   },
@@ -64,16 +74,21 @@ const EquipmentResolvers = {
     updateEquipment: async (
       _: any,
       args: { id: string; equipment: EquipmentInput },
-      context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await EquipmentRepo.updateEquipment(Number(args.id), args.equipment);
     }),
 
-    deleteEquipment: async (_: any, args: { id: number }, context: any,
+    archiveEquipment: async (_: any, args: { id: number },
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await EquipmentRepo.archiveEquipment(args.id);
+        return await EquipmentRepo.setEquipmentArchived(args.id, true);
+    }),
+
+    publishEquipment: async (_: any, args: { id: number },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await EquipmentRepo.setEquipmentArchived(args.id, false);
     }),
   },
 };
