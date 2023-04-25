@@ -31,6 +31,7 @@ export const UsersTypeDefs = gql`
     moduleID: ID!
     moduleName: String!
     submissionDate: DateTime!
+    expirationDate: DateTime!
   }
 
   type User {
@@ -39,6 +40,7 @@ export const UsersTypeDefs = gql`
     lastName: String!
     pronouns: String
     email: String!
+    balance: String!
     isStudent: Boolean!
     privilege: Privilege!
     registrationDate: DateTime!

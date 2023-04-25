@@ -4,6 +4,7 @@ import { createLog } from "../AuditLogs/AuditLogRepository";
 import { EntityNotFound } from "../../EntityNotFound";
 import { UserRow } from "../../db/tables";
 import { createHash } from "crypto";
+import { use } from "passport";
 
 export function getUsersFullName(user: UserRow) {
   return `${user.firstName} ${user.lastName}`;

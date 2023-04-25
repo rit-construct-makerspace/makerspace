@@ -17,7 +17,11 @@ import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPrevi
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
+import Homepage from "./pages/both/homepage/Homepage";
 import LoggedOutPage from "./pages/both/equipment/LoggedOutPage";
+import AnnouncementsPage from "./pages/lab_management/announcements/AnnouncementsPage";
+import EditAnnouncement from "./pages/lab_management/announcements/EditAnnouncement";
+import EditAnnouncementSample from "./pages/lab_management/announcements/EditAnnouncementPage_sample";
 import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import EditActiveModulePage from "./pages/lab_management/edit_module/EditActiveModulePage";
@@ -31,6 +35,7 @@ export default function AppRoutes() {
     <div className="app">
 
     <Routes>
+
         <Route path="/signup" element={<SignupPage />} />
 
         <Route
@@ -41,6 +46,8 @@ export default function AppRoutes() {
         <Route path="/loggedOut" element={<LoggedOutPage />}/>
 
         <Route path={"/"} element={<LeftNav />}>
+          <Route path="/" element={<Homepage />} />
+
           <Route path="/create-reservation" element={<CreateReservationPage />} />
 
           <Route
@@ -89,6 +96,10 @@ export default function AppRoutes() {
           <Route path="/admin/people/:id" element={<UsersPage />} />
 
           <Route path="/admin/people" element={<UsersPage />} />
+
+          <Route path="/admin/announcements" element={<AnnouncementsPage />} />
+
+          <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
 
           <Route path="/admin/history" element={<AuditLogsPage />} />
 

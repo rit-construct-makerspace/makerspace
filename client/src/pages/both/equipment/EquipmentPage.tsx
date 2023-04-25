@@ -15,7 +15,6 @@ export default function EquipmentPage() {
   const navigate = useNavigate();
 
   const getEquipmentsResult = useQuery(GET_EQUIPMENTS);
-  // const getArchivedEquipmentsResult = isAdmin ? useQuery(GET_ARCHIVED_EQUIPMENTS) : undefined;
 
   const url = "/maker/equipment/";
   const [searchText, setSearchText] = useState("");

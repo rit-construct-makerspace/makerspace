@@ -10,6 +10,7 @@ import StorefrontIcon from "@mui/icons-material/Storefront";
 import PeopleIcon from "@mui/icons-material/People";
 import HistoryIcon from "@mui/icons-material/History";
 import Avatar from "@mui/material/Avatar";
+import AnnouncementIcon from '@mui/icons-material/Announcement';
 import Typography from "@mui/material/Typography";
 import NavLink from "./NavLink";
 import LogoSvg from "../assets/logo.svg";
@@ -21,9 +22,13 @@ import { Outlet } from "react-router-dom";
 import { Stack, Button, Box } from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const drawerWidth = 250;
@@ -31,6 +36,7 @@ const drawerWidth = 250;
 export default function LeftNav() {
   const currentUser = useCurrentUser();
   const isMaker = currentUser.privilege === Privilege.MAKER;
+  const navigate = useNavigate();
 
   return (
     <Box display="flex">
@@ -58,7 +64,7 @@ export default function LeftNav() {
         variant="permanent"
         anchor="left"
       >
-        <StyledLogo src={LogoSvg} alt="Construct logo" />
+        <StyledLogo src={LogoSvg} alt="Construct logo" onClick={() => navigate(`/`)} />
 
         <Stack direction="row" alignItems="center" spacing={2} padding={2}>
           <Avatar
@@ -123,6 +129,11 @@ export default function LeftNav() {
               to="/admin/reservations"
               primary="Reservations"
               icon={<EventIcon />}
+            />
+            <NavLink
+              to="/admin/announcements"
+              primary="Announcements"
+              icon={<AnnouncementIcon />}
             />
             <NavLink
               to="/admin/people"
