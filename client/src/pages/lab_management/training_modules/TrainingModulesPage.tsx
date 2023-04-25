@@ -29,7 +29,7 @@ export default function TrainingModulesPage() {
     const moduleId = result?.data?.createModule?.id;
 
     // Redirect to the module editor after creation
-    navigate(`/admin/training/${moduleId}`);
+    navigate(`/admin/training/archived/${moduleId}`);
   };
 
   return (
