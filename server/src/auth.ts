@@ -1,5 +1,8 @@
 import passport from "passport";
-import { Strategy as SamlStrategy, ValidateInResponseTo, } from "@node-saml/passport-saml";
+import {
+  Strategy as SamlStrategy,
+  ValidateInResponseTo,
+} from "@node-saml/passport-saml";
 import session from "express-session";
 import { v4 as uuidv4 } from "uuid";
 import assert from "assert";
@@ -8,9 +11,11 @@ import express from "express";
 import {
   createUser,
   getUserByRitUsername,
+  getUsersFullName,
 } from "./repositories/Users/UserRepository";
 import { getHoldsByUser } from "./repositories/Holds/HoldsRepository";
 import { CurrentUser } from "./context";
+import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
 
 interface RitSsoUser {
   firstName: string;
@@ -31,7 +36,6 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
 }
 
 export function setupAuth(app: express.Application) {
-
   const secret = process.env.SESSION_SECRET;
   const issuer = process.env.ISSUER;
   const callbackUrl = process.env.CALLBACK_URL;
@@ -51,11 +55,16 @@ export function setupAuth(app: express.Application) {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        secure: true,   // this will make cookies send only over https
-        maxAge: 900000  // 15 minutes in milliseconds
+        secure: process.env.NODE_ENV === "production" ? true : false, // this will make cookies send only over https
+        httpOnly: true, // cookies are sent in requests, but not accessible to client-side JS
+        maxAge: 900000, // 15 minutes in milliseconds
       },
     })
   );
+
+  if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1); // trust first proxy
+  }
 
   const samlConfig = {
     issuer: issuer,
@@ -63,12 +72,12 @@ export function setupAuth(app: express.Application) {
     callbackUrl: callbackUrl,
     entryPoint: entryPoint,
     identifierFormat: undefined,
-    decryptionPvk: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
-    privateCert: fs.readFileSync(process.cwd() + "/cert/key.pem", "utf8"),
-    cert: fs.readFileSync(process.cwd() + "/cert/idp_cert.pem", "utf8"),
+    decryptionPvk: process.env.SSL_PVKEY ?? "",
+    privateCert: process.env.SSL_PVKEY ?? "",
+    cert: process.env.IDP_PUBKEY ?? "",
     validateInResponseTo: ValidateInResponseTo.never,
     disableRequestedAuthnContext: true,
-    
+
     // TODO production solution
     acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
   };
@@ -121,22 +130,31 @@ export function setupAuth(app: express.Application) {
   const authenticate = passport.authenticate("saml", {
     failureFlash: true,
     failureRedirect: "/login/fail",
-    successRedirect: reactAppUrl
+    successRedirect: reactAppUrl,
   });
 
+  // TODO add authentication logging
   app.get("/login", authenticate);
 
-  app.post("/login/callback", authenticate);
+  app.post("/login/callback", authenticate, async (req, res) => {
+    console.log("Logged in")
+    if (req.user && 'id' in req.user && 'firstName' in req.user && 'lastName' in req.user) {
+      await createLog(
+        `{user} logged in.`,
+        { id: req.user.id, label: `${req.user.firstName} ${req.user.lastName}` }
+      );
+    }
+  });
 
   app.get("/login/fail", function (req, res) {
     res.status(401).send("Login failed");
   });
 
-  app.post('/logout', (req, res) => {
+  app.post("/logout", (req, res) => {
     if (req.session) {
-      req.session.destroy(err => {
+      req.session.destroy((err) => {
         if (err) {
-          res.status(400).send('Logout failed');
+          res.status(400).send("Logout failed");
         } else {
           // res.clearCookie("connect.sid");
           res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
@@ -153,16 +171,16 @@ export function setupAuth(app: express.Application) {
       .status(200)
       .send(
         samlStrategy.generateServiceProviderMetadata(
-          fs.readFileSync(process.cwd() + "/cert/cert.pem", "utf8")
+          process.env.SSL_PUBKEY ?? ""
         )
       );
   });
 
-  app.all('/app/*', (req, res, next) => {
+  app.all("/app/*", (req, res, next) => {
     if (req.user) {
       return next();
     }
     console.log("redirect");
-    res.redirect('/login');
+    res.redirect("/login");
   });
 }

@@ -5,11 +5,7 @@ module.exports = {
   development: {
     client: "pg",
     connection: {
-      host: "localhost",
-      user: process.env.POSTGRES_USER,
-      database: process.env.POSTGRES_DB,
-      password: process.env.POSTGRES_PASSWORD,
-      port: 5433,
+      connectionString: process.env.DATABASE_URL
     },
     pool: {
       min: 2,
@@ -19,17 +15,14 @@ module.exports = {
       tableName: "knex_migrations",
       directory: "migrations",
     },
-    asyncStackTraces: true
+    asyncStackTraces: true,
   },
 
   production: {
     client: "pg",
     connection: {
-      host: process.env.POSTGRES_ENDPOINT,
-      user: process.env.POSTGRES_USER,
-      database: process.env.POSTGRES_DB,
-      password: process.env.POSTGRES_PASSWORD,
-      port: 5433,
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
     },
     pool: {
       min: 2,
@@ -44,11 +37,7 @@ module.exports = {
   test: {
     client: "pg",
     connection: {
-      host: "localhost",
-      user: process.env.POSTGRES_USER,
-      database: process.env.POSTGRES_DB,
-      password: process.env.POSTGRES_PASSWORD,
-      port: 5434,
+      connectionString: process.env.DATABASE_URL
     },
     pool: {
       min: 2,
@@ -62,5 +51,4 @@ module.exports = {
       directory: "seeds",
     },
   },
-
 };

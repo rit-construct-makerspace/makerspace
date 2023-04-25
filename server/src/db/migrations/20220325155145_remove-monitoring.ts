@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 
 /*
-Remove roomID and monitoringRoomID from the users table since we
+Remove roomID and monitoringRoomID from the Users table since we
 no longer have the requirement of mentors clicking a button to
 start monitoring a room. For roomID, we are now using the
 RoomSwipes table instead.

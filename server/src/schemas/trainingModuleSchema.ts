@@ -17,6 +17,7 @@ export const TrainingModuleTypeDefs = gql`
   type TrainingModule {
     id: ID!
     name: String!
+    archived: Boolean!
     quiz: JSON
     reservationPrompt: JSON
     equipment: [Equipment]
@@ -30,12 +31,15 @@ export const TrainingModuleTypeDefs = gql`
   extend type Query {
     modules: [TrainingModule]
     module(id: ID!): TrainingModule
+    archivedModules: [TrainingModule]
+    archivedModule(id: ID!): TrainingModule
   }
 
   extend type Mutation {
     createModule(name: String): TrainingModule
     updateModule(id: ID!, name: String!, quiz: JSON!, reservationPrompt: JSON): TrainingModule
-    deleteModule(id: ID!): TrainingModule
+    archiveModule(id: ID!): TrainingModule
+    publishModule(id: ID!): TrainingModule
 
     """
     Submit a trainingModule for assessment, the attempt will be stored

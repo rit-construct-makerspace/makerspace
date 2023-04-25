@@ -16,7 +16,7 @@ import EmptyPageSection from "../../../../common/EmptyPageSection";
 
 interface QuizBuilderProps {
   quiz: QuizItem[];
-  setModuleDraft: Updater<Module | undefined>;
+  setModuleDraft: Updater<Module>;
 }
 
 export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: QuizBuilderProps) {

@@ -53,12 +53,12 @@ export const StoreFrontTypeDefs = gql`
   }
 
   extend type Mutation {
-    deleteInventoryItem(itemId: ID!): InventoryItem
+    archiveInventoryItem(itemId: ID!): InventoryItem
     createInventoryItem(item: InventoryItemInput): InventoryItem
     updateInventoryItem(itemId: ID!, item: InventoryItemInput): InventoryItem
     addItemAmount(itemId: ID!, count: Int!): InventoryItem
     removeItemAmount(itemId: ID!, count: Int!): InventoryItem
     createLabel(label: String): String
-    deleteLabel(label: String): String
+    archiveLabel(label: String): String
   }
 `;

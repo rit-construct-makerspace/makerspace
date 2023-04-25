@@ -3,6 +3,16 @@ import { TrainingModuleRow } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";
 import { PassedModule } from "../../schemas/usersSchema";
 
+export async function getModules(): Promise<TrainingModuleRow[]> {
+  return knex("TrainingModule").select();
+}
+
+export async function getModulesWhereArchived(archived: boolean): Promise<TrainingModuleRow[]> {
+  return knex("TrainingModule")
+          .select()
+          .where({ archived: archived });
+}
+
 export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
   const trainingModule = await knex("TrainingModule").first().where({ id });
 
@@ -12,18 +22,45 @@ export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
   return trainingModule;
 }
 
-export async function getModules(): Promise<TrainingModuleRow[]> {
-  return knex("TrainingModule").select().where({ archived: false });
+export async function getModuleByIDWhereArchived(id: number, archived: boolean): Promise<TrainingModuleRow> {
+  const trainingModule = await knex("TrainingModule")
+                                .first()
+                                .where({
+                                  id: id,
+                                  archived: archived
+                                });
+
+  if (!trainingModule)
+    throw new EntityNotFound(`Training module #${id} not found`);
+
+  return trainingModule;
 }
 
-export async function archiveModule(id: number): Promise<TrainingModuleRow> {
-  await knex("TrainingModule").where({ id: id }).update({ archived: true });
-  return getModuleByID(id);
+export async function setModuleArchived(id: number, archived: boolean): Promise<TrainingModuleRow> {
+  const updatedModules: TrainingModuleRow[] = await knex("TrainingModule")
+                                                      .where({ id: id })
+                                                      .update({ archived: archived })
+                                                      .returning("*");
+
+  // TODO: Detatch equipment that require this module?
+  await knex("ModulesForEquipment").delete().where({moduleID: id});
+
+  if (updatedModules.length < 1) throw new EntityNotFound(`Training module #${id} not found`);
+
+  return updatedModules[0];
 }
 
 export async function addModule(name: string): Promise<TrainingModuleRow> {
-  const [id] = await knex("TrainingModule").insert({ name: name }, "id");
-  return getModuleByID(id);
+  const addedModule: TrainingModuleRow[] = await knex("TrainingModule")
+                      .insert(
+                        {
+                          name: name,
+                          archived: true 
+                        }, "*");
+
+  if (addedModule.length < 1) throw new EntityNotFound(`Could not add module ${name}`);
+
+  return addedModule[0];
 }
 
 export async function updateModule(

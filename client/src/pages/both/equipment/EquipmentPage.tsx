@@ -4,60 +4,49 @@ import SearchBar from "../../../common/SearchBar";
 import EquipmentCard from "./EquipmentCard";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import GET_EQUIPMENTS from "../../../queries/getEquipments";
-import { NameAndID } from "../../lab_management/manage_equipment/ManageEquipmentPage";
+import { GET_EQUIPMENTS } from "../../../queries/equipments";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
+import { ObjectSummary } from "../../../types/Common";
 import { useState } from "react";
 
-interface MakerEquipmentPageProps {
-  isAdmin: boolean;
-}
-
-export default function EquipmentPage({ isAdmin }: MakerEquipmentPageProps) {
+export default function EquipmentPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const getEquipmentsResult = useQuery(GET_EQUIPMENTS);
 
+  const url = "/maker/equipment/";
   const [searchText, setSearchText] = useState("");
 
-  const url = isAdmin ? "/admin/equipment/" : "/maker/equipment/";
-
   return (
+    <Page title="Equipment">
+    <Stack direction="row" spacing={2}>
+        <SearchBar 
+          placeholder="Search equipment"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)} 
+        />
+    </Stack>
+
     <RequestWrapper
       loading={getEquipmentsResult.loading}
       error={getEquipmentsResult.error}
     >
-      <Page title="Equipment" maxWidth="1250px">
-        <Stack direction="row" spacing={2}>
-          <SearchBar 
-            placeholder="Search equipment"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)} 
-          />
-          {isAdmin && (
-            <Button
-              variant="contained"
-              onClick={() => navigate("/admin/equipment/new")}
-            >
-              + Add Equipment
-            </Button>
-          )}
-        </Stack>
-
-        <Grid container spacing={2} mt={2}>
-          {getEquipmentsResult.data?.equipments?.filter((m: { id: number; name: string }) =>
+        <Grid container spacing={3} mt={2}>
+          {getEquipmentsResult.data?.equipments?.filter((m: ObjectSummary) =>
               m.name
                 .toLocaleLowerCase()
                 .includes(searchText.toLocaleLowerCase())
-            ).map((e: NameAndID) => (
-            <EquipmentCard key={e.id} name={e.name} to={url + e.id} />
+            ).map((e: ObjectSummary) => (
+              <Grid key={e.id} item>
+                <EquipmentCard id={e.id} name={e.name} to={url + e.id} />
+              </Grid>
           ))}
         </Grid>
-
-        {!isAdmin && id && <EquipmentModal equipmentID={id} />}
-      </Page>
     </RequestWrapper>
+
+    { id && <EquipmentModal equipmentID={id} />}
+  </Page>
   );
 }

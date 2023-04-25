@@ -125,7 +125,7 @@ export interface UserRow {
   universityID: string;
   setupComplete: boolean;
   ritUsername: string;
-  isArchived: boolean;
+  archived: boolean;
   balance: string;
 }
 

@@ -10,7 +10,6 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import GET_TRAINING_MODULES from "../../../queries/modules";
 import { GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
 import { Announcement } from "@mui/icons-material";
-import TrainingModule from "../training_modules/TrainingModule";
 import AnnouncementModule from "./AnnouncementModule";
 
 export const CREATE_ANNOUNCEMENT = gql`
