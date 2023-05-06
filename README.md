@@ -7,8 +7,8 @@ On Mac: brew install postgresql
 *Make sure you only have one version of postgres on machine
 
 -Install Docker Desktop: 
-  * if in starting state: go into git bash run command 
-  * 'C:\Program Files\Docker\Docker\DockerCli.exe' -SwitchDaemon
+  if in starting state: go into git bash run command:
+  'C:\Program Files\Docker\Docker\DockerCli.exe' -SwitchDaemon
 
 -Install pgAdmin(/postgres)
 
