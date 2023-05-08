@@ -1,9 +1,3 @@
-# makerspace
-
-name and everything else subject to change
-
-http://make.rit.edu/
-
 # Developing Locally
 
 ## Prerequisites
