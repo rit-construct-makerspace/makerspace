@@ -1,8 +1,8 @@
-import { Button, Grid, Stack } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import EquipmentCard from "./EquipmentCard";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENTS } from "../../../queries/equipments";
 import RequestWrapper from "../../../common/RequestWrapper";
@@ -12,7 +12,6 @@ import { useState } from "react";
 
 export default function EquipmentPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const getEquipmentsResult = useQuery(GET_EQUIPMENTS);
 

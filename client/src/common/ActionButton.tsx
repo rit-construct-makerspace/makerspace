@@ -1,5 +1,5 @@
 import { LoadingButton } from "@mui/lab";
-import { CircularProgress, IconButton, IconProps, Tooltip } from "@mui/material";
+import { CircularProgress, IconButton, Tooltip } from "@mui/material";
 
 interface ActionButtonProps {
   iconSize: number;

@@ -6,8 +6,7 @@ import { createServer } from "http";
 import compression from "compression";
 import cors from "cors";
 import { schema } from "./schema";
-import fs from "fs";
-import { setupAuth } from "./auth";
+import { setupSessions, setupDevAuth, setupStagingAuth, setupAuth } from "./auth";
 import context from "./context";
 import { json } from "body-parser";
 import path from "path";
@@ -25,19 +24,37 @@ async function startServer() {
 
   app.use(cors(CORS_CONFIG));
 
-  // app.all('*', (req, res, next) => {
-  //   res.header("Access-Control-Allow-Origin", CORS_CONFIG.origin);
-  //   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  //   next();
-  // });
-
   app.use(compression());
 
   app.use(morgan("combined"));
 
-  setupAuth(app);
+  setupSessions(app);
+
+  // environment setup
+  if (process.env.NODE_ENV === "development") {
+    // view engine setup
+    app.set('views', path.join(__dirname, 'views'));
+    app.set('view engine', 'ejs');
+
+    setupDevAuth(app);
+  } else if (process.env.NODE_ENV === "staging") {
+    setupStagingAuth(app);
+  } else if (process.env.NODE_ENV === "production") {
+    app.set("trust proxy", 1); // trust first proxy
+
+    setupAuth(app);
+  } else {
+    process.exit(-1);
+  }
 
   app.use("/app", express.static(path.join(__dirname, "../../client/build")));
+
+  app.all("/app/*", (req, res, next) => {
+    if (req.user) {
+      return next();
+    }
+    res.redirect("/login");
+  });+
 
   app.get("/", function(req, res) {
     res.redirect("/app");

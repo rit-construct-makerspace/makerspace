@@ -1,13 +1,9 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
-  Grid,
-  IconButton,
   Typography,
 } from "@mui/material";
 

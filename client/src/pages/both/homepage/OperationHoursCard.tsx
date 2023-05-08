@@ -2,8 +2,6 @@ import {
     Card, Stack,
     Typography
 } from "@mui/material";
-import {useCurrentUser} from "../../../common/CurrentUserProvider";
-import React from "react";
 
 export default function AccountBalanceCard() {
     return (

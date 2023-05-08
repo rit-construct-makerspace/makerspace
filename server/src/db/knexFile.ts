@@ -18,6 +18,22 @@ module.exports = {
     asyncStackTraces: true,
   },
 
+  staging: {
+    client: "pg",
+    connection: {
+      connectionString: process.env.DATABASE_URL
+    },
+    pool: {
+      min: 2,
+      max: 10,
+    },
+    migrations: {
+      tableName: "knex_migrations",
+      directory: "migrations",
+    },
+    asyncStackTraces: true,
+  },
+
   production: {
     client: "pg",
     connection: {

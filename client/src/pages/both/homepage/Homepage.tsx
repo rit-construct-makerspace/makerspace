@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {Stack} from "@mui/material";
 import Page from "../../Page";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
@@ -10,14 +10,10 @@ import IncompleteTrainingsCard from "./IncompleteTrainingsCard";
 import ExpiringSoonCard from "./ExpiringSoonCard";
 import AnnouncementsCard from "./AnnouncementsCard";
 import { useNavigate } from "react-router-dom";
-import RequestWrapper from "../../../common/RequestWrapper";
-import { useQuery } from "@apollo/client";
-import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
+// import RequestWrapper from "../../../common/RequestWrapper";
+// import { useQuery } from "@apollo/client";
+// import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
 //import UpcomingEventsCard from "./GoogleCalendarAPI";
-
-
-const API_KEY = "AIzaSyB_pJ1Aiw6PxzXbwoengIwtHbr-CALyfUc";
-const CALENDAR_ID = "c_1d2032584bf3324558da28ace1d5d1e522e3fca2de4e578589a31e4477fa522e@group.calendar.google.com";
 
 const Homepage: React.FC = () => {
     const currentUser = useCurrentUser();

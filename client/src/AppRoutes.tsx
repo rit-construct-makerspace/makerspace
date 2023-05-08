@@ -18,9 +18,7 @@ import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
 import Homepage from "./pages/both/homepage/Homepage";
-import LoggedOutPage from "./pages/both/equipment/LoggedOutPage";
 import AnnouncementsPage from "./pages/lab_management/announcements/AnnouncementsPage";
-import EditAnnouncement from "./pages/lab_management/announcements/EditAnnouncement";
 import EditAnnouncementSample from "./pages/lab_management/announcements/EditAnnouncementPage_sample";
 import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -42,8 +40,6 @@ export default function AppRoutes() {
           path="/admin/storefront/preview"
           element={<StorefrontPreviewPage />}
         />
-
-        <Route path="/loggedOut" element={<LoggedOutPage />}/>
 
         <Route path={"/"} element={<LeftNav />}>
           <Route path="/" element={<Homepage />} />

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { Button } from "@mui/material";
 import { gql, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";

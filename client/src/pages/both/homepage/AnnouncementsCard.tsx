@@ -1,12 +1,11 @@
 import {
-    Card, CardActionArea, Stack,
+    Card,
+    Stack,
     Typography
 } from "@mui/material";
-import React from "react";
 import { useQuery } from "@apollo/client";
-import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
+import { GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { grey } from "@mui/material/colors";
 
 export default function AnnouncementsCard() {
     const getAnnouncementsResult = useQuery(GET_ANNOUNCEMENTS);

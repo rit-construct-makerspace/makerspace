@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import Page from "../../Page";
-import Explainer from "../../maker/training/Explainer";
+import { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
@@ -10,7 +8,7 @@ import {
 } from "../../../common/TrainingModuleUtils";
 import TrainingModuleRow from "../../../common/TrainingModuleRow";
 import { searchFilter } from "../../../common/SearchBar";
-import {Card, CardActionArea, Typography} from "@mui/material";
+import {Card, Typography} from "@mui/material";
 
 
 export const GET_ALL_TRAINING_MODULES = gql`

@@ -1,5 +1,5 @@
 import { PassedModule } from "./CurrentUserProvider";
-import { differenceInMonths, differenceInWeeks, differenceInYears, parseISO } from "date-fns";
+import { differenceInMonths, differenceInYears, parseISO } from "date-fns";
 
 export interface ModuleStatus {
   moduleID: string;

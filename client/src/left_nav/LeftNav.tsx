@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import List from "@mui/material/List";
 import Drawer from "@mui/material/Drawer";
 import Divider from "@mui/material/Divider";
@@ -19,7 +18,7 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
-import { Stack, Button, Box } from "@mui/material";
+import { Stack, Box } from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
