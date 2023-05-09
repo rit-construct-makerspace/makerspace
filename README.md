@@ -16,11 +16,18 @@ For an example of required client environment variables, see [client/.env.exampl
 ## Database
 This project uses a postgres database. You must use the environment variable `DATABASE_URL` in the server to point the app to your postgres instance. `DATABASE_URL` should be a database URI. See the "Connection URIs" section of [the postgres docs](https://www.postgresql.org/docs/current/libpq-connect.html) for details.
 
-The project also contains a docker-compose definition for a postgres instance exposed on port `5433`. To use this definition you must set the following environment variables in your 
+The project also contains a docker-compose definition for a postgres instance exposed on port `5433`. To use this definition you must set the following environment variables in the project root:
+```
+POSTGRES_USER
+POSTGRES_PASSWORD
+POSTGRES_DB
+```
+The docker definition will automatically configure the database to use these values.
+
 To build and start the postgres container from the project root, run the following commands:
 
 ```
-docker-compose build
+docker-compose build db
 docker-compose up -d db
 ```
 
@@ -38,7 +45,7 @@ cd client
 npm run start:dev
 ```
 
-To test the app go to `http://localhost:3001/app`. The development environment has a mock-up authentication with test users, whose credentials can be found in [server/src/data/devUsers.json](server/src/data/devUsers.json).
+To test the app, start the server and then go to `http://localhost:3001/app`. The development environment has a mock-up authentication with test users, whose credentials can be found in [server/src/data/devUsers.json](server/src/data/devUsers.json).
 
 ## Server
 The server/backend consists of an Express server with a GraphQL API.

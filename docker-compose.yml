@@ -7,11 +7,11 @@ services:
     depends_on:
       - db
     build:
-      context: server
+      context: ./
       dockerfile: ./Dockerfile
       target: production
     volumes:
-      - ./server:/home/node/app/src
+      - ./:/home/node/app/src
     expose:
       - '3000'
     ports:
