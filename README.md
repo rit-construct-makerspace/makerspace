@@ -1,9 +1,15 @@
 # Developing Locally
 
 ## Prerequisites
-NodeJS latest - [install](https://nodejs.org/en/download/package-manager)
+NodeJS latest - [install](https://no    dejs.org/en/download/package-manager)
 
 postgres - [install](https://www.postgresql.org/download/)
+
+typescript - use "npm install typescript"
+
+knex - use "npm install knex"
+
+ejs - use "npm install ejs"
 
 ### Optional
 Docker Desktop - [install](https://docs.docker.com/get-docker/)

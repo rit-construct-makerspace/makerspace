@@ -1,16 +1,16 @@
 {
-    "john": {
+    "jd1111": {
       "password": "secret1",
       "firstName": "John",
       "lastName": "Doe",
       "email": "jd1111@rit.edu",
       "ritUsername": "jd1111"
     },
-    "jane": {
+    "jd2222": {
       "password": "secret2",
       "firstName": "Jane",
       "lastName": "Doe",
       "email": "jd2222@rit.edu",
       "ritUsername": "jd2222"
     }
-  }
+}

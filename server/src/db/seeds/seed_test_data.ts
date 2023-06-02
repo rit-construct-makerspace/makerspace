@@ -1,4 +1,5 @@
-import { Knex } from "knex";
+import {Knex} from "knex";
+import {Privilege} from "../../schemas/usersSchema";
 
 
 exports.seed = function(knex: Knex) {
@@ -57,8 +58,22 @@ exports.seed = function(knex: Knex) {
     });
 
 
+
+    const usersSeed = new Promise<void>(async (resolve, reject) => {
+        await knex('Users').del()
+            .then(function() {
+                //insert seed users
+                return knex('Users').insert([
+                    {firstName: 'Heinz', lastName: 'Doofenshmirtz', email: 'dhd5555@rit.edu', privilege: Privilege.STAFF,
+                        expectedGraduation: "Spring 2025", college: 'GCCIS', pronouns: "he/him", ritUsername: 'dhd5555'}
+                ])
+            })
+    });
+
+
     return roomSeed
       .then(() => equipmentSeed)
       .then(() => trainingModulesSeed)
-      .then(() => trainingModulesForEquipmentSeed);
+      .then(() => trainingModulesForEquipmentSeed)
+        .then(() => usersSeed);
   };
