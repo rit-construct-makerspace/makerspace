@@ -16,6 +16,9 @@ export default function LogoutPromptPage() {
         })
             .then(() => {
                 console.log("logged out")
+
+                //reload is needed to force logout user, in the future should make this happen in a better way
+                //possibly redirect to login page?
                 window.location.reload();
 
             })
@@ -30,10 +33,6 @@ export default function LogoutPromptPage() {
 
 
             <Typography variant={"h5"} style={{ color: "grey" }}>Are you sure you would like to logout?</Typography>
-
-            {/*<form action="/logout" method="POST">*/}
-            {/*    <input type="submit" value="Submit" />*/}
-            {/*</form>*/}
 
             <Button onClick={logout}>
                 Logout

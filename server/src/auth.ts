@@ -138,11 +138,10 @@ export function setupDevAuth(app: express.Application) {
     successRedirect: reactAppUrl,
     failureRedirect: '/login'
   }));
-
-  // app.post("/logout", passport.session().destroy)
-
+  
   app.post("/logout", (req, res) => {
 
+    // for development purposes just nuking the session whenever it is requested
     passport.session().destroy
 
     if (req.session) {

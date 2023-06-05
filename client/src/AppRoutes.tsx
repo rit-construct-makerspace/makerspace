@@ -45,7 +45,7 @@ export default function AppRoutes() {
         <Route path={"/"} element={<LeftNav />}>
           <Route path="/" element={<Homepage />} />
 
-          <Route path="/create-reservation" element={<CreateReservationPage />} />2
+          <Route path="/create-reservation" element={<CreateReservationPage />} />
 
           <Route
             path="/maker/equipment"
