@@ -1,6 +1,7 @@
 import Page from "../../Page";
 import {Button, Grid, Stack, Typography} from "@mui/material";
 import {useCallback} from "react";
+import {useNavigate} from "react-router-dom";
 
 export default function LogoutPromptPage() {
 
@@ -13,6 +14,11 @@ export default function LogoutPromptPage() {
             credentials: 'include',
             redirect: 'follow'
         })
+            .then(() => {
+                console.log("logged out")
+                window.location.reload();
+
+            })
             .catch(function(err) {
                 console.info(err);
             });
@@ -32,6 +38,7 @@ export default function LogoutPromptPage() {
             <Button onClick={logout}>
                 Logout
             </Button>
+
 
         </Page>
     );
