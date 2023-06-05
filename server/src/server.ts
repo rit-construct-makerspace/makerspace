@@ -47,18 +47,19 @@ async function startServer() {
     process.exit(-1);
   }
 
-  app.use("/app", express.static(path.join(__dirname, "../../client/build")));
+  app.use("/app", express.static(path.join(__dirname, "../../client/npx browserslist@latest --update-db\n")));
 
   app.all("/app/*", (req, res, next) => {
     if (req.user) {
       return next();
     }
     res.redirect("/login");
-  });+
+  });+ //TOOD: what does this + do?
 
   app.get("/", function(req, res) {
     res.redirect("/app");
   });
+
 
   app.get("/app/*", function (req, res) {
     res.sendFile(path.join(__dirname, "../../client/build", "index.html"));

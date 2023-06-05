@@ -24,6 +24,7 @@ import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageE
 import NotFoundPage from "./pages/NotFoundPage";
 import EditActiveModulePage from "./pages/lab_management/edit_module/EditActiveModulePage";
 import EditArchivedModulePage from "./pages/lab_management/edit_module/EditArchivedModulePage";
+import LogoutPromptPage from "./pages/both/logout/LogoutPromptPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -44,7 +45,7 @@ export default function AppRoutes() {
         <Route path={"/"} element={<LeftNav />}>
           <Route path="/" element={<Homepage />} />
 
-          <Route path="/create-reservation" element={<CreateReservationPage />} />
+          <Route path="/create-reservation" element={<CreateReservationPage />} />2
 
           <Route
             path="/maker/equipment"
@@ -98,6 +99,8 @@ export default function AppRoutes() {
           <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
 
           <Route path="/admin/history" element={<AuditLogsPage />} />
+
+          <Route path="/logoutprompt" element={<LogoutPromptPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Route>

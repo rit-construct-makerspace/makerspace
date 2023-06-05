@@ -18,7 +18,7 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
-import { Stack, Box } from "@mui/material";
+import {Stack, Box, Button} from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -146,6 +146,15 @@ export default function LeftNav() {
             />
           </List>
         )}
+          {/*Logout Button*/}
+        <List component={"nav"}>
+          <NavLink
+              to="/logoutprompt"
+              primary="Logout"
+              icon={<HandymanIcon />}
+          />
+        </List>
+
       </Drawer>
       <Outlet />
     </Box>
