@@ -21,7 +21,7 @@ export default function ManageEquipmentPage() {
   const url = "/admin/equipment/";
 
   return (
-    <Page title="Equipment">
+    <Page title="Equipment" maxWidth="1250px">
         <Stack
             spacing={2}
         >
