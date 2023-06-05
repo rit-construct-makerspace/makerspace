@@ -89,6 +89,7 @@ export function setupDevAuth(app: express.Application) {
           return done(null, false, { message: 'Incorrect username or password.' });
         }
         else {
+          console.log("valid login");
           return done(null, devUser);
         }  
       }
@@ -137,6 +138,25 @@ export function setupDevAuth(app: express.Application) {
     successRedirect: reactAppUrl,
     failureRedirect: '/login'
   }));
+  
+  app.post("/logout", (req, res) => {
+
+    // for development purposes just nuking the session whenever it is requested
+    passport.session().destroy
+
+    if (req.session) {
+      req.session.destroy((err) => {
+        if (err) {
+          res.status(400).send("Logout failed");
+        } else {
+          // res.clearCookie("connect.sid");
+          res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
+        }
+      });
+    } else {
+      res.end();
+    }
+  });
 }
 
 export function setupStagingAuth(app: express.Application) {
