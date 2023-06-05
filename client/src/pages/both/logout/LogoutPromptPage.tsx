@@ -1,19 +1,22 @@
 import Page from "../../Page";
 import {Button, Grid, Stack, Typography} from "@mui/material";
+import {useCallback} from "react";
 
 export default function LogoutPromptPage() {
 
 
-    // function handleLogout = () = {
-    //     const response = await fetch("/logout", {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //         },
-    //         credentials: 'same-origin'
-    //     });
-    //
-    // }
+    const logout = useCallback(() => {
+        console.log("Logging out...")
+        fetch("http://localhost:3000/logout", {
+            mode: 'cors',
+            method: 'POST',
+            credentials: 'include',
+            redirect: 'follow'
+        })
+            .catch(function(err) {
+                console.info(err);
+            });
+    }, []);
 
 
     return (
@@ -22,13 +25,13 @@ export default function LogoutPromptPage() {
 
             <Typography variant={"h5"} style={{ color: "grey" }}>Are you sure you would like to logout?</Typography>
 
-            <form action="/logout" method="POST">
-                <input type="submit" value="Submit" />
-            </form>
+            {/*<form action="/logout" method="POST">*/}
+            {/*    <input type="submit" value="Submit" />*/}
+            {/*</form>*/}
 
-            {/*<Button onClick={handleLogout}>*/}
-            {/*    Logout*/}
-            {/*</Button>*/}
+            <Button onClick={logout}>
+                Logout
+            </Button>
 
         </Page>
     );
