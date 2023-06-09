@@ -6,7 +6,7 @@ module.exports = {
     client: "pg",
     connection: {
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false }
+      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
     },
     pool: {
       min: 2,
@@ -22,7 +22,8 @@ module.exports = {
   staging: {
     client: "pg",
     connection: {
-      connectionString: process.env.DATABASE_URL
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
     },
     pool: {
       min: 2,
@@ -39,7 +40,7 @@ module.exports = {
     client: "pg",
     connection: {
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      ssl: { rejectUnauthorized: true },
     },
     pool: {
       min: 2,
@@ -54,7 +55,8 @@ module.exports = {
   test: {
     client: "pg",
     connection: {
-      connectionString: process.env.DATABASE_URL
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
     },
     pool: {
       min: 2,
