@@ -30,7 +30,6 @@ export default function EditNewModulePage() {
     const [updateModule, updateResult] = useMutation(CREATE_TRAINING_MODULE);
 
     const executeSave = async (updatedModule: Moduledraft) => {
-        console.log(updatedModule)
         await updateModule({
             variables: {
                 name: updatedModule.name,

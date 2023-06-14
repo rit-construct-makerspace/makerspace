@@ -23,7 +23,6 @@ export default function EditArchivedModulePage() {
   });
 
   const executeUpdate = async (updatedModule: Module) => {
-    console.log(updatedModule)
     await updateModule({
       variables: {
         id: updatedModule.id,
