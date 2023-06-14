@@ -13,24 +13,23 @@ import TextDraft from "./TextDraft";
 import { Module, QuizItem, QuizItemType } from "../../../../types/Quiz";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import EmptyPageSection from "../../../../common/EmptyPageSection";
+import { Moduledraft } from "../../../../types/Quiz";
 
 interface QuizBuilderProps {
   quiz: QuizItem[];
-  setModuleDraft: Updater<Module>;
+  handleAdd: any
+  handleRemove: any
+  handleUpdate: any
+  handleOnDragEnd: any
 }
 
-export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: QuizBuilderProps) {
-  const addItem = (item: QuizItem) =>
-    setModuleDraft((draft) => {
-      draft?.quiz.push(item);
-    });
+export default function QuizBuilder({ quiz, handleAdd, handleRemove, handleUpdate, handleOnDragEnd}: QuizBuilderProps) {
 
-  const removeItem = (itemId: string) => {
-    setModuleDraft((draft) => {
-      const index = draft!.quiz.findIndex((i) => i.id === itemId);
-      draft?.quiz.splice(index, 1);
-    });
-  };
+  const addItem = (item: QuizItem) =>
+    handleAdd(item)
+
+  const removeItem = (itemId: string) => 
+    handleRemove(itemId)
 
   const duplicateItem = (item: QuizItem) => {
     addItem({
@@ -41,12 +40,8 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
     });
   }
 
-  const updateItem = (itemId: string, updatedItem: QuizItem) => {
-    setModuleDraft((draft) => {
-      const index = draft!.quiz.findIndex((i) => i.id === itemId);
-      draft!.quiz[index] = updatedItem;
-    });
-  };
+  const updateItem = (itemId: string, updatedItem: QuizItem) => 
+    handleUpdate(itemId, updatedItem)
 
   const createQuestion = () =>
     addItem({
@@ -77,14 +72,8 @@ export default function QuizBuilder({ quiz, setModuleDraft: setModuleDraft }: Qu
       text: "",
     });
 
-  const onDragEnd = (result: DropResult) => {
-    setModuleDraft((draft) => {
-      if (!result.destination) return;
-
-      const [removed] = draft!.quiz.splice(result.source.index, 1);
-      draft!.quiz.splice(result.destination.index, 0, removed);
-    });
-  };
+  const onDragEnd = (result: DropResult) => 
+    handleOnDragEnd(result)
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

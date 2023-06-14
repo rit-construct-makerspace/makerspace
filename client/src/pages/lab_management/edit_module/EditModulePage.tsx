@@ -1,34 +1,20 @@
-import { useState } from "react";
 import QuizBuilder from "./quiz/QuizBuilder";
 import {
-  Button,
   CircularProgress,
   Fab,
   Grid,
   TextField,
-  Switch,
-  FormControlLabel,
-  FormGroup,
-  Accordion,
-  AccordionSummary,
-  Typography,
-  AccordionDetails
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Page from "../../Page";
 import SaveIcon from "@mui/icons-material/Save";
-import { useMutation, useQuery } from "@apollo/client";
-import RequestWrapper2 from "../../../common/RequestWrapper2";
-import { Updater, useImmer } from "use-immer";
-import { Module, ReservationPrompt } from "../../../types/Quiz";
-import { GET_MODULE, GET_TRAINING_MODULES, UPDATE_MODULE, ARCHIVE_MODULE } from "../../../queries/modules";
+import { useImmer } from "use-immer";
+import { Module, QuizItem } from "../../../types/Quiz";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ReservationPromptDraft from "./reservation_prompt/ReservationPromptDraft";
 import PublishTrainingModuleButton from "../training_modules/PublishTrainingModuleButton";
 import ArchiveTrainingModuleButton from "../training_modules/ArchiveTrainingModuleButton";
-
+import { DropResult } from "react-beautiful-dnd";
+import { useNavigate } from "react-router-dom";
 interface EditModulePageProps {
   moduleInitialValue: Module;
   deleteModule: () => Promise<void>;
@@ -43,7 +29,9 @@ export default function EditModulePage({
     updateLoading
 }: EditModulePageProps) {
 
-  const [moduleDraft, setModuleDraft] = useImmer<Module>(moduleInitialValue);
+  const navigate = useNavigate();
+
+  const [module, setModule] = useImmer<Module>(moduleInitialValue);
 
   const trainingModSavedAnimation = () => {
     toast.success('Training Module Saved', {
@@ -72,9 +60,11 @@ export default function EditModulePage({
   }
 
   const handleSaveClicked = async () => {
-    await updateModule(moduleDraft);
+    await updateModule(module);
 
     trainingModSavedAnimation();
+    
+    navigate(`/admin/training`)
   }
 
   const handleDeleteClicked = async () => {
@@ -86,6 +76,34 @@ export default function EditModulePage({
 
     trainingModDeletedAnimation();
   }
+
+  const handleAddQuizItem = (item: QuizItem) => {
+    setModule((draft) => {
+      draft?.quiz.push(item);
+    });
+  };
+
+  const handleRemoveQuizItem = (itemId: string) => {
+    setModule((draft) => {
+      const index = draft!.quiz.findIndex((i) => i.id === itemId);
+      draft?.quiz.splice(index, 1);
+    });
+  };
+
+  const handleUpdateQuizItem = (itemId: string, updatedItem: QuizItem) => {
+    setModule((draft) => {
+      const index = draft!.quiz.findIndex((i) => i.id === itemId);
+      draft!.quiz[index] = updatedItem;
+    });
+  };
+
+  const handleOnDragEnd = (result: DropResult) => {
+    setModule((draft) => {
+      if (!result.destination) return;
+      const [removed] = draft!.quiz.splice(result.source.index, 1);
+      draft!.quiz.splice(result.destination.index, 0, removed);
+    });
+  };
 
   return (
     <Page title="Edit training module" maxWidth="600px">
@@ -101,8 +119,8 @@ export default function EditModulePage({
               md={8}>
               <TextField
                 label="Module title"
-                value={moduleDraft.name}
-                onChange={(e) => setModuleDraft((draft) => {
+                value={module.name}
+                onChange={(e) => setModule((draft) => {
                   draft.name = e.target.value;
                 })}
                 fullWidth
@@ -113,14 +131,15 @@ export default function EditModulePage({
               md={4}
               justifySelf="center">
               {
-                moduleDraft.archived
-                  ? <PublishTrainingModuleButton moduleID={moduleDraft.id} appearance="large" />
-                  : <ArchiveTrainingModuleButton moduleID={moduleDraft.id} appearance="large" />
+                module.archived
+                  ? <PublishTrainingModuleButton moduleID={module.id} appearance="large" />
+                  : <ArchiveTrainingModuleButton moduleID={module.id} appearance="large" />
               }
             </Grid>
           </Grid>
 
-          <QuizBuilder quiz={moduleDraft.quiz ? moduleDraft.quiz : []} setModuleDraft={setModuleDraft} />
+          <QuizBuilder quiz={module.quiz ? module.quiz : []} handleAdd={handleAddQuizItem} handleRemove={handleRemoveQuizItem} handleUpdate={handleUpdateQuizItem} handleOnDragEnd={handleOnDragEnd}/>
+
 
           <Fab
             color="primary"

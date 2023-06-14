@@ -25,6 +25,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import EditActiveModulePage from "./pages/lab_management/edit_module/EditActiveModulePage";
 import EditArchivedModulePage from "./pages/lab_management/edit_module/EditArchivedModulePage";
 import LogoutPromptPage from "./pages/both/logout/LogoutPromptPage";
+import EditNewModulePage from "./pages/lab_management/edit_module/EditNewModulePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -65,6 +66,8 @@ export default function AppRoutes() {
 
           <Route path="/maker/materials" element={<InventoryPreviewPage />} />
 
+
+
           <Route
             path="/admin/equipment"
             element={<ManageEquipmentPage />}
@@ -74,11 +77,17 @@ export default function AppRoutes() {
 
           <Route path="/admin/equipment/archived/:id" element={<EditEquipmentPage archived={true} />} />
 
+
+
           <Route path="/admin/training" element={<TrainingModulesPage />} />
+
+          <Route path="/admin/training/new" element={<EditNewModulePage />} />
 
           <Route path="/admin/training/:id" element={<EditActiveModulePage />} />
 
           <Route path="/admin/training/archived/:id" element={<EditArchivedModulePage />} />
+
+
 
           <Route path="/admin/inventory" element={<InventoryPage />} />
 

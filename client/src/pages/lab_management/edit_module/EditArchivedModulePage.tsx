@@ -28,7 +28,6 @@ export default function EditArchivedModulePage() {
         id: updatedModule.id,
         name: updatedModule.name,
         quiz: updatedModule.quiz,
-        reservationPrompt: updatedModule.reservationPrompt 
       },
       refetchQueries: [
         { query: GET_ARCHIVED_MODULE, variables: { id } },

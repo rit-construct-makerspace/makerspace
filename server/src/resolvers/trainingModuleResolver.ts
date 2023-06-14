@@ -98,11 +98,14 @@ const TrainingModuleResolvers = {
   Mutation: {
     createModule: async (
       _parent: any,
-      args: { name: string },
+      args: { name: string; quiz: object },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        const module = await ModuleRepo.addModule(args.name);
+        const module = await ModuleRepo.addModule(
+          args.name,
+          args.quiz
+        );
 
         await createLog(
           "{user} created the {module} module.",

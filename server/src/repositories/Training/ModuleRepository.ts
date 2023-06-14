@@ -1,5 +1,6 @@
+import { log } from "console";
 import { knex } from "../../db";
-import { TrainingModuleRow } from "../../db/tables";
+import { TrainingModuleRow, TrainingModuleItem } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";
 import { PassedModule } from "../../schemas/usersSchema";
 
@@ -28,7 +29,7 @@ export async function getModuleByIDWhereArchived(id: number, archived: boolean):
                                 .where({
                                   id: id,
                                   archived: archived
-                                });
+                                });  
 
   if (!trainingModule)
     throw new EntityNotFound(`Training module #${id} not found`);
@@ -49,17 +50,17 @@ export async function setModuleArchived(id: number, archived: boolean): Promise<
 
   return updatedModules[0];
 }
+export async function addModule(name: string, quiz: object): Promise<TrainingModuleRow> {
 
-export async function addModule(name: string): Promise<TrainingModuleRow> {
+
   const addedModule: TrainingModuleRow[] = await knex("TrainingModule")
                       .insert(
                         {
                           name: name,
-                          archived: true 
+                          quiz: JSON.stringify(quiz) as unknown as TrainingModuleItem[] //quiz has same format as TrainingModuleItem, (updateModule does  as unknown as TrainingModuleItem[] behind the scene somewhere but I cannot find how to do that)
                         }, "*");
 
   if (addedModule.length < 1) throw new EntityNotFound(`Could not add module ${name}`);
-
   return addedModule[0];
 }
 

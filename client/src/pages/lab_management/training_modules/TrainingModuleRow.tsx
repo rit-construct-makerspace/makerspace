@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { ObjectSummary } from "../../../types/Common";
 import PublishTrainingModuleButton from "./PublishTrainingModuleButton";
 import ArchiveTrainingModuleButton from "./ArchiveTrainingModuleButton";
-import { DocumentNode } from "@apollo/client";
 
 interface TrainingModuleProps {
   module: ObjectSummary;

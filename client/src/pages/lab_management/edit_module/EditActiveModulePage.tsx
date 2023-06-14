@@ -28,7 +28,6 @@ export default function EditActiveModulePage() {
         id: updatedModule.id,
         name: updatedModule.name,
         quiz: updatedModule.quiz,
-        reservationPrompt: updatedModule.reservationPrompt 
       },
       refetchQueries: [
         { query: GET_MODULE, variables: { id } },
