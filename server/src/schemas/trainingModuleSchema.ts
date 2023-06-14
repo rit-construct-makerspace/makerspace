@@ -1,6 +1,6 @@
 import { gql } from "graphql-tag";
 
-export interface TrainingModule {
+export interface TrainingModule { //dead
   id: number;
   name: string;
   quiz: object;
@@ -36,7 +36,7 @@ export const TrainingModuleTypeDefs = gql`
   }
 
   extend type Mutation {
-    createModule(name: String): TrainingModule
+    createModule(name: String!, quiz: JSON!): TrainingModule
     updateModule(id: ID!, name: String!, quiz: JSON!, reservationPrompt: JSON): TrainingModule
     archiveModule(id: ID!): TrainingModule
     publishModule(id: ID!): TrainingModule
