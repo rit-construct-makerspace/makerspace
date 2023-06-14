@@ -6,6 +6,7 @@ import * as SubmissionRepo from "../../repositories/Training/SubmissionRepositor
 import * as UserRepo from "../../repositories/Users/UserRepository";
 import * as Holdsrepo from "../../repositories/Holds/HoldsRepository";
 import { hashUniversityID } from "../../repositories/Users/UserRepository";
+import { TrainingModuleItem } from "../../db/tables";
 
 const tables = ["ModuleSubmissions", "ModulesForEquipment", "Equipment", "TrainingModule", "Holds", "Rooms", "Users"];
 
@@ -160,7 +161,12 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[]
     })).id;
 
-    const moduleID = (await ModuleRepo.addModule("Test Module")).id;
+    const exampleQuiz: TrainingModuleItem[] = [{
+      id: '6784b67f-10d0-4476-8a81-e30c5f537e4e',
+      type: 'TEXT',
+      text: 'example'
+    }]
+    const moduleID = (await ModuleRepo.addModule("Test Module", exampleQuiz)).id;
 
     // Check added
     expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
@@ -174,6 +180,11 @@ describe("EquipmentRepository tests", () => {
   });
 
   test("updateModules", async () => {
+    const exampleQuiz: TrainingModuleItem[] = [{
+      id: '6784b67f-10d0-4476-8a81-e30c5f537e4e',
+      type: 'TEXT',
+      text: 'example'
+    }]
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
@@ -187,8 +198,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[]
     })).id;
 
-    const moduleOneID = (await ModuleRepo.addModule("Test Module I")).id;
-    const moduleTwoID = (await ModuleRepo.addModule("Test Module II")).id;
+    const moduleOneID = (await ModuleRepo.addModule("Test Module I", exampleQuiz)).id;
+    const moduleTwoID = (await ModuleRepo.addModule("Test Module II", exampleQuiz)).id;
 
     // Check added
     expect(await EquipmentRepo.getEquipmentByID(equipmentID)).toBeDefined();
@@ -333,8 +344,14 @@ describe("EquipmentRepository tests", () => {
 
     expect(user.universityID).toBe(hashUniversityID(uid));
 
+    const exampleQuiz: TrainingModuleItem[] = [{
+      id: '6784b67f-10d0-4476-8a81-e30c5f537e4e',
+      type: 'TEXT',
+      text: 'example'
+    }]
+
     // Create module
-    const moduleID = (await ModuleRepo.addModule("Test Module")).id;
+    const moduleID = (await ModuleRepo.addModule("Test Module", exampleQuiz)).id;
 
     // Add module to equipment
     await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
@@ -431,8 +448,14 @@ describe("EquipmentRepository tests", () => {
 
     expect(user.universityID).toBe(hashUniversityID(uid));
 
+    const exampleQuiz: TrainingModuleItem[] = [{
+      id: '6784b67f-10d0-4476-8a81-e30c5f537e4e',
+      type: 'TEXT',
+      text: 'example'
+    }]
+
     // Create module
-    const moduleID = (await ModuleRepo.addModule("Test Module")).id;
+    const moduleID = (await ModuleRepo.addModule("Test Module", exampleQuiz)).id;
 
     // Add module to equipment
     await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
