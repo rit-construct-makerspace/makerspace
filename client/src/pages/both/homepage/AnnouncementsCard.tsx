@@ -4,7 +4,7 @@ import {
     Typography
 } from "@mui/material";
 import { useQuery } from "@apollo/client";
-import { GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
+import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 
 export default function AnnouncementsCard() {
@@ -19,13 +19,15 @@ export default function AnnouncementsCard() {
                 <Stack direction={"column"} spacing={1}>
                     <Typography variant="h4">Announcements</Typography>
                     <Stack spacing={1}>
-                        {/* {getAnnouncementsResult.data?.announcements.map((announcement: Announcement) => (
+                        {getAnnouncementsResult.data?.getAllAnnouncements?.map((announcement: Announcement) => (
                             <Stack>
                                 <Typography variant="h5" color={"darkorange"}>{announcement.title}</Typography>
                                 <Typography variant="body1">{announcement.description}</Typography>
                             </Stack>
-                        ))} */}
-                        <Typography variant={"h5"} style={{ color: "grey" }}>No announcements!</Typography>
+                        ))}
+                        {!getAnnouncementsResult.data?.getAllAnnouncements &&(
+                            <Typography variant={"h5"} style={{ color: "grey" }}>No announcements!</Typography>
+                        )}
                     </Stack>
                 </Stack>
             </Card>
