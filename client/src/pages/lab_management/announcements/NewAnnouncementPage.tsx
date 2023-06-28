@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
-import AnnouncementModalContents from "./AnnouncementModalContents";
+import { useState } from "react";
 import HistoryIcon from "@mui/icons-material/History";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_ANNOUNCEMENTS, GET_ANNOUNCEMENT, CREATE_ANNOUNCEMENT } from "../../../queries/announcementsQueries";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_ANNOUNCEMENTS, CREATE_ANNOUNCEMENT } from "../../../queries/announcementsQueries";
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import DeleteMaterialButton from "../inventory/DeleteMaterialButton";
@@ -20,7 +18,6 @@ export default function NewAnnouncementPage() {
 
     const navigate = useNavigate();
 
-    const query = useQuery(GET_ANNOUNCEMENTS);
 
     const [newTitle, setNewTitle] = useState('');
     const [newDescription, setNewDescription] = useState('');

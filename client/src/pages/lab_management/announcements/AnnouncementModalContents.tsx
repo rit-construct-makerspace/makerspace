@@ -1,20 +1,15 @@
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   Button,
-  InputAdornment,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
-import HelpTooltip from "../../../common/HelpTooltip";
 import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
-import styled from "styled-components";
-import InventoryItem from "../../../types/InventoryItem";
 import { Announcement } from "../../../queries/announcementsQueries";
 import DeleteMaterialButton from "../inventory/DeleteMaterialButton";
-import { AnnouncementInput } from "../../../types/Announcement";
 import { useNavigate } from "react-router-dom";
 
 interface InputErrors {

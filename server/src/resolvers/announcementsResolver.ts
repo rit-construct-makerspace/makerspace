@@ -1,10 +1,6 @@
-import * as AnnouncementsRepo from "../repositories/Announcements/AnnouncementsRepository";
-import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
+
 import { Privilege } from "../schemas/usersSchema";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { ApolloContext } from "../context";
-import { getUsersFullName } from "../repositories/Users/UserRepository";
 import { getAnnouncements, getAnnouncementByID, createAnnouncement, updateAnnouncement } from "../repositories/Announcements/AnnouncementsRepository";
 
 const AnnouncementsResolver = {

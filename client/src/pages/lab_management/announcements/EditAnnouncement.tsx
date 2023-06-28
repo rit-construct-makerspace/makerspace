@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AnnouncementModalContents from "./AnnouncementModalContents";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { GET_ANNOUNCEMENTS, GET_ANNOUNCEMENT, UPDATE_ANNOUNCEMENT, Announcement } from "../../../queries/announcementsQueries";
 import { useParams } from "react-router-dom";
-import { AnnouncementInput } from "../../../types/Announcement";
 
 
 
