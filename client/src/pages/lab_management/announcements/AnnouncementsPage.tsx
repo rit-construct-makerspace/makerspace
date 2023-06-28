@@ -7,26 +7,13 @@ import { useNavigate } from "react-router-dom";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import RequestWrapper from "../../../common/RequestWrapper";
-import GET_TRAINING_MODULES from "../../../queries/modules";
-import { GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
+import { GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import { Announcement } from "@mui/icons-material";
 import AnnouncementModule from "./AnnouncementModule";
 
-export const CREATE_ANNOUNCEMENT = gql`
-  mutation CreateAnnouncement($title: String, $description: String) {
-    createAnnouncement(title: $title, description: $description) {
-      id
-    }
-  }
-`;
 
 export default function AnnouncementsPage() {
   const navigate = useNavigate();
-
-  const [createAnnouncement, { loading }] = useMutation(CREATE_ANNOUNCEMENT, {
-    variables: { name: "New Announcement", description: "New description" },
-    refetchQueries: [{ query: GET_ANNOUNCEMENTS }],
-  });
 
   const getAnnouncementsResults = useQuery(GET_ANNOUNCEMENTS);
 
@@ -38,7 +25,8 @@ export default function AnnouncementsPage() {
 
     // Redirect to the announcement editor after creation
     //navigate(`/admin/announcements/${announcementID}`);
-    navigate(`/admin/announcements/sample`);
+    //navigate(`/admin/announcements/sample`);s
+    navigate(`/admin/announcements/new`);
   };
 
   return (
@@ -54,7 +42,7 @@ export default function AnnouncementsPage() {
             onChange={(e) => setSearchText(e.target.value)}
           />
           <LoadingButton
-            loading={loading}
+            loading={false}
             variant="outlined"
             startIcon={<CreateIcon />}
             onClick={handleNewAnnouncementClicked}
@@ -69,7 +57,7 @@ export default function AnnouncementsPage() {
           sx={{ width: "100%", mt: 2 }}
           divider={<Divider flexItem />}
         >
-          {getAnnouncementsResults.data?.modules
+          {getAnnouncementsResults.data?.getAllAnnouncements
             ?.filter((m: { id: number; title: string }) =>
               m.title
                 .toLocaleLowerCase()

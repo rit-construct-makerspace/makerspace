@@ -4,7 +4,7 @@ import {
     Typography
 } from "@mui/material";
 import { useQuery } from "@apollo/client";
-import { GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
+import { GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 
 export default function AnnouncementsCard() {

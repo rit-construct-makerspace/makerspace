@@ -7,6 +7,11 @@ export enum AnnouncementItemType {
 //     text: string;
 //     correct: boolean;
 //   }
+
+  export interface AnnouncementInput {
+    title: string;
+    description: string;
+  };
   
   export interface Announcement {
     id: number;

@@ -12,17 +12,14 @@ import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
 import styled from "styled-components";
 import InventoryItem from "../../../types/InventoryItem";
-import { Announcement } from "../../../queries/getAnnouncements";
+import { Announcement } from "../../../queries/announcementsQueries";
 import DeleteMaterialButton from "../inventory/DeleteMaterialButton";
+import { AnnouncementInput } from "../../../types/Announcement";
+import { useNavigate } from "react-router-dom";
 
 interface InputErrors {
   title?: boolean;
   description?: boolean;
-}
-
-export interface AnnouncementInput {
-  title: string;
-  description: string;
 }
 
 interface AnnouncementPageProps {
@@ -40,10 +37,13 @@ export default function AnnouncementModalContents({
   onSave,
   loading,
 }: AnnouncementPageProps) {
+
+  const navigate = useNavigate();
+  
   const [inputErrors, setInputErrors] = useState<InputErrors>({});
 
   const handleStringChange =
-    (property: keyof AnnouncementInput) =>
+    (property: keyof Announcement) =>
     (e: ChangeEvent<HTMLInputElement>) =>
       setAnnouncementDraft({ ...announcementDraft, [property]: e.target.value });
 
@@ -59,6 +59,8 @@ export default function AnnouncementModalContents({
     if (hasInputErrors) return;
 
     onSave();
+
+    navigate("/admin/announcements");
   };
 
   const title = `${isNewAnnouncement ? "New" : "Edit"} Announcement`;

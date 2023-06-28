@@ -1,61 +1,40 @@
 import React, { useEffect, useState } from "react";
-import AnnouncementModalContents, {
-  AnnouncementInput,
-} from "./AnnouncementModalContents";
+import AnnouncementModalContents from "./AnnouncementModalContents";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
+import { GET_ANNOUNCEMENTS, GET_ANNOUNCEMENT, UPDATE_ANNOUNCEMENT, Announcement } from "../../../queries/announcementsQueries";
+import { useParams } from "react-router-dom";
+import { AnnouncementInput } from "../../../types/Announcement";
 
-const GET_ANNOUNCEMENT = gql`
-  query GetAnnouncementByID($id: ID!) {
-    Announcement(Id: $id) {
-      title
-      description
-    }
-  }
-`;
 
-const UPDATE_ANNOUNCEMENT = gql`
-  mutation UpdateAnnouncement($id: ID!, $announcement: Announcement) {
-    updateAnnouncement(announcementID: $id, announcement: $announcement) {
-      id
-    }
-  }
-`;
 
-interface EditAnnouncementProps {
-  announcementID: string;
-  onClose: () => void;
-}
+export default function EditAnnouncement() {
 
-export default function EditAnnouncement({ announcementID, onClose }: EditAnnouncementProps) {
-  const [announcementDraft, setAnnouncementDraft] = useState<Partial<AnnouncementInput>>({});
+  const { id } = useParams<{ id: string }>();
+
+  const [announcementDraft, setAnnouncementDraft] = useState<Partial<Announcement>>({});
 
   const query = useQuery(GET_ANNOUNCEMENT, {
-    variables: { id: announcementID },
+    variables: { id },
   });
 
-  const [updateInventoryItem, mutation] = useMutation(UPDATE_ANNOUNCEMENT, {
-    variables: { id: announcementID, item: announcementDraft },
+  const [updateAnnouncement, mutation] = useMutation(UPDATE_ANNOUNCEMENT, {
+    variables: { id: id, title: announcementDraft.title, description: announcementDraft.description },
     refetchQueries: [
       { query: GET_ANNOUNCEMENTS },
-      { query: GET_ANNOUNCEMENT, variables: { id: announcementID } },
+      { query: GET_ANNOUNCEMENT, variables: { id } },
     ],
   });
 
   // After the item has been fetched, fill in the draft
   useEffect(() => {
-    if (!query.data?.InventoryItem) return;
+    if (!query.data?.getAnnouncement) return;
     setAnnouncementDraft({
-      ...query.data.InventoryItem,
+      ...query.data.getAnnouncement,
       __typename: undefined,
     });
   }, [query.data, setAnnouncementDraft]);
 
-  // Close the modal upon successful mutation
-  useEffect(() => {
-    if (mutation.data?.updateInventoryItem?.id) onClose();
-  }, [mutation.data, onClose]);
 
   return (
     <RequestWrapper loading={query.loading} error={query.error} minHeight={322}>
@@ -63,7 +42,7 @@ export default function EditAnnouncement({ announcementID, onClose }: EditAnnoun
         isNewAnnouncement={false}
         announcementDraft={announcementDraft}
         setAnnouncementDraft={setAnnouncementDraft}
-        onSave={updateInventoryItem}
+        onSave={updateAnnouncement}
         loading={mutation.loading}
       />
     </RequestWrapper>
