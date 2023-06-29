@@ -66,6 +66,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
               <Button
                 startIcon={<EventIcon />}
                 variant="contained"
+                onClick={() => navigate("/create-reservation")}
                 disabled={!reservationReady}
               >
                 Create reservation

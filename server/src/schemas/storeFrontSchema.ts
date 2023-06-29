@@ -48,7 +48,7 @@ export const StoreFrontTypeDefs = gql`
 
   extend type Query {
     InventoryItems: [InventoryItem]
-    InventoryItem(Id: ID!): InventoryItem
+    InventoryItem(id: ID!): InventoryItem
     Labels: [String]
   }
 
