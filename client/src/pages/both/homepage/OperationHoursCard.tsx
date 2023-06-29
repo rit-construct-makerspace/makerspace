@@ -5,7 +5,7 @@ import {
 
 export default function AccountBalanceCard() {
     return (
-        <Card sx={{ width: 350, height: 150, padding: 2, border: 1, borderColor: "lightgrey" }} >
+        <Card sx={{ width: 350, maxWidth: 500, height: 150, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1  }} >
             <Typography variant="h4">Lab Hours</Typography>
             <Stack direction={"row"} spacing={2}>
                 <Typography color={"darkorange"} variant="h6">Monday - Thursday</Typography>

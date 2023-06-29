@@ -27,6 +27,10 @@ export async function updateAnnouncement(announcement: {
   description: string;
 }): Promise<AnnouncementRow> {
   await knex("Announcements").where({ id: announcement.id}).update({ title: announcement.title, description: announcement.description})
-  console.log(getAnnouncementByID(announcement.id))
   return getAnnouncementByID(announcement.id)
+}
+
+export async function deleteAnnouncement(id: number): Promise<boolean>{
+  await knex("Announcements").where({ id: id}).delete()
+  return true
 }

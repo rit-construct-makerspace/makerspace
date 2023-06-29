@@ -45,3 +45,9 @@ export const UPDATE_ANNOUNCEMENT = gql`
     }
   }
 `;
+
+export const DELETE_ANNOUNCEMENT = gql`
+  mutation DeleteAnnouncement($id: ID!) {
+    deleteAnnouncement(id: $id)
+  }
+`;

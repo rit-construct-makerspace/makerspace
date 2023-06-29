@@ -9,8 +9,8 @@ import HistoryIcon from "@mui/icons-material/History";
 import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
 import { Announcement } from "../../../queries/announcementsQueries";
-import DeleteMaterialButton from "../inventory/DeleteMaterialButton";
 import { useNavigate } from "react-router-dom";
+import DeleteAnnouncementButton from "./button/DeleteAnnouncementButton";
 
 interface InputErrors {
   title?: boolean;
@@ -22,6 +22,7 @@ interface AnnouncementPageProps {
   announcementDraft: Partial<Announcement>;
   setAnnouncementDraft: (i: Partial<Announcement>) => void;
   onSave: () => void;
+  onDelete: () => void;
   loading: boolean;
 }
 
@@ -30,6 +31,7 @@ export default function AnnouncementModalContents({
   announcementDraft,
   setAnnouncementDraft,
   onSave,
+  onDelete,
   loading,
 }: AnnouncementPageProps) {
 
@@ -53,10 +55,15 @@ export default function AnnouncementModalContents({
     const hasInputErrors = Object.values(updatedInputErrors).some((e) => e);
     if (hasInputErrors) return;
 
-    onSave();
+    await onSave();
 
     navigate("/admin/announcements");
   };
+
+  const handleDeleteClick = async () => {
+    await onDelete()
+    navigate("/admin/announcements");
+  }
 
   const title = `${isNewAnnouncement ? "New" : "Edit"} Announcement`;
 
@@ -89,7 +96,9 @@ export default function AnnouncementModalContents({
       <Stack direction="row" justifyContent="space-between" mt={4}>
         {!isNewAnnouncement && (
           <Stack direction="row" spacing={2}>
-            <DeleteMaterialButton />
+            <DeleteAnnouncementButton 
+              onDelete={handleDeleteClick}
+            />
 
             <Button variant="outlined" startIcon={<HistoryIcon />}>
               View Logs

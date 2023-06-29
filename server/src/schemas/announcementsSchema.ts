@@ -21,6 +21,6 @@ export const AnnouncementsTypeDefs = gql`
     createAnnouncement(title: String!, description: String!): Announcement
     updateAnnouncement(id: ID!, title: String!, description: String!): Announcement
     updateAnnouncementWithInputType(id: ID!, input: AnnouncementInput!): Announcement
-    deleteAnnouncement(id: ID!): ID
+    deleteAnnouncement(id: ID!): Boolean
   }
 `;

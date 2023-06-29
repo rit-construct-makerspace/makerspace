@@ -1,7 +1,7 @@
 
 import { Privilege } from "../schemas/usersSchema";
 import { ApolloContext } from "../context";
-import { getAnnouncements, getAnnouncementByID, createAnnouncement, updateAnnouncement } from "../repositories/Announcements/AnnouncementsRepository";
+import { getAnnouncements, getAnnouncementByID, createAnnouncement, updateAnnouncement, deleteAnnouncement } from "../repositories/Announcements/AnnouncementsRepository";
 
 const AnnouncementsResolver = {
     
@@ -37,11 +37,18 @@ const AnnouncementsResolver = {
         args: any,
         { ifAllowed }: ApolloContext) =>
           ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-            console.log("LLLLLLLLL" + args.id)
             return await updateAnnouncement(args);
-          })
-    }
+          }),
 
+      deleteAnnouncement: async (
+        _parent: any,
+        args: any,
+        { ifAllowed }: ApolloContext) =>
+          ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+            return await deleteAnnouncement(args.id);
+          }),
+
+    }
   };
   
   export default AnnouncementsResolver;

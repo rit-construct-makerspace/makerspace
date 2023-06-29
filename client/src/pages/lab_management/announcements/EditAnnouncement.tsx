@@ -2,9 +2,8 @@ import { useEffect, useState } from "react";
 import AnnouncementModalContents from "./AnnouncementModalContents";
 import { useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_ANNOUNCEMENTS, GET_ANNOUNCEMENT, UPDATE_ANNOUNCEMENT, Announcement } from "../../../queries/announcementsQueries";
+import { GET_ANNOUNCEMENTS, GET_ANNOUNCEMENT, UPDATE_ANNOUNCEMENT, DELETE_ANNOUNCEMENT, Announcement } from "../../../queries/announcementsQueries";
 import { useParams } from "react-router-dom";
-
 
 
 export default function EditAnnouncement() {
@@ -25,6 +24,13 @@ export default function EditAnnouncement() {
     ],
   });
 
+  const [deleteAnnouncement, del] = useMutation(DELETE_ANNOUNCEMENT, {
+    variables: { id: id },
+    refetchQueries: [
+      { query: GET_ANNOUNCEMENTS }
+    ],
+  })
+
   // After the item has been fetched, fill in the draft
   useEffect(() => {
     if (!query.data?.getAnnouncement) return;
@@ -36,13 +42,14 @@ export default function EditAnnouncement() {
 
 
   return (
-    <RequestWrapper loading={query.loading} error={query.error} minHeight={322}>
+    <RequestWrapper loading={query.loading || del.loading} error={query.error || del.error} minHeight={322}>
       <AnnouncementModalContents
         isNewAnnouncement={false}
         announcementDraft={announcementDraft}
         setAnnouncementDraft={setAnnouncementDraft}
         onSave={updateAnnouncement}
-        loading={mutation.loading}
+        onDelete={deleteAnnouncement}
+        loading={mutation.loading || del.loading}
       />
     </RequestWrapper>
   );

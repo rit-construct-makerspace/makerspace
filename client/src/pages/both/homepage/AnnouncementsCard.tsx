@@ -15,7 +15,7 @@ export default function AnnouncementsCard() {
             loading={getAnnouncementsResult.loading}
             error={getAnnouncementsResult.error}
         >
-            <Card elevation={2} sx={{ width: 350, minHeight: 355, padding: 2, justifyContent: "space-between", border: 1, borderColor: "lightgrey" }}>
+            <Card elevation={2} sx={{ width: 350, maxWidth: 500, minHeight: 355, padding: 2, justifyContent: "space-between", border: 1, borderColor: "lightgrey", flexGrow: 1  }}>
                 <Stack direction={"column"} spacing={1}>
                     <Typography variant="h4">Announcements</Typography>
                     <Stack spacing={1}>
