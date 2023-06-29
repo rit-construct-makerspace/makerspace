@@ -8,7 +8,7 @@ import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
 
 const GET_INVENTORY_ITEM = gql`
   query GetInventoryItem($id: ID!) {
-    InventoryItem(Id: $id) {
+    InventoryItem(id: $id) {
       name
       unit
       pluralUnit
@@ -58,7 +58,7 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
 
   // Close the modal upon successful mutation
   useEffect(() => {
-    if (mutation.data?.updateInventoryItem?.id) onClose();
+    if (mutation.data?.updateInventoryItem.id) onClose();
   }, [mutation.data, onClose]);
 
   return (
@@ -67,7 +67,10 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
         isNewItem={false}
         itemDraft={itemDraft}
         setItemDraft={setItemDraft}
-        onSave={updateInventoryItem}
+        onSave={() => {
+          console.log(mutation.data?.updateInventoryItem?.id)
+          updateInventoryItem()
+        }}
         loading={mutation.loading}
       />
     </RequestWrapper>
