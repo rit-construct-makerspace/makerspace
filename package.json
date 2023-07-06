@@ -1,7 +1,6 @@
 {
   "name": "makerspace",
   "version": "1.0.0",
-  "homepage": ".",
   "main": "index.js",
   "scripts": {
     "fix": "ts-jest config:migrate jest.config.js",
