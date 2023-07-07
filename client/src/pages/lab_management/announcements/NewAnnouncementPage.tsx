@@ -7,6 +7,7 @@ import { LoadingButton } from "@mui/lab";
 import DeleteMaterialButton from "../inventory/DeleteMaterialButton";
 import SaveIcon from "@mui/icons-material/Save";
 import { useNavigate } from "react-router-dom";
+import Page from "../../Page";
 
 
 interface InputErrors {
@@ -51,7 +52,7 @@ export default function NewAnnouncementPage() {
     };
 
     return (
-        <>
+        <Page title={""} maxWidth="1250px">
             <Typography variant="h5" mb={2}>
                 New Announcement
             </Typography>
@@ -78,7 +79,6 @@ export default function NewAnnouncementPage() {
 
             <Stack direction="row" justifyContent="space-between" mt={4}>
                 <Stack direction="row" spacing={2}>
-                    <DeleteMaterialButton />
 
                     <Button variant="outlined" startIcon={<HistoryIcon />}>
                         View Logs
@@ -96,6 +96,6 @@ export default function NewAnnouncementPage() {
                     Save
                 </LoadingButton>
             </Stack>
-        </>
+        </Page>
     );
 }

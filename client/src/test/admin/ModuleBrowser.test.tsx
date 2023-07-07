@@ -1,8 +1,8 @@
 import { addMutationMock, addQueryMock, renderApp } from "../TestUtils";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { GET_TRAINING_MODULES, CREATE_TRAINING_MODULE } from "../../queries/modules";
-import { GET_MODULE } from "../../queries/modules";
+import { GET_TRAINING_MODULES, CREATE_TRAINING_MODULE } from "../../queries/trainingQueries";
+import { GET_MODULE } from "../../queries/trainingQueries";
 
 test("can navigate to page", async () => {
   addQueryMock(GET_TRAINING_MODULES, { modules: [] });

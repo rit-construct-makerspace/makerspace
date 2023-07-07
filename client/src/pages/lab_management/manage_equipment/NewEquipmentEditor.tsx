@@ -1,18 +1,10 @@
-import { gql, useMutation } from "@apollo/client";
-import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipments";
+import { useMutation } from "@apollo/client";
+import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipmentQueries";
 import { ObjectSummary } from "../../../types/Common";
 import EquipmentEditor from "./EquipmentEditor";
 import { Equipment, MutationCallback } from "./EditEquipmentPage";
+import { CREATE_EQUIPMENT } from "../../../queries/equipmentQueries"
 
-const CREATE_EQUIPMENT = gql`
-  mutation CreateEquipment($name: String!, $roomID: ID!, $moduleIDs: [ID]!) {
-    addEquipment(
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs }
-    ) {
-      id
-    }
-  }
-`;
 
 interface NewEquipmentProps {
   equipment: Equipment;

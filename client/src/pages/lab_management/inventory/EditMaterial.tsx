@@ -4,28 +4,8 @@ import MaterialModalContents, {
 } from "./MaterialModalContents";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
+import { GET_INVENTORY_ITEMS, GET_INVENTORY_ITEM, UPDATE_INVENTORY_ITEM, DELETE_INVENTORY_ITEM } from "../../../queries/inventoryQueries";
 
-const GET_INVENTORY_ITEM = gql`
-  query GetInventoryItem($id: ID!) {
-    InventoryItem(id: $id) {
-      name
-      unit
-      pluralUnit
-      pricePerUnit
-      count
-      threshold
-    }
-  }
-`;
-
-const UPDATE_INVENTORY_ITEM = gql`
-  mutation UpdateInventoryItem($id: ID!, $item: InventoryItemInput) {
-    updateInventoryItem(itemId: $id, item: $item) {
-      id
-    }
-  }
-`;
 
 interface EditMaterialProps {
   itemId: string;
@@ -44,6 +24,13 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
     refetchQueries: [
       { query: GET_INVENTORY_ITEMS },
       { query: GET_INVENTORY_ITEM, variables: { id: itemId } },
+    ],
+  });
+
+  const [deleteInventoryItem, deletion] = useMutation(DELETE_INVENTORY_ITEM, {
+    variables: { id: itemId },
+    refetchQueries: [
+      { query: GET_INVENTORY_ITEMS },
     ],
   });
 
@@ -67,9 +54,10 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
         isNewItem={false}
         itemDraft={itemDraft}
         setItemDraft={setItemDraft}
-        onSave={() => {
-          console.log(mutation.data?.updateInventoryItem?.id)
-          updateInventoryItem()
+        onSave={updateInventoryItem}
+        onDelete={() => {
+          deleteInventoryItem()
+          onClose()
         }}
         loading={mutation.loading}
       />

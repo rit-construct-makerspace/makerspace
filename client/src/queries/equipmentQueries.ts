@@ -100,4 +100,15 @@ export const PUBLISH_EQUIPMENT = gql`
   }
 `;
 
+export const CREATE_EQUIPMENT = gql`
+  mutation CreateEquipment($name: String!, $roomID: ID!, $moduleIDs: [ID]!) {
+    addEquipment(
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs }
+    ) {
+      id
+    }
+  }
+`;
+
+
 export default GET_EQUIPMENTS;

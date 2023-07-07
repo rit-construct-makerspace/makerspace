@@ -16,7 +16,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { DateTimePicker } from '@mui/lab';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import { useQuery } from '@apollo/client';
-import { GET_RESERVABLE_EQUIPMENT_FOR_MODULE } from "../../../queries/equipments";
+import { GET_RESERVABLE_EQUIPMENT_FOR_MODULE } from "../../../queries/equipmentQueries";
 import RequestWrapper from '../../../common/RequestWrapper';
 import Equipment from '../../../types/Equipment';
 import { useState } from 'react';

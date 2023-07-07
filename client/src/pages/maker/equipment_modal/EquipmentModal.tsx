@@ -1,7 +1,7 @@
 import PrettyModal from "../../../common/PrettyModal";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipments";
+import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { Avatar, Button, Divider, Icon, Stack, Typography } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";

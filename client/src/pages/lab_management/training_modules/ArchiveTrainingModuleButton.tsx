@@ -1,7 +1,7 @@
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import ArchiveButton from "../../../common/ArchiveButton";
-import { ARCHIVE_MODULE, GET_ARCHIVED_MODULE, GET_ARCHIVED_TRAINING_MODULES, GET_TRAINING_MODULES } from "../../../queries/modules";
+import { ARCHIVE_MODULE, GET_ARCHIVED_MODULE, GET_ARCHIVED_TRAINING_MODULES, GET_TRAINING_MODULES } from "../../../queries/trainingQueries";
 
 interface ArchiveTrainingModuleButtonProps {
   moduleID: number;

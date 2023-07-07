@@ -60,5 +60,6 @@ export const StoreFrontTypeDefs = gql`
     removeItemAmount(itemId: ID!, count: Int!): InventoryItem
     createLabel(label: String): String
     archiveLabel(label: String): String
+    deleteInventoryItem(id: ID!): Boolean
   }
 `;

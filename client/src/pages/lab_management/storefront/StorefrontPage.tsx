@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
+import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
 
 const REMOVE_INVENTORY_ITEM_AMOUNT = gql`
   mutation RemoveInventoryItemAmount($itemID: ID!, $amountToRemove: Int!) {
