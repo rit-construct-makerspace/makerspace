@@ -11,7 +11,7 @@ export default function UpcomingEventsCard() {
     const day = today.getDate();
 
     return (
-        <Card sx={{ width: 350, minHeight: 580, padding: 2, border: 1, borderColor: "lightgrey" } } >
+        <Card sx={{ width: 350, maxWidth: 500, minHeight: 580, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1  } } >
             <CardContent>
                 <Stack direction="column" alignItems="flex-start" spacing={2} justifyContent="space-evenly" >
 

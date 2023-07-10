@@ -1,4 +1,3 @@
-import { log } from "console";
 import { knex } from "../../db";
 import { TrainingModuleRow, TrainingModuleItem } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";

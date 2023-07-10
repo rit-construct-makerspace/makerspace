@@ -48,7 +48,7 @@ export const StoreFrontTypeDefs = gql`
 
   extend type Query {
     InventoryItems: [InventoryItem]
-    InventoryItem(Id: ID!): InventoryItem
+    InventoryItem(id: ID!): InventoryItem
     Labels: [String]
   }
 
@@ -60,5 +60,6 @@ export const StoreFrontTypeDefs = gql`
     removeItemAmount(itemId: ID!, count: Int!): InventoryItem
     createLabel(label: String): String
     archiveLabel(label: String): String
+    deleteInventoryItem(id: ID!): Boolean
   }
 `;

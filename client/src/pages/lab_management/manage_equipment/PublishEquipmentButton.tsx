@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client";
-import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS, GET_EQUIPMENT_BY_ID, PUBLISH_EQUIPMENT } from "../../../queries/equipments";
+import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS, GET_EQUIPMENT_BY_ID, PUBLISH_EQUIPMENT } from "../../../queries/equipmentQueries";
 import { useNavigate } from "react-router-dom";
 import PublishButton from "../../../common/PublishButton";
 

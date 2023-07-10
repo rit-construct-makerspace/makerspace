@@ -26,6 +26,8 @@ import EditActiveModulePage from "./pages/lab_management/edit_module/EditActiveM
 import EditArchivedModulePage from "./pages/lab_management/edit_module/EditArchivedModulePage";
 import LogoutPromptPage from "./pages/both/logout/LogoutPromptPage";
 import EditNewModulePage from "./pages/lab_management/edit_module/EditNewModulePage";
+import NewAnnouncementPage from "./pages/lab_management/announcements/NewAnnouncementPage";
+import EditAnnouncement from "./pages/lab_management/announcements/EditAnnouncement";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -38,73 +40,49 @@ export default function AppRoutes() {
 
         <Route path="/signup" element={<SignupPage />} />
 
-        <Route
-          path="/admin/storefront/preview"
-          element={<StorefrontPreviewPage />}
-        />
+
+        <Route path="/admin/storefront/preview" element={<StorefrontPreviewPage />} />
+
 
         <Route path={"/"} element={<LeftNav />}>
+
           <Route path="/" element={<Homepage />} />
 
           <Route path="/create-reservation" element={<CreateReservationPage />} />
 
-          <Route
-            path="/maker/equipment"
-            element={<EquipmentPage />}
-          />
-
-          <Route
-            path="/maker/equipment/:id"
-            element={<EquipmentPage />}
-          />
+          <Route path="/maker/equipment" element={<EquipmentPage />} />
+          <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
 
           <Route path="/maker/training" element={<TrainingPage />} />
-
           <Route path="/maker/training/:id" element={<QuizPage />} />
-
-          <Route path="maker/training/:id/results" element={<QuizResults />} />
+          <Route path="/maker/training/:id/results" element={<QuizResults />} />
 
           <Route path="/maker/materials" element={<InventoryPreviewPage />} />
 
-
-
-          <Route
-            path="/admin/equipment"
-            element={<ManageEquipmentPage />}
-          />
-
+          <Route path="/admin/equipment" element={<ManageEquipmentPage />} />
           <Route path="/admin/equipment/:id" element={<EditEquipmentPage archived={false} />} />
-
           <Route path="/admin/equipment/archived/:id" element={<EditEquipmentPage archived={true} />} />
 
-
-
           <Route path="/admin/training" element={<TrainingModulesPage />} />
-
           <Route path="/admin/training/new" element={<EditNewModulePage />} />
-
           <Route path="/admin/training/:id" element={<EditActiveModulePage />} />
-
           <Route path="/admin/training/archived/:id" element={<EditArchivedModulePage />} />
-
-
 
           <Route path="/admin/inventory" element={<InventoryPage />} />
 
           <Route path="/admin/reservations" element={<ReservationsPage />} />
 
           <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
-
           <Route path="/admin/rooms" element={<SelectRoomPage />} />
 
           <Route path="/admin/storefront" element={<StorefrontPage />} />
 
           <Route path="/admin/people/:id" element={<UsersPage />} />
-
           <Route path="/admin/people" element={<UsersPage />} />
 
           <Route path="/admin/announcements" element={<AnnouncementsPage />} />
-
+          <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
+          <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
           <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
 
           <Route path="/admin/history" element={<AuditLogsPage />} />

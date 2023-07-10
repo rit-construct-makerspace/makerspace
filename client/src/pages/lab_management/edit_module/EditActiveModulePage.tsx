@@ -1,8 +1,8 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
-import { Module, ReservationPrompt } from "../../../types/Quiz";
-import { GET_MODULE, GET_TRAINING_MODULES, UPDATE_MODULE, ARCHIVE_MODULE } from "../../../queries/modules";
+import { Module } from "../../../types/Quiz";
+import { GET_MODULE, GET_TRAINING_MODULES, UPDATE_MODULE, ARCHIVE_MODULE } from "../../../queries/trainingQueries";
 import 'react-toastify/dist/ReactToastify.css';
 import EditModulePage from "./EditModulePage";
 

@@ -1,8 +1,9 @@
-import { ApolloContext } from "../context";
+import {ApolloContext, ifAllowed} from "../context";
 import * as InventoryRepo from "../repositories/Store/inventoryRepository";
 import * as LabelRepo from "../repositories/Store/labelRepository";
-import { InventoryItemInput } from "../schemas/storeFrontSchema";
-import { Privilege } from "../schemas/usersSchema";
+import {InventoryItemInput} from "../schemas/storeFrontSchema";
+import {Privilege} from "../schemas/usersSchema";
+import {deleteInventoryItem} from "../repositories/Store/inventoryRepository";
 
 const StorefrontResolvers = {
   Query: {
@@ -11,6 +12,7 @@ const StorefrontResolvers = {
     },
 
     InventoryItem: async (_: any, args: { id: string }, context: any) => {
+      console.log(args)
       return await InventoryRepo.getItemById(Number(args.id));
     },
 
@@ -29,7 +31,6 @@ const StorefrontResolvers = {
     createInventoryItem: async (
       _: any,
       args: { item: InventoryItemInput },
-      context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await InventoryRepo.addItem(args.item);
@@ -38,7 +39,6 @@ const StorefrontResolvers = {
     updateInventoryItem: async (
       _: any,
       args: { itemId: string; item: InventoryItemInput },
-      context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await InventoryRepo.updateItemById(Number(args.itemId), args.item);
@@ -47,7 +47,6 @@ const StorefrontResolvers = {
     addItemAmount: async (
       _: any,
       args: { itemId: string; count: number },
-      context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return InventoryRepo.addItemAmount(Number(args.itemId), args.count);
@@ -56,7 +55,6 @@ const StorefrontResolvers = {
     removeItemAmount: async (
       _: any,
       args: { itemID: string; count: number },
-      context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return InventoryRepo.addItemAmount(Number(args.itemID), args.count * -1);
@@ -65,7 +63,6 @@ const StorefrontResolvers = {
     archiveInventoryItem: async (
       _: any,
       args: { itemID: string },
-      context: any,
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return InventoryRepo.archiveItem(Number(args.itemID));
@@ -82,6 +79,15 @@ const StorefrontResolvers = {
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         await LabelRepo.archiveLabel(args.label);
     }),
+
+    deleteInventoryItem: async (
+        _parent: any,
+        args: any,
+        { ifAllowed }: ApolloContext) =>
+          ifAllowed([Privilege.MENTOR, Privilege.STAFF], async()=>{
+            return await deleteInventoryItem(args.id);
+          }
+    )
   },
 };
 

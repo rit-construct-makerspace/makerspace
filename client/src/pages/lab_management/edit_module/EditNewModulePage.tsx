@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import {Moduledraft, QuizItem } from "../../../types/Quiz";
-import {GET_TRAINING_MODULES, GET_ARCHIVED_TRAINING_MODULES, CREATE_TRAINING_MODULE } from "../../../queries/modules";
+import {GET_TRAINING_MODULES, GET_ARCHIVED_TRAINING_MODULES, CREATE_TRAINING_MODULE } from "../../../queries/trainingQueries";
 import 'react-toastify/dist/ReactToastify.css';
 import Page from "../../Page";
 import {
@@ -63,7 +63,7 @@ export default function EditNewModulePage() {
             return;
         }
 
-        if (moduleDraft.quiz.length == 0) {
+        if (moduleDraft.quiz.length === 0) {
             window.alert("Please add content to the training.");
             return;
           }

@@ -1,28 +1,21 @@
-import React, { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import {
   Button,
-  InputAdornment,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
-import HelpTooltip from "../../../common/HelpTooltip";
 import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
-import styled from "styled-components";
-import InventoryItem from "../../../types/InventoryItem";
-import { Announcement } from "../../../queries/getAnnouncements";
-import DeleteMaterialButton from "../inventory/DeleteMaterialButton";
+import { Announcement } from "../../../queries/announcementsQueries";
+import { useNavigate } from "react-router-dom";
+import DeleteAnnouncementButton from "./button/DeleteAnnouncementButton";
+import Page from "../../Page";
 
 interface InputErrors {
   title?: boolean;
   description?: boolean;
-}
-
-export interface AnnouncementInput {
-  title: string;
-  description: string;
 }
 
 interface AnnouncementPageProps {
@@ -30,6 +23,7 @@ interface AnnouncementPageProps {
   announcementDraft: Partial<Announcement>;
   setAnnouncementDraft: (i: Partial<Announcement>) => void;
   onSave: () => void;
+  onDelete: () => void;
   loading: boolean;
 }
 
@@ -38,12 +32,16 @@ export default function AnnouncementModalContents({
   announcementDraft,
   setAnnouncementDraft,
   onSave,
+  onDelete,
   loading,
 }: AnnouncementPageProps) {
+
+  const navigate = useNavigate();
+  
   const [inputErrors, setInputErrors] = useState<InputErrors>({});
 
   const handleStringChange =
-    (property: keyof AnnouncementInput) =>
+    (property: keyof Announcement) =>
     (e: ChangeEvent<HTMLInputElement>) =>
       setAnnouncementDraft({ ...announcementDraft, [property]: e.target.value });
 
@@ -58,13 +56,20 @@ export default function AnnouncementModalContents({
     const hasInputErrors = Object.values(updatedInputErrors).some((e) => e);
     if (hasInputErrors) return;
 
-    onSave();
+    await onSave();
+
+    navigate("/admin/announcements");
   };
+
+  const handleDeleteClick = async () => {
+    await onDelete()
+    navigate("/admin/announcements");
+  }
 
   const title = `${isNewAnnouncement ? "New" : "Edit"} Announcement`;
 
   return (
-    <>
+    <Page title={""} maxWidth="1250px">
       <Typography variant="h5" mb={2}>
         {title}
       </Typography>
@@ -92,7 +97,9 @@ export default function AnnouncementModalContents({
       <Stack direction="row" justifyContent="space-between" mt={4}>
         {!isNewAnnouncement && (
           <Stack direction="row" spacing={2}>
-            <DeleteMaterialButton />
+            <DeleteAnnouncementButton 
+              onDelete={handleDeleteClick}
+            />
 
             <Button variant="outlined" startIcon={<HistoryIcon />}>
               View Logs
@@ -111,6 +118,6 @@ export default function AnnouncementModalContents({
           Save
         </LoadingButton>
       </Stack>
-    </>
+    </Page>
   );
 }
