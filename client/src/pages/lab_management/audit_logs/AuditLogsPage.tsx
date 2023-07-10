@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
-import { gql, useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import AuditLogRow from "./AuditLogRow";
 import { useLocation, useNavigate } from "react-router-dom";

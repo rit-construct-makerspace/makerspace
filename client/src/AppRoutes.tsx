@@ -28,6 +28,7 @@ import LogoutPromptPage from "./pages/both/logout/LogoutPromptPage";
 import EditNewModulePage from "./pages/lab_management/edit_module/EditNewModulePage";
 import NewAnnouncementPage from "./pages/lab_management/announcements/NewAnnouncementPage";
 import EditAnnouncement from "./pages/lab_management/announcements/EditAnnouncement";
+import ManageMyAvailabilityPage from "./pages/lab_management/reservations/ManageMyAvailabilityPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -71,6 +72,7 @@ export default function AppRoutes() {
           <Route path="/admin/inventory" element={<InventoryPage />} />
 
           <Route path="/admin/reservations" element={<ReservationsPage />} />
+          <Route path="/admin/reservations/availability" element={<ManageMyAvailabilityPage />} />
 
           <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
           <Route path="/admin/rooms" element={<SelectRoomPage />} />
