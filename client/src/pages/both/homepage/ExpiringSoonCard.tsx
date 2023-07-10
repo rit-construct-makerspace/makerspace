@@ -9,15 +9,8 @@ import {
 import TrainingModuleRow from "../../../common/TrainingModuleRow";
 import { searchFilter } from "../../../common/SearchBar";
 import {Card, Typography} from "@mui/material";
+import { GET_ALL_TRAINING_MODULES } from "../../../queries/trainingQueries";
 
-export const GET_ALL_TRAINING_MODULES = gql`
-  query GetAllTrainingModules {
-    modules {
-      id
-      name
-    }
-  }
-`;
 
 export default function ExpiringSoonCard() {
     const { passedModules } = useCurrentUser();

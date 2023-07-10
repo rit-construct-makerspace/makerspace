@@ -11,15 +11,8 @@ import { v4 as uuidv4 } from "uuid";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
+import { GET_INVENTORY_ITEMS, REMOVE_INVENTORY_ITEM_AMOUNT } from "../../../queries/inventoryQueries";
 
-const REMOVE_INVENTORY_ITEM_AMOUNT = gql`
-  mutation RemoveInventoryItemAmount($itemID: ID!, $amountToRemove: Int!) {
-    removeItemAmount(itemId: $itemID, count: $amountToRemove) {
-      id
-    }
-  }
-`;
 
 export interface ShoppingCartEntry {
   id: string;

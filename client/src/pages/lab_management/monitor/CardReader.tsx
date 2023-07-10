@@ -1,16 +1,9 @@
 import { useCallback, useEffect } from "react";
 import { Button } from "@mui/material";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { GET_ROOM } from "./MonitorRoomPage";
+import {GET_ROOM, SWIPE_INTO_ROOM } from "../../../queries/roomQueries";
 
-const SWIPE_INTO_ROOM = gql`
-  mutation SwipeIntoRoom($roomID: ID!, $universityID: String!) {
-    swipeIntoRoom(roomID: $roomID, universityID: $universityID) {
-      id
-    }
-  }
-`;
 
 const SWIPE_START_CHAR = ";";
 const SWIPE_END_CHAR = "?";

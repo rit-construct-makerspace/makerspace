@@ -1,17 +1,10 @@
 import React from "react";
 import { Card, CardActions, Stack, Typography } from "@mui/material";
-import { GET_USER, Hold } from "./UserModal";
+import { Hold } from "./UserModal";
 import { format, parseISO } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
-
-const REMOVE_HOLD = gql`
-  mutation RemoveHold($holdID: ID!) {
-    removeHold(holdID: $holdID) {
-      id
-    }
-  }
-`;
+import {GET_USER, REMOVE_HOLD } from "../../../queries/userQueries";
 
 interface HoldCardProps {
   hold: Hold;

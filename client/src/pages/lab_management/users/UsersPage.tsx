@@ -4,7 +4,7 @@ import SearchBar from "../../../common/SearchBar";
 import { Stack } from "@mui/material";
 import UserCard from "./UserCard";
 import { useQuery } from "@apollo/client";
-import GET_USERS, { PartialUser } from "../../../queries/getUsers";
+import GET_USERS, { PartialUser } from "../../../queries/userQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import UserModal from "./UserModal";
 import { useNavigate, useParams } from "react-router-dom";

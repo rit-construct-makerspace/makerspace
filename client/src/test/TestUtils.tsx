@@ -1,14 +1,12 @@
 import { render } from "@testing-library/react";
 import { MockedProvider } from "@apollo/client/testing";
 import AppRoutes from "../AppRoutes";
-import {
-  CurrentUserProvider,
-  GET_CURRENT_USER,
-} from "../common/CurrentUserProvider";
+import { CurrentUserProvider } from "../common/CurrentUserProvider";
 import React from "react";
 import Privilege from "../types/Privilege";
 import { MemoryRouter } from "react-router-dom";
 import { DocumentNode } from "graphql";
+import {GET_CURRENT_USER} from "../queries/userQueries";
 
 let mocks: any[] = [];
 

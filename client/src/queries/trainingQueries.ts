@@ -34,6 +34,16 @@ export const GET_TRAINING_MODULES = gql`
   }
 `;
 
+export const GET_ALL_TRAINING_MODULES = gql`
+  query GetAllTrainingModules {
+    modules {
+      id
+      name
+    }
+  }
+`;
+
+
 export const GET_ARCHIVED_TRAINING_MODULES = gql`
   query GetArchivedTrainingModules {
     archivedModules {

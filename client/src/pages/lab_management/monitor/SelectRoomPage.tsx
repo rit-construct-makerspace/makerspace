@@ -4,17 +4,10 @@ import SearchBar from "../../../common/SearchBar";
 import RoomCard from "./RoomCard";
 import { Button, Stack } from "@mui/material";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS, { CREATE_ROOM } from "../../../queries/roomQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
 
-const CREATE_ROOM = gql`
-  mutation CreateRoom($name: String!) {
-    addRoom(room: { name: $name }) {
-      id
-    }
-  }
-`;
 
 export default function SelectRoomPage() {
   const getRoomsResult = useQuery(GET_ROOMS);

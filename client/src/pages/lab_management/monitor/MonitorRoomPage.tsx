@@ -21,6 +21,7 @@ import CardReader from "./CardReader";
 import SwipedUserCard from "./SwipedUserCard";
 import styled from "styled-components";
 import HistoryIcon from "@mui/icons-material/History";
+import { GET_ROOM } from "../../../queries/roomQueries";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -45,25 +46,6 @@ const StyledRecentSwipes = styled.div`
   }
 `;
 
-export const GET_ROOM = gql`
-  query GetRoom($id: ID!) {
-    room(id: $id) {
-      name
-      recentSwipes {
-        id
-        user {
-          id
-          firstName
-          lastName
-        }
-      }
-      equipment {
-        id
-        name
-      }
-    }
-  }
-`;
 
 export interface Swipe {
   id: string;

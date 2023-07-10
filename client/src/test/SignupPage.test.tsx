@@ -1,7 +1,7 @@
 import { addMutationMock, editCurrentUser, renderApp } from "./TestUtils";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { UPDATE_STUDENT_PROFILE } from "../pages/maker/signup/SignupPage";
+import { UPDATE_STUDENT_PROFILE } from "../queries/userQueries";
 
 const alertMock = jest.fn();
 

@@ -38,3 +38,9 @@ export const GET_LATEST_SUBMISSION = gql`
     }
   }
 `;
+
+export const SUBMIT_MODULE = gql`
+  mutation SubmitModule($moduleID: ID!, $answerSheet: [AnswerInput]) {
+    submitModule(moduleID: $moduleID, answerSheet: $answerSheet)
+  }
+`;

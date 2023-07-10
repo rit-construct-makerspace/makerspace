@@ -1,6 +1,6 @@
 import React from "react";
 import { Avatar, Card, CardActionArea, Chip, Stack, Typography } from "@mui/material";
-import { PartialUser } from "../../../queries/getUsers";
+import { PartialUser } from "../../../queries/userQueries";
 import PrivilegeChip from "./PrivilegeChip";
 
 interface UserCardProps {

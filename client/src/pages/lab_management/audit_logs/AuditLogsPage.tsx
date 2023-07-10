@@ -14,24 +14,8 @@ import AuditLogRow from "./AuditLogRow";
 import { useLocation, useNavigate } from "react-router-dom";
 import { endOfDay, parse, startOfDay } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
+import { GET_LOGS } from "../../../queries/auditLogQueries";
 
-const GET_LOGS = gql`
-  query GetLogs(
-    $startDate: DateTime
-    $stopDate: DateTime
-    $searchText: String
-  ) {
-    auditLogs(
-      startDate: $startDate
-      stopDate: $stopDate
-      searchText: $searchText
-    ) {
-      id
-      dateTime
-      message
-    }
-  }
-`;
 
 function parseDateForQuery(
   dateString: string,
