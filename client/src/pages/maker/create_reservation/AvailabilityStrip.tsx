@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
 import TimeSlot from "../../../types/TimeSlot";
-import {light} from "@mui/material/styles/createPalette";
 
 interface StyledQuarterHourBlockProps {
   available: boolean;
@@ -17,8 +16,9 @@ const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
   &:last-child {
     margin-bottom: 0;
   }
-
-  background-color: green;
+  
+  background-color: ${({ available, theme }) =>
+    available ? "limegreen" : "gray "};
 `;
 
 interface AvailabilityStripProps {
