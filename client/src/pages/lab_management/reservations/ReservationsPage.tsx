@@ -10,7 +10,7 @@ export default function ReservationsPage() {
     const navigate = useNavigate();
   return (
     <Page title="Reservations" maxWidth="1250px">
-      <Button onClick={() => navigate('/admin/reservations/availability')}>Manage your availability here.</Button>
+      <Button onClick={() => navigate('/admin/reservations/availability')}>Set your availability here.</Button>
       <PageSectionHeader top>Your Pending Reservations</PageSectionHeader>
 
       {Reservations.pending.map((r) => (

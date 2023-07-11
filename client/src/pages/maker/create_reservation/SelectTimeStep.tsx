@@ -68,7 +68,7 @@ export default function SelectTimeStep({
             mr: 4,
           }}
         >
-          <AvailabilityStrip availability={chosenExpert.availability} />
+          <AvailabilityStrip availability={chosenExpert.availability}/>
         </Paper>
 
         <Stack spacing={4}>

@@ -8,10 +8,10 @@ interface StyledQuarterHourBlockProps {
 }
 
 const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
-  width: 60px;
-  height: 10px;
+  width: 10px;
+  height: 60px;
 
-  margin-bottom: ${(props) => (props.addGap ? "1px" : "0px")};
+  margin-right: ${(props) => (props.addGap ? "1px" : "0px")};
 
   &:last-child {
     margin-bottom: 0;
@@ -31,7 +31,7 @@ function getTimeIndex(time: string) {
 }
 
 export default function AvailabilityStrip({
-  availability,
+  availability
 }: AvailabilityStripProps) {
   const timeIntervals: boolean[] = [];
 
