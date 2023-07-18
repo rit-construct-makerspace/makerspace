@@ -1,5 +1,6 @@
 import { Privilege } from "../schemas/usersSchema";
 
+
 export interface AuditLogRow {
   id: number;
   dateTime: Date;
@@ -135,7 +136,16 @@ export interface AnnouncementRow {
   description: string;
 }
 
-declare module "knex/types/tables" {
+export interface AvailabilityRow {
+  id: number;
+  date: Date;
+  startTime: Date;
+  endTime: Date;
+  userID: number;
+}
+
+import { Tables } from 'knex/types/tables'
+declare module 'knex/types/tables' {
   interface Tables {
     AuditLogs: AuditLogRow;
     Equipment: EquipmentRow;
@@ -149,5 +159,6 @@ declare module "knex/types/tables" {
     Rooms: RoomRow;
     TrainingModule: TrainingModuleRow;
     Users: UserRow;
+    Availability: AvailabilityRow;
   }
 }

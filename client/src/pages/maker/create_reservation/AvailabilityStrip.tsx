@@ -8,10 +8,10 @@ interface StyledQuarterHourBlockProps {
 }
 
 const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
-  width: 10px;
-  height: 60px;
+  width: 3.5vw;
+  height: .645vw;
 
-  margin-right: ${(props) => (props.addGap ? "1px" : "0px")};
+  margin-bottom: ${(props) => (props.addGap ? ".1vw" : "0px")};
 
   &:last-child {
     margin-bottom: 0;

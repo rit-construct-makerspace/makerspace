@@ -4,13 +4,13 @@ import styled from "styled-components";
 const StyledDiv = styled.div<{ marginTop: number }>`
   margin-top: ${(props) => props.marginTop}px;
   margin-right: 10px;
-  color: deeppink;
+  height: 33vw;
 
   .time-label {
-    height: 40px;
-    margin-bottom: 1px;
+    height: 2.4vw;
+    margin-bottom: .3vw;
     text-align: end;
-    font-size: 14px;
+    font-size: 1vw;
   }
 `;
 
