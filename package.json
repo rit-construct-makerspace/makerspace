@@ -20,7 +20,8 @@
     "knex:migrate:make": "knex --migrations-directory server/src/db/migrations migrate:make -x ts",
     "knex:migrate:latest": "knex --knexfile server/dist/db/knexFile.js migrate:latest",
     "knex:migrate:rollback": "knex --knexfile server/dist/db/knexFile.js migrate:rollback",
-    "knex:migrate:unlock": "knex --knexfile server/dist/db/knexFile.js migrate:unlock"
+    "knex:migrate:unlock": "knex --knexfile server/dist/db/knexFile.js migrate:unlock",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "keywords": [],
   "author": "",
