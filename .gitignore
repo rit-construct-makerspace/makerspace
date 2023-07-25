@@ -27,7 +27,7 @@ process.env
 /docs/_site
 
 # Transpiled Server Files
-#/server/dist
+/server/dist
 
 # React build
 /client/build
