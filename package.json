@@ -4,7 +4,9 @@
   "main": "index.js",
   "scripts": {
     "fix": "ts-jest config:migrate jest.config.js",
-    "start": "node 'server/dist/server.js'",
+    "start": "npm run start:server & npm run start:client",
+    "start:server": "node 'server/dist/server.js'",
+    "start:client": "cd client/ && npm run start:dev",
     "build": "npm run build:server && npm run build:client",
     "build:server": "cd server/ && tsc --build --clean && tsc -p .",
     "build:client": "cd client/ && npm install && npm run build",
