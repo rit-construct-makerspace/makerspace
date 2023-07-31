@@ -69,6 +69,10 @@ async function startServer() {
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   });
 
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../../client/build", 'index.html'));
+  });
+
   await server.start();
   app.use(
     "/graphql",
