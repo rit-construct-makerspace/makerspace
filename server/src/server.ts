@@ -30,7 +30,7 @@ async function startServer() {
 
   setupSessions(app);
 
-  app.use(express.static(path.join(__dirname, 'build')));
+  app.use(express.static(path.join(__dirname, '../../client/build')));
 
   // environment setup
   if (process.env.NODE_ENV === "development") {
