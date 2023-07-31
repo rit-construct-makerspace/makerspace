@@ -47,7 +47,7 @@ async function startServer() {
     process.exit(-1);
   }
 
-  app.use("/app", express.static(path.join(__dirname, "../../client/npx browserslist@latest --update-db\n")));
+  // app.use("/app", express.static(path.join(__dirname, "../../client/npx browserslist@latest --update-db\n")));
 
   app.use("/app", express.static(path.join(__dirname, '../../client/build')));
 
@@ -63,9 +63,9 @@ async function startServer() {
   });
 
 
-  app.get("/app/", function (req, res) {
-    res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
-  });
+  // app.get("/app/", function (req, res) {
+  //   res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
+  // });
 
   // app.get('*', (req, res) => {
   //   res.redirect("/app");
