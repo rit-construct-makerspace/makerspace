@@ -30,6 +30,8 @@ async function startServer() {
 
   setupSessions(app);
 
+  app.use(express.static(path.join(__dirname, 'build')));
+
   // environment setup
   if (process.env.NODE_ENV === "development") {
     // view engine setup
@@ -60,7 +62,7 @@ async function startServer() {
   });
 
 
-  app.get("/app/*", function (req, res) {
+  app.get("/app/", function (req, res) {
     res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
   });
 
