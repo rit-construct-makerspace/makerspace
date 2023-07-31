@@ -30,7 +30,6 @@ async function startServer() {
 
   setupSessions(app);
 
-  app.use(express.static(path.join(__dirname, '../../client/build')));
 
   // environment setup
   if (process.env.NODE_ENV === "development") {
@@ -49,6 +48,8 @@ async function startServer() {
   }
 
   app.use("/app", express.static(path.join(__dirname, "../../client/npx browserslist@latest --update-db\n")));
+
+  app.use("/app", express.static(path.join(__dirname, '../../client/build')));
 
   app.all("/app/*", (req, res, next) => {
     if (req.user) {
