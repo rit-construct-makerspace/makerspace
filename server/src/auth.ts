@@ -280,7 +280,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   app.get('*', (req, res) => {
-    res.redirect("/app/");
+    res.redirect("/app");
   });
 
 }
