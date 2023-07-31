@@ -65,7 +65,7 @@ async function startServer() {
   });
 
   app.get('/*', (req, res) => {
-    res.redirect("/app");
+    res.redirect("/app/");
   });
 
   const server = new ApolloServer({
