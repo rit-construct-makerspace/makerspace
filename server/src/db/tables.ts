@@ -144,7 +144,6 @@ export interface AvailabilityRow {
   userID: number;
 }
 
-import { Tables } from 'knex/types/tables'
 declare module 'knex/types/tables' {
   interface Tables {
     AuditLogs: AuditLogRow;

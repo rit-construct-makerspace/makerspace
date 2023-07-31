@@ -36,8 +36,8 @@ export default function AvailabilityStrip({
   const timeIntervals: boolean[] = [];
 
   availability.forEach((timeSlot) => {
-    const startIndex = getTimeIndex(timeSlot.startTime);
-    const endIndex = getTimeIndex(timeSlot.endTime);
+    const startIndex = getTimeIndex(new Date(timeSlot.startTime).toTimeString());
+    const endIndex = getTimeIndex(new Date(timeSlot.endTime).toTimeString());
 
     for (let i = startIndex; i < endIndex; i++) {
       timeIntervals[i] = true;

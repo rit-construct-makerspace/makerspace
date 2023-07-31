@@ -4,7 +4,7 @@ import { AvailabilityRow } from "../../db/tables";
 export async function getAllAvailability(date: string, userID: number) {
     return knex('Availability')
         .select()
-        .where("date", date);
+        .where("date", new Date(date));
 }
 
 export async function createAvailabilitySlot(date: Date, startTime: Date, endTime: Date, userID: number): Promise<AvailabilityRow[]> {

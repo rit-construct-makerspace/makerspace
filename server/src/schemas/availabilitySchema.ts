@@ -1,10 +1,11 @@
 import gql from "graphql-tag";
 
 export interface AvailabilitySlot {
-    id: string;
-    date: string;
-    startTime: string;
-    endTime: string;
+    id: number;
+    date: Date;
+    startTime: Date;
+    endTime: Date;
+    userID: number;
 }
 
 export const AvailabilityTypeDefs = gql`
