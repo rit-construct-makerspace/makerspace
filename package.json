@@ -20,8 +20,7 @@
     "knex:migrate:make": "knex --migrations-directory server/src/db/migrations migrate:make -x ts",
     "knex:migrate:latest": "knex --knexfile server/dist/db/knexFile.js migrate:latest",
     "knex:migrate:rollback": "knex --knexfile server/dist/db/knexFile.js migrate:rollback",
-    "knex:migrate:unlock": "knex --knexfile server/dist/db/knexFile.js migrate:unlock",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "knex:migrate:unlock": "knex --knexfile server/dist/db/knexFile.js migrate:unlock"
   },
   "keywords": [],
   "author": "",
@@ -81,5 +80,8 @@
     "nodemon": "^2.0.12",
     "ts-jest": "^27.0.5",
     "ts-node": "^10.7.0"
+  },
+  "engines": {
+    "node": "16.x"
   }
 }

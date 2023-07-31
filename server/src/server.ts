@@ -41,7 +41,6 @@ async function startServer() {
     setupStagingAuth(app);
   } else if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1); // trust first proxy
-
     setupAuth(app);
   } else {
     process.exit(-1);
