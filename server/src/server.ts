@@ -53,7 +53,7 @@ async function startServer() {
       return next();
     }
     res.redirect("/login");
-  });+ //TOOD: what does this + do?
+  });
 
   app.get("/", function(req, res) {
     res.redirect("/app");
@@ -65,7 +65,7 @@ async function startServer() {
   });
 
   app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, "../../client/build", 'index.html'));
+    res.redirect("/app");
   });
 
   const server = new ApolloServer({
