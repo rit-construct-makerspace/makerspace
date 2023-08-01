@@ -1,5 +1,6 @@
 import { knex } from "../../db";
 import { AvailabilityRow } from "../../db/tables";
+import {AvailabilityInput} from "../../schemas/availabilitySchema";
 
 export async function getAllAvailability(date: string, userID: number) {
     return knex('Availability')
@@ -7,13 +8,13 @@ export async function getAllAvailability(date: string, userID: number) {
         .where("date", new Date(date));
 }
 
-export async function createAvailabilitySlot(date: Date, startTime: Date, endTime: Date, userID: number): Promise<AvailabilityRow[]> {
+export async function createAvailabilitySlot(availability: AvailabilityInput): Promise<AvailabilityRow[]> {
     return knex('Availability').insert(
         {
-            date: date,
-            startTime: startTime,
-            endTime: endTime,
-            userID: userID
+            date: availability.date,
+            startTime: availability.startTime,
+            endTime: availability.endTime,
+            userID: availability.userID
         },
         "id"
     );

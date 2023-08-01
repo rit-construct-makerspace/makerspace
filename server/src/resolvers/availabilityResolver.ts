@@ -1,5 +1,8 @@
 import { ApolloContext } from "../context";
 import * as availabilityRepo from "../repositories/Availability/availabilityRepo";
+import {AvailabilityInput} from "../schemas/availabilitySchema";
+import {Privilege} from "../schemas/usersSchema";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 
 const AvailabilityResolver = {
     Query : {
@@ -9,10 +12,16 @@ const AvailabilityResolver = {
     },
 
     Mutation : {
-        createAvailabilitySlot: async ( parent: any, args: {date: Date, startTime: Date, endTime: Date, userID: number}, { ifAllowed }: ApolloContext) => {
-            return await availabilityRepo.createAvailabilitySlot(args.date, args.startTime, args.endTime, args.userID)
-        }
-    }
+        createAvailabilitySlot: async (
+            parent: any,
+            args: { availability: AvailabilityInput },
+            { ifAllowed }: ApolloContext
+        ) =>
+
+            ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+                return await availabilityRepo.createAvailabilitySlot(args.availability);
+            })
+    },
 }
 
 export default AvailabilityResolver;

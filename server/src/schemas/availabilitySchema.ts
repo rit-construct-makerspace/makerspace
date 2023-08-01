@@ -2,9 +2,16 @@ import gql from "graphql-tag";
 
 export interface AvailabilitySlot {
     id: number;
-    date: Date;
-    startTime: Date;
-    endTime: Date;
+    date: string;
+    startTime: string;
+    endTime: string;
+    userID: number;
+}
+
+export interface AvailabilityInput {
+    date: string;
+    startTime: string;
+    endTime: string;
     userID: number;
 }
 
@@ -13,9 +20,16 @@ export const AvailabilityTypeDefs = gql`
     type AvailabilitySlot {
         id: ID!
         date: String!
-        startTime: DateTime!
-        endTime: DateTime!
-        userID: String!
+        startTime: String!
+        endTime: String!
+        userID: ID!
+    }
+    
+    input AvailabilityInput {
+        date: String!
+        startTime: String!
+        endTime: String!
+        userID: ID!
     }
     
     extend type Query {
@@ -23,6 +37,8 @@ export const AvailabilityTypeDefs = gql`
     }
     
     type Mutation {
-        createAvailabilitySlot(date: String!, startTime: DateTime!, endTime: DateTime!, userID: ID!): AvailabilitySlot
+        createAvailabilitySlot(input: AvailabilityInput!): AvailabilitySlot!
+        updateAvailabilitySlot(id: ID!, input: AvailabilityInput!): AvailabilitySlot!
+        deleteAvailabilitySlot(id: ID!): Boolean!
     }
 `;

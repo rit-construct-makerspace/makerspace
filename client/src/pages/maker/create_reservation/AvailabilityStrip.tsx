@@ -1,6 +1,6 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
-import TimeSlot from "../../../types/TimeSlot";
+import {AvailabilitySlot} from "../../../../../server/src/schemas/availabilitySchema";
 
 interface StyledQuarterHourBlockProps {
   available: boolean;
@@ -22,7 +22,7 @@ const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
 `;
 
 interface AvailabilityStripProps {
-  availability: TimeSlot[];
+  availability: AvailabilitySlot[];
 }
 
 function getTimeIndex(time: string) {
@@ -35,9 +35,9 @@ export default function AvailabilityStrip({
 }: AvailabilityStripProps) {
   const timeIntervals: boolean[] = [];
 
-  availability.forEach((timeSlot) => {
-    const startIndex = getTimeIndex(new Date(timeSlot.startTime).toTimeString());
-    const endIndex = getTimeIndex(new Date(timeSlot.endTime).toTimeString());
+  availability.forEach((availabilitySlot) => {
+    const startIndex = getTimeIndex(new Date(parseInt(availabilitySlot.startTime)).toTimeString());
+    const endIndex = getTimeIndex(new Date(parseInt(availabilitySlot.endTime)).toTimeString());
 
     for (let i = startIndex; i < endIndex; i++) {
       timeIntervals[i] = true;

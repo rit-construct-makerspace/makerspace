@@ -1,18 +1,20 @@
 import TimeSlot from "../../../types/TimeSlot";
 import {LocalizationProvider, TimePicker} from "@mui/x-date-pickers";
-import React, {ReactNode, useState} from "react";
+import React, {useState} from "react";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {TextField, Stack, CircularProgress, Fab, Button, IconButton} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {AvailabilitySlot} from "../../../../../server/src/schemas/availabilitySchema";
 
 interface TimeSlotTimePickerDivProps {
     slot: TimeSlot;
     index: number;
     editSlots: (slot: TimeSlot, index: number) => void;
+    deleteSlot: (index: number) => void
 }
 
-function TimeSlotTimePickerDiv({slot, index, editSlots}: TimeSlotTimePickerDivProps): ReactNode {
+function TimeSlotTimePickerDiv({slot, index, editSlots, deleteSlot}: TimeSlotTimePickerDivProps): JSX.Element {
     const [start, setStart] = useState(new Date(slot.startTime))
     const [end, setEnd] = useState(new Date(slot.endTime))
 
@@ -26,7 +28,12 @@ function TimeSlotTimePickerDiv({slot, index, editSlots}: TimeSlotTimePickerDivPr
     const handleEndChange = async (time: Date | null) => {
         if(time!=null) {
             setEnd(time)
-            editSlots({startTime: start.toString(), endTime: time.toString()}, index)}
+            editSlots({startTime: start.getTime() + "", endTime: time.getTime() + ""}, index)}
+    }
+
+    const handleDeleteClick = () => {
+        console.log(slot)
+        deleteSlot(index)
     }
 
     return <div
@@ -66,7 +73,9 @@ function TimeSlotTimePickerDiv({slot, index, editSlots}: TimeSlotTimePickerDivPr
             minutesStep={15}
         />
 
-        <IconButton aria-label="delete">
+        <IconButton
+            aria-label="delete"
+            onClick={handleDeleteClick}>
             <DeleteIcon />
         </IconButton>
 
@@ -74,31 +83,54 @@ function TimeSlotTimePickerDiv({slot, index, editSlots}: TimeSlotTimePickerDivPr
 }
 
 interface TimePickerStripProps {
-    availability: TimeSlot[];
-    setTimeSlots: (t: TimeSlot[]) => void;
+    availability: AvailabilitySlot[];
+    setAvailabilitySlots: (t: AvailabilitySlot[]) => void;
+    date: string;
+    uid: string;
+    onSave: () => void;
 }
 
-export default function TimePickerStrip({availability, setTimeSlots}: TimePickerStripProps) {
-
-    const onSave = async () => {
-    }
+export default function TimePickerStrip({availability, setAvailabilitySlots, date, uid, onSave}: TimePickerStripProps) {
 
     const onNewClick = async () => {
-        //arr.push(TimeSlotTimePickerDiv({slot: {startTime: new Date('2012-12-12 23:59').toString(), endTime: new Date('2012-12-12 23:59').toString()}, index: arr.length}))
+        var copy = JSON.parse(JSON.stringify(availability))
+        copy.push({
+            id: null,
+            date: new Date(date).getTime() + "",
+            startTime: new Date('2012-12-12 24:00:00').getTime() + "",
+            endTime: new Date('2012-12-12 24:00:00').getTime() + "",
+            userID: uid
+        })
+        setAvailabilitySlots(copy)
+        console.log(availability)
     }
 
     const editSlots = async (slot: TimeSlot, index: number) => {
-        var copy = JSON.parse(JSON.stringify(availability))
-        console.log(copy)
-        copy[index] = slot
-        setTimeSlots(copy)
+        let copy = JSON.parse(JSON.stringify(availability))
+        copy[index].startTime = slot.startTime
+        copy[index].endTime = slot.endTime
+        setAvailabilitySlots(copy)
     }
 
-    const arr: ReactNode[] = [];
+    const deleteSlot = async (index: number) => {
+        var copy = JSON.parse(JSON.stringify(availability))
+        copy.splice(index, 1)
+        setAvailabilitySlots(copy)
+        console.log(availability)
+    }
 
-    availability.forEach((timeSlot, index) => {
-        arr.push(TimeSlotTimePickerDiv({slot: timeSlot, index: index, editSlots: editSlots}))
-    });
+    const arr = availability.map((availabilitySlot, index) => (
+        <TimeSlotTimePickerDiv
+            key={`time-picker-slot-${index}`}
+            slot={{
+                startTime: new Date(parseInt(availabilitySlot.startTime)).toString(),
+                endTime: new Date(parseInt(availabilitySlot.endTime)).toString(),
+            }}
+            index={index}
+            editSlots={editSlots}
+            deleteSlot={deleteSlot}
+        />
+    ));
 
     return <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Stack direction='column'>
