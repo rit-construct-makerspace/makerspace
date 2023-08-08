@@ -21,7 +21,7 @@ export default function LogoutPromptPage() {
 
                 //reload is needed to force logout user, in the future should make this happen in a better way
                 //possibly redirect to login page?
-                navigate("/app/loggedout")
+                navigate("/logout")
 
             })
             .catch(function(err) {
