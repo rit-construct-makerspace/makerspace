@@ -60,11 +60,16 @@ async function startServer() {
     res.redirect("/login");
   });
 
+  app.get("/app/home", function(req, res) {
+    res.redirect("/app/")
+  })
+
 
   //redirects first landing make.rit.edu/ -> make.rit.edu/app
-  app.get("/", function(req, res) {
+  app.get("/", function(req , res) {
     res.redirect("/app/home");
   });
+
 
 
   // app.get("/app/", function (req, res) {

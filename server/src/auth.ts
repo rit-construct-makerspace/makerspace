@@ -149,8 +149,10 @@ export function setupDevAuth(app: express.Application) {
         if (err) {
           res.status(400).send("Logout failed");
         } else {
-          // res.clearCookie("connect.sid");
-          res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
+          res.clearCookie("connect.sid");
+
+          window.location.reload();
+          // res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
         }
       });
     } else {
