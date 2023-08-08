@@ -5,10 +5,12 @@ import {useNavigate} from "react-router-dom";
 
 export default function LogoutPromptPage() {
 
+    const navigate = useNavigate();
+
 
     const logout = useCallback(() => {
         console.log("Logging out...")
-        fetch("http://localhost:3000/logout", {
+        fetch("/logout", {
             mode: 'cors',
             method: 'POST',
             credentials: 'include',
@@ -19,7 +21,7 @@ export default function LogoutPromptPage() {
 
                 //reload is needed to force logout user, in the future should make this happen in a better way
                 //possibly redirect to login page?
-                window.location.reload();
+                navigate("/app/loggedout")
 
             })
             .catch(function(err) {

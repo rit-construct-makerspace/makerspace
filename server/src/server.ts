@@ -49,8 +49,10 @@ async function startServer() {
 
   // app.use("/app", express.static(path.join(__dirname, "../../client/npx browserslist@latest --update-db\n")));
 
+  //serves built react app files under make.rit.edu/app
   app.use("/app", express.static(path.join(__dirname, '../../client/build')));
 
+  //verifies user logged in under all front-end urls and if not send to login
   app.all("/app/*", (req, res, next) => {
     if (req.user) {
       return next();
@@ -58,6 +60,8 @@ async function startServer() {
     res.redirect("/login");
   });
 
+
+  //redirects first landing make.rit.edu/ -> make.rit.edu/app
   app.get("/", function(req, res) {
     res.redirect("/app");
   });
