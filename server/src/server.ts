@@ -60,13 +60,16 @@ async function startServer() {
     res.redirect("/login");
   });
 
+
+  //it might seem like you should be able to redirect straight to /app/ from / but for some reason it infitely refreshes
+  // and this solves the issue
   app.get("/app/home", function(req, res) {
     res.redirect("/app/")
   })
 
 
-  //redirects first landing make.rit.edu/ -> make.rit.edu/app
-  app.get("/", function(req , res) {
+  //redirects first landing make.rit.edu/ -> make.rit.edu/home
+  app.get("/*", function(req , res) {
     res.redirect("/app/home");
   });
 
