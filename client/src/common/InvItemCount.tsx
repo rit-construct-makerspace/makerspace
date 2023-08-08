@@ -14,7 +14,7 @@ export default function InvItemCount({
 }: InvItemCountProps) {
   return (
     <Typography variant="body1" {...otherProps}>
-      {count} {count === 1 ? item.unit : item.pluralUnit}
+      {count} {count === 1 ? item.unit : item.pluralUnit} remaining.
     </Typography>
   );
 }

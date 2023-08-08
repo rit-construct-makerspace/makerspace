@@ -4,7 +4,7 @@ import * as ModuleRepo from "../../repositories/Training/ModuleRepository";
 import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository";
 import { PassedModule, Privilege, User } from "../../schemas/usersSchema";
 import { ifAllowed, ifAllowedOrSelf, ifAuthenticated } from "../../context";
-import { UserRow } from "../../db/tables";
+import { TrainingModuleItem, UserRow } from "../../db/tables";
 import { ApolloServer, GraphQLResponse } from "@apollo/server";
 import { schema } from "../../schema";
 import assert from "assert";
@@ -538,8 +538,14 @@ describe("User tests", () => {
         ifAllowedOrSelf: ifAllowedOrSelf(userZero),
         ifAuthenticated: ifAuthenticated(userZero)
     };
+    
+    const exampleQuiz: TrainingModuleItem[] = [{
+      id: '6784b67f-10d0-4476-8a81-e30c5f537e4e',
+      type: 'TEXT',
+      text: 'example'
+    }]
 
-    const moduleID = (await ModuleRepo.addModule('Test Module')).id;
+    const moduleID = (await ModuleRepo.addModule('Test Module', exampleQuiz)).id;
     const submissionID = (await SubmissionRepo.addSubmission(userZero.id, moduleID, true))[0];
 
     let server = new ApolloServer({

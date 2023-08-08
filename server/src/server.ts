@@ -30,6 +30,7 @@ async function startServer() {
 
   setupSessions(app);
 
+
   // environment setup
   if (process.env.NODE_ENV === "development") {
     // view engine setup
@@ -41,7 +42,6 @@ async function startServer() {
     setupStagingAuth(app);
   } else if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1); // trust first proxy
-
     setupAuth(app);
   } else {
     process.exit(-1);
@@ -49,26 +49,45 @@ async function startServer() {
 
   app.use("/app", express.static(path.join(__dirname, "../../client/npx browserslist@latest --update-db\n")));
 
+  //serves built react app files under make.rit.edu/app
+  app.use("/app/", express.static(path.join(__dirname, '../../client/build')));
+
+  //verifies user logged in under all front-end urls and if not send to login
   app.all("/app/*", (req, res, next) => {
     if (req.user) {
       return next();
     }
     res.redirect("/login");
-  });+ //TOOD: what does this + do?
-
-  app.get("/", function(req, res) {
-    res.redirect("/app");
   });
 
 
-  app.get("/app/*", function (req, res) {
-    res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
+  //it might seem like you should be able to redirect straight to /app/ from / but for some reason it infitely refreshes
+  // and this solves the issue
+  app.get("/app/home", function(req, res) {
+    res.redirect("/app/")
+  })
+
+
+  //redirects first landing make.rit.edu/ -> make.rit.edu/home
+  app.get("/*", function(req , res) {
+    res.redirect("/app/home");
   });
+
+
+
+  // app.get("/app/", function (req, res) {
+  //   res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
+  // });
+
+  // app.get('*', (req, res) => {
+  //   res.redirect("/app");
+  // });
 
   const server = new ApolloServer({
     schema,
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   });
+
 
   await server.start();
   app.use(

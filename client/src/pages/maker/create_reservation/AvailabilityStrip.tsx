@@ -16,9 +16,9 @@ const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
   &:last-child {
     margin-bottom: 0;
   }
-
+  
   background-color: ${({ available, theme }) =>
-    available ? theme.palette.primary.light : theme.palette.grey["200"]};
+    available ? "limegreen" : "gray "};
 `;
 
 interface AvailabilityStripProps {

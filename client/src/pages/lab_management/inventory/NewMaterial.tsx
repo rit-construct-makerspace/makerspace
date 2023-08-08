@@ -3,15 +3,8 @@ import { gql, useMutation } from "@apollo/client";
 import MaterialModalContents, {
   InventoryItemInput,
 } from "./MaterialModalContents";
-import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
+import { GET_INVENTORY_ITEMS, CREATE_INVENTORY_ITEM} from "../../../queries/inventoryQueries";
 
-const CREATE_INVENTORY_ITEM = gql`
-  mutation CreateInventoryItem($item: InventoryItemInput) {
-    createInventoryItem(item: $item) {
-      id
-    }
-  }
-`;
 
 interface NewMaterialProps {
   onClose: () => void;
@@ -39,6 +32,7 @@ export default function NewMaterial({ onClose }: NewMaterialProps) {
       itemDraft={itemDraft}
       setItemDraft={setItemDraft}
       onSave={createInventoryItem}
+      onDelete={onClose}
       loading={loading}
     />
   );

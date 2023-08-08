@@ -4,20 +4,15 @@ import SearchBar from "../../../common/SearchBar";
 import { Divider, Stack, Typography } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import RequestWrapper from "../../../common/RequestWrapper";
 import TrainingModuleRow from "./TrainingModuleRow";
-import { GET_TRAINING_MODULES, CREATE_TRAINING_MODULE, GET_ARCHIVED_TRAINING_MODULES } from "../../../queries/modules";
+import { GET_TRAINING_MODULES, GET_ARCHIVED_TRAINING_MODULES } from "../../../queries/trainingQueries";
 import { ObjectSummary } from "../../../types/Common";
 
 export default function TrainingModulesPage() {
   const navigate = useNavigate();
-
-  const [createModule, { loading }] = useMutation(CREATE_TRAINING_MODULE, {
-    variables: { name: "New Training Module" },
-    refetchQueries: [{ query: GET_TRAINING_MODULES }],
-  });
 
   const getModuleResults = useQuery(GET_TRAINING_MODULES);
   const getArchivedModuleResults = useQuery(GET_ARCHIVED_TRAINING_MODULES);
@@ -25,11 +20,8 @@ export default function TrainingModulesPage() {
   const [searchText, setSearchText] = useState("");
 
   const handleNewModuleClicked = async () => {
-    const result = await createModule();
-    const moduleId = result?.data?.createModule?.id;
-
     // Redirect to the module editor after creation
-    navigate(`/admin/training/archived/${moduleId}`);
+    navigate(`/admin/training/new`);
   };
 
   return (
@@ -41,7 +33,7 @@ export default function TrainingModulesPage() {
         onChange={(e) => setSearchText(e.target.value)}
       />
       <LoadingButton
-        loading={loading}
+        loading={false}
         variant="outlined"
         startIcon={<CreateIcon />}
         onClick={handleNewModuleClicked}

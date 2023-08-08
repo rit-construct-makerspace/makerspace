@@ -10,6 +10,7 @@ import IncompleteTrainingsCard from "./IncompleteTrainingsCard";
 import ExpiringSoonCard from "./ExpiringSoonCard";
 import AnnouncementsCard from "./AnnouncementsCard";
 import { useNavigate } from "react-router-dom";
+import { wrap } from "module";
 // import RequestWrapper from "../../../common/RequestWrapper";
 // import { useQuery } from "@apollo/client";
 // import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
@@ -23,22 +24,23 @@ const Homepage: React.FC = () => {
     return (
         <Page title={welcomeMsg} maxWidth={"1250px"}>
                 <Typography variant="h5">Dashboard</Typography>
-                <Stack direction={"row"} justifyContent={"space-between"} marginTop={2}>
-                    <Stack direction={"column"} spacing={5}>
-                        <AccountBalanceCard />
-                        <ExpiringSoonCard />
-                        <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")}/>
-                    </Stack>
+                <div className="flexo" style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    flexWrap: "wrap",
+                    justifyContent: "space-around",
+                    alignContent: "flex-start",
+                    gap: "1em"
+                }}>
+                    <AccountBalanceCard />
+                    <ExpiringSoonCard />
+                    <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")}/>
 
-                    <Stack direction={"column"} spacing={5}>
-                        <OperationHoursCard />
-                        <AnnouncementsCard/>
-                    </Stack>
+                    <OperationHoursCard />
+                    <AnnouncementsCard/>
 
-                    <Stack direction={"column"} spacing={15}>
-                        <UpcomingEventsCard />
-                    </Stack>
-                </Stack>
+                    <UpcomingEventsCard />
+                </div>
         </Page>
     );
 };

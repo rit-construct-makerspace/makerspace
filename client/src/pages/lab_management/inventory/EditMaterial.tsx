@@ -4,28 +4,8 @@ import MaterialModalContents, {
 } from "./MaterialModalContents";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
+import { GET_INVENTORY_ITEMS, GET_INVENTORY_ITEM, UPDATE_INVENTORY_ITEM, DELETE_INVENTORY_ITEM } from "../../../queries/inventoryQueries";
 
-const GET_INVENTORY_ITEM = gql`
-  query GetInventoryItem($id: ID!) {
-    InventoryItem(Id: $id) {
-      name
-      unit
-      pluralUnit
-      pricePerUnit
-      count
-      threshold
-    }
-  }
-`;
-
-const UPDATE_INVENTORY_ITEM = gql`
-  mutation UpdateInventoryItem($id: ID!, $item: InventoryItemInput) {
-    updateInventoryItem(itemId: $id, item: $item) {
-      id
-    }
-  }
-`;
 
 interface EditMaterialProps {
   itemId: string;
@@ -47,6 +27,13 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
     ],
   });
 
+  const [deleteInventoryItem, deletion] = useMutation(DELETE_INVENTORY_ITEM, {
+    variables: { id: itemId },
+    refetchQueries: [
+      { query: GET_INVENTORY_ITEMS },
+    ],
+  });
+
   // After the item has been fetched, fill in the draft
   useEffect(() => {
     if (!query.data?.InventoryItem) return;
@@ -58,7 +45,7 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
 
   // Close the modal upon successful mutation
   useEffect(() => {
-    if (mutation.data?.updateInventoryItem?.id) onClose();
+    if (mutation.data?.updateInventoryItem.id) onClose();
   }, [mutation.data, onClose]);
 
   return (
@@ -68,6 +55,10 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
         itemDraft={itemDraft}
         setItemDraft={setItemDraft}
         onSave={updateInventoryItem}
+        onDelete={() => {
+          deleteInventoryItem()
+          onClose()
+        }}
         loading={mutation.loading}
       />
     </RequestWrapper>

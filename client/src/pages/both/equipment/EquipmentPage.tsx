@@ -4,7 +4,7 @@ import SearchBar from "../../../common/SearchBar";
 import EquipmentCard from "./EquipmentCard";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import { GET_EQUIPMENTS } from "../../../queries/equipments";
+import { GET_EQUIPMENTS } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
 import { ObjectSummary } from "../../../types/Common";

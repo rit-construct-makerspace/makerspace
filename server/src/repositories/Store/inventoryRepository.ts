@@ -155,3 +155,10 @@ export async function removeLabels(
     .whereIn("label", subquery)
     .del();
 }
+
+export async function deleteInventoryItem(
+    itemId: number
+): Promise<boolean> {
+    await knex("InventoryItem").where({ id: itemId}).delete()
+    return true
+}

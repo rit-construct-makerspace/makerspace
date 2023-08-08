@@ -5,20 +5,22 @@ export const AnnouncementsTypeDefs = gql`
     id: ID!
     title: String!
     description: String!
-    postDate: String!
-    expDate: String
   }
 
   input AnnouncementInput {
     title: String!
-    desrciption: String
+    description: String!
   }
 
-  extend type Query {
-    announcements: [Announcement]
+  type Query {
+    getAnnouncement(id: ID!): Announcement
+    getAllAnnouncements: [Announcement]
   }
 
-  extend type Mutation {
+  type Mutation {
     createAnnouncement(title: String!, description: String!): Announcement
+    updateAnnouncement(id: ID!, title: String!, description: String!): Announcement
+    updateAnnouncementWithInputType(id: ID!, input: AnnouncementInput!): Announcement
+    deleteAnnouncement(id: ID!): Boolean
   }
 `;

@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Equipment, MutationCallback } from "./EditEquipmentPage";
 import { useMutation, useQuery } from "@apollo/client";
-import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS, GET_EQUIPMENT_BY_ID, UPDATE_EQUIPMENT } from "../../../queries/equipments";
+import GET_EQUIPMENTS, { GET_ARCHIVED_EQUIPMENTS, GET_EQUIPMENT_BY_ID, UPDATE_EQUIPMENT } from "../../../queries/equipmentQueries";
 import EquipmentEditor from "./EquipmentEditor";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { ObjectSummary } from "../../../types/Common";

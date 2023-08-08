@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import { Module } from "../../../types/Quiz";
-import { GET_TRAINING_MODULES, UPDATE_MODULE, PUBLISH_MODULE, GET_ARCHIVED_MODULE, GET_ARCHIVED_TRAINING_MODULES } from "../../../queries/modules";
+import { GET_TRAINING_MODULES, UPDATE_MODULE, PUBLISH_MODULE, GET_ARCHIVED_MODULE, GET_ARCHIVED_TRAINING_MODULES } from "../../../queries/trainingQueries";
 import 'react-toastify/dist/ReactToastify.css';
 import EditModulePage from "./EditModulePage";
 
@@ -28,7 +28,6 @@ export default function EditArchivedModulePage() {
         id: updatedModule.id,
         name: updatedModule.name,
         quiz: updatedModule.quiz,
-        reservationPrompt: updatedModule.reservationPrompt 
       },
       refetchQueries: [
         { query: GET_ARCHIVED_MODULE, variables: { id } },
