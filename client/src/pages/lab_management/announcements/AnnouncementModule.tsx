@@ -1,5 +1,8 @@
-import { CardActionArea, Stack, Typography } from "@mui/material";
+import { CardActionArea, CardMedia, Icon, IconButton, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import CreateIcon from "@mui/icons-material/Create";
+import { LoadingButton } from "@mui/lab";
+
 
 interface AnnouncementModuleProps {
   id: number;
@@ -14,7 +17,13 @@ export default function AnnouncementModule({ id, title }: AnnouncementModuleProp
       sx={{ p: 1, pl: 2 }}
       onClick={() => navigate("/admin/announcements/" + id)}
     >
+
       <Stack direction="row" alignItems="center" spacing={2}>
+
+        <IconButton>
+          <CreateIcon />
+        </IconButton>
+
         <Typography
           variant="body1"
           fontWeight={500}

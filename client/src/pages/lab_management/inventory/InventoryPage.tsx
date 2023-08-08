@@ -10,7 +10,7 @@ import { useQuery } from "@apollo/client";
 import InventoryItem from "../../../types/InventoryItem";
 import RequestWrapper from "../../../common/RequestWrapper";
 import MaterialModal from "./MaterialModal";
-import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
+import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
 
 function sortItemsByName(items: InventoryItem[]): InventoryItem[] {
   return [...items].sort((a, b) => (a.name > b.name ? 1 : -1)) ?? [];
@@ -39,7 +39,7 @@ export default function InventoryPage() {
             <InventoryRow
               item={item}
               key={item.id}
-              onClick={() => navigate(`/admin/inventory/${item.id}`)}
+              onClick={() => setModalItemId(item.id + "")}
             />
           ))}
         </Stack>

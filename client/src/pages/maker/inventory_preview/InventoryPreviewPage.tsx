@@ -6,7 +6,7 @@ import PreviewInventoryRow from "../../../common/PreviewInventoryRow";
 import { useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
 import InventoryItem from "../../../types/InventoryItem";
-import GET_INVENTORY_ITEMS from "../../../queries/getInventoryItems";
+import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
 
 export default function InventoryPreviewPage() {
   const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);

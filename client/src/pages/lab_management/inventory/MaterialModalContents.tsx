@@ -13,6 +13,7 @@ import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
 import styled from "styled-components";
 import InventoryItem from "../../../types/InventoryItem";
+import Page from "../../Page";
 
 const StyledMaterialImage = styled.img`
   width: 200px;
@@ -45,6 +46,7 @@ interface MaterialPageProps {
   itemDraft: Partial<InventoryItem>;
   setItemDraft: (i: Partial<InventoryItem>) => void;
   onSave: () => void;
+  onDelete: () => void;
   loading: boolean;
 }
 
@@ -53,6 +55,7 @@ export default function MaterialModalContents({
   itemDraft,
   setItemDraft,
   onSave,
+  onDelete,
   loading,
 }: MaterialPageProps) {
   const [inputErrors, setInputErrors] = useState<InputErrors>({});
@@ -103,10 +106,11 @@ export default function MaterialModalContents({
     onSave();
   };
 
+
   const title = `${isNewItem ? "New" : "Edit"} Material`;
 
   return (
-    <>
+    <Page title={""} maxWidth="1250px">
       <Typography variant="h5" mb={2}>
         {title}
       </Typography>
@@ -183,7 +187,9 @@ export default function MaterialModalContents({
       <Stack direction="row" justifyContent="space-between" mt={4}>
         {!isNewItem && (
           <Stack direction="row" spacing={2}>
-            <DeleteMaterialButton />
+            <DeleteMaterialButton
+              onDelete={onDelete}
+            />
 
             <Button variant="outlined" startIcon={<HistoryIcon />}>
               View Logs
@@ -202,6 +208,6 @@ export default function MaterialModalContents({
           Save
         </LoadingButton>
       </Stack>
-    </>
+    </Page>
   );
 }

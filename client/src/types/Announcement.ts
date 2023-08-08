@@ -2,11 +2,10 @@ export enum AnnouncementItemType {
     Text = "TEXT"
   }
   
-//   export interface Option {
-//     id: string;
-//     text: string;
-//     correct: boolean;
-//   }
+  export interface AnnouncementInput {
+    title: string;
+    description: string;
+  };
   
   export interface Announcement {
     id: number;

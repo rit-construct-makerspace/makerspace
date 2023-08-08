@@ -1,7 +1,7 @@
-import { DocumentNode, gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 import PublishButton from "../../../common/PublishButton";
-import GET_TRAINING_MODULES, { GET_ARCHIVED_TRAINING_MODULES, GET_MODULE, PUBLISH_MODULE } from "../../../queries/modules";
+import GET_TRAINING_MODULES, { GET_ARCHIVED_TRAINING_MODULES, GET_MODULE, PUBLISH_MODULE } from "../../../queries/trainingQueries";
 
 interface PublishTrainingModuleButtonProps {
   moduleID: number;

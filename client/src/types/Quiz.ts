@@ -20,6 +20,12 @@ export interface QuizItem {
   options?: Option[];
 };
 
+export interface Moduledraft {
+  name: string;
+  archived: boolean;
+  quiz: QuizItem[];
+};
+
 export interface ReservationPrompt {
   promptText?: string;
   enabled: boolean;

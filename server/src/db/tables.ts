@@ -133,8 +133,6 @@ export interface AnnouncementRow {
   id: number;
   title: string;
   description: string;
-  postDate: Date;
-  expDate: Date;
 }
 
 declare module "knex/types/tables" {

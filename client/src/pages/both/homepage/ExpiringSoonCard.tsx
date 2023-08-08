@@ -43,7 +43,7 @@ export default function ExpiringSoonCard() {
                 const reordered = [...expiringSoon];
 
                 return (
-                    <Card sx={{ width: 350, padding: 2, spacing: 5, border: 1, borderColor: "lightgrey" }} >
+                    <Card sx={{ width: 350, maxWidth: 500, padding: 2, spacing: 5, border: 1, borderColor: "lightgrey", flexGrow: 1  }} >
                         <Typography variant="h4">Expiring Soon</Typography>
                         {reordered.length === 0 && (
                              <Typography variant="body1" style={{ color: "grey" }}>You're all caught up!</Typography>
