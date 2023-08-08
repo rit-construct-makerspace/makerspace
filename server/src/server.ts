@@ -63,7 +63,7 @@ async function startServer() {
 
   //redirects first landing make.rit.edu/ -> make.rit.edu/app
   app.get("/", function(req, res) {
-    res.redirect("/app");
+    res.redirect("/app/home");
   });
 
 
