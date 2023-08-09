@@ -138,9 +138,9 @@ export interface AnnouncementRow {
 
 export interface AvailabilityRow {
   id: number;
-  date: Date;
-  startTime: Date;
-  endTime: Date;
+  date: String;
+  startTime: String;
+  endTime: String;
   userID: number;
 }
 

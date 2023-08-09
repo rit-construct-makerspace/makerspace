@@ -15,8 +15,8 @@ export interface AvailabilityInput {
     userID: number;
 }
 
+
 export const AvailabilityTypeDefs = gql`
-    scalar DateTime
     type AvailabilitySlot {
         id: ID!
         date: String!
@@ -33,12 +33,13 @@ export const AvailabilityTypeDefs = gql`
     }
     
     extend type Query {
-        availabilitySlots( date: String!, userID: ID! ): [AvailabilitySlot]
+        availabilityByDateAndUser( date: String!, userID: ID! ): [AvailabilitySlot]
+        availabilityByDate( date: String! ): [AvailabilitySlot]
     }
     
     type Mutation {
-        createAvailabilitySlot(input: AvailabilityInput!): AvailabilitySlot!
-        updateAvailabilitySlot(id: ID!, input: AvailabilityInput!): AvailabilitySlot!
-        deleteAvailabilitySlot(id: ID!): Boolean!
+        createAvailabilitySlot(input: AvailabilityInput!): AvailabilitySlot
+        updateAvailabilitySlot(id: ID!, input: AvailabilityInput!): AvailabilitySlot
+        deleteAvailabilitySlot(id: ID!): Boolean
     }
 `;

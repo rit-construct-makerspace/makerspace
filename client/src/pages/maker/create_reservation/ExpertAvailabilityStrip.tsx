@@ -20,6 +20,7 @@ export default function ExpertAvailabilityStrip({
   expertAvailability,
   onExpertClick,
 }: ExpertAvailabilityStripProps) {
+  console.log(expertAvailability)
   return (
     <Card elevation={4} sx={{ height: "fit-content", ml: 2 }}>
       <CardActionArea onClick={() => onExpertClick(expertAvailability)}>

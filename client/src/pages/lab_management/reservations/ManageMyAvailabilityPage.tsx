@@ -9,30 +9,29 @@ import { useCurrentUser } from "../../../common/CurrentUserProvider"
 import {
     CREATE_AVAILABILITY_SLOT,
     DELETE_AVAILABILITY_SLOT,
-    GET_ALL_AVAILABILITY,
+    GET_AVAILABILITY_BY_DATE_AND_USER,
     UPDATE_AVAILABILITY_SLOT
 } from '../../../queries/availabilityQueries';
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import {AvailabilitySlot} from "../../../../../server/src/schemas/availabilitySchema";
 import TimePickerStrip from "./TimePickerStrip";
+import TimeSlot from "../../../types/TimeSlot";
 
-function parseDate(dateString: string): Date | null {
+function parseDate(dateString: string): string | null {
     if(dateString != "" && dateString != null){
-        return new Date(new Date(dateString).getTime() + 86400000)
+        return new Date(dateString).getTime() + ""
     } else {
         return null
     }
 }
 
-
 export default function ManageMyAvailabilityPage() {
     const {search} = useLocation();
     const [dateString, setDateString] = useState("");
-    const [availabilityQuery, availabilityQueryResult ] = useLazyQuery(GET_ALL_AVAILABILITY, {
+    const [availabilityQuery, availabilityQueryResult ] = useLazyQuery(GET_AVAILABILITY_BY_DATE_AND_USER, {
         onCompleted: (data) => {
-            setAvailabilitySlots(data.availabilitySlots)
-            setTempAvailability(data.availabilitySlots)
-            console.log(data)
+            setAvailabilitySlots(data.availabilityByDateAndUser)
+            setTempAvailability(data.availabilityByDateAndUser)
         }
     })
     const [createAvailabilitySlotMutation] = useMutation(CREATE_AVAILABILITY_SLOT);
@@ -74,48 +73,44 @@ export default function ManageMyAvailabilityPage() {
         navigate("/admin/reservations/availability?" + params, {replace: true});
     };
 
+
     const onSave = async () => {
         try {
-            const updatedIds = new Set(tempAvailability.map((slot) => slot.id));
-            const newSlots = tempAvailability.filter((slot) => !slot.id);
-            const updatedSlotMap = tempAvailability.reduce((map, slot) => {
-                if (slot.id) map.set(slot.id, slot);
-                return map;
-            }, new Map());
-            const deletedSlots = availabilitySlots.filter((slot) => !updatedIds.has(slot.id));
-            const updatedSlotsArr = availabilitySlots
-                .filter((slot) => updatedSlotMap.has(slot.id))
-                .map((slot) => {
-                    const updatedSlot = updatedSlotMap.get(slot.id);
-                    if (
-                        updatedSlot.startTime !== slot.startTime ||
-                        updatedSlot.endTime !== slot.endTime
-                    ) {
-                        return updatedSlot;
-                    }
-                    return slot;
-                });
 
-            console.log(newSlots)
-            console.log(updatedSlotsArr)
-            console.log(deletedSlots)
+            let changed = tempAvailability.filter((slot1: AvailabilitySlot) => {
+                return availabilitySlots.some((slot2: AvailabilitySlot) => {
+                    return slot2.id == slot1.id && (slot2.startTime != slot1.startTime || slot2.endTime != slot1.endTime)
+                })
+            })
+
+            let deleted = availabilitySlots.filter((slot1: AvailabilitySlot) => {
+                return !tempAvailability.some((slot2: AvailabilitySlot) => {
+                    return slot2.id == slot1.id
+                })
+            })
+
+            let created = tempAvailability.filter((slot1: AvailabilitySlot) => {
+                return !availabilitySlots.some((slot2: AvailabilitySlot) => {
+                    return slot2.id == slot1.id
+                })
+            })
 
             // mutations for new slots
-            for (const newSlot of newSlots) {
-                console.log('mut1')
+            for (const newSlot of created) {
+
                 await createAvailabilitySlotMutation({
                     variables: {
-                        date: newSlot.startTime,
+                        date: newSlot.date,
                         startTime: newSlot.startTime,
                         endTime: newSlot.endTime,
                         userID: currentUser.id,
                     },
                 });
+                console.log('added')
             }
 
             // mutations for updated slots
-            for (const updatedSlot of updatedSlotsArr) {
-                console.log('mut2')
+            for (const updatedSlot of changed) {
                 await updateAvailabilitySlotMutation({
                     variables: {
                         id: updatedSlot.id,
@@ -128,8 +123,7 @@ export default function ManageMyAvailabilityPage() {
             }
 
             // mutations for deleted slots
-            for (const deletedSlot of deletedSlots) {
-                console.log('mut3')
+            for (const deletedSlot of deleted) {
                 await deleteAvailabilitySlotMutation({
                     variables: { id: deletedSlot.id },
                 });
@@ -141,6 +135,8 @@ export default function ManageMyAvailabilityPage() {
             console.error("Error saving availability slots:", error);
         }
     };
+
+
     return (
         <Page title={"My Availability"}>
             Select a day to change your available hours:
@@ -171,7 +167,12 @@ export default function ManageMyAvailabilityPage() {
                                     mr: 4,
                                 }}
                             >
-                                <AvailabilityStrip availability={tempAvailability}/>
+                                <AvailabilityStrip availability={tempAvailability.map((slot) => {
+                                    return {
+                                        startTime: slot.startTime,
+                                        endTime: slot.endTime
+                                    }
+                                }) as TimeSlot[]}/>
                             </Paper>
 
                             <TimePickerStrip availability={tempAvailability} setAvailabilitySlots={setTempAvailability} date={dateString} uid={currentUser.id} onSave={onSave} />

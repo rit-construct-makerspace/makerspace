@@ -10,30 +10,25 @@ import {AvailabilitySlot} from "../../../../../server/src/schemas/availabilitySc
 interface TimeSlotTimePickerDivProps {
     slot: TimeSlot;
     index: number;
-    editSlots: (slot: TimeSlot, index: number) => void;
+    editSlot: (slot: TimeSlot, index: number) => void;
     deleteSlot: (index: number) => void
 }
 
-function TimeSlotTimePickerDiv({slot, index, editSlots, deleteSlot}: TimeSlotTimePickerDivProps): JSX.Element {
+function TimeSlotTimePickerDiv({slot, index, editSlot, deleteSlot}: TimeSlotTimePickerDivProps): JSX.Element {
     const [start, setStart] = useState(new Date(slot.startTime))
     const [end, setEnd] = useState(new Date(slot.endTime))
 
-    const handleStartChange = async (time: Date | null) => {
+    const handleStartChange = (time: Date | null) => {
 
         if(time!=null) {
             setStart(time)
-            editSlots({startTime: time.toString(), endTime: end.toString()}, index)
+            editSlot({startTime: time.getTime() + "", endTime: end.getTime() + ""}, index)
         }
     }
-    const handleEndChange = async (time: Date | null) => {
+    const handleEndChange = (time: Date | null) => {
         if(time!=null) {
             setEnd(time)
-            editSlots({startTime: start.getTime() + "", endTime: time.getTime() + ""}, index)}
-    }
-
-    const handleDeleteClick = () => {
-        console.log(slot)
-        deleteSlot(index)
+            editSlot({startTime: start.getTime() + "", endTime: time.getTime() + ""}, index)}
     }
 
     return <div
@@ -75,7 +70,7 @@ function TimeSlotTimePickerDiv({slot, index, editSlots, deleteSlot}: TimeSlotTim
 
         <IconButton
             aria-label="delete"
-            onClick={handleDeleteClick}>
+            onClick={() =>{deleteSlot(index)}}>
             <DeleteIcon />
         </IconButton>
 
@@ -102,7 +97,6 @@ export default function TimePickerStrip({availability, setAvailabilitySlots, dat
             userID: uid
         })
         setAvailabilitySlots(copy)
-        console.log(availability)
     }
 
     const editSlots = async (slot: TimeSlot, index: number) => {
@@ -116,7 +110,6 @@ export default function TimePickerStrip({availability, setAvailabilitySlots, dat
         var copy = JSON.parse(JSON.stringify(availability))
         copy.splice(index, 1)
         setAvailabilitySlots(copy)
-        console.log(availability)
     }
 
     const arr = availability.map((availabilitySlot, index) => (
@@ -127,7 +120,7 @@ export default function TimePickerStrip({availability, setAvailabilitySlots, dat
                 endTime: new Date(parseInt(availabilitySlot.endTime)).toString(),
             }}
             index={index}
-            editSlots={editSlots}
+            editSlot={editSlots}
             deleteSlot={deleteSlot}
         />
     ));

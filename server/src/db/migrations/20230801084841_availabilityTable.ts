@@ -6,9 +6,9 @@ export async function up(knex: Knex): Promise<void> {
         if (!exists) {
             return knex.schema.createTable('Availability', function (t) {
                 t.increments('id').primary();
-                t.dateTime('date');
-                t.dateTime('startTime');
-                t.dateTime('endTime');
+                t.string('date');
+                t.string('startTime');
+                t.string('endTime');
                 t.integer('userID').references('id').inTable('Users');
             });
         }
