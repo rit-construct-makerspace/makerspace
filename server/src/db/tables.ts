@@ -144,6 +144,13 @@ export interface AvailabilityRow {
   userID: number;
 }
 
+export interface MachineLogRow {
+  id: number;
+  dateTime: number;
+  machineID: number
+  userID: number;
+}
+
 declare module 'knex/types/tables' {
   interface Tables {
     AuditLogs: AuditLogRow;
@@ -159,5 +166,6 @@ declare module 'knex/types/tables' {
     TrainingModule: TrainingModuleRow;
     Users: UserRow;
     Availability: AvailabilityRow;
+    MachineLogs: MachineLogRow;
   }
 }

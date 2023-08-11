@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import {
   Avatar,
@@ -30,6 +30,10 @@ export default function SelectTimeStep({
   stepForwards,
   stepBackwards,
 }: SelectTimeStepProps) {
+
+  const [selectedStart, setSelectedStart] = useState('')
+  const [selectedEnd, setSelectedEnd] = useState('')
+
   return (
     <StyledDiv>
       <Button onClick={stepBackwards} startIcon={<ArrowBackIcon />}>
