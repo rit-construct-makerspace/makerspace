@@ -1,21 +1,22 @@
-import React, { useState } from "react";
+import React, {ChangeEventHandler, useState} from "react";
 import styled from "styled-components";
 import {
-  Avatar,
-  Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Paper,
-  Select,
-  Stack,
-  Typography,
+    Avatar,
+    Button,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Paper,
+    Select, SelectChangeEvent,
+    Stack,
+    Typography,
 } from "@mui/material";
 import ExpertAvailability from "../../../types/ExpertAvailability";
 import AvailabilityStrip from "./AvailabilityStrip";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TimeLabelStrip from "./TimeLabelStrip";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import TimeSlot from "../../../types/TimeSlot";
 
 const StyledDiv = styled.div``;
 
@@ -31,8 +32,44 @@ export default function SelectTimeStep({
   stepBackwards,
 }: SelectTimeStepProps) {
 
-  const [selectedStart, setSelectedStart] = useState('')
-  const [selectedEnd, setSelectedEnd] = useState('')
+    const MachineRequiredReservationLengthInMs = 1800000 // (30 min in ms)
+
+
+    const [selectedSlot, setSelectedSlot] = useState<TimeSlot>({startTime: '00:00', endTime: '00:00'})
+
+
+    const [splitSlots, setSplitSlots] = useState(() => {
+        const formatter = new Intl.DateTimeFormat(undefined, {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+        });
+
+        return chosenExpert.availability.flatMap((slot) => {
+            const startTime = +slot.startTime;
+            const endTime = +slot.endTime;
+            const segmentCount = Math.ceil((endTime - startTime) / MachineRequiredReservationLengthInMs);
+
+            return Array.from({ length: segmentCount }, (_, index) => {
+                const segmentStart = startTime + index * MachineRequiredReservationLengthInMs;
+                const segmentEnd = Math.min(segmentStart + MachineRequiredReservationLengthInMs, endTime);
+
+                return {
+                    startTime: formatter.format(new Date(segmentStart)),
+                    endTime: formatter.format(new Date(segmentEnd)),
+                };
+            });
+        }).sort((a, b) => {
+            return a.startTime.localeCompare(b.startTime);
+        });
+    });
+
+    const handleSelectSlot = (e: SelectChangeEvent<string>) => {
+        let startTime = e.target.value
+        console.log(startTime)
+        setSelectedSlot(splitSlots.find(slot => slot.startTime === startTime) as TimeSlot)
+    }
+
 
   return (
     <StyledDiv>
@@ -72,23 +109,27 @@ export default function SelectTimeStep({
             mr: 4,
           }}
         >
-          <AvailabilityStrip availability={chosenExpert.availability}/>
+          <AvailabilityStrip
+              availability={chosenExpert.availability}
+              selectedTimeSlot={selectedSlot}
+          />
         </Paper>
 
         <Stack spacing={4}>
+          <Typography variant="h6" component="div" sx={{ lineHeight: 1 }}>
+            Select a time slot:
+          </Typography>
           <FormControl sx={{ width: "300px" }}>
-            <InputLabel id="start-time-label">Start time</InputLabel>
-            <Select labelId="start-time-label" label="Start time">
-              <MenuItem value={"test1"}>test1</MenuItem>
-              <MenuItem value={"test2"}>test2</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl sx={{ width: "300px" }}>
-            <InputLabel id="end-time-label">End time</InputLabel>
-            <Select labelId="end-time-label" label="End time">
-              <MenuItem value={"test1"}>test1</MenuItem>
-              <MenuItem value={"test2"}>test2</MenuItem>
+            <InputLabel id="start-time-label">Selected Slot</InputLabel>
+            <Select
+                labelId="start-time-label"
+                label="Selected Slot"
+                onChange={handleSelectSlot}
+                value={selectedSlot.startTime}
+                >
+              {splitSlots.map((slot: TimeSlot) => {
+                return <MenuItem key={slot.startTime} value={slot.startTime}>{slot.startTime + " - " + slot.endTime}</MenuItem>
+              })}
             </Select>
           </FormControl>
 

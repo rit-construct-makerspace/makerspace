@@ -17,6 +17,8 @@ export default function CreateReservationPage() {
   const stepForwards = () => setActiveStep(activeStep + 1);
   const stepBackwards = () => setActiveStep(activeStep - 1);
 
+  const [ReservationInput, SetReservationInput] = useState()
+
   return (
     <Page title="Create a reservation">
       <Stepper activeStep={activeStep} sx={{ mb: 2, width: 900 }}>

@@ -106,7 +106,6 @@ export default function ManageMyAvailabilityPage() {
                         userID: currentUser.id,
                     },
                 });
-                console.log('added')
             }
 
             // mutations for updated slots

@@ -25,7 +25,6 @@ export default function CollectiveExpertAvailabilityCard({
   collectiveExpertAvailability,
   onExpertClick,
 }: CollectiveExpertAvailabilityCardProps) {
-    console.log(collectiveExpertAvailability)
   const { dayOfWeek, dateString, expertAvailabilities } =
     collectiveExpertAvailability;
 

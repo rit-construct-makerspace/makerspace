@@ -1,11 +1,11 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
-import {AvailabilitySlot} from "../../../../../server/src/schemas/availabilitySchema";
 import TimeSlot from "../../../types/TimeSlot";
 
 interface StyledQuarterHourBlockProps {
   available: boolean;
   addGap: boolean;
+  highlighted?: boolean;
 }
 
 const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
@@ -17,13 +17,18 @@ const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
   &:last-child {
     margin-bottom: 0;
   }
-  
-  background-color: ${({ available, theme }) =>
-    available ? "limegreen" : "gray "};
+
+  background-color: ${({ available, highlighted, theme }) =>
+    highlighted
+      ? "yellow"
+      : available
+      ? "limegreen"
+      : "gray"};
 `;
 
 interface AvailabilityStripProps {
   availability: TimeSlot[];
+  selectedTimeSlot?: TimeSlot;
 }
 
 function getTimeIndex(time: string) {
@@ -32,12 +37,12 @@ function getTimeIndex(time: string) {
 }
 
 export default function AvailabilityStrip({
-  availability
+  availability,
+  selectedTimeSlot
 }: AvailabilityStripProps) {
   const timeIntervals: boolean[] = [];
 
   availability.forEach((availabilitySlot) => {
-    console.log(availabilitySlot)
     const startIndex = getTimeIndex(new Date(parseInt(availabilitySlot.startTime)).toTimeString());
     const endIndex = getTimeIndex(new Date(parseInt(availabilitySlot.endTime)).toTimeString());
 
@@ -50,11 +55,12 @@ export default function AvailabilityStrip({
 
   for (let i = getTimeIndex("09:00"); i < getTimeIndex("21:00"); i++) {
     quarterHourBlocks.push(
-      <StyledQuarterHourBlock
-        available={timeIntervals[i]}
-        addGap={(i + 1) % 4 === 0}
-        key={`quarter-hour-block-${i}`}
-      />
+        <StyledQuarterHourBlock
+            available={timeIntervals[i]}
+            addGap={(i + 1) % 4 === 0}
+            highlighted={selectedTimeSlot? (getTimeIndex(selectedTimeSlot.startTime) <= i && getTimeIndex(selectedTimeSlot.endTime) > i): false}
+            key={`quarter-hour-block-${i}`}
+        />
     );
   }
 

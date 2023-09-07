@@ -34,7 +34,7 @@ export default function AddDetailsStep({
       <Button
         variant="contained"
         sx={{ alignSelf: "flex-end" }}
-        onClick={stepForwards}
+        onClick={stepForwards} //mutation then loading then stepforwards
       >
         Create reservation
       </Button>
