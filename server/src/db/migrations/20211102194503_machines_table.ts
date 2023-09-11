@@ -33,6 +33,7 @@ export async function up(knex: Knex): Promise<void> {
         return knex.schema.createTable("Reservations", function (t) {
           t.increments("id").primary();
           t.integer("makerID").references("id").inTable("Users");
+          t.integer("expertID").references("id").inTable("Users")
           t.timestamp("createDate").defaultTo(knex.fn.now());
           t.time("startTime");
           t.time("endTime");

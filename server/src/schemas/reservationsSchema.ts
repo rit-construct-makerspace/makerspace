@@ -16,11 +16,12 @@ export const ReservationsTypeDefs = gql`
 
   type Reservation {
     id: ID!
-    maker: User
+    makerID: ID!
+    expertID: ID!
     createDate: DateTime
     startTime: DateTime
     endTime: DateTime
-    equipment: Equipment
+    equipmentID: ID!
     status: ReservationStatus
     lastUpdated: DateTime
   }
@@ -47,8 +48,9 @@ export const ReservationsTypeDefs = gql`
   }
 
   input ReservationInput {
-    makerID: Int!
-    equipmentID: Int!
+    makerID: ID!
+    expertID: ID!
+    equipmentID: ID!
     startTime: DateTime!
     endTime: DateTime!
 
