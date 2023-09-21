@@ -149,14 +149,13 @@ export default function LeftNav() {
     }));
 
   return (
-    <Box display="flex">
-        <Toolbar sx={{padding: 0, height: 2, width: 0, ml: 0}}>
+    <Box display="flex" sx={{backgroundColor:'lavender', flexDirection: { xs: 'column', sm: 'row' }}}>
+        <Toolbar sx={{backgroundColor:'blue', flexDirection:'column', display: { xs: 'flex', sm: 'none' }}}>
             <IconButton
-                color="inherit"
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{display: { sm: 'none' }, pt: 0, pl: 2}}
+                sx={{display: { sm: 'none' }, pt: 0, pl: 2, color: '#f76802'}}
             >
                 <MenuIcon/>
             </IconButton>
