@@ -18,12 +18,13 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
-import {Stack, Box, Button, IconButton, Toolbar} from "@mui/material";
+import {Stack, Box, IconButton, Toolbar} from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -49,7 +50,7 @@ export default function LeftNav() {
         <div>
             <StyledLogo src={LogoSvg} alt="Construct logo" onClick={() => navigate(`/`)} />
 
-            <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+            <Stack direction="row" alignItems="center" spacing={2} padding={1}>
                 <Avatar
                     alt="Profile picture"
                     src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
@@ -141,15 +142,21 @@ export default function LeftNav() {
         </div>
     )
 
+    const DrawerHeader = styled('div')(()=> ({
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+    }));
+
   return (
     <Box display="flex">
-        <Toolbar>
+        <Toolbar sx={{padding: 0, height: 2, width: 0, ml: 0}}>
             <IconButton
                 color="inherit"
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{ mr: 2, display: { sm: 'none' } }}
+                sx={{display: { sm: 'none' }, pt: 0, pl: 2}}
             >
                 <MenuIcon/>
             </IconButton>
@@ -181,6 +188,11 @@ export default function LeftNav() {
                 '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
         >
+            <DrawerHeader>
+                <IconButton onClick={handleDrawerToggle}>
+                    <ChevronLeftIcon />
+                </IconButton>
+            </DrawerHeader>
             {drawer}
         </Drawer>
         <Drawer
