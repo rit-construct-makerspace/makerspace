@@ -6,6 +6,14 @@ export interface ReservationAttachment {
   url: string;
 }
 
+export interface ReservationInput {
+  makerID: number
+  expertID: number
+  equipmentID: number
+  startTime: Date
+  endTime: Date
+}
+
 export default interface Reservation {
   id: number;
   maker: User;

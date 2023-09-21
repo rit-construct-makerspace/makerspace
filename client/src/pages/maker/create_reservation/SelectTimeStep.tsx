@@ -24,12 +24,14 @@ interface SelectTimeStepProps {
   chosenExpert: ExpertAvailability;
   stepForwards: () => void;
   stepBackwards: () => void;
+  setSelectedTimeSlot: (slot: TimeSlot) => void;
 }
 
 export default function SelectTimeStep({
-  chosenExpert,
-  stepForwards,
-  stepBackwards,
+    chosenExpert,
+    stepForwards,
+    stepBackwards,
+    setSelectedTimeSlot
 }: SelectTimeStepProps) {
 
     const MachineRequiredReservationLengthInMs = 1800000 // (30 min in ms)
@@ -136,7 +138,10 @@ export default function SelectTimeStep({
           <Button
             variant="contained"
             endIcon={<ArrowForwardIcon />}
-            onClick={stepForwards}
+            onClick={() => {
+                setSelectedTimeSlot(selectedSlot);
+                stepForwards();
+            }}
             sx={{ alignSelf: "flex-end" }}
           >
             Next
