@@ -27,7 +27,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const StyledLogo = styled.img`
-  margin: 20px 12px 12px 12px;
+  margin: 0px 12px 12px 12px;
   &:hover {
     cursor: pointer;
   }
@@ -48,7 +48,7 @@ export default function LeftNav() {
 
     const drawer = (
         <div>
-            <StyledLogo src={LogoSvg} alt="Construct logo" onClick={() => navigate(`/`)} />
+            <StyledLogo src={LogoSvg} alt="Construct logo" onClick={() => navigate(`/`)}/>
 
             <Stack direction="row" alignItems="center" spacing={2} padding={1}>
                 <Avatar
@@ -149,13 +149,13 @@ export default function LeftNav() {
     }));
 
   return (
-    <Box display="flex" sx={{backgroundColor:'lavender', flexDirection: { xs: 'column', sm: 'row' }}}>
-        <Toolbar sx={{backgroundColor:'blue', flexDirection:'column', display: { xs: 'flex', sm: 'none' }}}>
+    <Box display="flex" sx={{backgroundColor: '#e7e8e9', flexDirection: { xs: 'column', sm: 'row' }}}>
+        <Toolbar sx={{backgroundColor: "#ffffff", flexDirection:'row', display: { xs: 'flex', sm: 'none' }, pl:2, pr:2, height:1, boxShadow: 3}}>
             <IconButton
                 aria-label="open drawer"
                 edge="start"
                 onClick={handleDrawerToggle}
-                sx={{display: { sm: 'none' }, pt: 0, pl: 2, color: '#f76802'}}
+                sx={{display: { sm: 'none' }, color: '#f76802', padding: 1.5}}
             >
                 <MenuIcon/>
             </IconButton>
@@ -207,27 +207,6 @@ export default function LeftNav() {
         >
             {drawer}
         </Drawer>
-
-      {/*<Drawer*/}
-      {/*  sx={{*/}
-      {/*    width: drawerWidth,*/}
-      {/*    flexShrink: 0,*/}
-      {/*    "& .MuiDrawer-paper": {*/}
-      {/*      width: drawerWidth,*/}
-      {/*      boxSizing: "border-box",*/}
-      {/*    },*/}
-      {/*  }}*/}
-      {/*  variant="temporary"*/}
-      {/*  onClose={handleDrawerToggle}*/}
-      {/*  open={mobileOpen}*/}
-      {/*  ModalProps={{*/}
-      {/*      keepMounted: true,*/}
-      {/*  }}*/}
-      {/*  anchor="left"*/}
-      {/*>*/}
-
-
-      {/*</Drawer>*/}
       <Outlet />
     </Box>
   );
