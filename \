@@ -1,0 +1,6 @@
+Merge branch 'master' into heroku-deploy
+# Please enter a commit message to explain why this merge is necessary,
+# especially if it merges an updated upstream into a topic branch.
+Back merging master into heroku-deploy to bring new features onto heroku
+# Lines starting with '#' will be ignored, and an empty message aborts
+# the commit.
