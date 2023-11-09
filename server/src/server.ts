@@ -16,7 +16,7 @@ const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollogr
 
 const CORS_CONFIG = {
   origin: function (origin: any, callback: any) {
-    if (allowed_origins.indexOf(origin) !== -1) {
+    if (allowed_origins.indexOf(origin) !== -1 || !origin) {
       callback(null, true)
     } else {
       callback(new Error('Not allowed by CORS'))
