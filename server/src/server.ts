@@ -12,8 +12,16 @@ import { json } from "body-parser";
 import path from "path";
 var morgan = require("morgan");
 
+const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com"];
+
 const CORS_CONFIG = {
-  origin: process.env.REACT_APP_ORIGIN,
+  origin: function (origin: any, callback: any) {
+    if (allowed_origins.indexOf(origin) !== -1) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
   credentials: true,
 };
 
