@@ -13,7 +13,7 @@ import path from "path";
 var morgan = require("morgan");
 
 const CORS_CONFIG = {
-  origin: process.env.REACT_APP_ORIGIN,
+  origin: "*",
   credentials: true,
 };
 
