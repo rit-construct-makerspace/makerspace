@@ -12,6 +12,8 @@ import { json } from "body-parser";
 import path from "path";
 var morgan = require("morgan");
 
+const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu"];
+
 const CORS_CONFIG = {
   origin: "*",
   credentials: true,
