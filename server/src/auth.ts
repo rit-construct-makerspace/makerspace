@@ -172,14 +172,20 @@ export function setupStagingAuth(app: express.Application) {
   assert(entryPoint, "ENTRY_POINT env value is null");
   assert(reactAppUrl, "REACT_APP_URL env value is null");
 
+  /*
+  identifierFormat defaults to urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress.
+  ITS demanded we use urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified
 
-  //urn:oasis:names:tc:SAML:2.0:attrname
+  this unspecified format is not allowed by samltest.id so in order to test with samltest the variable must be
+  temporarily switched back to undefined to use the default passportsaml nameid-format:emailAddress
+   */
+
   const samlConfig = {
     issuer: issuer,
     path: "/login/callback",
     callbackUrl: callbackUrl,
     entryPoint: entryPoint,
-    identifierFormat: undefined,
+    identifierFormat: "urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified",
     decryptionPvk: process.env.SSL_PVKEY ?? "",
     privateCert: process.env.SSL_PVKEY ?? "",
     cert: process.env.IDP_PUBKEY ?? "",
