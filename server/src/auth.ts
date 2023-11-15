@@ -172,12 +172,14 @@ export function setupStagingAuth(app: express.Application) {
   assert(entryPoint, "ENTRY_POINT env value is null");
   assert(reactAppUrl, "REACT_APP_URL env value is null");
 
+
+  //urn:oasis:names:tc:SAML:2.0:attrname
   const samlConfig = {
     issuer: issuer,
     path: "/login/callback",
     callbackUrl: callbackUrl,
     entryPoint: entryPoint,
-    identifierFormat: "urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified",
+    identifierFormat: undefined,
     decryptionPvk: process.env.SSL_PVKEY ?? "",
     privateCert: process.env.SSL_PVKEY ?? "",
     cert: process.env.IDP_PUBKEY ?? "",
