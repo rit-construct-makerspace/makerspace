@@ -15,13 +15,7 @@ var morgan = require("morgan");
 const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu"];
 
 const CORS_CONFIG = {
-  origin: function (origin: any, callback: any) {
-    if (allowed_origins.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  },
+  origin: process.env.REACT_APP_ORIGIN,
   credentials: true,
 };
 
