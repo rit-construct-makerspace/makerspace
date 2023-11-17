@@ -177,7 +177,7 @@ export function setupStagingAuth(app: express.Application) {
   ITS demanded we use urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified
 
   this unspecified format is not allowed by samltest.id so in order to test with samltest the variable must be
-  temporarily switched back to undefined to use the default passportsaml nameid-format:emailAddress
+  temporarily switched back to undefined to use  passportsaml's default nameid-format:emailAddress
    */
 
   const samlConfig = {
