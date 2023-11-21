@@ -4,16 +4,16 @@ import {
   LinkProps as RouterLinkProps,
   useLocation,
 } from "react-router-dom";
-import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { Chip } from "@mui/material";
+import { Chip, ListItemButton } from "@mui/material";
 
 interface NavLinkProps {
   icon?: React.ReactElement;
   primary: string;
   to: string;
   notificationCount?: number;
+  closeDrawer: () => void;
 }
 
 export default function NavLink({
@@ -21,6 +21,7 @@ export default function NavLink({
   primary,
   to,
   notificationCount,
+  closeDrawer,
 }: NavLinkProps) {
   const url = useLocation();
 
@@ -35,16 +36,16 @@ export default function NavLink({
   );
 
   return (
-    <ListItem
-      button
+    <ListItemButton
       selected={url.pathname.includes(to)}
       component={renderLink}
+      onClick={closeDrawer}
     >
       {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
       <ListItemText primary={primary} />
       {notificationCount && (
         <Chip size="small" color="primary" label={notificationCount} />
       )}
-    </ListItem>
+    </ListItemButton>
   );
 }

@@ -68,16 +68,19 @@ export default function LeftNav() {
                     to="/maker/equipment"
                     primary="Equipment"
                     icon={<HandymanIcon />}
+                    closeDrawer={() => {setMobileOpen(false)}}
                 />
                 <NavLink
                     to="/maker/training"
                     primary="Training"
                     icon={<SchoolIcon />}
+                    closeDrawer={() => {setMobileOpen(false)}}
                 />
                 <NavLink
                     to="/maker/materials"
                     primary="Materials"
                     icon={<InventoryIcon />}
+                    closeDrawer={() => {setMobileOpen(false)}}
                 />
             </List>
 
@@ -88,46 +91,55 @@ export default function LeftNav() {
                         to="/admin/equipment"
                         primary="Equipment"
                         icon={<HandymanIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                     <NavLink
                         to="/admin/training"
                         primary="Training"
                         icon={<SchoolIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                     <NavLink
                         to="/admin/inventory"
                         primary="Materials"
                         icon={<InventoryIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                     <NavLink
                         to="/admin/storefront"
                         primary="Storefront"
                         icon={<StorefrontIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                     <NavLink
                         to="/admin/rooms"
                         primary="Rooms"
                         icon={<MeetingRoomIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                     <NavLink
                         to="/admin/reservations"
                         primary="Reservations"
                         icon={<EventIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                     <NavLink
                         to="/admin/announcements"
                         primary="Announcements"
                         icon={<AnnouncementIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                     <NavLink
                         to="/admin/people"
                         primary="People"
                         icon={<PeopleIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                     <NavLink
                         to="/admin/history"
                         primary="History"
                         icon={<HistoryIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
                     />
                 </List>
             )}
@@ -137,6 +149,7 @@ export default function LeftNav() {
                     to="/logoutprompt"
                     primary="Logout"
                     icon={<HandymanIcon />}
+                    closeDrawer={() => {setMobileOpen(false)}}
                 />
             </List>
         </div>
@@ -149,8 +162,8 @@ export default function LeftNav() {
     }));
 
   return (
-    <Box display="flex" sx={{backgroundColor: '#e7e8e9', flexDirection: { xs: 'column', sm: 'row' }}}>
-        <Toolbar sx={{backgroundColor: "#ffffff", flexDirection:'row', display: { xs: 'flex', sm: 'none' }, pl:2, pr:2, height:1, boxShadow: 3}}>
+    <Box display="flex" sx={{flexDirection: { xs: 'column', sm: 'row' }}}>
+        <Toolbar sx={{ flexDirection:'row', display: { xs: 'flex', sm: 'none' }, pl:2, pr:2, height:1, boxShadow: 3}}>
             <IconButton
                 aria-label="open drawer"
                 edge="start"

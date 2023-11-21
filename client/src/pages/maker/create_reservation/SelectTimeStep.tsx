@@ -17,6 +17,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import TimeLabelStrip from "./TimeLabelStrip";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import TimeSlot from "../../../types/TimeSlot";
+import {useLocation} from "react-router-dom";
 
 const StyledDiv = styled.div``;
 
@@ -34,10 +35,10 @@ export default function SelectTimeStep({
     setSelectedTimeSlot
 }: SelectTimeStepProps) {
 
-    const MachineRequiredReservationLengthInMs = 1800000 // (30 min in ms)
+    const MACHINE_REQUIRED_RESERVATION_LENGTH_IN_MS = 1800000 // (30 min in ms)
 
 
-    const [selectedSlot, setSelectedSlot] = useState<TimeSlot>({startTime: '00:00', endTime: '00:00'})
+    const [selectedSlot, setSelectedSlot] = useState<TimeSlot>({startTime: '', endTime: ''})
 
 
     const [splitSlots, setSplitSlots] = useState(() => {
@@ -50,11 +51,11 @@ export default function SelectTimeStep({
         return chosenExpert.availability.flatMap((slot) => {
             const startTime = +slot.startTime;
             const endTime = +slot.endTime;
-            const segmentCount = Math.ceil((endTime - startTime) / MachineRequiredReservationLengthInMs);
+            const segmentCount = Math.ceil((endTime - startTime) / MACHINE_REQUIRED_RESERVATION_LENGTH_IN_MS);
 
             return Array.from({ length: segmentCount }, (_, index) => {
-                const segmentStart = startTime + index * MachineRequiredReservationLengthInMs;
-                const segmentEnd = Math.min(segmentStart + MachineRequiredReservationLengthInMs, endTime);
+                const segmentStart = startTime + index * MACHINE_REQUIRED_RESERVATION_LENGTH_IN_MS;
+                const segmentEnd = Math.min(segmentStart + MACHINE_REQUIRED_RESERVATION_LENGTH_IN_MS, endTime);
 
                 return {
                     startTime: formatter.format(new Date(segmentStart)),
@@ -66,10 +67,16 @@ export default function SelectTimeStep({
         });
     });
 
-    const handleSelectSlot = (e: SelectChangeEvent<string>) => {
+    const {search} = useLocation();
+
+    const handleSelectSlot = async(e: SelectChangeEvent<string>) => {
         let startTime = e.target.value
-        console.log(startTime)
-        setSelectedSlot(splitSlots.find(slot => slot.startTime === startTime) as TimeSlot)
+        let temp = splitSlots.find(slot => slot.startTime === startTime) as TimeSlot
+        const dd = new URLSearchParams(search).get("date") ?? "INVALID DATE"
+        const ISOStart = new Date(dd + "T" + temp.startTime + ":00Z").toISOString().replace(/\.\d{3}/, '')
+        const ISOEnd = new Date(dd + "T" + temp.endTime + ":00Z").toISOString().replace(/\.\d{3}/, '')
+        console.log({startTime: ISOStart, endTime: ISOEnd})
+        setSelectedSlot({startTime: ISOStart, endTime: ISOEnd})
     }
 
 

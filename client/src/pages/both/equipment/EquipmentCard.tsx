@@ -17,7 +17,7 @@ export default function EquipmentCard({ id, name, to }: EquipmentCardProps) {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{ width: 250 }} onClick={() => navigate(to)}>
+    <Card onClick={() => navigate(to)}>
       <CardActionArea>
         <CardMedia
           component="img"

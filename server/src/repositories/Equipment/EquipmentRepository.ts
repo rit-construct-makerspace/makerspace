@@ -29,6 +29,19 @@ export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   return equipment;
 }
 
+export async function getEquipmentByIDForReservationCard(id: number): Promise<Pick<EquipmentRow, "id" | "name">> {
+    const equipment = await knex("Equipment")
+        .where({
+            id: id
+        })
+        .first()
+        .select('id', 'name');
+
+    if (!equipment) throw new EntityNotFound(`Could not find equipment #${id}`);
+
+    return equipment;
+}
+
 export async function getEquipmentByIDWhereArchived(id: number, archived: boolean): Promise<EquipmentRow> {
   const equipment = await knex("Equipment")
                             .where({
@@ -57,7 +70,7 @@ export async function getEquipmentWithRoomID(
   roomID: number,
   archived: boolean
 ): Promise<EquipmentRow[]> {
-  return knex("Equipment")
+  return await knex("Equipment")
           .select()
           .where({
             roomID: roomID,

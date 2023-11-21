@@ -28,7 +28,7 @@ export default function Page({
         }}
       >
         <Stack direction="row" alignItems="center" mb={4}>
-          <Typography variant="h3" flexGrow={1}>
+          <Typography variant="h4" flexGrow={1}>
             {title}
           </Typography>
           {topRightAddons}

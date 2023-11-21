@@ -65,12 +65,14 @@ export interface ReservationEventRow {
 export interface ReservationRow {
   id: number;
   makerID: number;
+  expertID: number;
   createDate: Date;
   startTime: Date;
   endTime: Date;
   equipmentID: number;
   status: string;
   lastUpdated: Date;
+  archived: boolean;
 }
 
 export interface RoomSwipeRow {

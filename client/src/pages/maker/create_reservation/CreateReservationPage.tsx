@@ -9,17 +9,46 @@ import ConfirmationStep from "./ConfirmationStep";
 import ReservationInput from "../../../types/Reservation"
 import TimeSlot from "../../../types/TimeSlot";
 import SelectMachineStep from "./SelectMachineStep";
+import {useMutation} from "@apollo/client";
+import {CREATE_RESERVATION} from "../../../queries/reservationQueries";
+import {useLocation} from "react-router-dom";
 
 export default function CreateReservationPage() {
   const [activeStep, setActiveStep] = useState(0);
 
+  const [selectedMachine, setSelectedMachine] = useState()
   const [selectedExpert, setSelectedExpert] = useState<ExpertAvailability>();
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot>()
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot>({startTime: '', endTime: ''})
+  const [message, setMessage] = useState('')
+
+  const [createExpertReservation, { data, loading, error }] = useMutation(CREATE_RESERVATION)
 
   const stepForwards = () => setActiveStep(activeStep + 1);
   const stepBackwards = () => setActiveStep(activeStep - 1);
 
   const [ReservationInput, SetReservationInput] = useState<ReservationInput>()
+
+  const {search} = useLocation();
+  const handleSave = async () => {
+    console.log(selectedTimeSlot)
+
+    await setSelectedTimeSlot(
+        {
+          startTime: selectedTimeSlot.startTime,
+          endTime: selectedTimeSlot.endTime
+        }
+    )
+    console.log(selectedTimeSlot)
+    await createExpertReservation({variables:{
+      makerID: 1,
+      expertID: 1,
+      equipmentID: 1,
+      startTime:  selectedTimeSlot?.startTime,
+      endTime: selectedTimeSlot?.endTime,
+      startingMakerComment: "TEST"
+    }})
+    stepForwards()
+  }
 
   return (
     <Page title="Create a reservation">
@@ -52,18 +81,23 @@ export default function CreateReservationPage() {
           stepForwards={stepForwards}
           stepBackwards={stepBackwards}
           chosenExpert={selectedExpert}
-          setSelectedTimeSlot={() => setSelectedTimeSlot}
+          setSelectedTimeSlot={setSelectedTimeSlot}
         />
       )}
 
       {activeStep === 3 && (
         <AddDetailsStep
+          setMessage={setMessage}
           stepBackwards={stepBackwards}
-          stepForwards={stepForwards}
+          stepForwards={handleSave}
         />
       )}
 
-      {activeStep === 4 && <ConfirmationStep />}
+      {activeStep === 4 && (
+          <ConfirmationStep
+              postLoading={loading}
+          />
+      )}
     </Page>
   );
 }

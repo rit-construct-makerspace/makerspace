@@ -30,6 +30,7 @@ import {AvailabilityTypeDefs} from "./schemas/availabilitySchema";
 import AvailabilityResolver from "./resolvers/availabilityResolver";
 import MachineLogResolver from "./resolvers/machineLogResolver";
 import {MachineLogTypeDefs} from "./schemas/machineLogSchema";
+import reservationResolver from "./resolvers/reservationResolver";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -52,7 +53,7 @@ export const schema = makeExecutableSchema({
     CalendarEventsTypeDefs,
     AnnouncementsTypeDefs,
     AvailabilityTypeDefs,
-      MachineLogTypeDefs
+      MachineLogTypeDefs,
   ],
   resolvers: mergeResolvers([
     resolveFunctions,
@@ -67,6 +68,7 @@ export const schema = makeExecutableSchema({
     calendarEventsResolver,
     AnnouncementsResolver,
     AvailabilityResolver,
-      MachineLogResolver
+      MachineLogResolver,
+      reservationResolver
   ]),
 });

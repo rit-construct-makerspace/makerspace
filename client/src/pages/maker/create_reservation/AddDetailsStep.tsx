@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Button, Stack, TextField, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Alert } from "@mui/lab";
@@ -6,12 +6,15 @@ import { Alert } from "@mui/lab";
 interface AddDetailsStepProps {
   stepBackwards: () => void;
   stepForwards: () => void;
+  setMessage: (message: string) => void;
 }
 
 export default function AddDetailsStep({
   stepBackwards,
   stepForwards,
+    setMessage
 }: AddDetailsStepProps) {
+
   return (
     <Stack direction="column" alignItems="flex-start" spacing={4}>
       <Button onClick={stepBackwards} startIcon={<ArrowBackIcon />}>
@@ -27,6 +30,9 @@ export default function AddDetailsStep({
         multiline
         rows={4}
         sx={{ alignSelf: "stretch" }}
+        onChange={(event) => {
+            setMessage(event.target.value)
+        }}
       />
       <Alert severity="info" sx={{ alignSelf: "center" }}>
         File drop & upload coming soon!
