@@ -130,14 +130,14 @@ export class ReservationRepository implements IReservationRepository {
   public async confirmReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
     .where("id", resID)
-    .update({status: "CONFIRMED", lastUpdated: Date.now()});
+    .update({status: "CONFIRMED", lastUpdated: new Date().toISOString()});
     return this.getReservationById(resID);
   }
 
   public async cancelReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
     .where("id", resID)
-    .update({status: "CANCELLED", lastUpdated: Date.now()});
+    .update({status: "CANCELLED", lastUpdated: new Date().toISOString()});
     return this.getReservationById(resID);
   }
 }

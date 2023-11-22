@@ -10,8 +10,15 @@ import {
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReservationAttachment from "./ReservationAttachment";
-import Reservation from "../../../types/Reservation";
+import Reservation, {ReservationStatus} from "../../../types/Reservation";
 import { format } from "date-fns";
+import {
+  GET_RESERVATION_IDS_PER_EXPERT,
+  SET_RESERVATION_CANCELLED,
+  SET_RESERVATION_CONFIRMED
+} from "../../../queries/reservationQueries";
+import {useMutation} from "@apollo/client";
+import {CREATE_ANNOUNCEMENT} from "../../../queries/announcementsQueries";
 
 interface ReservationCardProps {
   reservation: Reservation;
@@ -37,8 +44,21 @@ function formatReservationTime(reservation: Reservation) {
   return `${formattedDate}, ${startTime} ${startPeriod}— ${endTime} ${endPeriod}`;
 }
 
+
+
 export default function ReservationCard({ reservation }: ReservationCardProps) {
-  return (
+  const [CancelRes, mutationCan] = useMutation(SET_RESERVATION_CANCELLED);
+  const [ConfirmRes, mutationCon] = useMutation(SET_RESERVATION_CONFIRMED);
+  const handleConfirm = async (id: number) => {
+    await ConfirmRes({variables:{resID: id}})
+    console.log('handleConfirm')
+  }
+
+  const handleCancel = async (id: number) => {
+    await CancelRes({variables:{reID: id}})
+    console.log('handleCancel')
+  }
+    return (
     <Card sx={{ width: 400 }}>
       <CardMedia
         component="img"
@@ -88,8 +108,15 @@ export default function ReservationCard({ reservation }: ReservationCardProps) {
         justifyContent="flex-end"
         sx={{ m: 2 }}
       >
-        <Button>Cancel</Button>
-        <Button variant="contained">Confirm</Button>
+        <Button onClick={()=>{console.log()}}>YO</Button>
+        {reservation.status === "PENDING" &&
+          (
+            <>
+              <Button onClick={()=>{handleCancel(reservation.id)}}>Cancel</Button>
+              <Button variant="contained" onClick={()=>{handleConfirm(reservation.id)}}>Confirm</Button>
+            </>
+          )
+        }
       </Stack>
     </Card>
   );

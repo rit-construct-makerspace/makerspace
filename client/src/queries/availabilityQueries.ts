@@ -26,12 +26,7 @@ export const GET_AVAILABILITY_BY_DATE = gql`
 
 export const CREATE_AVAILABILITY_SLOT = gql`
   mutation CreateAvailabilitySlot($date: String!, $startTime: String!, $endTime: String!, $userID: ID!) {
-    createAvailabilitySlot(input: { date: $date, startTime: $startTime, endTime: $endTime, userID: $userID }) {
-      date
-      startTime
-      endTime
-      userID
-    }
+    createAvailabilitySlot(input: { date: $date, startTime: $startTime, endTime: $endTime, userID: $userID })
   }
 `;
 

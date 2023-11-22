@@ -1,7 +1,7 @@
 import User from "./User";
 import Equipment from "./Equipment";
 
-enum ReservationStatus {
+export enum ReservationStatus {
   "PENDING",
   "CONFIRMED",
   "CANCELLED"
@@ -27,5 +27,5 @@ export default interface Reservation {
   endTime: string;
   comment: string;
   attachments: ReservationAttachment[];
-  status: ReservationStatus;
+  status: string;
 }

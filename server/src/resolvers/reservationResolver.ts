@@ -48,11 +48,12 @@ const ReservationResolvers = {
             endTime: reservationRow[0].endTime.toISOString(),
             comment: events[0].payload,
             attachments: [],
-            status: s === "CANCELLED" ? ReservationStatus.CANCELLED : (s === "CONFIRMED" ? ReservationStatus.CONFIRMED : ReservationStatus.PENDING)
+            status: reservationRow[0].status
+            //status: s === "CANCELLED" ? ReservationStatus.CANCELLED : (s === "CONFIRMED" ? ReservationStatus.CONFIRMED : ReservationStatus.PENDING)
         } as ReservationForCard
 
-
-        console.log(temp)
+        console.log("STATUSSSSSS")
+        console.log(temp.status)
         return temp
     },
 
@@ -99,7 +100,7 @@ const ReservationResolvers = {
       args: { resID: string },
       { ifAllowed }: ApolloContext
     ) => {
-      ifAllowed([Privilege.MENTOR], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         return await reservationRepo.confirmReservation(Number(args.resID));
     });
     },
@@ -108,7 +109,7 @@ const ReservationResolvers = {
       args: { resID: string },
       { ifAllowed }: ApolloContext
     ) => {
-      ifAllowed([Privilege.MENTOR], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         return await reservationRepo.cancelReservation(Number(args.resID));
     });
     }

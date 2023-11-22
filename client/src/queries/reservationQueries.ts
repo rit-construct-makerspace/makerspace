@@ -50,3 +50,15 @@ export const GET_RESERVATION_IDS_PER_EXPERT = gql`
         reservationIDsByExpert(expertID: $expertID)
     }
 `
+
+export const SET_RESERVATION_CANCELLED = gql`
+    mutation CancelReservation($resID: ID!) {
+        cancelReservation(resID: $resID){id}
+    }
+`
+
+export const SET_RESERVATION_CONFIRMED = gql`
+    mutation ConfirmReservation($resID: ID!) {
+        confirmReservation(resID: $resID) {id}
+    }
+`

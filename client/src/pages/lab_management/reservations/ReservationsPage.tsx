@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { GET_EXPERT_RESERVATION_FOR_CARD, GET_RESERVATION_IDS_PER_EXPERT } from "../../../queries/reservationQueries";
-import Reservation from "../../../types/Reservation";
+import React, {useEffect, useState} from "react";
+import {useLazyQuery, useQuery} from "@apollo/client";
+import {GET_EXPERT_RESERVATION_FOR_CARD, GET_RESERVATION_IDS_PER_EXPERT} from "../../../queries/reservationQueries";
+import Reservation, {ReservationStatus} from "../../../types/Reservation";
 import Page from "../../Page";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import ReservationCard from "./ReservationCard";
-import { useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
+import {useNavigate} from "react-router-dom";
+import {Button} from "@mui/material";
 
 export default function ReservationsPage() {
     const navigate = useNavigate();
@@ -25,6 +25,7 @@ export default function ReservationsPage() {
     useEffect(() => {
         if (data) {
             setReservations(prev => [...prev, data.reservationForCard]);
+            console.log(data.reservationForCard)
         }
     }, [data]);
 
@@ -34,13 +35,21 @@ export default function ReservationsPage() {
     return (
         <Page title="Reservations" maxWidth="1250px">
             <Button onClick={() => navigate('/admin/reservations/availability')}>Set your availability here.</Button>
-            <PageSectionHeader top>Your Pending Reservations</PageSectionHeader>
 
-            {reservations.map((r: Reservation) => (
+            <PageSectionHeader top>Your Pending Reservations</PageSectionHeader>
+            {reservations.filter(r => r.status === 'PENDING').map((r: Reservation) => (
                 <ReservationCard key={r.id} reservation={r} />
             ))}
+
             <PageSectionHeader>Your Confirmed Reservations</PageSectionHeader>
+            {reservations.filter(r => r.status === "CONFIRMED").map((r: Reservation) => (
+                <ReservationCard key={r.id} reservation={r} />
+            ))}
+
             <PageSectionHeader>All Reservations</PageSectionHeader>
+            {reservations.filter(r => r.status === "CANCELLED").map((r: Reservation) => (
+                <ReservationCard key={r.id} reservation={r} />
+            ))}
         </Page>
     );
 }

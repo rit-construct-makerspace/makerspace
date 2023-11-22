@@ -38,7 +38,7 @@ export const AvailabilityTypeDefs = gql`
     }
     
     type Mutation {
-        createAvailabilitySlot(input: AvailabilityInput!): AvailabilitySlot
+        createAvailabilitySlot(input: AvailabilityInput!): ID
         updateAvailabilitySlot(id: ID!, input: AvailabilityInput!): AvailabilitySlot
         deleteAvailabilitySlot(id: ID!): Boolean
     }

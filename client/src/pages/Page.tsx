@@ -27,7 +27,7 @@ export default function Page({
           maxWidth: `min(calc(100% - 64px), ${maxWidth})`,
         }}
       >
-        <Stack direction="row" alignItems="center" mb={4}>
+        <Stack direction="row" alignItems="center" mb={{xs: 1, sm: 4}}>
           <Typography variant="h4" flexGrow={1}>
             {title}
           </Typography>

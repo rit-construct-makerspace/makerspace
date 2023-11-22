@@ -52,21 +52,21 @@ export default function CreateReservationPage() {
 
   return (
     <Page title="Create a reservation">
-      <Stepper activeStep={activeStep} sx={{ mb: 2, width: 900 }}>
-        {["Select a Machine", "Choose an expert", "Select a time", "Add details"].map((label) => (
+      <Stepper activeStep={activeStep} sx={{ mb:{xs: 1, sm: 2}, width: {xs:'100%', sm:900}}}>
+        {["Choose an expert", "Select a time", "Add details"].map((label) => (
           <Step key={label}>
-            <StepLabel>{label}</StepLabel>
+            <StepLabel sx={{ '& .MuiStepLabel-label': { fontSize: '.6rem' }}}>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
 
-      {activeStep === 0 && (
-          <SelectMachineStep
-              stepForwards={stepForwards}
-          />
-      )}
+      {/*{activeStep === 0 && (*/}
+      {/*    <SelectMachineStep*/}
+      {/*        stepForwards={stepForwards}*/}
+      {/*    />*/}
+      {/*)}*/}
 
-      {activeStep === 1 && (
+      {activeStep === 0 && (
         <ChooseExpertStep
           stepForwards={stepForwards}
           onExpertClick={(expert) => {
@@ -76,7 +76,7 @@ export default function CreateReservationPage() {
         />
       )}
 
-      {activeStep === 2 && selectedExpert && (
+      {activeStep === 1 && selectedExpert && (
         <SelectTimeStep
           stepForwards={stepForwards}
           stepBackwards={stepBackwards}
@@ -85,7 +85,7 @@ export default function CreateReservationPage() {
         />
       )}
 
-      {activeStep === 3 && (
+      {activeStep === 2 && (
         <AddDetailsStep
           setMessage={setMessage}
           stepBackwards={stepBackwards}
@@ -93,7 +93,7 @@ export default function CreateReservationPage() {
         />
       )}
 
-      {activeStep === 4 && (
+      {activeStep === 3 && (
           <ConfirmationStep
               postLoading={loading}
           />

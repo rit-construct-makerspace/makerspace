@@ -38,5 +38,5 @@ export interface ReservationForCard {
     endTime: string;
     comment: string;
     attachments: ReservationAttachmentForCard[];
-    status: ReservationStatus;
+    status: string;
 }
