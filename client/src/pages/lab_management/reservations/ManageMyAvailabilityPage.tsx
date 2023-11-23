@@ -157,12 +157,12 @@ export default function ManageMyAvailabilityPage() {
                 render={(data) => {
                     return (
                         <Stack direction="row" mt={4}>
-                            <TimeLabelStrip marginTop={-10} />
+                            <TimeLabelStrip marginTop={-6} />
                             <Paper
                                 elevation={2}
                                 sx={{
                                     height: "fit-content",
-                                    overflow: "hidden",
+                                    width: "5vh",
                                     mr: 4,
                                 }}
                             >

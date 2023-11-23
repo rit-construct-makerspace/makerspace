@@ -22,6 +22,7 @@ import {CREATE_ANNOUNCEMENT} from "../../../queries/announcementsQueries";
 
 interface ReservationCardProps {
   reservation: Reservation;
+  onActionComplete: () => void;
 }
 
 function formatReservationTime(reservation: Reservation) {
@@ -46,17 +47,17 @@ function formatReservationTime(reservation: Reservation) {
 
 
 
-export default function ReservationCard({ reservation }: ReservationCardProps) {
+export default function ReservationCard({ reservation, onActionComplete }: ReservationCardProps) {
   const [CancelRes, mutationCan] = useMutation(SET_RESERVATION_CANCELLED);
   const [ConfirmRes, mutationCon] = useMutation(SET_RESERVATION_CONFIRMED);
   const handleConfirm = async (id: number) => {
     await ConfirmRes({variables:{resID: id}})
-    console.log('handleConfirm')
+    onActionComplete()
   }
 
   const handleCancel = async (id: number) => {
-    await CancelRes({variables:{reID: id}})
-    console.log('handleCancel')
+    await CancelRes({variables:{resID: id}})
+    onActionComplete()
   }
     return (
     <Card sx={{ width: 400 }}>

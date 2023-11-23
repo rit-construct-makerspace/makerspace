@@ -12,7 +12,7 @@ import {AvailabilitySlot} from "../../../../../server/src/schemas/availabilitySc
 import {GET_USER} from "../../../queries/userQueries";
 import TimeSlot from "../../../types/TimeSlot";
 
-function intToDayOfWeek(dayIndex: number) {
+export function intToDayOfWeek(dayIndex: number) {
     switch(dayIndex) {
         case 0:
             return 'Sunday';
@@ -33,7 +33,7 @@ function intToDayOfWeek(dayIndex: number) {
     }
 }
 
-function intToMonth(monthIndex: number) {
+export function intToMonth(monthIndex: number) {
     switch(monthIndex) {
         case 0:
             return 'January';
@@ -64,7 +64,7 @@ function intToMonth(monthIndex: number) {
     }
 }
 
-function intToOrdinal(n: number) {
+export function intToOrdinal(n: number) {
     const lastDigit = n % 10;
     const lastTwoDigits = n % 100;
 

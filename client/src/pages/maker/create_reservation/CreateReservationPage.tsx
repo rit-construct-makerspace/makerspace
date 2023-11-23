@@ -16,7 +16,7 @@ import {useLocation} from "react-router-dom";
 export default function CreateReservationPage() {
   const [activeStep, setActiveStep] = useState(0);
 
-  const [selectedMachine, setSelectedMachine] = useState()
+  const [selectedMachine, setSelectedMachine] = useState('')
   const [selectedExpert, setSelectedExpert] = useState<ExpertAvailability>();
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot>({startTime: '', endTime: ''})
   const [message, setMessage] = useState('')
@@ -45,7 +45,7 @@ export default function CreateReservationPage() {
       equipmentID: 1,
       startTime:  selectedTimeSlot?.startTime,
       endTime: selectedTimeSlot?.endTime,
-      startingMakerComment: "TEST"
+      startingMakerComment: message
     }})
     stepForwards()
   }
