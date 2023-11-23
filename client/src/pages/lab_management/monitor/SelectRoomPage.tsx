@@ -7,6 +7,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import GET_ROOMS, { CREATE_ROOM } from "../../../queries/roomQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
+import RoomModal from "./RoomModal";
 
 
 export default function SelectRoomPage() {
@@ -22,6 +23,7 @@ export default function SelectRoomPage() {
   };
 
   const [searchText, setSearchText] = useState("");
+  const [modalItemId, setModalItemId] = useState<number>(0);
 
   return (
     <RequestWrapper
@@ -35,7 +37,7 @@ export default function SelectRoomPage() {
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
           />
-          <Button variant="contained" onClick={handleCreateRoom}>
+          <Button variant="contained" onClick={() => setModalItemId(-1)}>
             + Add Room
           </Button>
         </Stack>
@@ -49,6 +51,10 @@ export default function SelectRoomPage() {
             <RoomCard key={room.id} room={room} />
           ))}
         </Stack>
+        <RoomModal
+            roomID={modalItemId}
+            onClose={() => setModalItemId(0)}
+        />
       </Page>
     </RequestWrapper>
   );
