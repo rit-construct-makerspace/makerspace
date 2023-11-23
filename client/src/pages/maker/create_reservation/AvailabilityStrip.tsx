@@ -9,10 +9,10 @@ interface StyledQuarterHourBlockProps {
 }
 
 const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
-  width: 3.5vw;
-  height: .645vw;
+  width: 100%;
+  height: 1vh;
 
-  margin-bottom: ${(props) => (props.addGap ? ".1vw" : "0px")};
+  margin-bottom: ${(props) => (props.addGap ? "2px" : "0px")};
 
   &:last-child {
     margin-bottom: 0;
@@ -53,6 +53,12 @@ export default function AvailabilityStrip({
 
   const quarterHourBlocks: ReactNode[] = [];
 
+  const QuarterHourColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  `;
+
   for (let i = getTimeIndex("09:00"); i < getTimeIndex("21:00"); i++) {
     quarterHourBlocks.push(
         <StyledQuarterHourBlock
@@ -64,5 +70,5 @@ export default function AvailabilityStrip({
     );
   }
 
-  return <div>{quarterHourBlocks}</div>;
+  return <QuarterHourColumn>{quarterHourBlocks}</QuarterHourColumn>;
 }

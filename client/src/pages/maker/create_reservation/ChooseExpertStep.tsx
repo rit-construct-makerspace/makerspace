@@ -12,6 +12,78 @@ import {AvailabilitySlot} from "../../../../../server/src/schemas/availabilitySc
 import {GET_USER} from "../../../queries/userQueries";
 import TimeSlot from "../../../types/TimeSlot";
 
+function intToDayOfWeek(dayIndex: number) {
+    switch(dayIndex) {
+        case 0:
+            return 'Sunday';
+        case 1:
+            return 'Monday';
+        case 2:
+            return 'Tuesday';
+        case 3:
+            return 'Wednesday';
+        case 4:
+            return 'Thursday';
+        case 5:
+            return 'Friday';
+        case 6:
+            return 'Saturday';
+        default:
+            return 'Invalid day';
+    }
+}
+
+function intToMonth(monthIndex: number) {
+    switch(monthIndex) {
+        case 0:
+            return 'January';
+        case 1:
+            return 'February';
+        case 2:
+            return 'March';
+        case 3:
+            return 'April';
+        case 4:
+            return 'May';
+        case 5:
+            return 'June';
+        case 6:
+            return 'July';
+        case 7:
+            return 'August';
+        case 8:
+            return 'September';
+        case 9:
+            return 'October';
+        case 10:
+            return 'November';
+        case 11:
+            return 'December';
+        default:
+            return 'Invalid month';
+    }
+}
+
+function intToOrdinal(n: number) {
+    const lastDigit = n % 10;
+    const lastTwoDigits = n % 100;
+
+    if (lastTwoDigits === 11 || lastTwoDigits === 12 || lastTwoDigits === 13) {
+        return n + 'th';
+    }
+
+    switch (lastDigit) {
+        case 1:
+            return n + 'st';
+        case 2:
+            return n + 'nd';
+        case 3:
+            return n + 'rd';
+        default:
+            return n + 'th';
+    }
+}
+
 function parseDate(dateString: string): string | null {
     if(dateString != "" && dateString != null){
         return new Date(dateString).getTime() + ""
@@ -93,25 +165,36 @@ export default function ChooseExpertStep({
 
     return (
     <>
-        Select a day to make a reservation:
-        <br/>
-        <br/>
-        <TextField
-            label="Date"
-            type="date"
-            size="small"
-            InputLabelProps={{shrink: true}}
-            sx={{width: 180}}
-            value={dateString}
-            onChange={handleDateChange("date", setDateString)}
-        />
+        <Typography sx={{fontSize: {xs:'12px'}, mb:1}}>
+            Select a day to meet with an expert:
+        </Typography>
+        <Stack direction="row" spacing={1}>
+            <TextField
+                label="Date"
+                type="date"
+                size="small"
+                InputLabelProps={{shrink: true}}
+                sx={{width: 180}}
+                value={dateString}
+                onChange={handleDateChange("date", setDateString)}
+            />
+            <Stack direction="column">
+                <Typography variant="h6" component="div" sx={{ lineHeight: 1 }}>
+                    {intToDayOfWeek(new Date(dateString + "T00:00:00").getDay()) ?? ""}
+                </Typography>
+
+                <Typography variant="subtitle1" sx={{ mb: 2 }}>
+                    {intToMonth(new Date(dateString + "T00:00:00").getMonth()) + " " + intToOrdinal(new Date(dateString + "T00:00:00").getDate()) ?? ""}
+                </Typography>
+            </Stack>
+        </Stack>
 
         <RequestWrapper2
             result={availabilityQueryResult}
             render={(data) => {
                 return(
                     <>
-                        <Typography variant="body1" marginY={2}>
+                        <Typography variant="body1" marginY={1}>
                             Our experts are here to help you use machines and equipment in a safe
                             and effective manner.
                             <br/>

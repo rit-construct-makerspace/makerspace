@@ -30,17 +30,9 @@ export default function CollectiveExpertAvailabilityCard({
 
   return (
     <div>
-      <Typography variant="h6" component="div" sx={{ lineHeight: 1 }}>
-        {dayOfWeek}
-      </Typography>
-
-      <Typography variant="subtitle1" sx={{ mb: 2 }}>
-        {dateString}
-      </Typography>
-
       <StyledDiv>
         <div className="contents">
-          <TimeLabelStrip marginTop={56} />
+          <TimeLabelStrip marginTop={66} />
           {expertAvailabilities.map((expertAvailability) => (
             <ExpertAvailabilityStrip
               expertAvailability={expertAvailability}
