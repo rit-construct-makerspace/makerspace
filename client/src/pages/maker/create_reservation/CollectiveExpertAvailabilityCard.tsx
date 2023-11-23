@@ -32,7 +32,7 @@ export default function CollectiveExpertAvailabilityCard({
     <div>
       <StyledDiv>
         <div className="contents">
-          <TimeLabelStrip marginTop={66} />
+          <TimeLabelStrip marginTop={62} />
           {expertAvailabilities.map((expertAvailability) => (
             <ExpertAvailabilityStrip
               expertAvailability={expertAvailability}

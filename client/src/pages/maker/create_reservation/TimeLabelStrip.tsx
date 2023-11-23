@@ -7,7 +7,7 @@ const StyledDiv = styled.div<{ marginTop: number }>`
   height: 33vh;
 
   .time-label {
-    height: 3.85vh;
+    height: 3.954vh;
     margin-bottom: .3vh;
     text-align: end;
     font-size: 1vh;

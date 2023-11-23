@@ -109,12 +109,12 @@ export default function SelectTimeStep({
       </Typography>
 
       <Stack direction="row" mt={4}>
-        <TimeLabelStrip marginTop={-10} />
+        <TimeLabelStrip marginTop={-4} />
         <Paper
           elevation={2}
           sx={{
             height: "fit-content",
-            overflow: "hidden",
+            width: "5vh",
             mr: 4,
           }}
         >
@@ -128,7 +128,7 @@ export default function SelectTimeStep({
           <Typography variant="h6" component="div" sx={{ lineHeight: 1 }}>
             Select a time slot:
           </Typography>
-          <FormControl sx={{ width: "300px" }}>
+          <FormControl sx={{ width: {xs:"150px",sm:"300px"} }}>
             <InputLabel id="start-time-label">Selected Slot</InputLabel>
             <Select
                 labelId="start-time-label"

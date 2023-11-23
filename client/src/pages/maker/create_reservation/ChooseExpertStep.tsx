@@ -165,7 +165,7 @@ export default function ChooseExpertStep({
 
     return (
     <>
-        <Typography sx={{fontSize: {xs:'12px'}, mb:1}}>
+        <Typography sx={{fontSize: {xs:'13px', sm:'16px'}, mb:1}}>
             Select a day to meet with an expert:
         </Typography>
         <Stack direction="row" spacing={1}>
@@ -180,11 +180,11 @@ export default function ChooseExpertStep({
             />
             <Stack direction="column">
                 <Typography variant="h6" component="div" sx={{ lineHeight: 1 }}>
-                    {intToDayOfWeek(new Date(dateString + "T00:00:00").getDay()) ?? ""}
+                    {dateString!=="" ? intToDayOfWeek(new Date(dateString + "T00:00:00").getDay()) : ""}
                 </Typography>
 
                 <Typography variant="subtitle1" sx={{ mb: 2 }}>
-                    {intToMonth(new Date(dateString + "T00:00:00").getMonth()) + " " + intToOrdinal(new Date(dateString + "T00:00:00").getDate()) ?? ""}
+                    {dateString!=="" ? intToMonth(new Date(dateString + "T00:00:00").getMonth()) + " " + intToOrdinal(new Date(dateString + "T00:00:00").getDate()) : ""}
                 </Typography>
             </Stack>
         </Stack>
@@ -194,7 +194,7 @@ export default function ChooseExpertStep({
             render={(data) => {
                 return(
                     <>
-                        <Typography variant="body1" marginY={1}>
+                        <Typography variant="body1" marginBottom={1} fontSize={{xs: 13, sm: 16}}>
                             Our experts are here to help you use machines and equipment in a safe
                             and effective manner.
                             <br/>
