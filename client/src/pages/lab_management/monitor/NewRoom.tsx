@@ -20,12 +20,12 @@ import GET_ROOMS, {CREATE_ROOM} from "../../../queries/roomQueries";
 
 interface InputErrors {
     name?: boolean;
-    image?: boolean;
+    pictureURL?: boolean;
 }
 
 export interface RoomInput {
     name: string;
-    image: string;
+    pictureURL: string;
 }
 
 interface NewRoomProps {
@@ -44,12 +44,12 @@ export default function NewRoom({
     //loading,
 }: NewRoomProps) {
     const [inputErrors, setInputErrors] = useState<InputErrors>({});
-    const [roomDraft, setRoomDraft] = useState<Partial<RoomInput>>({name:"Example", image:"https://i.ytimg.com/vi/nfDgGOCy4ms/maxresdefault.jpg"});
+    const [roomDraft, setRoomDraft] = useState<Partial<RoomInput>>({name:"Example", pictureURL:"https://i.ytimg.com/vi/nfDgGOCy4ms/maxresdefault.jpg"});
 
     const [createRoom, { data, loading }] = useMutation(
         CREATE_ROOM,
         {
-            variables: { item: roomDraft },
+            variables: { input: roomDraft },
             refetchQueries: [{ query: GET_ROOMS }],
         }
     );
@@ -60,14 +60,14 @@ export default function NewRoom({
     }, [data, onClose]);
 
     const handleStringChange =
-        (property: keyof InventoryItemInput) =>
+        (property: keyof RoomInput) =>
             (e: ChangeEvent<HTMLInputElement>) =>
                 setRoomDraft({ ...roomDraft, [property]: e.target.value });
 
     const handleSaveClick = async () => {
         const updatedInputErrors: InputErrors = {
             name: !roomDraft.name,
-            image: !roomDraft.image
+            pictureURL: !roomDraft.pictureURL
         };
 
         setInputErrors(updatedInputErrors);
@@ -75,12 +75,12 @@ export default function NewRoom({
         const hasInputErrors = Object.values(updatedInputErrors).some((e) => e);
         if (hasInputErrors) return;
 
-        console.log("createRoom"); //TODO: migration, fix schema etc...
+        await createRoom()
     };
 
     return (
         <Page title={"New Room"} maxWidth="400px">
-            <RoomCard room={{id:0, name:roomDraft.name??"Example", image:roomDraft.image??"https://i.ytimg.com/vi/nfDgGOCy4ms/maxresdefault.jpg"}}></RoomCard>
+            <RoomCard room={{id:0, name:roomDraft.name??"Example", pictureURL:roomDraft.pictureURL??""}}></RoomCard>
             <Stack spacing={2} flexGrow={1}>
                 <TextField
                     label="Name"
@@ -90,9 +90,9 @@ export default function NewRoom({
                 />
                 <TextField
                     label="Image URL"
-                    value={roomDraft.image ?? ""}
-                    error={inputErrors.image}
-                    onChange={handleStringChange("image")}
+                    value={roomDraft.pictureURL ?? ""}
+                    error={inputErrors.pictureURL}
+                    onChange={handleStringChange("pictureURL")}
                 />
             </Stack>
 

@@ -43,7 +43,7 @@ export default function SelectRoomPage() {
         </Stack>
         <Stack direction="row" flexWrap="wrap">
           {getRoomsResult.data?.rooms
-            ?.filter((m: { id: number; name: string }) =>
+            ?.filter((m: { id: number; name: string; pictureURL: string;}) =>
               m.name
                 .toLocaleLowerCase()
                 .includes(searchText.toLocaleLowerCase())

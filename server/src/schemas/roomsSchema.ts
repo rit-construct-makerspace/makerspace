@@ -17,6 +17,7 @@ export const RoomTypeDefs = gql`
   type Room {
     id: ID!
     name: String!
+    pictureURL: String
     equipment: [Equipment]
     recentSwipes: [Swipe]
     mentors: [User]
@@ -24,6 +25,7 @@ export const RoomTypeDefs = gql`
 
   input RoomInput {
     name: String!
+    pictureURL: String
   }
 
   extend type Query {

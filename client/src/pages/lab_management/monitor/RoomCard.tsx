@@ -19,7 +19,7 @@ export default function RoomCard({ room }: RoomCardProps) {
       <CardActionArea onClick={() => navigate(`/admin/rooms/${room.id}`)}>
         <CardMedia
           component="img"
-          image={room.image??ROOM_PLACEHOLDER_IMAGE}
+          image={room.pictureURL??ROOM_PLACEHOLDER_IMAGE}
           sx={{ height: 200 }}
         />
         <CardContent>

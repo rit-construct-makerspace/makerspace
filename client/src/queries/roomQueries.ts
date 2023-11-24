@@ -5,6 +5,7 @@ const GET_ROOMS = gql`
     rooms {
       id
       name
+      pictureURL
     }
   }
 `;
@@ -38,9 +39,11 @@ export const SWIPE_INTO_ROOM = gql`
 `;
 
 export const CREATE_ROOM = gql`
-  mutation CreateRoom($name: String!) {
-    addRoom(room: { name: $name }) {
+  mutation CreateRoom($input: RoomInput!) {
+    addRoom(room: $input) {
       id
+      name
+      pictureURL
     }
   }
 `;

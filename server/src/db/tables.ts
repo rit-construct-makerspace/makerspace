@@ -86,6 +86,7 @@ export interface RoomRow {
   id: number;
   name: string;
   archived: boolean;
+  pictureURL: string;
 }
 
 export interface TrainingModuleRow {
