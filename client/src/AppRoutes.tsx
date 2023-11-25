@@ -49,7 +49,7 @@ export default function AppRoutes() {
 
           <Route path="/" element={<Homepage />} />
 
-          <Route path="/create-reservation" element={<CreateReservationPage />} />
+          <Route path="/create-reservation/:id" element={<CreateReservationPage />} />
 
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />

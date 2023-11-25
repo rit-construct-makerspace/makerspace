@@ -45,7 +45,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar
                   sx={{ width: 80, height: 80 }}
-                  src="https://ae01.alicdn.com/kf/Hc43d9bc0340547709698a3900a1566f69/ROBOTEC-1325-Cnc-Router-Auction-3D-Cnc-Wood-Carving-Machine-Cnc-Milling-Machine-Design-For-Wood.jpg_Q90.jpg_.webp"
+                  src={equipment.pictureURL}
                 />
                 <Stack>
                   <Typography variant="h4">{equipment.name}</Typography>
@@ -66,7 +66,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
               <Button
                 startIcon={<EventIcon />}
                 variant="contained"
-                onClick={() => navigate("/create-reservation")}
+                onClick={() => navigate("/create-reservation/" + e.id)}
                 disabled={!reservationReady}
               >
                 Create reservation

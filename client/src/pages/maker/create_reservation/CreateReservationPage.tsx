@@ -12,8 +12,12 @@ import SelectMachineStep from "./SelectMachineStep";
 import {useMutation} from "@apollo/client";
 import {CREATE_RESERVATION} from "../../../queries/reservationQueries";
 import {useLocation} from "react-router-dom";
+import {useCurrentUser} from "../../../common/CurrentUserProvider";
 
-export default function CreateReservationPage() {
+interface CreateReservationPageProps {
+  equipID: number;
+}
+export default function CreateReservationPage(props: CreateReservationPageProps) {
   const [activeStep, setActiveStep] = useState(0);
 
   const [selectedMachine, setSelectedMachine] = useState('')
@@ -27,6 +31,7 @@ export default function CreateReservationPage() {
   const stepBackwards = () => setActiveStep(activeStep - 1);
 
   const [ReservationInput, SetReservationInput] = useState<ReservationInput>()
+  const currentUser = useCurrentUser();
 
   const {search} = useLocation();
   const handleSave = async () => {
@@ -38,9 +43,9 @@ export default function CreateReservationPage() {
         }
     )
     await createExpertReservation({variables:{
-      makerID: 1,
-      expertID: 1,
-      equipmentID: 1,
+      makerID: currentUser.id,
+      expertID: selectedExpert?.expert.id,
+      equipmentID: props.equipID,
       startTime:  selectedTimeSlot?.startTime,
       endTime: selectedTimeSlot?.endTime,
       startingMakerComment: message
