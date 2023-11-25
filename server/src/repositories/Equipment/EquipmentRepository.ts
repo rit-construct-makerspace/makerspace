@@ -35,7 +35,7 @@ export async function getEquipmentByIDForReservationCard(id: number): Promise<Pi
             id: id
         })
         .first()
-        .select('id', 'name');
+        .select('id', 'name', 'pictureURL');
 
     if (!equipment) throw new EntityNotFound(`Could not find equipment #${id}`);
 
@@ -154,6 +154,7 @@ export async function updateEquipment(
   await knex("Equipment").where("id", id).update({
     name: equipment.name,
     roomID: equipment.roomID,
+    pictureURL: equipment.pictureURL
   });
 
   await updateModules(id, equipment.moduleIDs);
@@ -168,7 +169,8 @@ export async function addEquipment(
     {
       name: equipment.name,
       roomID: equipment.roomID,
-      archived: true
+      archived: true,
+        pictureURL: equipment.pictureURL
     },
     "id"
   );

@@ -13,6 +13,7 @@ export interface Equipment {
   room: ObjectSummary | null;
   trainingModules: ObjectSummary[];
   archived: boolean;
+  pictureURL: string;
 }
 
 interface EditEquipmentPageProps {
@@ -28,7 +29,8 @@ export default function EditEquipmentPage(props: EditEquipmentPageProps) {
     name: "",
     room: null,
     trainingModules: [],
-    archived: props.archived
+    archived: props.archived,
+    pictureURL: ""
   });
 
   const newEquipment = id === "new";
@@ -41,6 +43,12 @@ export default function EditEquipmentPage(props: EditEquipmentPageProps) {
 
     if (!equipment.room) {
       window.alert("Please specify a room.");
+      return;
+    }
+
+    if (!equipment.pictureURL) {
+      window.alert("Please specify a link to an image.");
+      return;
     }
 
     await mutation({ variables });

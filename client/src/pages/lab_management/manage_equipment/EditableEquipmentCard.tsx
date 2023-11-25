@@ -16,9 +16,10 @@ interface ArchivedEquipmentCardProps {
   name: string;
   to: string;
   archived: boolean;
+  pictureURL: string;
 }
 
-export default function EditableEquipmentCard({ id, name, to, archived }: ArchivedEquipmentCardProps) {
+export default function EditableEquipmentCard({ id, name, to, archived, pictureURL }: ArchivedEquipmentCardProps) {
   const navigate = useNavigate();
 
   return (
@@ -28,7 +29,7 @@ export default function EditableEquipmentCard({ id, name, to, archived }: Archiv
           <CardMedia
             component="img"
             height="150"
-            image="https://ae01.alicdn.com/kf/Hc43d9bc0340547709698a3900a1566f69/ROBOTEC-1325-Cnc-Router-Auction-3D-Cnc-Wood-Carving-Machine-Cnc-Milling-Machine-Design-For-Wood.jpg_Q90.jpg_.webp"
+            image={pictureURL}
           />
           <CardContent>
             <Typography

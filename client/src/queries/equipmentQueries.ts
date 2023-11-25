@@ -6,6 +6,7 @@ export const GET_EQUIPMENTS = gql`
       id
       name
       archived
+      pictureURL
     }
   }
 `;
@@ -24,6 +25,7 @@ export const GET_EQUIPMENT_BY_ID = gql`
         id
         name
       }
+      pictureURL
     }
   }
 `;
@@ -34,6 +36,7 @@ export const GET_ARCHIVED_EQUIPMENTS = gql`
       id
       name
       archived
+      pictureURL
     }
   }
 `;
@@ -52,6 +55,7 @@ export const GET_ARCHIVED_EQUIPMENT_BY_ID = gql`
         id
         name
       }
+      pictureURL
     }
   }
 `;
@@ -63,6 +67,7 @@ export const GET_RESERVABLE_EQUIPMENT_FOR_MODULE = gql`
       equipment {
         id
         name
+        pictureURL
       }
     }
   }
@@ -74,10 +79,11 @@ export const UPDATE_EQUIPMENT = gql`
     $name: String!
     $roomID: ID!
     $moduleIDs: [ID]!
+    $pictureURL: String
   ) {
     updateEquipment(
       id: $id
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, pictureURL: $pictureURL }
     ) {
       id
     }
@@ -101,9 +107,9 @@ export const PUBLISH_EQUIPMENT = gql`
 `;
 
 export const CREATE_EQUIPMENT = gql`
-  mutation CreateEquipment($name: String!, $roomID: ID!, $moduleIDs: [ID]!) {
+  mutation CreateEquipment($name: String!, $roomID: ID!, $moduleIDs: [ID]!, $pictureURL: String) {
     addEquipment(
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, pictureURL: $pictureURL}
     ) {
       id
     }

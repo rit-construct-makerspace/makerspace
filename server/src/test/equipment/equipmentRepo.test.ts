@@ -12,7 +12,8 @@ const tables = ["ModuleSubmissions", "ModulesForEquipment", "Equipment", "Traini
 
 const testRoom = {
   id: 0,
-  name: "Test Room"
+  name: "Test Room",
+  pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
 };
 
 describe("EquipmentRepository tests", () => {
@@ -53,7 +54,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+      pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment
@@ -73,7 +76,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+        pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add and get ID
@@ -92,7 +97,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+        pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room
@@ -120,7 +127,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+      pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room
@@ -151,7 +160,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+        pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room
@@ -188,7 +199,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+        pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room
@@ -223,7 +236,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+      pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room
@@ -261,7 +276,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+      pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room
@@ -310,7 +327,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+      pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room
@@ -366,7 +385,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+      pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room
@@ -414,7 +435,9 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+      archived: false,
+        pictureURL: "https://cdn.discordapp.com/attachments/1176296914556309539/1177181869280862229/stockroom-safety.png?ex=6571930c&is=655f1e0c&hm=15e2691ea008f3ca8d8d9ec47bfb140fea30750c92a2a63bbc5dfabdbb72b7d8&"
     })).id;
 
     // Add equipment to the room

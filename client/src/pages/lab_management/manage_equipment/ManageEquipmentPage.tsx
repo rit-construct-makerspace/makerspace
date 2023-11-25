@@ -55,7 +55,7 @@ export default function ManageEquipmentPage() {
                     )
                     .map((e: ObjectSummary) => (
                         <Grid key={e.id} item>
-                            <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} />
+                            <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} pictureURL={e.pictureURL}/>
                         </Grid>
                     ))}
                 </Grid>
@@ -78,7 +78,7 @@ export default function ManageEquipmentPage() {
                     )
                     .map((e: ObjectSummary) => (
                         <Grid key={e.id} item>
-                            <EditableEquipmentCard id={e.id} name={e.name} to={url + "/archived/" + e.id} archived={true} />
+                            <EditableEquipmentCard id={e.id} name={e.name} to={url + "/archived/" + e.id} archived={true} pictureURL={e.pictureURL}/>
                         </Grid>
                     ))}
                 </Grid>

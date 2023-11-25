@@ -3,7 +3,7 @@ import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import RoomCard from "./RoomCard";
 import { Button, Stack } from "@mui/material";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import GET_ROOMS, { CREATE_ROOM } from "../../../queries/roomQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
@@ -12,15 +12,6 @@ import RoomModal from "./RoomModal";
 
 export default function SelectRoomPage() {
   const getRoomsResult = useQuery(GET_ROOMS);
-  const [createRoom] = useMutation(CREATE_ROOM);
-
-  const handleCreateRoom = () => {
-    const name = window.prompt("Enter room name:");
-    createRoom({
-      variables: { name },
-      refetchQueries: [{ query: GET_ROOMS }],
-    });
-  };
 
   const [searchText, setSearchText] = useState("");
   const [modalItemId, setModalItemId] = useState<number>(0);
@@ -48,7 +39,7 @@ export default function SelectRoomPage() {
                 .toLocaleLowerCase()
                 .includes(searchText.toLocaleLowerCase())
             ).map((room: Room) => (
-            <RoomCard key={room.id} room={room} />
+            <RoomCard key={room.id} room={room} clickable={true} />
           ))}
         </Stack>
         <RoomModal

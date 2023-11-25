@@ -80,7 +80,7 @@ export default function NewRoom({
 
     return (
         <Page title={"New Room"} maxWidth="400px">
-            <RoomCard room={{id:0, name:roomDraft.name??"Example", pictureURL:roomDraft.pictureURL??""}}></RoomCard>
+            <RoomCard room={{id:0, name:roomDraft.name??"Example", pictureURL:roomDraft.pictureURL??""}} clickable={false}></RoomCard>
             <Stack spacing={2} flexGrow={1}>
                 <TextField
                     label="Name"

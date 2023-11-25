@@ -65,7 +65,7 @@ export default function ReservationCard({ reservation, onActionComplete }: Reser
         component="img"
         height="140"
         alt=""
-        image={reservation.equipment.image}
+        image={reservation.equipment.pictureURL}
       />
       <Stack direction="row" alignItems="flex-end" spacing={1}>
         <Avatar

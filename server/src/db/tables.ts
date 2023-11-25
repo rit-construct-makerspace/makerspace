@@ -14,6 +14,7 @@ export interface EquipmentRow {
   inUse: boolean;
   roomID: number;
   archived: boolean;
+  pictureURL?: string;
 }
 
 export interface HoldRow {
