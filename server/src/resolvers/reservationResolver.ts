@@ -26,7 +26,6 @@ const ReservationResolvers = {
 
     reservationIDsByExpert: async (_: any, args: { expertID: number }, context: any)=> {
         let temp = await reservationRepo.getReservationIDSPerExpert(args.expertID)
-        console.log(temp)
         return temp.map((a) => {
             return a
         })
@@ -52,8 +51,6 @@ const ReservationResolvers = {
             //status: s === "CANCELLED" ? ReservationStatus.CANCELLED : (s === "CONFIRMED" ? ReservationStatus.CONFIRMED : ReservationStatus.PENDING)
         } as ReservationForCard
 
-        console.log("STATUSSSSSS")
-        console.log(temp.status)
         return temp
     },
 
@@ -70,7 +67,6 @@ const ReservationResolvers = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MAKER, Privilege.STAFF], async (user) => {
-          console.log(args.reservation.startTime)
         const eligible = true //await reservationRepo.userIsEligible(args.reservation);
         const noConflicts = true //await reservationRepo.noConflicts(args.reservation);
         if (eligible && noConflicts) {

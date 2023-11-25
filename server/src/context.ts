@@ -31,7 +31,6 @@ export const ifAllowed =
     const user = expressUser as CurrentUser;
 
     const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
-      console.log(user.privilege)
     if (!sufficientPrivilege) {
       throw new GraphQLError("Insufficient privilege");
     }

@@ -85,8 +85,6 @@ export class ReservationRepository implements IReservationRepository {
 
 
     public async addReservation(reservation: ReservationInput): Promise<ReservationRow> {
-      console.log("AHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHh")
-      console.log(reservation)
       const [newId] = (
         await this.queryBuilder("Reservations").insert(
           {

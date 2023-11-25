@@ -14,7 +14,6 @@ export async function getRoomByID(roomID: number): Promise<Room | null> {
     .from("Rooms")
     .where("id", roomID);
 
-  console.log(knexResult)
   return singleRoomToDomain(knexResult);
 }
 

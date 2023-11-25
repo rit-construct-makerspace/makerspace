@@ -30,7 +30,6 @@ export default function CreateReservationPage() {
 
   const {search} = useLocation();
   const handleSave = async () => {
-    console.log(selectedTimeSlot)
 
     await setSelectedTimeSlot(
         {
@@ -38,7 +37,6 @@ export default function CreateReservationPage() {
           endTime: selectedTimeSlot.endTime
         }
     )
-    console.log(selectedTimeSlot)
     await createExpertReservation({variables:{
       makerID: 1,
       expertID: 1,

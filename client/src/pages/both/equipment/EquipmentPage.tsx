@@ -39,7 +39,7 @@ export default function EquipmentPage() {
                 .includes(searchText.toLocaleLowerCase())
             ).map((e: ObjectSummary) => (
               <Grid key={e.id} item sx={{width: {xs: '100%', sm: '295px'}}}>
-                <EquipmentCard id={e.id} name={e.name} to={url + e.id} />
+                <EquipmentCard id={e.id} name={e.name} to={url + e.id} pictureURL={e.pictureURL}/>
               </Grid>
           ))}
         </Grid>

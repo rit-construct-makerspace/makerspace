@@ -60,7 +60,6 @@ const EquipmentResolvers = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.STAFF], async (user) => {
-        console.log(args.equipment)
         const equipment = await EquipmentRepo.addEquipment(args.equipment);
 
         await createLog(

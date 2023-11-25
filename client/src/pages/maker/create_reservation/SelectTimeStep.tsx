@@ -74,7 +74,6 @@ export default function SelectTimeStep({
 
     const handleSelectSlot = async(e: SelectChangeEvent<string>) => {
         let temp = splitSlots.find(slot => slot.startTime === e.target.value.split(" - ")[0]) as TimeSlot
-        console.log(splitSlots)
         const dd = d ?? "INVALID DATE"
         const ISOStart = new Date(dd + "T" + temp.startTime + ":00Z").toISOString().replace(/\.\d{3}/, '')
         const ISOEnd = new Date(dd + "T" + temp.endTime + ":00Z").toISOString().replace(/\.\d{3}/, '')
