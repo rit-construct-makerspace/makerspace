@@ -10,15 +10,13 @@ import {
 } from "@mui/material";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReservationAttachment from "./ReservationAttachment";
-import Reservation, {ReservationStatus} from "../../../types/Reservation";
+import Reservation from "../../../types/Reservation";
 import { format } from "date-fns";
 import {
-  GET_RESERVATION_IDS_PER_EXPERT,
   SET_RESERVATION_CANCELLED,
   SET_RESERVATION_CONFIRMED
 } from "../../../queries/reservationQueries";
 import {useMutation} from "@apollo/client";
-import {CREATE_ANNOUNCEMENT} from "../../../queries/announcementsQueries";
 
 interface ReservationCardProps {
   reservation: Reservation;

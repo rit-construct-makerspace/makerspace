@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button, Grid, Stack, Typography } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENTS, GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipmentQueries";
 import { ObjectSummary } from "../../../types/Common";
@@ -10,7 +10,6 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import EditableEquipmentCard from "./EditableEquipmentCard";
 
 export default function ManageEquipmentPage() {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const getEquipmentsResult = useQuery(GET_EQUIPMENTS);

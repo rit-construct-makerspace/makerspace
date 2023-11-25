@@ -1,19 +1,11 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {
-    Button,
-    InputAdornment,
     Stack,
     TextField,
-    Typography,
 } from "@mui/material";
-import HistoryIcon from "@mui/icons-material/History";
-import HelpTooltip from "../../../common/HelpTooltip";
 import { LoadingButton } from "@mui/lab";
 import SaveIcon from "@mui/icons-material/Save";
-import styled from "styled-components";
-import InventoryItem from "../../../types/InventoryItem";
 import Page from "../../Page";
-import {InventoryItemInput} from "../inventory/MaterialModalContents";
 import RoomCard from "./RoomCard";
 import {useMutation} from "@apollo/client";
 import GET_ROOMS, {CREATE_ROOM} from "../../../queries/roomQueries";
@@ -29,19 +21,11 @@ export interface RoomInput {
 }
 
 interface NewRoomProps {
-    //isNew: boolean;
-    //onSave: () => void;
     onClose: () => void;
-    //onDelete: () => void;
-    //loading: boolean;
 }
 
 export default function NewRoom({
-    //isNew,
-    //onSave,
     onClose,
-    //onDelete,
-    //loading,
 }: NewRoomProps) {
     const [inputErrors, setInputErrors] = useState<InputErrors>({});
     const [roomDraft, setRoomDraft] = useState<Partial<RoomInput>>({name:"Example", pictureURL:"https://i.ytimg.com/vi/nfDgGOCy4ms/maxresdefault.jpg"});

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
-import { Avatar, Button, Divider, Icon, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Divider, Stack, Typography } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import TrainingModuleRow from "../../../common/TrainingModuleRow";
@@ -66,7 +66,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
               <Button
                 startIcon={<EventIcon />}
                 variant="contained"
-                onClick={() => navigate("/create-reservation/" + e.id)}
+                onClick={() => navigate("/create-reservation/" + equipment.id)}
                 disabled={!reservationReady}
               >
                 Create reservation

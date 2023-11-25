@@ -18,7 +18,7 @@ import TimePickerStrip from "./TimePickerStrip";
 import TimeSlot from "../../../types/TimeSlot";
 
 function parseDate(dateString: string): string | null {
-    if(dateString != "" && dateString != null){
+    if(dateString !== "" && dateString !== null){
         return new Date(dateString).getTime() + ""
     } else {
         return null
@@ -47,7 +47,7 @@ export default function ManageMyAvailabilityPage() {
 
         setDateString(date)
 
-        if(date != ""){
+        if(date !== ""){
             availabilityQuery({
                 variables: {
                     date: parseDate(date),
@@ -79,19 +79,19 @@ export default function ManageMyAvailabilityPage() {
 
             let changed = tempAvailability.filter((slot1: AvailabilitySlot) => {
                 return availabilitySlots.some((slot2: AvailabilitySlot) => {
-                    return slot2.id == slot1.id && (slot2.startTime != slot1.startTime || slot2.endTime != slot1.endTime)
+                    return slot2.id === slot1.id && (slot2.startTime !== slot1.startTime || slot2.endTime !== slot1.endTime)
                 })
             })
 
             let deleted = availabilitySlots.filter((slot1: AvailabilitySlot) => {
                 return !tempAvailability.some((slot2: AvailabilitySlot) => {
-                    return slot2.id == slot1.id
+                    return slot2.id === slot1.id
                 })
             })
 
             let created = tempAvailability.filter((slot1: AvailabilitySlot) => {
                 return !availabilitySlots.some((slot2: AvailabilitySlot) => {
-                    return slot2.id == slot1.id
+                    return slot2.id === slot1.id
                 })
             })
 

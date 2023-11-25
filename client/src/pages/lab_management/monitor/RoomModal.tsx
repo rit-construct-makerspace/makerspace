@@ -1,6 +1,5 @@
-import React, {useEffect} from "react";
+import React from "react";
 import PrettyModal from "../../../common/PrettyModal";
-import Page from "../../Page";
 import NewRoom from "./NewRoom";
 
 interface RoomModalProps {
@@ -9,7 +8,6 @@ interface RoomModalProps {
 }
 
 export default function RoomModal({ onClose, roomID }: RoomModalProps) {
-    const isNew = roomID === -1;
 
     return (
         <PrettyModal width={800} open={roomID!==0} onClose={onClose}>

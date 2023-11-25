@@ -1,4 +1,4 @@
-import React, {ChangeEventHandler, useState} from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import {
     Avatar,
@@ -72,7 +72,7 @@ export default function SelectTimeStep({
     const {search} = useLocation();
     const d = new URLSearchParams(search).get("date")
 
-    const handleSelectSlot = async(e: SelectChangeEvent<string>) => {
+    const handleSelectSlot = async(e: SelectChangeEvent) => {
         let temp = splitSlots.find(slot => slot.startTime === e.target.value.split(" - ")[0]) as TimeSlot
         const dd = d ?? "INVALID DATE"
         const ISOStart = new Date(dd + "T" + temp.startTime + ":00Z").toISOString().replace(/\.\d{3}/, '')

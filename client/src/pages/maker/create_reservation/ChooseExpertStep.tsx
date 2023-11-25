@@ -1,7 +1,6 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
 import {Stack, TextField, Typography} from "@mui/material";
 import CollectiveExpertAvailabilityCard from "./CollectiveExpertAvailabilityCard";
-import TestData from "../../../test_data/CollectiveExpertAvailability.json";
 import ExpertAvailability from "../../../types/ExpertAvailability";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useLazyQuery, useQuery} from "@apollo/client";
@@ -9,8 +8,6 @@ import {GET_AVAILABILITY_BY_DATE} from "../../../queries/availabilityQueries";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import CollectiveExpertAvailability from "../../../types/CollectiveExpertAvailability";
 import {AvailabilitySlot} from "../../../../../server/src/schemas/availabilitySchema";
-import {GET_USER} from "../../../queries/userQueries";
-import TimeSlot from "../../../types/TimeSlot";
 
 export function intToDayOfWeek(dayIndex: number) {
     switch(dayIndex) {
@@ -85,7 +82,7 @@ export function intToOrdinal(n: number) {
 }
 
 function parseDate(dateString: string): string | null {
-    if(dateString != "" && dateString != null){
+    if(dateString !== "" && dateString !==null){
         return new Date(dateString).getTime() + ""
     } else {
         return null
@@ -105,7 +102,6 @@ export default function ChooseExpertStep({
     const [dateString, setDateString] = useState("");
     const navigate = useNavigate();
     const {search} = useLocation();
-    const [expertQuery, expertResult] = useLazyQuery(GET_USER)
 
     const [collectiveAvailability, setCollectiveAvailability] = useState<CollectiveExpertAvailability>()
     const [availabilityQuery, availabilityQueryResult ] = useLazyQuery(GET_AVAILABILITY_BY_DATE, {
@@ -140,7 +136,7 @@ export default function ChooseExpertStep({
 
         setDateString(date)
 
-        if(date != ""){
+        if(date !== ""){
             availabilityQuery({
                 variables: {
                     date: parseDate(date),

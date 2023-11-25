@@ -6,21 +6,16 @@ import SelectTimeStep from "./SelectTimeStep";
 import ExpertAvailability from "../../../types/ExpertAvailability";
 import AddDetailsStep from "./AddDetailsStep";
 import ConfirmationStep from "./ConfirmationStep";
-import ReservationInput from "../../../types/Reservation"
 import TimeSlot from "../../../types/TimeSlot";
-import SelectMachineStep from "./SelectMachineStep";
 import {useMutation} from "@apollo/client";
 import {CREATE_RESERVATION} from "../../../queries/reservationQueries";
-import {useLocation} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useCurrentUser} from "../../../common/CurrentUserProvider";
 
-interface CreateReservationPageProps {
-  equipID: number;
-}
-export default function CreateReservationPage(props: CreateReservationPageProps) {
+export default function CreateReservationPage() {
+  const { id } = useParams<{ id: string }>();
   const [activeStep, setActiveStep] = useState(0);
 
-  const [selectedMachine, setSelectedMachine] = useState('')
   const [selectedExpert, setSelectedExpert] = useState<ExpertAvailability>();
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot>({startTime: '', endTime: ''})
   const [message, setMessage] = useState('')
@@ -30,10 +25,9 @@ export default function CreateReservationPage(props: CreateReservationPageProps)
   const stepForwards = () => setActiveStep(activeStep + 1);
   const stepBackwards = () => setActiveStep(activeStep - 1);
 
-  const [ReservationInput, SetReservationInput] = useState<ReservationInput>()
+  // const [ReservationInput, SetReservationInput] = useState<ReservationInput>()
   const currentUser = useCurrentUser();
 
-  const {search} = useLocation();
   const handleSave = async () => {
 
     await setSelectedTimeSlot(
@@ -45,7 +39,7 @@ export default function CreateReservationPage(props: CreateReservationPageProps)
     await createExpertReservation({variables:{
       makerID: currentUser.id,
       expertID: selectedExpert?.expert.id,
-      equipmentID: props.equipID,
+      equipmentID: id,
       startTime:  selectedTimeSlot?.startTime,
       endTime: selectedTimeSlot?.endTime,
       startingMakerComment: message
@@ -62,12 +56,6 @@ export default function CreateReservationPage(props: CreateReservationPageProps)
           </Step>
         ))}
       </Stepper>
-
-      {/*{activeStep === 0 && (*/}
-      {/*    <SelectMachineStep*/}
-      {/*        stepForwards={stepForwards}*/}
-      {/*    />*/}
-      {/*)}*/}
 
       {activeStep === 0 && (
         <ChooseExpertStep
