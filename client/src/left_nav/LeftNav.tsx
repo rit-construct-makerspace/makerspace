@@ -18,27 +18,161 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
-import {Stack, Box, Button} from "@mui/material";
+import {Stack, Box, IconButton, Toolbar} from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import React from "react";
+import MenuIcon from '@mui/icons-material/Menu';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 const StyledLogo = styled.img`
-  margin: 20px 12px 12px 12px;
+  margin: 0px 12px 12px 12px;
   &:hover {
     cursor: pointer;
   }
 `;
 
-const drawerWidth = 250;
+const drawerWidth = 300;
 
 export default function LeftNav() {
   const currentUser = useCurrentUser();
   const isMaker = currentUser.privilege === Privilege.MAKER;
   const navigate = useNavigate();
 
+    const [mobileOpen, setMobileOpen] = React.useState(false);
+
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
+
+    const drawer = (
+        <div>
+            <StyledLogo src={LogoSvg} alt="Construct logo" onClick={() => navigate(`/`)}/>
+
+            <Stack direction="row" alignItems="center" spacing={2} padding={1}>
+                <Avatar
+                    alt="Profile picture"
+                    src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+                />
+                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                    {`${currentUser.firstName} ${currentUser.lastName}`}
+                </Typography>
+            </Stack>
+
+            {currentUser.hasHolds && <HoldAlert />}
+
+            <List component="nav">
+                {!isMaker && <Divider textAlign="left">MAKER</Divider>}
+                <NavLink
+                    to="/maker/equipment"
+                    primary="Equipment"
+                    icon={<HandymanIcon />}
+                    closeDrawer={() => {setMobileOpen(false)}}
+                />
+                <NavLink
+                    to="/maker/training"
+                    primary="Training"
+                    icon={<SchoolIcon />}
+                    closeDrawer={() => {setMobileOpen(false)}}
+                />
+                <NavLink
+                    to="/maker/materials"
+                    primary="Materials"
+                    icon={<InventoryIcon />}
+                    closeDrawer={() => {setMobileOpen(false)}}
+                />
+            </List>
+
+            {!isMaker && (
+                <List component="nav">
+                    <Divider textAlign="left">STAFF</Divider>
+                    <NavLink
+                        to="/admin/equipment"
+                        primary="Equipment"
+                        icon={<HandymanIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                    <NavLink
+                        to="/admin/training"
+                        primary="Training"
+                        icon={<SchoolIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                    <NavLink
+                        to="/admin/inventory"
+                        primary="Materials"
+                        icon={<InventoryIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                    <NavLink
+                        to="/admin/storefront"
+                        primary="Storefront"
+                        icon={<StorefrontIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                    <NavLink
+                        to="/admin/rooms"
+                        primary="Rooms"
+                        icon={<MeetingRoomIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                    <NavLink
+                        to="/admin/reservations"
+                        primary="Reservations"
+                        icon={<EventIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                    <NavLink
+                        to="/admin/announcements"
+                        primary="Announcements"
+                        icon={<AnnouncementIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                    <NavLink
+                        to="/admin/people"
+                        primary="People"
+                        icon={<PeopleIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                    <NavLink
+                        to="/admin/history"
+                        primary="History"
+                        icon={<HistoryIcon />}
+                        closeDrawer={() => {setMobileOpen(false)}}
+                    />
+                </List>
+            )}
+            {/*Logout Button*/}
+            <List component={"nav"}>
+                <NavLink
+                    to="/logoutprompt"
+                    primary="Logout"
+                    icon={<HandymanIcon />}
+                    closeDrawer={() => {setMobileOpen(false)}}
+                />
+            </List>
+        </div>
+    )
+
+    const DrawerHeader = styled('div')(()=> ({
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+    }));
+
   return (
-    <Box display="flex">
+    <Box display="flex" sx={{flexDirection: { xs: 'column', sm: 'row' }}}>
+        <Toolbar sx={{ flexDirection:'row', display: { xs: 'flex', sm: 'none' }, pl:2, pr:2, height:1, boxShadow: 3}}>
+            <IconButton
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{display: { sm: 'none' }, color: '#f76802', padding: 1.5}}
+            >
+                <MenuIcon/>
+            </IconButton>
+        </Toolbar>
       <ToastContainer
         position="bottom-left"
         autoClose={3000}
@@ -51,111 +185,41 @@ export default function LeftNav() {
         pauseOnHover
         theme="colored"
         />
-      <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          "& .MuiDrawer-paper": {
-            width: drawerWidth,
-            boxSizing: "border-box",
-          },
-        }}
-        variant="permanent"
-        anchor="left"
-      >
-        <StyledLogo src={LogoSvg} alt="Construct logo" onClick={() => navigate(`/`)} />
 
-        <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-          <Avatar
-            alt="Profile picture"
-            src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-          />
-          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-            {`${currentUser.firstName} ${currentUser.lastName}`}
-          </Typography>
-        </Stack>
-
-        {currentUser.hasHolds && <HoldAlert />}
-
-        <List component="nav">
-          {!isMaker && <Divider textAlign="left">MAKER</Divider>}
-          <NavLink
-            to="/maker/equipment"
-            primary="Equipment"
-            icon={<HandymanIcon />}
-          />
-          <NavLink
-            to="/maker/training"
-            primary="Training"
-            icon={<SchoolIcon />}
-          />
-          <NavLink
-            to="/maker/materials"
-            primary="Materials"
-            icon={<InventoryIcon />}
-          />
-        </List>
-
-        {!isMaker && (
-          <List component="nav">
-            <Divider textAlign="left">STAFF</Divider>
-            <NavLink
-              to="/admin/equipment"
-              primary="Equipment"
-              icon={<HandymanIcon />}
-            />
-            <NavLink
-              to="/admin/training"
-              primary="Training"
-              icon={<SchoolIcon />}
-            />
-            <NavLink
-              to="/admin/inventory"
-              primary="Materials"
-              icon={<InventoryIcon />}
-            />
-            <NavLink
-              to="/admin/storefront"
-              primary="Storefront"
-              icon={<StorefrontIcon />}
-            />
-            <NavLink
-              to="/admin/rooms"
-              primary="Rooms"
-              icon={<MeetingRoomIcon />}
-            />
-            <NavLink
-              to="/admin/reservations"
-              primary="Reservations"
-              icon={<EventIcon />}
-            />
-            <NavLink
-              to="/admin/announcements"
-              primary="Announcements"
-              icon={<AnnouncementIcon />}
-            />
-            <NavLink
-              to="/admin/people"
-              primary="People"
-              icon={<PeopleIcon />}
-            />
-            <NavLink
-              to="/admin/history"
-              primary="History"
-              icon={<HistoryIcon />}
-            />
-          </List>
-        )}
-          {/*Logout Button*/}
-        <List component={"nav"}>
-          <NavLink
-              to="/logoutprompt"
-              primary="Logout"
-              icon={<HandymanIcon />}
-          />
-        </List>
-
-      </Drawer>
+        <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            anchor="left"
+            onClose={handleDrawerToggle}
+            ModalProps={{
+                keepMounted: true,
+            }}
+            sx={{
+                flexShrink: 0,
+                display: { xs: 'block', sm: 'none' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+        >
+            <DrawerHeader>
+                <IconButton onClick={handleDrawerToggle}>
+                    <ChevronLeftIcon />
+                </IconButton>
+            </DrawerHeader>
+            {drawer}
+        </Drawer>
+        <Drawer
+            variant="permanent"
+            anchor="left"
+            sx={{
+                width: drawerWidth,
+                flexShrink: 0,
+                display: { xs: 'none', sm: 'block' },
+                '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+            }}
+            open
+        >
+            {drawer}
+        </Drawer>
       <Outlet />
     </Box>
   );

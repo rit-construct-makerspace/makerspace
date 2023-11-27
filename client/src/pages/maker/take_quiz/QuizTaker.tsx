@@ -6,9 +6,10 @@ import Question from "./Question";
 import styled, { css } from "styled-components";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
-import { GET_CURRENT_USER } from "../../../common/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { GET_CURRENT_USER } from "../../../queries/userQueries";
+import { SUBMIT_MODULE } from "../../../queries/quizQueries";
 
 const elevationTwoShadow = css`
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -33,11 +34,6 @@ const StyledIFrame = styled.iframe`
 
 export type AnswerSheet = { itemID: string; optionIDs: string[] }[];
 
-const SUBMIT_MODULE = gql`
-  mutation SubmitModule($moduleID: ID!, $answerSheet: [AnswerInput]) {
-    submitModule(moduleID: $moduleID, answerSheet: $answerSheet)
-  }
-`;
 
 interface QuizTakerProps {
   module: Module;

@@ -15,6 +15,7 @@ import HoldCard from "./HoldCard";
 import Privilege from "../../../types/Privilege";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import CloseButton from "../../../common/CloseButton";
+import {CREATE_HOLD, GET_USER, ARCHIVE_USER} from "../../../queries/userQueries";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -37,52 +38,6 @@ export interface Hold {
   createDate: string;
   removeDate?: string;
 }
-
-export const GET_USER = gql`
-  query GetUser($id: ID!) {
-    user(id: $id) {
-      id
-      firstName
-      lastName
-      pronouns
-      email
-      college
-      expectedGraduation
-      registrationDate
-      privilege
-      holds {
-        id
-        creator {
-          firstName
-          lastName
-        }
-        remover {
-          firstName
-          lastName
-        }
-        createDate
-        removeDate
-        description
-      }
-    }
-  }
-`;
-
-export const CREATE_HOLD = gql`
-  mutation CreateHold($userID: ID!, $description: String!) {
-    createHold(userID: $userID, description: $description) {
-      id
-    }
-  }
-`;
-
-export const ARCHIVE_USER = gql`
-  mutation ArchiveUser($userID: ID!) {
-    archiveUser(userID: $userID) {
-      id
-    }
-  }
-`;
 
 interface UserModalProps {
   selectedUserID: string;

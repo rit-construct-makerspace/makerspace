@@ -12,9 +12,15 @@ import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ReservationAttachment from "./ReservationAttachment";
 import Reservation from "../../../types/Reservation";
 import { format } from "date-fns";
+import {
+  SET_RESERVATION_CANCELLED,
+  SET_RESERVATION_CONFIRMED
+} from "../../../queries/reservationQueries";
+import {useMutation} from "@apollo/client";
 
 interface ReservationCardProps {
   reservation: Reservation;
+  onActionComplete: () => void;
 }
 
 function formatReservationTime(reservation: Reservation) {
@@ -37,14 +43,27 @@ function formatReservationTime(reservation: Reservation) {
   return `${formattedDate}, ${startTime} ${startPeriod}— ${endTime} ${endPeriod}`;
 }
 
-export default function ReservationCard({ reservation }: ReservationCardProps) {
-  return (
+
+
+export default function ReservationCard({ reservation, onActionComplete }: ReservationCardProps) {
+  const [CancelRes, mutationCan] = useMutation(SET_RESERVATION_CANCELLED);
+  const [ConfirmRes, mutationCon] = useMutation(SET_RESERVATION_CONFIRMED);
+  const handleConfirm = async (id: number) => {
+    await ConfirmRes({variables:{resID: id}})
+    onActionComplete()
+  }
+
+  const handleCancel = async (id: number) => {
+    await CancelRes({variables:{resID: id}})
+    onActionComplete()
+  }
+    return (
     <Card sx={{ width: 400 }}>
       <CardMedia
         component="img"
         height="140"
         alt=""
-        image={reservation.equipment.image}
+        image={reservation.equipment.pictureURL}
       />
       <Stack direction="row" alignItems="flex-end" spacing={1}>
         <Avatar
@@ -88,8 +107,15 @@ export default function ReservationCard({ reservation }: ReservationCardProps) {
         justifyContent="flex-end"
         sx={{ m: 2 }}
       >
-        <Button>Cancel</Button>
-        <Button variant="contained">Confirm</Button>
+        <Button onClick={()=>{console.log()}}>YO</Button>
+        {reservation.status === "PENDING" &&
+          (
+            <>
+              <Button onClick={()=>{handleCancel(reservation.id)}}>Cancel</Button>
+              <Button variant="contained" onClick={()=>{handleConfirm(reservation.id)}}>Confirm</Button>
+            </>
+          )
+        }
       </Stack>
     </Card>
   );

@@ -4,7 +4,9 @@ import { Card, CardActions, IconButton } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import { Draggable } from "react-beautiful-dnd";
+import {Draggable} from "react-beautiful-dnd";
+
+
 
 const StyledDragHandle = styled.div`
   display: flex;

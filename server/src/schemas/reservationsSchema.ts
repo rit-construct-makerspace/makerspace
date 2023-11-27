@@ -8,6 +8,8 @@ Potential future enhancements:
  */
 
 export const ReservationsTypeDefs = gql`
+  scalar DateTime
+
   enum ReservationStatus {
     PENDING
     CONFIRMED
@@ -16,11 +18,12 @@ export const ReservationsTypeDefs = gql`
 
   type Reservation {
     id: ID!
-    maker: User
+    makerID: ID!
+    expertID: ID!
     createDate: DateTime
     startTime: DateTime
     endTime: DateTime
-    equipment: Equipment
+    equipmentID: ID!
     status: ReservationStatus
     lastUpdated: DateTime
   }
@@ -41,14 +44,17 @@ export const ReservationsTypeDefs = gql`
     payload: String
   }
 
-  type Query {
+  extend type Query {
     reservations: [Reservation]
+    reservationIDsByExpert(expertID: ID!): [ID]
+    reservationForCard(id: ID!): DisplayReservation
     reservation(id: ID!): Reservation
   }
 
   input ReservationInput {
-    makerID: Int!
-    equipmentID: Int!
+    makerID: ID!
+    expertID: ID!
+    equipmentID: ID!
     startTime: DateTime!
     endTime: DateTime!
 
@@ -58,9 +64,36 @@ export const ReservationsTypeDefs = gql`
     """
     startingMakerComment: String
   }
+  
+  type Maker {
+    id: ID!
+    name: String!
+    image: String
+    role: String
+  }
+  type Equipment {
+    id: ID!
+    name: String!
+    pictureURL: String!
+  }
+  type Attachment {
+    name: String!
+    url: String!
+  }
+  type DisplayReservation {
+      id: ID!
+      maker: Maker
+      equipment: Equipment
+      startTime: String
+      endTime: String
+      comment: String
+      attachments: [Attachment]
+      status: ReservationStatus
+  }
 
-  type Mutation {
-    createReservation(reservationInput: ReservationInput): Reservation
+
+  extend type Mutation {
+    addReservation(reservation: ReservationInput): Reservation
     addComment(resID: ID!, commentText: String!): Reservation
     cancelReservation(resID: ID!): Reservation
     confirmReservation(resID: ID!): Reservation

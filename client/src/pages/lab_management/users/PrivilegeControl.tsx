@@ -10,16 +10,8 @@ import {
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Privilege from "../../../types/Privilege";
 import { gql, useMutation } from "@apollo/client";
-import GET_USERS from "../../../queries/getUsers";
-import { GET_USER } from "./UserModal";
+import GET_USERS, {GET_USER, SET_PRIVILEGE } from "../../../queries/userQueries";
 
-const SET_PRIVILEGE = gql`
-  mutation SetPrivilege($userID: ID!, $privilege: Privilege) {
-    setPrivilege(userID: $userID, privilege: $privilege) {
-      id
-    }
-  }
-`;
 
 interface PrivilegeControlProps {
   userID: string;

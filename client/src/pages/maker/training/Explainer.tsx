@@ -9,8 +9,8 @@ import styled from "styled-components";
 
 const StyledExplainer = styled.div`
   line-height: 1.3em;
-  text-align: center;
-  width: max-content;
+  text-align: center; 
+  width: 100%;
 
   .explainer-tagline {
     font-size: 18px;
@@ -28,7 +28,7 @@ const StyledExplainer = styled.div`
 export default function Explainer() {
   return (
     <StyledExplainer>
-      <Paper elevation={2} sx={{ px: 4, pb: 4, pt: 3 }}>
+      <Paper elevation={2} sx={{ px: 4, pb: 4, pt: 3}}>
         <Stack sx={{ textAlign: "left", mb: 4 }}>
           <div className="explainer-tagline">
             Be safe and sure with training at the Construct.
@@ -41,7 +41,7 @@ export default function Explainer() {
         </Stack>
 
         <Stack
-          direction="row"
+          direction={{ xs: 'column', sm: 'row' }}
           spacing={2}
           divider={
             <Divider orientation="vertical" flexItem>

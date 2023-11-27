@@ -1,5 +1,6 @@
 import { Privilege } from "../schemas/usersSchema";
 
+
 export interface AuditLogRow {
   id: number;
   dateTime: Date;
@@ -13,6 +14,7 @@ export interface EquipmentRow {
   inUse: boolean;
   roomID: number;
   archived: boolean;
+  pictureURL?: string;
 }
 
 export interface HoldRow {
@@ -64,12 +66,14 @@ export interface ReservationEventRow {
 export interface ReservationRow {
   id: number;
   makerID: number;
+  expertID: number;
   createDate: Date;
   startTime: Date;
   endTime: Date;
   equipmentID: number;
   status: string;
   lastUpdated: Date;
+  archived: boolean;
 }
 
 export interface RoomSwipeRow {
@@ -83,6 +87,7 @@ export interface RoomRow {
   id: number;
   name: string;
   archived: boolean;
+  pictureURL: string;
 }
 
 export interface TrainingModuleRow {
@@ -135,7 +140,22 @@ export interface AnnouncementRow {
   description: string;
 }
 
-declare module "knex/types/tables" {
+export interface AvailabilityRow {
+  id: number;
+  date: String;
+  startTime: String;
+  endTime: String;
+  userID: number;
+}
+
+export interface MachineLogRow {
+  id: number;
+  dateTime: number;
+  machineID: number
+  userID: number;
+}
+
+declare module 'knex/types/tables' {
   interface Tables {
     AuditLogs: AuditLogRow;
     Equipment: EquipmentRow;
@@ -149,5 +169,7 @@ declare module "knex/types/tables" {
     Rooms: RoomRow;
     TrainingModule: TrainingModuleRow;
     Users: UserRow;
+    Availability: AvailabilityRow;
+    MachineLogs: MachineLogRow;
   }
 }

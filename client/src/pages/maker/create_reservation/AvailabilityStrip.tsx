@@ -5,24 +5,30 @@ import TimeSlot from "../../../types/TimeSlot";
 interface StyledQuarterHourBlockProps {
   available: boolean;
   addGap: boolean;
+  highlighted?: boolean;
 }
 
 const StyledQuarterHourBlock = styled.div<StyledQuarterHourBlockProps>`
-  width: 60px;
-  height: 10px;
+  width: 100%;
+  height: 1vh;
 
-  margin-bottom: ${(props) => (props.addGap ? "1px" : "0px")};
+  margin-bottom: ${(props) => (props.addGap ? "2px" : "0px")};
 
   &:last-child {
     margin-bottom: 0;
   }
-  
-  background-color: ${({ available, theme }) =>
-    available ? "limegreen" : "gray "};
+
+  background-color: ${({ available, highlighted, theme }) =>
+    highlighted
+      ? "yellow"
+      : available
+      ? "limegreen"
+      : "gray"};
 `;
 
 interface AvailabilityStripProps {
   availability: TimeSlot[];
+  selectedTimeSlot?: TimeSlot;
 }
 
 function getTimeIndex(time: string) {
@@ -32,12 +38,13 @@ function getTimeIndex(time: string) {
 
 export default function AvailabilityStrip({
   availability,
+  selectedTimeSlot
 }: AvailabilityStripProps) {
   const timeIntervals: boolean[] = [];
 
-  availability.forEach((timeSlot) => {
-    const startIndex = getTimeIndex(timeSlot.startTime);
-    const endIndex = getTimeIndex(timeSlot.endTime);
+  availability.forEach((availabilitySlot) => {
+    const startIndex = getTimeIndex(new Date(parseInt(availabilitySlot.startTime)).toTimeString());
+    const endIndex = getTimeIndex(new Date(parseInt(availabilitySlot.endTime)).toTimeString());
 
     for (let i = startIndex; i < endIndex; i++) {
       timeIntervals[i] = true;
@@ -46,15 +53,22 @@ export default function AvailabilityStrip({
 
   const quarterHourBlocks: ReactNode[] = [];
 
+  const QuarterHourColumn = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  `;
+
   for (let i = getTimeIndex("09:00"); i < getTimeIndex("21:00"); i++) {
     quarterHourBlocks.push(
-      <StyledQuarterHourBlock
-        available={timeIntervals[i]}
-        addGap={(i + 1) % 4 === 0}
-        key={`quarter-hour-block-${i}`}
-      />
+        <StyledQuarterHourBlock
+            available={timeIntervals[i]}
+            addGap={(i + 1) % 4 === 0}
+            highlighted={selectedTimeSlot? (getTimeIndex(selectedTimeSlot.startTime) <= i && getTimeIndex(selectedTimeSlot.endTime) > i): false}
+            key={`quarter-hour-block-${i}`}
+        />
     );
   }
 
-  return <div>{quarterHourBlocks}</div>;
+  return <QuarterHourColumn>{quarterHourBlocks}</QuarterHourColumn>;
 }

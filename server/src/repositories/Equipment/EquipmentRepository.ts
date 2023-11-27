@@ -29,6 +29,19 @@ export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   return equipment;
 }
 
+export async function getEquipmentByIDForReservationCard(id: number): Promise<Pick<EquipmentRow, "id" | "name" | 'pictureURL'>> {
+    const equipment = await knex("Equipment")
+        .where({
+            id: id
+        })
+        .first()
+        .select('id', 'name', 'pictureURL');
+
+    if (!equipment) throw new EntityNotFound(`Could not find equipment #${id}`);
+
+    return equipment;
+}
+
 export async function getEquipmentByIDWhereArchived(id: number, archived: boolean): Promise<EquipmentRow> {
   const equipment = await knex("Equipment")
                             .where({
@@ -57,7 +70,7 @@ export async function getEquipmentWithRoomID(
   roomID: number,
   archived: boolean
 ): Promise<EquipmentRow[]> {
-  return knex("Equipment")
+  return await knex("Equipment")
           .select()
           .where({
             roomID: roomID,
@@ -141,6 +154,7 @@ export async function updateEquipment(
   await knex("Equipment").where("id", id).update({
     name: equipment.name,
     roomID: equipment.roomID,
+    pictureURL: equipment.pictureURL
   });
 
   await updateModules(id, equipment.moduleIDs);
@@ -155,7 +169,8 @@ export async function addEquipment(
     {
       name: equipment.name,
       roomID: equipment.roomID,
-      archived: true
+      archived: true,
+        pictureURL: equipment.pictureURL
     },
     "id"
   );

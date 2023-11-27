@@ -9,17 +9,18 @@ const ROOM_PLACEHOLDER_IMAGE =
 
 interface RoomCardProps {
   room: Room;
+  clickable: boolean;
 }
 
-export default function RoomCard({ room }: RoomCardProps) {
+export default function RoomCard({ room, clickable }: RoomCardProps) {
   const navigate = useNavigate();
 
   return (
     <Card sx={{ width: 400, mr: 2, mb: 2 }}>
-      <CardActionArea onClick={() => navigate(`/admin/rooms/${room.id}`)}>
+      <CardActionArea onClick={() => clickable && navigate(`/admin/rooms/${room.id}`)}>
         <CardMedia
           component="img"
-          image={ROOM_PLACEHOLDER_IMAGE}
+          image={room.pictureURL??ROOM_PLACEHOLDER_IMAGE}
           sx={{ height: 200 }}
         />
         <CardContent>

@@ -3,7 +3,12 @@ import CheckIcon from "@mui/icons-material/Check";
 import { Button, Container, Stack, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-export default function ConfirmationStep() {
+
+interface ConfirmationProps {
+  postLoading: boolean;
+}
+
+export default function ConfirmationStep({postLoading}: ConfirmationProps) {
   const navigate = useNavigate();
 
   return (
