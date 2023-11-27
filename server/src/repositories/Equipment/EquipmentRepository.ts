@@ -29,7 +29,7 @@ export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   return equipment;
 }
 
-export async function getEquipmentByIDForReservationCard(id: number): Promise<Pick<EquipmentRow, "id" | "name">> {
+export async function getEquipmentByIDForReservationCard(id: number): Promise<Pick<EquipmentRow, "id" | "name" | 'pictureURL'>> {
     const equipment = await knex("Equipment")
         .where({
             id: id

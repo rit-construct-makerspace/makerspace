@@ -23,7 +23,7 @@ interface MakerForCard{
 interface EquipmentForCard{
     id: number;
     name: string;
-    image: string;
+    pictureURL: string;
 }
 interface ReservationAttachmentForCard{
     name: string;

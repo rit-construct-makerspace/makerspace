@@ -31,7 +31,7 @@ export const GET_EXPERT_RESERVATION_FOR_CARD = gql`
         equipment {
           id
           name
-          image
+          pictureURL
         }
         startTime
         endTime

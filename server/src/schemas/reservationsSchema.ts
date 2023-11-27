@@ -74,7 +74,7 @@ export const ReservationsTypeDefs = gql`
   type Equipment {
     id: ID!
     name: String!
-    image: String
+    pictureURL: String!
   }
   type Attachment {
     name: String!

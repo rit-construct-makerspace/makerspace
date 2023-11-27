@@ -14,6 +14,7 @@ import {useCurrentUser} from "../../../common/CurrentUserProvider";
 
 export default function CreateReservationPage() {
   const { id } = useParams<{ id: string }>();
+  const [MachineID] = useState(id)
   const [activeStep, setActiveStep] = useState(0);
 
   const [selectedExpert, setSelectedExpert] = useState<ExpertAvailability>();
@@ -29,7 +30,6 @@ export default function CreateReservationPage() {
   const currentUser = useCurrentUser();
 
   const handleSave = async () => {
-
     await setSelectedTimeSlot(
         {
           startTime: selectedTimeSlot.startTime,
@@ -39,7 +39,7 @@ export default function CreateReservationPage() {
     await createExpertReservation({variables:{
       makerID: currentUser.id,
       expertID: selectedExpert?.expert.id,
-      equipmentID: id,
+      equipmentID: MachineID,
       startTime:  selectedTimeSlot?.startTime,
       endTime: selectedTimeSlot?.endTime,
       startingMakerComment: message

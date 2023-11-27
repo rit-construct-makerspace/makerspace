@@ -44,6 +44,7 @@ export default function ReservationsPage() {
 
     return (
         <Page title="Reservations" maxWidth="1250px">
+            {console.log(reservations)}
             <Button onClick={() => navigate('/admin/reservations/availability')}>Set your availability here.</Button>
 
             <PageSectionHeader top>Your Pending Reservations</PageSectionHeader>

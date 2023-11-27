@@ -41,8 +41,8 @@ const ReservationResolvers = {
 
         let temp = {
             id: reservationRow[0].id,
-            maker: {id: maker.id, name: maker.firstName + " " + maker.lastName, image: "https://t4.ftcdn.net/jpg/03/83/25/83/240_F_383258331_D8imaEMl8Q3lf7EKU2Pi78Cn0R7KkW9o.jpg", role: maker.privilege}, //temp
-            equipment: {id: equip.id, name: equip.name, image: "https://cdn.discordapp.com/attachments/1176296914556309539/1176297174041112766/laser-engraver-for-metal.jpg?ex=656e5b1c&is=655be61c&hm=033e2b1153b169a231e5cb72352e7b44b7ee568bc02d3b260319c1ed02f94f3a&"}, //temp
+            maker: {id: maker.id, name: maker.firstName + " " + maker.lastName, image: "https://cdn.discordapp.com/attachments/1176296914556309539/1178542054977044490/soon.jpg?ex=657685d2&is=656410d2&hm=34adce40cfe7e78f9f8b5d852fb5fc240797ae4a6ead2a90c866884cde494a47&", role: maker.privilege}, //temp
+            equipment: {id: equip.id, name: equip.name, pictureURL: equip.pictureURL}, //temp
             startTime: reservationRow[0].startTime.toISOString(),
             endTime: reservationRow[0].endTime.toISOString(),
             comment: events[0].payload,
