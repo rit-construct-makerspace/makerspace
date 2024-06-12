@@ -45,6 +45,7 @@ function mapToDevUser(userID: string, password: string) {
 // Map the test users from samltest.id to match
 // the format that RIT SSO will give us.
 function mapSamlTestToRit(testUser: any): RitSsoUser {
+  console.log("MAP TEST USER: " + testUser["urn:oid:2.5.4.42"]);
   return {
     firstName: testUser["urn:oid:2.5.4.42"],
     lastName: testUser["urn:oid:2.5.4.4"],
