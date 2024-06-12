@@ -209,6 +209,7 @@ export function setupStagingAuth(app: express.Application) {
   );
 
   passport.serializeUser(async (user: any, done) => {
+    console.log("SERIALIZE USER");
     const ritUser =
       process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user;
 
@@ -222,6 +223,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   passport.deserializeUser(async (username: string, done) => {
+    console.log("DESERIALIZE USER");
     const user = (await getUserByRitUsername(username)) as CurrentUser;
 
     if (!user) throw new Error("Tried to deserialize user that doesn't exist");
@@ -271,6 +273,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   app.get("/login/fail", function (req, res) {
+    console.log("Login failed");
     res.status(401).send("Login failed");
   });
 
