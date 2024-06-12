@@ -41,6 +41,7 @@ async function startServer() {
 
     setupDevAuth(app);
   } else if (process.env.NODE_ENV === "staging") {
+    console.log("staging active");
     setupStagingAuth(app);
   } else if (process.env.NODE_ENV === "production") {
     app.set("trust proxy", 1); // trust first proxy
@@ -59,6 +60,7 @@ async function startServer() {
     if (req.user) {
       return next();
     }
+    console.log("LOGIN REDIRECT");
     res.redirect("/login");
   });
 

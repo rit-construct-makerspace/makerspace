@@ -45,6 +45,7 @@ function mapToDevUser(userID: string, password: string) {
 // Map the test users from samltest.id to match
 // the format that RIT SSO will give us.
 function mapSamlTestToRit(testUser: any): RitSsoUser {
+  console.log("MAP TEST USER: " + testUser["urn:oid:2.5.4.42"]);
   return {
     firstName: testUser["urn:oid:2.5.4.42"],
     lastName: testUser["urn:oid:2.5.4.4"],
@@ -209,6 +210,7 @@ export function setupStagingAuth(app: express.Application) {
   );
 
   passport.serializeUser(async (user: any, done) => {
+    console.log("SERIALIZE USER");
     const ritUser =
       process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user;
 
@@ -222,6 +224,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   passport.deserializeUser(async (username: string, done) => {
+    console.log("DESERIALIZE USER");
     const user = (await getUserByRitUsername(username)) as CurrentUser;
 
     if (!user) throw new Error("Tried to deserialize user that doesn't exist");
@@ -271,6 +274,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   app.get("/login/fail", function (req, res) {
+    console.log("Login failed");
     res.status(401).send("Login failed");
   });
 
