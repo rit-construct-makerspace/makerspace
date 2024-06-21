@@ -152,10 +152,7 @@ export function setupDevAuth(app: express.Application) {
         } else {
           res.clearCookie("connect.sid");
 
-          //window.location.reload();
-          //Window cannot be called server side. Go back to login instead.
-          res.redirect("/login");
-
+          window.location.reload();
           // res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
         }
       });
@@ -192,7 +189,7 @@ export function setupStagingAuth(app: express.Application) {
     identifierFormat: "urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified",
     decryptionPvk: process.env.SSL_PVKEY ?? "",
     privateCert: process.env.SSL_PVKEY ?? "",
-    idpCert: process.env.IDP_PUBKEY ?? "",
+    cert: process.env.IDP_PUBKEY ?? "",
     validateInResponseTo: ValidateInResponseTo.never,
     disableRequestedAuthnContext: true,
 
@@ -246,7 +243,7 @@ export function setupStagingAuth(app: express.Application) {
       .status(200)
       .send(
         authStrategy.generateServiceProviderMetadata(
-          process.env.SSL_PUBKEY ?? "" //Decryption Certificate == Our Public key
+          process.env.SSL_PUBKEY ?? ""
         )
       );
   });
