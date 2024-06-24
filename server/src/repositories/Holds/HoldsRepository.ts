@@ -1,7 +1,16 @@
+/** HoldsRepository.ts
+ * DB operations endpoint for Holds table
+ */
+
 import { knex } from "../../db";
 import { EntityNotFound } from "../../EntityNotFound";
 import { HoldRow } from "../../db/tables";
 
+/**
+ * Fetcha  hold by it's unique ID
+ * @param id ID of the Hold
+ * @returns {HoldRow} requested Hold
+ */
 export async function getHold(
   id: number
 ): Promise<HoldRow> {
@@ -12,6 +21,13 @@ export async function getHold(
   return hold;
 }
 
+/**
+ * Create a Hold and append it to the table
+ * @param creatorID unique ID of the creating user
+ * @param userID unique ID of the user affected by the Hold
+ * @param description hold description/reason
+ * @returns the created hold
+ */
 export async function createHold(
   creatorID: number,
   userID: number,
@@ -29,6 +45,12 @@ export async function createHold(
   return getHold(holdID);
 }
 
+/**
+ * Mark a hold as removed
+ * @param holdID the ID of the Hold to be removed
+ * @param removerID the ID of the user performing the action
+ * @returns the updated hold
+ */
 export async function removeHold(
   holdID: number,
   removerID: number
@@ -43,12 +65,22 @@ export async function removeHold(
   return getHold(holdID);
 }
 
+/**
+ * Fetch all Holds under a specified affected user
+ * @param userID the ID of the user to filter by
+ * @returns the filtered Holds
+ */
 export async function getHoldsByUser(
   userID: number
 ): Promise<HoldRow[]> {
   return await knex("Holds").select().where({ userID }).orderBy("createDate", "DESC");
 }
 
+/**
+ * Determine if a user has an active hold
+ * @param userID the ID of the user to check for active holds
+ * @returns true if an active hold is present
+ */
 export async function hasActiveHolds(
   userID: number
 ): Promise<boolean> {

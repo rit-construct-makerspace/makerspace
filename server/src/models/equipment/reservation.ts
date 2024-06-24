@@ -1,3 +1,7 @@
+/** reservation.ts
+ * Object Model for Reservations (equipment reservations)
+ */
+
 enum ReservationStatus {
     "PENDING",
     "CONFIRMED",

@@ -1,3 +1,7 @@
+/** CalendarEventsRepository.ts
+ * DB operations endpoint for CalendarEvents table
+ */
+
 import path from 'path';
 import { promises as fs } from 'fs';
 import { authenticate } from '@google-cloud/local-auth';
@@ -29,7 +33,7 @@ async function loadSavedCredentialsIfExist() {
 }
 
 /**
- * Serializes credentials to a file compatible with GoogleAUth.fromJSON.
+ * Serializes credentials to a file compatible with GoogleAuth.fromJSON.
  *
  * @param {OAuth2Client} client
  * @return {Promise<void>}
@@ -49,7 +53,7 @@ async function saveCredentials(client:any) {
 
 /**
  * Load or request or authorization to call APIs.
- *
+ * @returns {Promise} json client object
  */
 async function authorize() {
     const jsonClient = await loadSavedCredentialsIfExist();
@@ -66,6 +70,11 @@ async function authorize() {
     return jsonClient;
 }
 
+/**
+ * Fromats array of GoogleAuth.fromJSON calendar events as table entries
+ * @param events GoogleAuth JSON events
+ * @returns Array of table formatted Events
+ */
 function formatCalendarEvents(events: calendar_v3.Schema$Event[] | undefined): CalendarEvent[] {
     if (events === undefined) {
         return [];
@@ -83,6 +92,12 @@ function formatCalendarEvents(events: calendar_v3.Schema$Event[] | undefined): C
     });
 }
 
+/**
+ * 
+ * @param timeMin earliest possible time to filter by
+ * @param maxResults max number of events starting from timeMin to retrieve
+ * @returns {CalendarEvent[]} filtered events
+ */
 export async function getUpcomingEvents(timeMin: string, maxResults: number): Promise<CalendarEvent[]> {
     let auth: any;
     try {

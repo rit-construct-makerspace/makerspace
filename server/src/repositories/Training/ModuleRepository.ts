@@ -1,18 +1,37 @@
+/** ModuleRepository.ts
+ * DB operations endpoint for TrainingModule table
+ */
+
 import { knex } from "../../db";
 import { TrainingModuleRow, TrainingModuleItem } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";
 import { PassedModule } from "../../schemas/usersSchema";
 
+/**
+ * Fetch all Training Modules in the table
+ * @returns {TrainingModuleRow[]} modules
+ */
 export async function getModules(): Promise<TrainingModuleRow[]> {
   return knex("TrainingModule").select();
 }
 
+/**
+ * Fetch all Training Modules by archival status
+ * @param archived archival status to filter by
+ * @returns {TrainingModuleRow[]} filtered modules
+ */
 export async function getModulesWhereArchived(archived: boolean): Promise<TrainingModuleRow[]> {
   return knex("TrainingModule")
           .select()
           .where({ archived: archived });
 }
 
+/**
+ * Fetch a module by it's ID
+ * @param id unique ID of the module
+ * @returns the module
+ * @throws EntityNotFound on nonexistent ID
+ */
 export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
   const trainingModule = await knex("TrainingModule").first().where({ id });
 
@@ -22,6 +41,13 @@ export async function getModuleByID(id: number): Promise<TrainingModuleRow> {
   return trainingModule;
 }
 
+/**
+ * 
+ * @param id the ID of the module
+ * @param archived archival status to filter by
+ * @returns the module if archival status matches
+ * @throws EntityNotFound if no matching module
+ */
 export async function getModuleByIDWhereArchived(id: number, archived: boolean): Promise<TrainingModuleRow> {
   const trainingModule = await knex("TrainingModule")
                                 .first()
@@ -36,6 +62,12 @@ export async function getModuleByIDWhereArchived(id: number, archived: boolean):
   return trainingModule;
 }
 
+/**
+ * Update the archival status of a specified module
+ * @param id the ID of the module
+ * @param archived the archival status to set
+ * @returns the updated module
+ */
 export async function setModuleArchived(id: number, archived: boolean): Promise<TrainingModuleRow> {
   const updatedModules: TrainingModuleRow[] = await knex("TrainingModule")
                                                       .where({ id: id })
@@ -49,6 +81,13 @@ export async function setModuleArchived(id: number, archived: boolean): Promise<
 
   return updatedModules[0];
 }
+
+/**
+ * Create a module and append it to the table
+ * @param name the name of the module
+ * @param quiz {TrainingModuleItem} the attached quiz
+ * @returns the added module
+ */
 export async function addModule(name: string, quiz: object): Promise<TrainingModuleRow> {
 
 
@@ -63,6 +102,14 @@ export async function addModule(name: string, quiz: object): Promise<TrainingMod
   return addedModule[0];
 }
 
+/**
+ * Update the name, quiz, and/or reservation prompt of a specified training module
+ * @param id the ID of the existing module
+ * @param name the updated name
+ * @param quiz the updated quiz
+ * @param reservationPrompt the updated reservation prompt
+ * @returns the updated module
+ */
 export async function updateModule(
   id: number,
   name: string,
@@ -76,6 +123,11 @@ export async function updateModule(
   return getModuleByID(id);
 }
 
+/**
+ * Fetch all passed modules by user id
+ * @param userID the userID to filter by
+ * @returns {PassedModule[]} all modules passed by the user
+ */
 export async function getPassedModulesByUser(
   userID: number
 ): Promise<PassedModule[]> {
@@ -92,6 +144,12 @@ export async function getPassedModulesByUser(
     .andWhere("ModuleSubmissions.passed", true);
 }
 
+/**
+ * Determine if user has passed a specified module
+ * @param userID the user ID to filter by
+ * @param moduleID the module ID to filter by
+ * @returns true if user has a passed entry for the specified module
+ */
 export async function hasPassedModule(
   userID: number,
   moduleID: number
