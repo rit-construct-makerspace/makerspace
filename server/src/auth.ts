@@ -19,6 +19,10 @@ import { CurrentUser } from "./context";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
 import path from "path";
 
+/**
+ * General information gathered from a Shibboleth response
+ * TODO: according to the ITS request, we should also have grad year and UID
+ */
 interface RitSsoUser {
   firstName: string;
   lastName: string;
@@ -26,6 +30,10 @@ interface RitSsoUser {
   ritUsername: string;
 }
 
+/**
+ * DEV ONLY
+ * Map devUsers file to users
+ */
 function mapToDevUser(userID: string, password: string) {
   var obj = JSON.parse(fs.readFileSync(path.join(__dirname, "/data/devUsers.json"), 'utf8'));
   const devUser = obj[userID];
@@ -54,6 +62,10 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
   };
 }
 
+/**
+ * Initialize client session
+ * @param app NodeJS application context
+ */
 export function setupSessions(app: express.Application) {
   const secret = process.env.SESSION_SECRET;
   assert(secret, "SESSION_SECRET env value is null");
@@ -295,6 +307,7 @@ export function setupStagingAuth(app: express.Application) {
 
 }
 
+// TODO: Remove this and any references to this
 export function setupAuth(app: express.Application) {
   // // production authentication
   // const issuer = process.env.ISSUER;
