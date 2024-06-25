@@ -1,9 +1,9 @@
 import {ApolloContext, ifAllowed} from "../context";
-import * as InventoryRepo from "../repositories/Store/inventoryRepository";
-import * as LabelRepo from "../repositories/Store/labelRepository";
+import * as InventoryRepo from "../repositories/Store/InventoryRepository";
+import * as LabelRepo from "../repositories/Store/LabelRepository";
 import {InventoryItemInput} from "../schemas/storeFrontSchema";
 import {Privilege} from "../schemas/usersSchema";
-import {deleteInventoryItem} from "../repositories/Store/inventoryRepository";
+import {deleteInventoryItem} from "../repositories/Store/InventoryRepository";
 
 const StorefrontResolvers = {
   Query: {
