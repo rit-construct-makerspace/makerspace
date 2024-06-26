@@ -193,25 +193,40 @@ export function setupStagingAuth(app: express.Application) {
   temporarily switched back to undefined to use  passportsaml's default nameid-format:emailAddress
    */
 
-  const samlConfig = {
-    issuer: issuer,
-    path: "/login/callback",
-    callbackUrl: callbackUrl,
-    entryPoint: entryPoint,
-    identifierFormat: process.env.ID_FORMAT ?? "",
-    decryptionPvk: process.env.SSL_PVKEY ?? "",
-    privateKey: process.env.SSL_PVKEY ?? "",
-    cert: process.env.IDP_PUBKEY ?? "",
-    validateInResponseTo: ValidateInResponseTo.never,
-    disableRequestedAuthnContext: true,
-    signatureAlgorithm: 'sha256',
+  // const samlConfig = {
+  //   issuer: issuer,
+  //   path: "/login/callback",
+  //   callbackUrl: callbackUrl,
+  //   entryPoint: entryPoint,
+  //   identifierFormat: process.env.ID_FORMAT ?? "",
+  //   decryptionPvk: process.env.SSL_PVKEY ?? "",
+  //   privateKey: process.env.SSL_PVKEY ?? "",
+  //   cert: process.env.IDP_PUBKEY ?? "",
+  //   validateInResponseTo: ValidateInResponseTo.never,
+  //   disableRequestedAuthnContext: true,
+  //   signatureAlgorithm: 'sha256',
 
-    // TODO production solution
-    acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
-  };
+  //   // TODO production solution
+  //   acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
+  // };
 
   const authStrategy = new SamlStrategy(
-    samlConfig,
+    {
+      issuer: issuer,
+      path: "/login/callback",
+      callbackUrl: callbackUrl,
+      entryPoint: entryPoint,
+      identifierFormat: process.env.ID_FORMAT ?? "",
+      decryptionPvk: process.env.SSL_PVKEY ?? "",
+      privateKey: process.env.SSL_PVKEY ?? "",
+      cert: process.env.IDP_PUBKEY ?? "",
+      validateInResponseTo: ValidateInResponseTo.never,
+      disableRequestedAuthnContext: true,
+      signatureAlgorithm: "sha256",
+  
+      // TODO production solution
+      acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
+    },
     (profile: any, done: any) => {
       // your body implementation on success, this is where we get attributes from the idp
       return done(null, profile);
