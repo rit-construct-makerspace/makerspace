@@ -222,7 +222,7 @@ export function setupStagingAuth(app: express.Application) {
       cert: process.env.IDP_PUBKEY ?? "",
       validateInResponseTo: ValidateInResponseTo.never,
       disableRequestedAuthnContext: true,
-      signatureAlgorithm: 'sha256',
+      signatureAlgorithm: "sha256",
   
       // TODO production solution
       acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
