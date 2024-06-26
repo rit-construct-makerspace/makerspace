@@ -134,6 +134,8 @@ async function startServer() {
 
   const PORT = process.env.PORT || 3000;
 
+  console.log(process.env.ID_FORMAT);
+
   httpServer.listen({ port: PORT }, (): void =>
     console.log(
       `🚀 GraphQL-Server is running on https://localhost:${PORT}/graphql`
