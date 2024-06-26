@@ -198,7 +198,7 @@ export function setupStagingAuth(app: express.Application) {
     path: "/login/callback",
     callbackUrl: callbackUrl,
     entryPoint: entryPoint,
-    identifierFormat: "urn:oasis:names:tc:SAML:2.0:nameid-format:unspecified",
+    identifierFormat: process.env.ID_FORMAT ?? "",
     decryptionPvk: process.env.SSL_PVKEY ?? "",
     privateKey: process.env.SSL_PVKEY ?? "",
     cert: process.env.IDP_PUBKEY ?? "",
