@@ -19,6 +19,10 @@ import { CurrentUser } from "./context";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
 import path from "path";
 
+/**
+ * General information gathered from a Shibboleth response
+ * TODO: according to the ITS request, we should also have grad year and UID
+ */
 interface RitSsoUser {
   firstName: string;
   lastName: string;
@@ -26,6 +30,10 @@ interface RitSsoUser {
   ritUsername: string;
 }
 
+/**
+ * DEV ONLY
+ * Map devUsers file to users
+ */
 function mapToDevUser(userID: string, password: string) {
   var obj = JSON.parse(fs.readFileSync(path.join(__dirname, "/data/devUsers.json"), 'utf8'));
   const devUser = obj[userID];
@@ -45,6 +53,7 @@ function mapToDevUser(userID: string, password: string) {
 // Map the test users from samltest.id to match
 // the format that RIT SSO will give us.
 function mapSamlTestToRit(testUser: any): RitSsoUser {
+  console.log("MAP TEST USER: " + testUser["urn:oid:2.5.4.42"]);
   return {
     firstName: testUser["urn:oid:2.5.4.42"],
     lastName: testUser["urn:oid:2.5.4.4"],
@@ -53,6 +62,10 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
   };
 }
 
+/**
+ * Initialize client session
+ * @param app NodeJS application context
+ */
 export function setupSessions(app: express.Application) {
   const secret = process.env.SESSION_SECRET;
   assert(secret, "SESSION_SECRET env value is null");
@@ -209,6 +222,7 @@ export function setupStagingAuth(app: express.Application) {
   );
 
   passport.serializeUser(async (user: any, done) => {
+    console.log("SERIALIZE USER");
     const ritUser =
       process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user;
 
@@ -222,6 +236,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   passport.deserializeUser(async (username: string, done) => {
+    console.log("DESERIALIZE USER");
     const user = (await getUserByRitUsername(username)) as CurrentUser;
 
     if (!user) throw new Error("Tried to deserialize user that doesn't exist");
@@ -271,6 +286,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   app.get("/login/fail", function (req, res) {
+    console.log("Login failed");
     res.status(401).send("Login failed");
   });
 
@@ -291,6 +307,7 @@ export function setupStagingAuth(app: express.Application) {
 
 }
 
+// TODO: Remove this and any references to this
 export function setupAuth(app: express.Application) {
   // // production authentication
   // const issuer = process.env.ISSUER;

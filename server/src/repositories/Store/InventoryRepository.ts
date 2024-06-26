@@ -1,3 +1,7 @@
+/** InventoryRepository.ts
+ * DB operations endpoint for Holds table
+ */
+
 import { knex } from "../../db";
 import { EntityNotFound } from "../../EntityNotFound";
 import {

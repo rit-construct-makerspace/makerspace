@@ -1,3 +1,7 @@
+/** auditLogMapper.ts
+ * Map Audit Log entry to attributes
+ */
+
 import { AuditLog } from "../../schemas/auditLogsSchema";
 
 export function logsToDomain(raw: any): AuditLog[] {

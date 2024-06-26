@@ -1,3 +1,7 @@
+/** EquipmentRepository.ts
+ * DB operations endpoint for Equipment table
+ */
+
 import { knex } from "../../db";
 import { EntityNotFound } from "../../EntityNotFound";
 import { EquipmentRow, TrainingModuleRow, UserRow } from "../../db/tables";
@@ -6,17 +10,32 @@ import * as ModuleRepo from "../Training/ModuleRepository";
 import * as HoldsRepo from "../Holds/HoldsRepository";
 import * as UserRepo from "../Users/UserRepository";
 
+/**
+ * fetch every Equipment entry
+ * @returns {EquipmentRow}
+ */
 export async function getEquipment(): Promise<EquipmentRow[]> {
   return knex("Equipment")
           .select();
 }
 
+/**
+ * Select Equipment specifically archived or not archived
+ * @param archived boolean true: select archived equipment
+ * @returns {EquipmentRow[]} filtered equipments
+ */
 export async function getEquipmentWhereArchived(archived: boolean): Promise<EquipmentRow[]> {
   return knex("Equipment")
           .select()
           .where({archived: archived});
 }
 
+/**
+ * Fetch Equipment entry by unique ID
+ * @param id unique ID of equipment entry to fetch
+ * @returns AnnouncementRow the Equipment at requested ID
+ * @throws EntityNotFound on nonexistent ID
+ */
 export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   const equipment = await knex("Equipment")
                             .where({
@@ -29,6 +48,13 @@ export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
   return equipment;
 }
 
+/**
+ * Fetch Equipment entry by unique ID, filtering by specifically archived or not archived
+ * @param id unique ID of equipment entry to fetch
+ * @param archived true: filter by archived only
+ * @returns AnnouncementRow the Equipment at requested ID
+ * @throws EntityNotFound on nonexistent ID
+ */
 export async function getEquipmentByIDWhereArchived(id: number, archived: boolean): Promise<EquipmentRow> {
   const equipment = await knex("Equipment")
                             .where({
@@ -42,6 +68,13 @@ export async function getEquipmentByIDWhereArchived(id: number, archived: boolea
   return equipment;
 }
 
+/**
+ * Set equipment entry's archival status
+ * @param equipmentID ID of Equipment to alter
+ * @param archived archival status to set
+ * @returns updated equipment entry
+ * @throws EntityNotFound on nonexistent ID
+ */
 export async function setEquipmentArchived(equipmentID: number, archived: boolean): Promise<EquipmentRow> {
   const updatedEquipment = await knex("Equipment")
                                   .where({ id: equipmentID })
@@ -53,6 +86,12 @@ export async function setEquipmentArchived(equipmentID: number, archived: boolea
   return updatedEquipment[0];
 }
 
+/**
+ * Fetch equipment filtered by room ID and archival status
+ * @param roomID room ID to filter equipment by
+ * @param archived archival state to filter by
+ * @returns filtered Equipment entries
+ */
 export async function getEquipmentWithRoomID(
   roomID: number,
   archived: boolean
@@ -65,6 +104,11 @@ export async function getEquipmentWithRoomID(
           });
 }
 
+/**
+ * Fetch modules assocatiated with specified equipment
+ * @param equipmentID equipment ID to filter by
+ * @returns filtered Equipment entries
+ */
 export async function getModulesByEquipment(
   equipmentID: number
 ): Promise<TrainingModuleRow[]> {
@@ -74,6 +118,12 @@ export async function getModulesByEquipment(
   .where("ModulesForEquipment.equipmentID", equipmentID);
 }
 
+/**
+ * Check if User has completed all trainings needed for Equipment
+ * @param user User info to check trainings of
+ * @param equipmentID equipment ID to check trainings needed
+ * @returns true if all trainings needed are passed
+ */
 export async function hasTrainingModules(
   user: UserRow,
   equipmentID: number
@@ -93,6 +143,12 @@ export async function hasTrainingModules(
   return hasTraining;
 }
 
+/**
+ * Check if User is authorized to use Equipment
+ * @param uid University ID of user to check
+ * @param equipmentID Equipment ID to check
+ * @returns true if user is authorized
+ */
 export async function hasAccess(
   uid: string,
   equipmentID: number
@@ -103,6 +159,11 @@ export async function hasAccess(
     await hasTrainingModules(user, equipmentID);            // Ensure user has completed necessary training
 }
 
+/**
+ * Retrieved the Equipment associated with specified training module
+ * @param moduleID Training Module to check
+ * @returns {EquipmentRow} Equipment associated
+ */
 export async function getEquipmentForModule(
   moduleID: number
 ): Promise<EquipmentRow[]> {
@@ -112,6 +173,11 @@ export async function getEquipmentForModule(
     .where("ModulesForEquipment.moduleID", moduleID);
 }
 
+/**
+ * Set Modules as associated with a specified equipment
+ * @param id the Equipment ID
+ * @param moduleIDs the IDs of the modules to add
+ */
 export async function addModulesToEquipment(
   id: number,
   moduleIDs: number[]
@@ -124,6 +190,11 @@ export async function addModulesToEquipment(
   );
 }
 
+/**
+ * Update the modules associated with a specified equipment
+ * @param id the Equipment ID
+ * @param moduleIDs moduleIDs of the module to add
+ */
 export async function updateModules(
   id: number,
   moduleIDs: number[]
@@ -134,6 +205,12 @@ export async function updateModules(
   }
 }
 
+/**
+ * Update an equipment entry
+ * @param id the ID of the existing equipment
+ * @param equipment EquipmentInput the updated attributes
+ * @returns updated Equipment entry
+ */
 export async function updateEquipment(
   id: number,
   equipment: EquipmentInput
@@ -148,6 +225,11 @@ export async function updateEquipment(
   return getEquipmentByID(id);
 }
 
+/**
+ * Append new Equipment entry to table
+ * @param equipment EquipmentInput equipment attributes to add
+ * @returns added Equipment entry
+ */
 export async function addEquipment(
   equipment: EquipmentInput
 ): Promise<EquipmentRow> {

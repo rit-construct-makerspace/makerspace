@@ -1,3 +1,7 @@
+/** ReservationRepository.ts
+ * DB operations endpoint for Equipment table
+ */
+
 import { knex } from "../../db";
 import { ReservationInput } from "../../models/equipment/reservationInput";
 import { EntityNotFound } from "../../EntityNotFound";
@@ -19,16 +23,30 @@ export class ReservationRepository implements IReservationRepository {
     this.queryBuilder = queryBuilder || knex;
   }
 
+  /**
+   * Fetch Reservation entry by unique ID
+   * @param id ID of Reservation entry
+   * @returns {ReservationRow} reservation entry
+   */
   public async getReservationById(id: number): Promise<ReservationRow> {
     const reservation = await knex("Reservations").where({ id }).first();
     if (!reservation) throw new EntityNotFound("Could not find reservation #${id}");
     return reservation;
   }
 
+  /**
+   * Fetch all Reservations in the table
+   * @returns {ReservationRow[]} all entries
+   */
   public async getReservations(): Promise<ReservationRow[]> {
     return knex("Reservations").select();
   }
 
+  /**
+   * Determines if reserving maker is has the necessary trainings to reserve the noted equipment
+   * @param reservation {ReservationInput} the reservation details
+   * @returns true if eligible
+   */
   public async userIsEligible(reservation: ReservationInput): Promise<boolean> {
     // get all modules needed for the equipment
     const modules = (
@@ -53,6 +71,11 @@ export class ReservationRepository implements IReservationRepository {
     return passed;
   }
 
+  /**
+   * Determine if the reservation can be added without overlapping with existing reservations
+   * @param reservation the proposed reservation
+   * @returns true if no time conflicts are present
+   */
   public async noConflicts(reservation: ReservationInput): Promise<boolean> {
       const conflicts = await this.queryBuilder("Reservations")
         .select()
@@ -70,6 +93,11 @@ export class ReservationRepository implements IReservationRepository {
   }
 
 
+  /**
+   * Create Reservation and append it to the table
+   * @param reservation proposed reservation
+   * @returns created reservation
+   */
     public async createReservation(reservation: ReservationInput): Promise<ReservationRow> {
       const [newId] = (
         await this.queryBuilder("Reservations").insert(
@@ -86,7 +114,14 @@ export class ReservationRepository implements IReservationRepository {
       return this.getReservationById(newId);
     }
 
-
+  /**
+   * Create a comment assigned to a specified reservation
+   * @param resID reservation ID
+   * @param authorId user ID
+   * @param commentText Comment string
+   * @returns ID of created comment
+   * @throws EntityNotFound failed to create comment
+   */
   public async addComment(resID: number, authorId: number, commentText: string): 
   Promise<ReservationEventRow> {
     const [newId] = (
@@ -106,6 +141,12 @@ export class ReservationRepository implements IReservationRepository {
     return commentID;
   }
 
+
+  /**
+   * Update reservation to CONFIRMED
+   * @param resID reservation ID
+   * @returns the updated reservation
+   */
   public async confirmReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
     .where("id", resID)
@@ -113,6 +154,11 @@ export class ReservationRepository implements IReservationRepository {
     return this.getReservationById(resID);
   }
 
+  /**
+   * Update reservation to CANCELLED
+   * @param resID reservation ID
+   * @returns the updated reservation
+   */
   public async cancelReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
     .where("id", resID)

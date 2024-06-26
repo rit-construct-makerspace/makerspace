@@ -1,3 +1,7 @@
+/** roomMapper.ts
+ * Map room entries to attributes
+ */
+
 import { Room } from "../../models/rooms/room";
 
 export function roomsToDomain(raw: any): Room[] {

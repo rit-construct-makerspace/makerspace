@@ -1,7 +1,7 @@
 import { knex } from "../../db";
 import { InventoryItemInput } from "../../schemas/storeFrontSchema";
-import * as InventoryRepo from "../../repositories/Store/inventoryRepository";
-import * as LabelRepo from "../../repositories/Store/labelRepository";
+import * as InventoryRepo from "../../repositories/Store/InventoryRepository";
+import * as LabelRepo from "../../repositories/Store/LabelRepository";
 
 const tables = ["InventoryItem", "Label", "InventoryItemLabel"];
 
