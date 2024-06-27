@@ -225,7 +225,7 @@ export function setupStagingAuth(app: express.Application) {
       signatureAlgorithm: "sha256",
   
       // TODO production solution
-      acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
+      acceptedClockSkewMs: 180, // "SAML assertion not yet valid" fix
     },
     (profile: any, done: any) => {
       // your body implementation on success, this is where we get attributes from the idp
