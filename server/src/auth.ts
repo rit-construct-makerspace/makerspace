@@ -217,11 +217,11 @@ export function setupStagingAuth(app: express.Application) {
       callbackUrl: callbackUrl,
       entryPoint: entryPoint,
       identifierFormat: process.env.ID_FORMAT ?? "",
-      //decryptionPvk: process.env.SSL_PVKEY ?? "",
+      decryptionPvk: process.env.SSL_PVKEY ?? "",
       privateKey: process.env.SSL_PVKEY ?? "",
       cert: process.env.IDP_PUBKEY ?? "",
-      //validateInResponseTo: ValidateInResponseTo.never,
-      //disableRequestedAuthnContext: true,
+      validateInResponseTo: ValidateInResponseTo.never,
+      disableRequestedAuthnContext: true,
       signatureAlgorithm: "sha256",
   
       // TODO production solution
@@ -271,7 +271,8 @@ export function setupStagingAuth(app: express.Application) {
       .status(200)
       .send(
         authStrategy.generateServiceProviderMetadata(
-          null, process.env.SSL_PUBKEY ?? "",
+          process.env.SSL_PUBKEY ?? "",
+          process.env.SSL_PUBKEY ?? ""
         )
       );
   });
