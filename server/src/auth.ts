@@ -272,7 +272,7 @@ export function setupStagingAuth(app: express.Application) {
       .send(
         authStrategy.generateServiceProviderMetadata(
           process.env.SSL_PUBKEY ?? "",
-          process.env.SSL_PVKEY ?? ""
+          process.env.SSL_PUBKEY ?? ""
         )
       );
   });
