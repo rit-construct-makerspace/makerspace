@@ -4,6 +4,7 @@ export interface EquipmentInput {
   name: string;
   roomID: number;
   moduleIDs: number[];
+  pictureURL?: string;
 }
 
 export const EquipmentTypeDefs = gql`
@@ -16,12 +17,14 @@ export const EquipmentTypeDefs = gql`
     addedAt: DateTime!
     inUse: Boolean!
     hasAccess(uid: String): Boolean!
+    pictureURL: String
   }
 
   input EquipmentInput {
     name: String!
     roomID: ID!
     moduleIDs: [ID]
+    pictureURL: String
   }
 
   extend type Query {

@@ -10,10 +10,12 @@ import { ReservationRow, ReservationEventRow } from "../../db/tables";
 export interface IReservationRepository {
   getReservationById(id: number): Promise<ReservationRow>;
   getReservations(): Promise<ReservationRow[]>;
-  createReservation(reservation: ReservationInput): Promise<ReservationRow>;
+  addReservation(reservation: ReservationInput): Promise<ReservationRow>;
   addComment(resID: number, authorID: number, commentText: string): Promise<ReservationEventRow>;
   confirmReservation(resID: number): Promise<ReservationRow>;
   cancelReservation(resID: number): Promise<ReservationRow>;
+  getReservationForCardByID(iD: number): Promise<Pick<ReservationRow, "id" | "makerID" | "expertID" | "startTime" | "endTime" | "equipmentID" | "archived">[]>;
+  getReservationIDSPerExpert(expertID: number): Promise<number[]>;
 }
 
 export class ReservationRepository implements IReservationRepository {
@@ -32,6 +34,18 @@ export class ReservationRepository implements IReservationRepository {
     const reservation = await knex("Reservations").where({ id }).first();
     if (!reservation) throw new EntityNotFound("Could not find reservation #${id}");
     return reservation;
+  }
+
+  public async getReservationForCardByID(iD: number): Promise<Pick<ReservationRow, "id" | "makerID" | "expertID" | "startTime" | "endTime" | "equipmentID" | "archived" | "status">[]> {
+    return knex("Reservations")
+        .where({ id: iD })
+        .select('id', 'makerID', 'expertID','startTime',  'endTime', 'equipmentID', 'archived', 'status');
+  }
+
+  public async getReservationIDSPerExpert(expertID: number): Promise<number[]> {
+      return knex("Reservations")
+          .where({ expertID: expertID })
+          .pluck('id');
   }
 
   /**
@@ -91,7 +105,7 @@ export class ReservationRepository implements IReservationRepository {
         return false;
       }
   }
-
+      
 
   /**
    * Create Reservation and append it to the table
@@ -103,9 +117,14 @@ export class ReservationRepository implements IReservationRepository {
         await this.queryBuilder("Reservations").insert(
           {
             makerID: reservation.makerID,
-            equipmentID: reservation.equipmentID,
+            expertID: reservation.expertID,
             startTime: reservation.startTime,
-            endTime: reservation.endTime
+            endTime: reservation.endTime,
+            equipmentID: reservation.equipmentID,
+            status: "PENDING",
+            lastUpdated: new Date().toISOString(),
+            archived: false
+
           },
           "id"
         )
@@ -150,7 +169,7 @@ export class ReservationRepository implements IReservationRepository {
   public async confirmReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
     .where("id", resID)
-    .update({status: "CONFIRMED", lastUpdated: Date.now()});
+    .update({status: "CONFIRMED", lastUpdated: new Date().toISOString()});
     return this.getReservationById(resID);
   }
 
@@ -162,7 +181,7 @@ export class ReservationRepository implements IReservationRepository {
   public async cancelReservation(resID: number): Promise<ReservationRow> {
     await this.queryBuilder("Reservations")
     .where("id", resID)
-    .update({status: "CANCELLED", lastUpdated: Date.now()});
+    .update({status: "CANCELLED", lastUpdated: new Date().toISOString()});
     return this.getReservationById(resID);
   }
 }

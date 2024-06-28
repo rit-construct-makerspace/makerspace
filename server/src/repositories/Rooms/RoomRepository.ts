@@ -20,7 +20,7 @@ import { EntityNotFound } from "../../EntityNotFound";
  */
 export async function getRoomByID(roomID: number): Promise<Room | null> {
   const knexResult = await knex
-    .first("id", "name")
+    .first("id", "name", "pictureURL")
     .from("Rooms")
     .where("id", roomID);
 
@@ -32,7 +32,7 @@ export async function getRoomByID(roomID: number): Promise<Room | null> {
  * @returns {Room[]} rooms
  */
 export async function getRooms(): Promise<Room[]> {
-  const knexResult = await knex("Rooms").select("Rooms.id", "Rooms.name");
+  const knexResult = await knex("Rooms").select("Rooms.id", "Rooms.name", "Rooms.pictureURL");
   return roomsToDomain(knexResult);
 }
 
@@ -46,6 +46,7 @@ export async function addRoom(room: Room): Promise<Room> {
     await knex("Rooms").insert(
       {
         name: room.name,
+        pictureURL: room.pictureURL
       },
       "id"
     )

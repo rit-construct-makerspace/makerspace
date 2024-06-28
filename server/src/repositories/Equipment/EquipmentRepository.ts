@@ -49,10 +49,29 @@ export async function getEquipmentByID(id: number): Promise<EquipmentRow> {
 }
 
 /**
+ * Fetch Id, Name, and Profile picture URL for Equipment by unique ID
+ * @param id unique ID of the equipment entry to fetch
+ * @returns EquipmentRow the Equipment at requested ID containing ID, name, and picture
+ * @throws EntityNotFound on nonexistent ID
+ */
+export async function getEquipmentByIDForReservationCard(id: number): Promise<Pick<EquipmentRow, "id" | "name" | 'pictureURL'>> {
+    const equipment = await knex("Equipment")
+        .where({
+            id: id
+        })
+        .first()
+        .select('id', 'name', 'pictureURL');
+
+    if (!equipment) throw new EntityNotFound(`Could not find equipment #${id}`);
+
+    return equipment;
+}
+
+/**
  * Fetch Equipment entry by unique ID, filtering by specifically archived or not archived
  * @param id unique ID of equipment entry to fetch
  * @param archived true: filter by archived only
- * @returns AnnouncementRow the Equipment at requested ID
+ * @returns EquipmentRow the Equipment at requested ID
  * @throws EntityNotFound on nonexistent ID
  */
 export async function getEquipmentByIDWhereArchived(id: number, archived: boolean): Promise<EquipmentRow> {
@@ -96,7 +115,7 @@ export async function getEquipmentWithRoomID(
   roomID: number,
   archived: boolean
 ): Promise<EquipmentRow[]> {
-  return knex("Equipment")
+  return await knex("Equipment")
           .select()
           .where({
             roomID: roomID,
@@ -218,6 +237,7 @@ export async function updateEquipment(
   await knex("Equipment").where("id", id).update({
     name: equipment.name,
     roomID: equipment.roomID,
+    pictureURL: equipment.pictureURL
   });
 
   await updateModules(id, equipment.moduleIDs);
@@ -237,7 +257,8 @@ export async function addEquipment(
     {
       name: equipment.name,
       roomID: equipment.roomID,
-      archived: true
+      archived: true,
+        pictureURL: equipment.pictureURL
     },
     "id"
   );

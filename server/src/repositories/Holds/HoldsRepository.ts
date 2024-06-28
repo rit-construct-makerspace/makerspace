@@ -73,7 +73,7 @@ export async function removeHold(
 export async function getHoldsByUser(
   userID: number
 ): Promise<HoldRow[]> {
-  return await knex("Holds").select().where({ userID }).orderBy("createDate", "DESC");
+  return knex("Holds").select().where({ userID }).orderBy("createDate", "DESC");
 }
 
 /**

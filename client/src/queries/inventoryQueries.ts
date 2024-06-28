@@ -48,3 +48,11 @@ export const CREATE_INVENTORY_ITEM = gql`
     }
   }
 `;
+
+export const REMOVE_INVENTORY_ITEM_AMOUNT = gql`
+  mutation RemoveInventoryItemAmount($itemID: ID!, $amountToRemove: Int!) {
+    removeItemAmount(itemId: $itemID, count: $amountToRemove) {
+      id
+    }
+  }
+`;

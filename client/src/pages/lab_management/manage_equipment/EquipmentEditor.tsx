@@ -8,7 +8,7 @@ import { useQuery } from "@apollo/client";
 import { GET_TRAINING_MODULES } from "../../../queries/trainingQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import styled from "styled-components";
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS from "../../../queries/roomQueries";
 import { Equipment } from "./EditEquipmentPage";
 import AttachedModule from "./AttachedModule";
 import ArchiveEquipmentButton from "./ArchiveEquipmentButton";
@@ -49,6 +49,10 @@ export default function EquipmentEditor({
 
   const handleNameChanged: ChangeEventHandler<HTMLInputElement> = (e) => {
     setEquipment({ ...equipment, name: e.target.value });
+  };
+
+  const handlePicChanged: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setEquipment({ ...equipment, pictureURL: e.target.value });
   };
 
   const handleRoomChanged = (e: SyntheticEvent, value: ObjectSummary | null) => {
@@ -98,9 +102,6 @@ export default function EquipmentEditor({
                   : <ArchiveEquipmentButton equipmentID={equipment.id} appearance="medium" />
                 : null
             }
-            {
-              console.log(equipment.id + ": " + equipment.archived)
-            }
           </Stack>
         )}
 
@@ -109,7 +110,7 @@ export default function EquipmentEditor({
         <Stack direction="row" spacing={2}>
           <StyledMachineImage
             alt="Machine image"
-            src="https://ae01.alicdn.com/kf/Hc43d9bc0340547709698a3900a1566f69/ROBOTEC-1325-Cnc-Router-Auction-3D-Cnc-Wood-Carving-Machine-Cnc-Milling-Machine-Design-For-Wood.jpg_Q90.jpg_.webp"
+            src={equipment.pictureURL}
           />
           <Stack spacing={2} flexGrow={1}>
             <TextField
@@ -119,6 +120,14 @@ export default function EquipmentEditor({
               inputProps={{
                 maxLength: 50
               }}
+            />
+            <TextField
+                label="picture URL"
+                value={equipment.pictureURL}
+                onChange={handlePicChanged}
+                inputProps={{
+                  maxLength: 200
+                }}
             />
             <Autocomplete
               renderInput={(params) => (

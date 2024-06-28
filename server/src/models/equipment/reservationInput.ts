@@ -3,8 +3,9 @@
  */
 export interface ReservationInput {
     makerID: number;
+    expertID: number;
     equipmentID: number;
-    startTime: Date;
-    endTime: Date;
+    startTime: string;
+    endTime: string;
     startingMakerComment: string;
 }

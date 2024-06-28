@@ -31,7 +31,7 @@ export default function ExpertAvailabilityStrip({
               sx={{ mb: 2 }}
             />
           </Tooltip>
-          <AvailabilityStrip availability={expertAvailability.availability} />
+          <AvailabilityStrip availability={expertAvailability.availability}/>
         </StyledDiv>
       </CardActionArea>
     </Card>

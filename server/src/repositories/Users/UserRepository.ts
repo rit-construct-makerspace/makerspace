@@ -50,11 +50,23 @@ export async function getUserByID(userID: number): Promise<UserRow> {
   return user;
 }
 
+export async function getUserByIDForReservationCard(userID: number): Promise<Pick<UserRow, "id" | "firstName" | "lastName" | "privilege">> {
+  const user = await knex("Users")
+      .first()
+      .where("id", userID)
+      .select('id', 'firstName', 'lastName', 'privilege');
+
+  if (!user) throw new EntityNotFound(`User #${userID} not found`);
+
+  return user;
+}
+
 /**
  * Fetch a user by their username
  * @param ritUsername the unique username of a user
  * @returns the user object
  */
+
 export async function getUserByRitUsername(
   ritUsername: string
 ): Promise<UserRow | undefined> {

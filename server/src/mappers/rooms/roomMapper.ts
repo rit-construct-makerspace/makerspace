@@ -16,5 +16,7 @@ export function singleRoomToDomain(raw: any): Room | null {
   return {
     id: raw.id,
     name: raw.name,
+    pictureURL: raw.pictureURL,
+    archived: raw.archived
   };
 }

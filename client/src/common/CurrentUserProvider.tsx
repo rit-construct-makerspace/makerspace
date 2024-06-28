@@ -1,32 +1,11 @@
 import { createContext, ReactElement, useContext } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import RequestWrapper2 from "./RequestWrapper2";
 import { Navigate, useLocation } from "react-router-dom";
 import Privilege from "../types/Privilege";
+import { GET_CURRENT_USER } from "../queries/userQueries";
 
 const loginUrl = process.env.REACT_APP_LOGIN_URL ?? "/";
-
-export const GET_CURRENT_USER = gql`
-  query GetCurrentUser {
-    currentUser {
-      id
-      firstName
-      lastName
-      email
-      privilege
-      setupComplete
-      balance
-      holds {
-        removeDate
-      }
-      passedModules {
-        moduleID
-        submissionDate
-        expirationDate
-      }
-    }
-  }
-`;
 
 export interface PassedModule {
   moduleID: string;

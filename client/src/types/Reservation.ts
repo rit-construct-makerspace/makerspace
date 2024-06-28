@@ -1,9 +1,22 @@
 import User from "./User";
 import Equipment from "./Equipment";
 
+export enum ReservationStatus {
+  "PENDING",
+  "CONFIRMED",
+  "CANCELLED"
+}
 export interface ReservationAttachment {
   name: string;
   url: string;
+}
+
+export interface ReservationInput {
+  makerID: number
+  expertID: number
+  equipmentID: number
+  startTime: Date
+  endTime: Date
 }
 
 export default interface Reservation {
@@ -14,4 +27,5 @@ export default interface Reservation {
   endTime: string;
   comment: string;
   attachments: ReservationAttachment[];
+  status: string;
 }

@@ -12,7 +12,6 @@ const StorefrontResolvers = {
     },
 
     InventoryItem: async (_: any, args: { id: string }, context: any) => {
-      console.log(args)
       return await InventoryRepo.getItemById(Number(args.id));
     },
 

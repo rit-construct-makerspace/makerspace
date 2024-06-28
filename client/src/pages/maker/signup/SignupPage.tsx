@@ -8,14 +8,12 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import {
-  GET_CURRENT_USER,
-  useCurrentUser,
-} from "../../../common/CurrentUserProvider";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import styled from "styled-components";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import { useNavigate } from "react-router-dom";
+import { GET_CURRENT_USER, UPDATE_STUDENT_PROFILE } from "../../../queries/userQueries";
 
 const StyledFakeTextField = styled.div`
   border-radius: 4px;
@@ -39,25 +37,6 @@ const COLLEGES = [
   "SOIS - School of Individualized Study",
 ];
 
-export const UPDATE_STUDENT_PROFILE = gql`
-  mutation UpdateStudentProfile(
-    $userID: ID!
-    $pronouns: String
-    $college: String
-    $expectedGraduation: String
-    $universityID: String
-  ) {
-    updateStudentProfile(
-      userID: $userID
-      pronouns: $pronouns
-      college: $college
-      expectedGraduation: $expectedGraduation
-      universityID: $universityID
-    ) {
-      id
-    }
-  }
-`;
 
 function generateGradDates() {
   const semesters = ["Spring", "Summer", "Fall"];
