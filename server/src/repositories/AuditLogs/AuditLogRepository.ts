@@ -1,7 +1,16 @@
+/** AuditLogRepository.ts
+ * DB operations endpoint for AuditLog table
+ */
+
 import { knex } from "../../db";
 import { logsToDomain } from "../../mappers/auditLogs/auditLogMapper";
 import { AuditLog } from "../../schemas/auditLogsSchema";
 
+/**
+ * Create an AuditLog and append it to the table
+ * @param message String verb description of the Log entry (i.e. reserved, deleted)
+ * @param entities items involved in log {id, label}
+ */
 export async function createLog(
   message: string,
   ...entities: { id: any; label: string }[]
@@ -20,6 +29,13 @@ export async function createLog(
   await knex("AuditLogs").insert({ message: formattedMessage });
 }
 
+/**
+ * Fetch logs by filtered criteria
+ * @param startDate earliest date to filter by
+ * @param stopDate latest date to filter by
+ * @param searchText text to filter by
+ * @returns 
+ */
 export async function getLogs(
   startDate: string,
   stopDate: string,

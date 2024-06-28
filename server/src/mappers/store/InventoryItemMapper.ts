@@ -1,3 +1,7 @@
+/** InventoryItemMapper.ts
+ * Map inventory item entires to attributes
+ */
+
 import { InventoryItem } from "../../schemas/storeFrontSchema";
 
 export function inventoryItemsToDomain(raw: any): InventoryItem[] {

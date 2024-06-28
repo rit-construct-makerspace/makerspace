@@ -1,3 +1,6 @@
+/** reservationEvent.ts
+ * Object Model for Reservation Events */
+
 enum ReservationEventType {
     "COMMENT",
     "ASSIGNMENT",

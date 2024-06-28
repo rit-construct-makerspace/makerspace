@@ -19,6 +19,10 @@ import { CurrentUser } from "./context";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
 import path from "path";
 
+/**
+ * General information gathered from a Shibboleth response
+ * TODO: according to the ITS request, we should also have grad year and UID
+ */
 interface RitSsoUser {
   firstName: string;
   lastName: string;
@@ -26,6 +30,10 @@ interface RitSsoUser {
   ritUsername: string;
 }
 
+/**
+ * DEV ONLY
+ * Map devUsers file to users
+ */
 function mapToDevUser(userID: string, password: string) {
   var obj = JSON.parse(fs.readFileSync(path.join(__dirname, "/data/devUsers.json"), 'utf8'));
   const devUser = obj[userID];
@@ -45,6 +53,7 @@ function mapToDevUser(userID: string, password: string) {
 // Map the test users from samltest.id to match
 // the format that RIT SSO will give us.
 function mapSamlTestToRit(testUser: any): RitSsoUser {
+  console.log("MAP TEST USER: " + testUser["urn:oid:2.5.4.42"]);
   return {
     firstName: testUser["urn:oid:2.5.4.42"],
     lastName: testUser["urn:oid:2.5.4.4"],
@@ -53,6 +62,10 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
   };
 }
 
+/**
+ * Initialize client session
+ * @param app NodeJS application context
+ */
 export function setupSessions(app: express.Application) {
   const secret = process.env.SESSION_SECRET;
   assert(secret, "SESSION_SECRET env value is null");
@@ -149,8 +162,10 @@ export function setupDevAuth(app: express.Application) {
         if (err) {
           res.status(400).send("Logout failed");
         } else {
-          // res.clearCookie("connect.sid");
-          res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
+          res.clearCookie("connect.sid");
+
+          window.location.reload();
+          // res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
         }
       });
     } else {
@@ -170,24 +185,48 @@ export function setupStagingAuth(app: express.Application) {
   assert(entryPoint, "ENTRY_POINT env value is null");
   assert(reactAppUrl, "REACT_APP_URL env value is null");
 
-  const samlConfig = {
-    issuer: issuer,
-    path: "/login/callback",
-    callbackUrl: callbackUrl,
-    entryPoint: entryPoint,
-    identifierFormat: undefined,
-    decryptionPvk: process.env.SSL_PVKEY ?? "",
-    privateCert: process.env.SSL_PVKEY ?? "",
-    cert: process.env.IDP_PUBKEY ?? "",
-    validateInResponseTo: ValidateInResponseTo.never,
-    disableRequestedAuthnContext: true,
+  /*
+  identifierFormat defaults to urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress.
+  ITS demanded we use urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified
 
-    // TODO production solution
-    acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
-  };
+  this unspecified format is not allowed by samltest.id so in order to test with samltest the variable must be
+  temporarily switched back to undefined to use the default passportsaml nameid-format:emailAddress
+   */
+
+  // const samlConfig = {
+  //   issuer: issuer,
+  //   path: "/login/callback",
+  //   callbackUrl: callbackUrl,
+  //   entryPoint: entryPoint,
+  //   identifierFormat: process.env.ID_FORMAT ?? "",
+  //   decryptionPvk: process.env.SSL_PVKEY ?? "",
+  //   privateKey: process.env.SSL_PVKEY ?? "",
+  //   cert: process.env.IDP_PUBKEY ?? "",
+  //   validateInResponseTo: ValidateInResponseTo.never,
+  //   disableRequestedAuthnContext: true,
+  //   signatureAlgorithm: 'sha256',
+
+  //   // TODO production solution
+  //   acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
+  // };
 
   const authStrategy = new SamlStrategy(
-    samlConfig,
+    {
+      issuer: issuer,
+      path: "/login/callback",
+      callbackUrl: callbackUrl,
+      entryPoint: entryPoint,
+      identifierFormat: process.env.ID_FORMAT ?? "",
+      decryptionPvk: process.env.SSL_PVKEY ?? "",
+      privateKey: process.env.SSL_PVKEY ?? "",
+      cert: process.env.IDP_PUBKEY ?? "",
+      validateInResponseTo: ValidateInResponseTo.never,
+      disableRequestedAuthnContext: true,
+      signatureAlgorithm: "sha256",
+  
+      // TODO production solution
+      acceptedClockSkewMs: 180, // "SAML assertion not yet valid" fix
+    },
     (profile: any, done: any) => {
       // your body implementation on success, this is where we get attributes from the idp
       return done(null, profile);
@@ -199,6 +238,7 @@ export function setupStagingAuth(app: express.Application) {
   );
 
   passport.serializeUser(async (user: any, done) => {
+    console.log("SERIALIZE USER");
     const ritUser =
       process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user;
 
@@ -212,6 +252,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   passport.deserializeUser(async (username: string, done) => {
+    console.log("DESERIALIZE USER");
     const user = (await getUserByRitUsername(username)) as CurrentUser;
 
     if (!user) throw new Error("Tried to deserialize user that doesn't exist");
@@ -230,7 +271,7 @@ export function setupStagingAuth(app: express.Application) {
       .status(200)
       .send(
         authStrategy.generateServiceProviderMetadata(
-          process.env.SSL_PUBKEY ?? ""
+          null, process.env.SSL_PUBKEY ?? "",
         )
       );
   });
@@ -261,6 +302,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   app.get("/login/fail", function (req, res) {
+    console.log("Login failed");
     res.status(401).send("Login failed");
   });
 
@@ -278,8 +320,128 @@ export function setupStagingAuth(app: express.Application) {
       res.end();
     }
   });
+
 }
 
+// TODO: Remove this and any references to this
 export function setupAuth(app: express.Application) {
-  // production authentication
+  // // production authentication
+  // const issuer = process.env.ISSUER;
+  // const callbackUrl = process.env.CALLBACK_URL;
+  // const entryPoint = process.env.ENTRY_POINT;
+  // const reactAppUrl = process.env.REACT_APP_URL;
+  //
+  // assert(issuer, "ISSUER env value is null");
+  // assert(callbackUrl, "CALLBACK_URL env value is null");
+  // assert(entryPoint, "ENTRY_POINT env value is null");
+  // assert(reactAppUrl, "REACT_APP_URL env value is null");
+  //
+  // const samlConfig = {
+  //   issuer: issuer,
+  //   path: "/login/callback",
+  //   callbackUrl: callbackUrl,
+  //   entryPoint: entryPoint,
+  //   identifierFormat: "urn:oasis:names:tc:SAML:2.0:attrname-format:unspecified",
+  //   decryptionPvk: process.env.SSL_PVKEY ?? "",
+  //   privateCert: process.env.SSL_PVKEY ?? "",
+  //   cert: process.env.IDP_PUBKEY ?? "",
+  //   validateInResponseTo: ValidateInResponseTo.never,
+  //   disableRequestedAuthnContext: true,
+  //
+  //   // TODO production solution
+  //   acceptedClockSkewMs: 1000, // "SAML assertion not yet valid" fix
+  // };
+  //
+  // const authStrategy = new SamlStrategy(
+  //     samlConfig,
+  //     (profile: any, done: any) => {
+  //       // your body implementation on success, this is where we get attributes from the idp
+  //       return done(null, profile);
+  //     },
+  //     (profile: any, done: any) => {
+  //       // your body implementation on success, this is where we get attributes from the idp
+  //       return done(null, profile);
+  //     }
+  // );
+  //
+  // passport.serializeUser(async (user: any, done) => {
+  //   assert(process.env.SAML_IDP !== "TEST", "SAML_IDP Cannot be test for production")
+  //   const ritUser =  mapSamlTestToRit(user);
+  //
+  //   // Create user in our database if they don't exist
+  //   const existingUser = await getUserByRitUsername(ritUser.ritUsername);
+  //   if (!existingUser) {
+  //     await createUser(ritUser);
+  //   }
+  //
+  //   done(null, ritUser.ritUsername);
+  // });
+  //
+  // passport.deserializeUser(async (username: string, done) => {
+  //   const user = (await getUserByRitUsername(username)) as CurrentUser;
+  //
+  //   if (!user) throw new Error("Tried to deserialize user that doesn't exist");
+  //
+  //   // Populate user.hasHolds
+  //   const holds = await getHoldsByUser(user.id);
+  //   user.hasHolds = holds.some((hold) => !hold.removeDate);
+  //
+  //   /* @ts-ignore */
+  //   done(null, user);
+  // });
+  //
+  // app.get("/Shibboleth.sso/Metadata", function (req, res) {
+  //   res.type("application/xml");
+  //   res
+  //       .status(200)
+  //       .send(
+  //           authStrategy.generateServiceProviderMetadata(
+  //               process.env.SSL_PUBKEY ?? ""
+  //           )
+  //       );
+  // });
+  //
+  // passport.use(authStrategy);
+  //
+  // app.use(passport.initialize());
+  // app.use(passport.session());
+  // app.use(express.urlencoded({ extended: false }));
+  // app.use(express.json());
+  //
+  // const authenticate = passport.authenticate("saml", {
+  //   failureFlash: true,
+  //   failureRedirect: "/login/fail",
+  //   successRedirect: reactAppUrl,
+  // });
+  //
+  // app.get("/login", authenticate);
+  //
+  // app.post("/login/callback", authenticate, async (req, res) => {
+  //   console.log("Logged in")
+  //   if (req.user && 'id' in req.user && 'firstName' in req.user && 'lastName' in req.user) {
+  //     await createLog(
+  //         `{user} logged in.`,
+  //         { id: req.user.id, label: `${req.user.firstName} ${req.user.lastName}` }
+  //     );
+  //   }
+  // });
+  //
+  // app.get("/login/fail", function (req, res) {
+  //   res.status(401).send("Login failed");
+  // });
+  //
+  // app.post("/logout", (req, res) => {
+  //   if (req.session) {
+  //     req.session.destroy((err) => {
+  //       if (err) {
+  //         res.status(400).send("Logout failed");
+  //       } else {
+  //         // res.clearCookie("connect.sid");
+  //         res.redirect(process.env.REACT_APP_LOGGED_OUT_URL ?? "");
+  //       }
+  //     });
+  //   } else {
+  //     res.end();
+  //   }
+  // });
 }

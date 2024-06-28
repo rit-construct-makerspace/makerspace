@@ -23,7 +23,13 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
   db:
     image: postgres
+    command: postgres -c config_file=/etc/postgresql.conf
     container_name: makerspace_db
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    volumes:
+      - ${POSTGRES_CONFIG_HOST_PATH}:/etc/postgresql.conf  # Custom postgresql config
     ports:
       - "5433:5432"
     environment:
@@ -32,7 +38,10 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
   testdb:
     image: postgres
+    command: postgres -c config_file=/etc/postgresql.conf
     container_name: test_db
+    volumes:
+      - ${POSTGRES_CONFIG_HOST_PATH}:/etc/postgresql.conf  # Custom postgresql config
     ports:
       - "5434:5432"
     environment:
