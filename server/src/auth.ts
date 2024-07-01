@@ -224,6 +224,7 @@ export function setupStagingAuth(app: express.Application) {
       disableRequestedAuthnContext: true,
       signatureAlgorithm: "sha256",
       wantAssertionsSigned: true,
+      digestAlgorithm: "sha256",
   
       // TODO production solution
       acceptedClockSkewMs: 180, // "SAML assertion not yet valid" fix
