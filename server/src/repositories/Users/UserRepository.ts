@@ -58,6 +58,7 @@ export async function getUserByID(userID: number): Promise<UserRow> {
 export async function getUserByRitUsername(
   ritUsername: string
 ): Promise<UserRow | undefined> {
+  console.log("Checking user: " + ritUsername);
   return knex("Users").first().where("ritUsername", ritUsername);
 }
 
@@ -84,6 +85,7 @@ export async function createUser(user: {
   ritUsername: string;
   email: string;
 }): Promise<UserRow> {
+  console.log("Creating user entry: " + user.ritUsername);
   const [newID] = await knex("Users").insert(user, "id");
   return await getUserByID(newID);
 }
