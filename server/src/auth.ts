@@ -213,17 +213,17 @@ export function setupStagingAuth(app: express.Application) {
   const authStrategy = new SamlStrategy(
     {
       issuer: issuer,
-      path: "/login/callback",
+      //path: "/login/callback",
       callbackUrl: callbackUrl,
       entryPoint: entryPoint,
       identifierFormat: process.env.ID_FORMAT ?? "",
       decryptionPvk: process.env.SSL_PVKEY ?? "",
-      privateKey: process.env.SSL_PVKEY ?? "",
+      //privateKey: process.env.SSL_PVKEY ?? "",
       cert: process.env.IDP_PUBKEY ?? "",
-      validateInResponseTo: ValidateInResponseTo.never,
+      //validateInResponseTo: ValidateInResponseTo.never,
       disableRequestedAuthnContext: true,
       signatureAlgorithm: "sha256",
-      wantAssertionsSigned: true,
+      //wantAssertionsSigned: true,
       digestAlgorithm: "sha256",
   
       // TODO production solution
@@ -273,7 +273,7 @@ export function setupStagingAuth(app: express.Application) {
       .status(200)
       .send(
         authStrategy.generateServiceProviderMetadata(
-          process.env.SSL_PUBKEY ?? "", process.env.SSL_PUBKEY ?? ""
+          process.env.SSL_PUBKEY ?? ""
         )
       );
   });
