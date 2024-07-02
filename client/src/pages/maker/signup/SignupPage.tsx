@@ -93,11 +93,6 @@ export default function SignupPage() {
       return;
     }
 
-    if (!universityID.match(/^\d{9}$/)) {
-      window.alert("University ID must be 9 digits.");
-      return;
-    }
-
     if (!agreedToAbide) {
       window.alert(
         "You must agree to abide by The Construct's rules and policies."
@@ -186,14 +181,6 @@ export default function SignupPage() {
           </MenuItem>
         ))}
       </TextField>
-
-      <TextField
-        label="University ID"
-        sx={{ mt: 4 }}
-        helperText="The nine digit number available from both eServices and myRIT."
-        value={universityID}
-        onChange={(e) => setUniversityID(e.target.value)}
-      />
 
       <Stack direction="row" alignItems="center" mt={4}>
         <Checkbox
