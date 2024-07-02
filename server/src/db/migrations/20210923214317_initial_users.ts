@@ -7,7 +7,6 @@ export async function up(knex: Knex): Promise<void> {
         t.increments("id").primary();
         t.string("firstName", 100);
         t.string("lastName", 100);
-        t.text("email").unique();
         t.boolean("isStudent").defaultTo(true);
         t.enu("privilege", ["MAKER", "MENTOR", "STAFF"]).defaultTo("MAKER");
         t.date("registrationDate").defaultTo(knex.fn.now());

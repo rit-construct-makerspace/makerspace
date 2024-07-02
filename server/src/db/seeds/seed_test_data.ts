@@ -64,7 +64,7 @@ exports.seed = function(knex: Knex) {
             .then(function() {
                 //insert seed users
                 return knex('Users').insert([
-                    {firstName: 'Heinz', lastName: 'Doofenshmirtz', email: 'dhd5555@rit.edu', privilege: Privilege.STAFF,
+                    {firstName: 'Heinz', lastName: 'Doofenshmirtz', privilege: Privilege.STAFF,
                         expectedGraduation: "Spring 2025", college: 'GCCIS', pronouns: "he/him", ritUsername: 'dhd5555'}
                 ])
             })

@@ -238,7 +238,7 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      email: "jd0000@example.com",
+      universityID: "123456789",
     })).id;
 
     const uid = "000000000";
@@ -279,7 +279,7 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      email: "jd0000@example.com",
+      universityID: "234567890",
     })).id
 
     const uid = "000000000";
@@ -328,7 +328,7 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      email: "jd0000@example.com",
+      universityID: "345678901",
     })).id;
 
     const uid = "000000000";
@@ -384,7 +384,7 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      email: "jd0000@example.com",
+      universityID: "123456789",
     })).id;
 
     const uid = "000000000";
@@ -432,7 +432,7 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      email: "jd0000@example.com",
+      universityID: "123456789",
     })).id;
 
     const uid = "000000000";

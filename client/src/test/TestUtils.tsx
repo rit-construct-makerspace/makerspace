@@ -23,7 +23,6 @@ export function resetMocks() {
             id: "123",
             firstName: "John",
             lastName: "Smith",
-            email: "jxs1234@rit.edu",
             privilege: Privilege.STAFF,
             setupComplete: true,
             holds: [],
