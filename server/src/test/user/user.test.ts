@@ -45,11 +45,12 @@ const GET_USER_BY_ID = `
 `;
 
 const CREATE_USER = `
-    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String) {
+    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String, $universityID) {
         createUser(
             firstName: $firstName
             lastName: $lastName
             ritUsername: $ritUsername
+            universityID: $universityID
           ) {
             id
             firstName
@@ -203,12 +204,10 @@ describe("User tests", () => {
         {
             query: CREATE_USER,
             variables: {
-                user: {
-                  firstName: userRequestData.firstName,
-                  lastName: userRequestData.lastName,
-                  ritUsername: userRequestData.ritUsername,
-                  universityID: userRequestData.universityID
-                },
+                firstName: userRequestData.firstName,
+                lastName: userRequestData.lastName,
+                ritUsername: userRequestData.ritUsername,
+                universityID: userRequestData.universityID
             }
         },
         {
