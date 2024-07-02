@@ -242,26 +242,40 @@ export function setupStagingAuth(app: express.Application) {
   passport.serializeUser(async (user: any, done) => {
     console.log("SERIALIZE USER : "+ JSON.stringify(user));
     const ritUser =
-      process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user;
+      process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user.attributes; //user is the full response data. attributes has the things we need
+
+      /*
+        "attributes": {
+          "urn:oid:2.5.4.42": "FirstName",
+          "urn:oid:2.5.4.4": "LastName",
+          "urn:oid:0.9.2342.19200300.100.1.1": "userName",
+          "urn:oid:1.3.6.1.4.1.4447.1.20": "uid"
+        }
+      */
 
     // Create user in our database if they don't exist
-    const existingUser = await getUserByRitUsername(ritUser.ritUsername);
+    const existingUser = await getUserByRitUsername(ritUser["urn:oid:0.9.2342.19200300.100.1.1"]);
     if (!existingUser) {
-      await createUser(ritUser);
+      await createUser({
+        firstName: ritUser["urn:oid:2.5.4.42"],
+        lastName: ritUser["urn:oid:2.5.4.4"],
+        ritUsername: ritUser["urn:oid:0.9.2342.19200300.100.1.1"],
+        universityID: ritUser["urn:oid:1.3.6.1.4.1.4447.1.20"]
+      });
     }
 
     done(null, ritUser.ritUsername);
   });
 
-  passport.deserializeUser(async (username: string, done) => {
+  passport.deserializeUser(async (user: any, done) => {
     console.log("DESERIALIZE USER");
-    const user = (await getUserByRitUsername(username)) as CurrentUser;
+    const currUser = (await getUserByRitUsername(user.attributes["urn:oid:0.9.2342.19200300.100.1.1"])) as CurrentUser;
 
     if (!user) throw new Error("Tried to deserialize user that doesn't exist");
 
     // Populate user.hasHolds
-    const holds = await getHoldsByUser(user.id);
-    user.hasHolds = holds.some((hold) => !hold.removeDate);
+    const holds = await getHoldsByUser(currUser.id);
+    currUser.hasHolds = holds.some((hold) => !hold.removeDate);
 
     /* @ts-ignore */
     done(null, user);

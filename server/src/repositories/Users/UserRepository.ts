@@ -83,9 +83,10 @@ export async function createUser(user: {
   firstName: string;
   lastName: string;
   ritUsername: string;
-  email: string;
+  universityID: string;
 }): Promise<UserRow> {
   console.log("Creating user entry: " + user.ritUsername);
+  user.universityID = hashUniversityID(user.universityID);
   const [newID] = await knex("Users").insert(user, "id");
   return await getUserByID(newID);
 }
@@ -103,6 +104,7 @@ export async function updateStudentProfile(args: {
   universityID: string;
 }): Promise<UserRow> {
   const user = await getUserByID(args.userID);
+  user.universityID = hashUniversityID(user.universityID);
 
   if (!user.setupComplete) {
     await createLog("{user} has joined The Construct!", {
