@@ -240,7 +240,7 @@ export function setupStagingAuth(app: express.Application) {
   );
 
   passport.serializeUser(async (user: any, done) => {
-    console.log("SERIALIZE USER : "+ user);
+    console.log("SERIALIZE USER : "+ JSON.stringify(user));
     const ritUser =
       process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user;
 
