@@ -137,7 +137,6 @@ export default function SignupPage() {
 
       <Stack direction="row" spacing={4} mt={8}>
         <StyledFakeTextField>{`${currentUser.firstName} ${currentUser.lastName}`}</StyledFakeTextField>
-        <StyledFakeTextField>{currentUser.email}</StyledFakeTextField>
       </Stack>
 
       <TextField

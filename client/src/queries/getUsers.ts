@@ -5,7 +5,6 @@ export interface PartialUser {
   id: string;
   firstName: string;
   lastName: string;
-  email?: string;
   privilege: Privilege;
   setupComplete?: boolean;
 }

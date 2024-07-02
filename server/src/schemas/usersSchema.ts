@@ -39,7 +39,6 @@ export const UsersTypeDefs = gql`
     firstName: String!
     lastName: String!
     pronouns: String
-    email: String!
     balance: String!
     isStudent: Boolean!
     privilege: Privilege!
@@ -82,7 +81,6 @@ export const UsersTypeDefs = gql`
     ritUsername: String!
     firstName: String!
     lastName: String!
-    email: String!
     expectedGraduation: String!
     college: String!
     major: String!
@@ -91,7 +89,6 @@ export const UsersTypeDefs = gql`
   input FacultyUserInput {
     firstName: String!
     lastName: String!
-    email: String!
   }
 
   extend type Query {
@@ -105,7 +102,7 @@ export const UsersTypeDefs = gql`
       firstName: String
       lastName: String
       ritUsername: String
-      email: String
+      universityID: String
     ): User
 
     updateStudentProfile(

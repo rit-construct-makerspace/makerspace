@@ -12,7 +12,6 @@ export const GET_CURRENT_USER = gql`
       id
       firstName
       lastName
-      email
       privilege
       setupComplete
       balance
@@ -38,7 +37,6 @@ export interface CurrentUser {
   id: string;
   firstName: string;
   lastName: string;
-  email: string;
   privilege: Privilege;
   setupComplete: boolean;
   balance: string;

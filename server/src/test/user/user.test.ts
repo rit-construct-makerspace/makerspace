@@ -45,12 +45,12 @@ const GET_USER_BY_ID = `
 `;
 
 const CREATE_USER = `
-    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String, $email: String) {
+    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String, $universityID: String) {
         createUser(
             firstName: $firstName
             lastName: $lastName
             ritUsername: $ritUsername
-            email: $email
+            universityID: $universityID
           ) {
             id
             firstName
@@ -130,7 +130,7 @@ describe("User tests", () => {
             firstName: "John",
             lastName: "Doe",
             ritUsername: "jd0000",
-            email: "jd0000@example.com"
+            universityID: "123456789"
         })).id;
 
         // Get by ID
@@ -197,7 +197,7 @@ describe("User tests", () => {
         firstName: "Jane",
         lastName: "Doe",
         ritUsername: "jd1111",
-        email: "jd1111@example.com"
+        universityID: "123456789"
     }
 
     let createRes: GraphQLResponse = (await server.executeOperation(
@@ -207,7 +207,7 @@ describe("User tests", () => {
                 firstName: userRequestData.firstName,
                 lastName: userRequestData.lastName,
                 ritUsername: userRequestData.ritUsername,
-                email: userRequestData.email
+                universityID: userRequestData.universityID
             }
         },
         {
@@ -239,7 +239,7 @@ describe("User tests", () => {
         firstName: "Jane",
         lastName: "Doe",
         ritUsername: "jd1111",
-        email: "jd1111@example.com"
+        universityID: "123456789"
     })).id;
 
     const getUserRes = (await server.executeOperation(
@@ -272,7 +272,7 @@ describe("User tests", () => {
         firstName: "Jane",
         lastName: "Doe",
         ritUsername: "jd1111",
-        email: "jd1111@example.com"
+        universityID: "123456789"
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -328,7 +328,7 @@ describe("User tests", () => {
         firstName: "Jane",
         lastName: "Doe",
         ritUsername: "jd1111",
-        email: "jd1111@example.com"
+        universityID: "123456789"
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -397,7 +397,7 @@ describe("User tests", () => {
         firstName: "Jane",
         lastName: "Doe",
         ritUsername: "jd1111",
-        email: "jd1111@example.com"
+        universityID: "123456789"
     })).id;
 
     const user = await UserRepo.getUserByID(userID);
@@ -446,7 +446,7 @@ describe("User tests", () => {
         firstName: "Jane",
         lastName: "Doe",
         ritUsername: "jd1111",
-        email: "jd1111@example.com"
+        universityID: "123456789"
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -496,7 +496,7 @@ describe("User tests", () => {
         firstName: "Jane",
         lastName: "Doe",
         ritUsername: "jd1111",
-        email: "jd1111@example.com"
+        universityID: "123456789"
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
