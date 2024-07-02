@@ -21,12 +21,11 @@ import path from "path";
 
 /**
  * General information gathered from a Shibboleth response
- * TODO: according to the ITS request, we should also have grad year and UID
  */
 interface RitSsoUser {
   firstName: string;
   lastName: string;
-  email: string;
+  universityID: string
   ritUsername: string;
 }
 
@@ -44,7 +43,7 @@ function mapToDevUser(userID: string, password: string) {
     return {
       firstName: devUser.firstName,
       lastName: devUser.lastName,
-      email: devUser.email,
+      universityID: devUser.email,
       ritUsername: devUser.ritUsername
     };
   }
@@ -57,7 +56,7 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
   return {
     firstName: testUser["urn:oid:2.5.4.42"],
     lastName: testUser["urn:oid:2.5.4.4"],
-    email: testUser.email,
+    universityID: testUser.email,
     ritUsername: testUser.email.split("@")[0], // samltest format
   };
 }

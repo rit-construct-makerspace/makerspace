@@ -44,8 +44,7 @@ export const GET_USER = gql`
       id
       firstName
       lastName
-      pronouns
-      email
+      pronouns      
       college
       expectedGraduation
       registrationDate
@@ -155,7 +154,6 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             </Stack>
 
             <StyledInfo>
-              <InfoBlob label="Email" value={user.email} />
               <InfoBlob
                 label="Member Since"
                 value={format(parseISO(user.registrationDate), "MM/dd/yyyy")}

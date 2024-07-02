@@ -43,7 +43,7 @@ describe("UserRepository tests", () => {
         firstName: "John",
         lastName: "Doe",
         ritUsername: "jd0000",
-        email: "jd0000@example.com"
+        universityID: "123456789"
     });
 
     let userRows = await UserRepo.getUsers();
@@ -56,7 +56,7 @@ describe("UserRepository tests", () => {
         firstName: "John",
         lastName: "Doe",
         ritUsername: "jd0000",
-        email: "jd0000@example.com"
+        universityID: "123456789"
     });
 
     let userRows = await UserRepo.getUsers();
@@ -69,7 +69,7 @@ describe("UserRepository tests", () => {
         firstName: "John",
         lastName: "Doe",
         ritUsername: "jd0000",
-        email: "jd0000@example.com"
+        universityID: "123456789"
     })).id;
 
     // Get by ID

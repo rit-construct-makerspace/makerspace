@@ -116,7 +116,6 @@ export interface UserRow {
   firstName: string;
   lastName: string;
   pronouns: string;
-  email: string;
   isStudent: boolean;
   privilege: Privilege;
   registrationDate: Date;
