@@ -45,7 +45,7 @@ const GET_USER_BY_ID = `
 `;
 
 const CREATE_USER = `
-    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String, $universityID) {
+    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String, $universityID: String) {
         createUser(
             firstName: $firstName
             lastName: $lastName
