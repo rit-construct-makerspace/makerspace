@@ -13,6 +13,7 @@ const GET_USERS = gql`
   query GetUsers {
     users {
       id
+      ritUsername
       firstName
       lastName
       privilege
