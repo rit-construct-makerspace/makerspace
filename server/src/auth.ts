@@ -112,28 +112,28 @@ export function setupDevAuth(app: express.Application) {
     }
   );
 
-  passport.serializeUser(async (user: any, done) => {
-    // Create user in our database if they don't exist
-    const existingUser = await getUserByRitUsername(user.ritUsername);
-    if (!existingUser) {
-      await createUser(user);
-    }
+  // passport.serializeUser(async (user: any, done) => {
+  //   // Create user in our database if they don't exist
+  //   const existingUser = await getUserByRitUsername(user.ritUsername);
+  //   if (!existingUser) {
+  //     await createUser(user);
+  //   }
 
-    done(null, user.ritUsername);
-  });
+  //   done(null, user.ritUsername);
+  // });
 
-  passport.deserializeUser(async (username: string, done) => {
-    const user = (await getUserByRitUsername(username)) as CurrentUser;
+  // passport.deserializeUser(async (username: string, done) => {
+  //   const user = (await getUserByRitUsername(username)) as CurrentUser;
 
-    if (!user) throw new Error("Tried to deserialize user that doesn't exist");
+  //   if (!user) throw new Error("Tried to deserialize user that doesn't exist");
 
-    // Populate user.hasHolds
-    const holds = await getHoldsByUser(user.id);
-    user.hasHolds = holds.some((hold) => !hold.removeDate);
+  //   // Populate user.hasHolds
+  //   const holds = await getHoldsByUser(user.id);
+  //   user.hasHolds = holds.some((hold) => !hold.removeDate);
 
-    /* @ts-ignore */
-    done(null, user);
-  });
+  //   /* @ts-ignore */
+  //   done(null, user);
+  // });
 
   passport.use(authStrategy);
 
@@ -263,7 +263,7 @@ export function setupStagingAuth(app: express.Application) {
       });
     }
 
-    done(null, ritUser.ritUsername);
+    done(null, ritUser["urn:oid:0.9.2342.19200300.100.1.1"]);
   });
 
   passport.deserializeUser(async (user: any, done) => {
@@ -277,7 +277,7 @@ export function setupStagingAuth(app: express.Application) {
     currUser.hasHolds = holds.some((hold) => !hold.removeDate);
 
     /* @ts-ignore */
-    done(null, user);
+    done(null, currUser);
   });
 
   app.get("/Shibboleth.sso/Metadata", function (req, res) {
