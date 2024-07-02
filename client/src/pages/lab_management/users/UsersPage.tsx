@@ -33,7 +33,7 @@ export default function UsersPage() {
         />
         <Stack direction="row" flexWrap="wrap">
           {getUsersResult.data?.users
-            ?.filter((m: { id: number; firstName: string; lastName: string }) =>
+            ?.filter((m: { id: number; ritUsername: String; firstName: string; lastName: string }) =>
               (m.firstName + " " + m.lastName)
                 .toLocaleLowerCase()
                 .includes(searchText.toLocaleLowerCase())

@@ -2,7 +2,8 @@ import { gql } from "@apollo/client";
 import Privilege from "../types/Privilege";
 
 export interface PartialUser {
-  id: string;
+  id: number;
+  ritUsername: string;
   firstName: string;
   lastName: string;
   privilege: Privilege;
@@ -13,6 +14,7 @@ const GET_USERS = gql`
   query GetUsers {
     users {
       id
+      ritUsername
       firstName
       lastName
       privilege
