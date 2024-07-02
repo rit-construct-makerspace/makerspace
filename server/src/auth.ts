@@ -267,8 +267,9 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   passport.deserializeUser(async (user: any, done) => {
-    console.log("DESERIALIZE USER : "+ JSON.stringify(user));
-    const currUser = (await getUserByRitUsername(user.attributes["urn:oid:0.9.2342.19200300.100.1.1"])) as CurrentUser;
+    //Here, it is just the username string, not the full object
+    console.log("DESERIALIZE USER : "+ JSON.stringify(user)); 
+    const currUser = (await getUserByRitUsername(user)) as CurrentUser;
 
     if (!user) throw new Error("Tried to deserialize user that doesn't exist");
 
