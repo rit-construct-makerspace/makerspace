@@ -203,10 +203,12 @@ describe("User tests", () => {
         {
             query: CREATE_USER,
             variables: {
-                firstName: userRequestData.firstName,
-                lastName: userRequestData.lastName,
-                ritUsername: userRequestData.ritUsername,
-                universityID: userRequestData.universityID
+                user: {
+                  firstName: userRequestData.firstName,
+                  lastName: userRequestData.lastName,
+                  ritUsername: userRequestData.ritUsername,
+                  universityID: userRequestData.universityID
+                },
             }
         },
         {
