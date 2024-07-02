@@ -102,6 +102,7 @@ export const UsersTypeDefs = gql`
       firstName: String
       lastName: String
       ritUsername: String
+      universityID: String
     ): User
 
     updateStudentProfile(
