@@ -59,6 +59,8 @@ export const UPDATE_STUDENT_PROFILE = gql`
   }
 `;
 
+const IS_FACULTY_REGEX = /^[a-z]+$/;
+
 function generateGradDates() {
   const semesters = ["Spring", "Summer", "Fall"];
   const year = new Date().getFullYear();
@@ -79,7 +81,6 @@ export default function SignupPage() {
   const [pronouns, setPronouns] = useState("");
   const [college, setCollege] = useState("");
   const [expectedGraduation, setExpectedGraduation] = useState("");
-  const [universityID, setUniversityID] = useState("");
   const [agreedToAbide, setAgreedToAbide] = useState(false);
 
   const handleSubmit = () => {
@@ -88,7 +89,7 @@ export default function SignupPage() {
       return;
     }
 
-    if (!expectedGraduation) {
+    if (!expectedGraduation && !IS_FACULTY_REGEX.test(currentUser.ritUsername)) {
       window.alert("Please select your expected graduation date.");
       return;
     }
@@ -100,13 +101,25 @@ export default function SignupPage() {
       return;
     }
 
+    //No graduation if faculty
+    if (IS_FACULTY_REGEX.test(currentUser.ritUsername)) {
+      updateStudentProfile({
+        variables: {
+          userID: currentUser.id,
+          pronouns,
+          college,
+          expectedGraduation: "Faculty"
+        },
+        refetchQueries: [{ query: GET_CURRENT_USER }],
+      });
+    }
+
     updateStudentProfile({
       variables: {
         userID: currentUser.id,
         pronouns,
         college,
-        expectedGraduation,
-        universityID,
+        expectedGraduation
       },
       refetchQueries: [{ query: GET_CURRENT_USER }],
     });
@@ -167,13 +180,14 @@ export default function SignupPage() {
           </MenuItem>
         ))}
       </TextField>
-
+      
       <TextField
         select
         label="Expected Graduation"
         value={expectedGraduation}
         onChange={(e) => setExpectedGraduation(e.target.value)}
         sx={{ mt: 4 }}
+        hidden={IS_FACULTY_REGEX.test(currentUser.ritUsername) ? true : undefined} //Only if faculty/staff
       >
         {generateGradDates().map((d) => (
           <MenuItem value={d} key={d}>
