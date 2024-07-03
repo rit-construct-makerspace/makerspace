@@ -31,9 +31,9 @@ export default function Explainer() {
       <Paper elevation={2} sx={{ px: 4, pb: 4, pt: 3 }}>
         <Stack sx={{ textAlign: "left", mb: 4 }}>
           <div className="explainer-tagline">
-            Be safe and sure with training at the Construct.
+            Be safe and sure with training at the SHED.
           </div>
-          Many of the machines at the Construct carry significant risk of injury
+          Many of the machines at the SHED carry significant risk of injury
           with improper use.
           <br />
           You must complete all training modules for a given machine before you
