@@ -53,11 +53,11 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
                 </Stack>
               </Stack>
 
-              <Typography variant="h6" sx={{ mt: 6 }} hidden={passedModules.length==0 ? true : undefined}>
+              <Typography variant="h6" sx={{ mt: 6 }} hidden={moduleStatuses.length==0 ? true : undefined}>
                 Required training
               </Typography>
 
-              <Stack divider={<Divider flexItem />} mb={6} hidden={passedModules.length==0 ? true : undefined}>
+              <Stack divider={<Divider flexItem />} mb={6} hidden={moduleStatuses.length==0 ? true : undefined}>
                 {moduleStatuses.map((ms: ModuleStatus) => (
                   <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
                 ))}
