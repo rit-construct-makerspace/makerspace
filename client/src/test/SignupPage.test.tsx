@@ -31,7 +31,7 @@ test("signup page happy path", async () => {
   editCurrentUser({ setupComplete: false });
   renderApp();
 
-  await screen.findByText("Welcome to The Construct at RIT!");
+  await screen.findByText("Welcome to The SHED at RIT!");
 
   screen.getByText("John Smith");
   screen.getByText("jxs1234@rit.edu");
@@ -63,7 +63,7 @@ test("pronoun quick fill buttons work", async () => {
   editCurrentUser({ setupComplete: false });
   renderApp("/signup");
 
-  await screen.findByText("Welcome to The Construct at RIT!");
+  await screen.findByText("Welcome to The SHED at RIT!");
 
   const pronounsField = screen.getByRole("textbox", { name: "Pronouns" });
   userEvent.type(pronounsField, "overwrite me");
@@ -82,7 +82,7 @@ test("alert when missing college", async () => {
   editCurrentUser({ setupComplete: false });
   renderApp();
 
-  await screen.findByText("Welcome to The Construct at RIT!");
+  await screen.findByText("Welcome to The SHED at RIT!");
 
   userEvent.click(screen.getByRole("button", { name: "Start making!" }));
 
@@ -93,7 +93,7 @@ test("alert when missing expected graduation", async () => {
   editCurrentUser({ setupComplete: false });
   renderApp();
 
-  await screen.findByText("Welcome to The Construct at RIT!");
+  await screen.findByText("Welcome to The SHED at RIT!");
 
   userEvent.click(screen.getByRole("button", { name: /College/ }));
   userEvent.click(screen.getByRole("option", { name: /GCCIS/ }));
@@ -111,7 +111,7 @@ test.each(["12345678", "1234567890", "blah", "abc456789", ""])(
     editCurrentUser({ setupComplete: false });
     renderApp();
 
-    await screen.findByText("Welcome to The Construct at RIT!");
+    await screen.findByText("Welcome to The SHED at RIT!");
 
     userEvent.click(screen.getByRole("button", { name: /College/ }));
     userEvent.click(screen.getByRole("option", { name: /GCCIS/ }));
@@ -134,7 +134,7 @@ test("alert when terms box not checked", async () => {
   editCurrentUser({ setupComplete: false });
   renderApp();
 
-  await screen.findByText("Welcome to The Construct at RIT!");
+  await screen.findByText("Welcome to The SHED at RIT!");
 
   userEvent.click(screen.getByRole("button", { name: /College/ }));
   userEvent.click(screen.getByRole("option", { name: /GCCIS/ }));
@@ -148,6 +148,6 @@ test("alert when terms box not checked", async () => {
   userEvent.click(screen.getByRole("button", { name: "Start making!" }));
 
   expect(alertMock).toBeCalledWith(
-    "You must agree to abide by The Construct's rules and policies."
+    "You must agree to abide by The SHED's rules and policies."
   );
 });

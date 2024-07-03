@@ -95,7 +95,7 @@ export default function SignupPage() {
 
     if (!agreedToAbide) {
       window.alert(
-        "You must agree to abide by The Construct's rules and policies."
+        "You must agree to abide by The SHED's rules and policies."
       );
       return;
     }
@@ -119,9 +119,9 @@ export default function SignupPage() {
 
   return (
     <Stack sx={{ maxWidth: 715, mx: "auto", mt: 8 }}>
-      <Typography variant="h3">Welcome to The Construct at RIT!</Typography>
+      <Typography variant="h3">Welcome to The SHED at RIT!</Typography>
       <Typography variant="body1" mt={4}>
-        The Construct is the premier makerspace at RIT. Join a growing community
+        The SHED is the premier makerspace at RIT. Join a growing community
         of creative thinkers and makers, and use our tools and machinery to
         bring your projects to life!
       </Typography>
@@ -193,7 +193,7 @@ export default function SignupPage() {
             href="https://hack.rit.edu/index.php/tools-equipment/"
             target="_blank"
           >
-            The Construct's rules and policies
+            The SHED's rules and policies
           </Link>
         </Typography>
       </Stack>
