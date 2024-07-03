@@ -10,6 +10,7 @@ export const GET_CURRENT_USER = gql`
   query GetCurrentUser {
     currentUser {
       id
+      ritUsername
       firstName
       lastName
       privilege
@@ -35,6 +36,7 @@ export interface PassedModule {
 
 export interface CurrentUser {
   id: string;
+  ritUsername: string;
   firstName: string;
   lastName: string;
   privilege: Privilege;
