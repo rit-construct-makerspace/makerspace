@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack, Typography } from "@mui/material";
-import LogoSvg from "../../../assets/logo.svg";
+import LogoSvg from "../../../assets/acronym_logo.svg";
 import styled from "styled-components";
 import NameTag from "./NameTag";
 
@@ -17,7 +17,7 @@ const AdamSavage = {
 export default function NoTransactionView() {
   return (
     <Stack alignItems="center" justifyContent="center" height="100%">
-      <StyledLogo src={LogoSvg} alt="" />
+      <StyledLogo src={LogoSvg} alt="Shed Logo" />
       <Typography variant="h1" mt={4} mb={8}>
         Retail Center
       </Typography>

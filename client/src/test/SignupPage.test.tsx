@@ -56,7 +56,7 @@ test("signup page happy path", async () => {
 
 test("redirect back to home on setupComplete", async () => {
   renderApp("/signup");
-  await screen.findByAltText("Construct logo");
+  await screen.findByAltText("SHED logo");
 });
 
 test("pronoun quick fill buttons work", async () => {

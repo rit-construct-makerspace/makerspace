@@ -1,5 +1,5 @@
 import React from "react";
-import LogoSvg from "../../../assets/logo.svg";
+import LogoSvg from "../../../assets/acronym_logo.svg";
 import { Divider, Stack, Typography } from "@mui/material";
 import NameTag from "./NameTag";
 import styled from "styled-components";
@@ -31,7 +31,7 @@ export default function CreatingTransactionView({
     <Stack alignItems="center" mt={8}>
       <Stack justifyContent="center" height="100%">
         <Stack direction="row">
-          <StyledLogo src={LogoSvg} alt="" />
+          <StyledLogo src={LogoSvg} alt="SHED Logo" />
           <NameTag person={AdamSavage} scale={0.6} />
         </Stack>
 
