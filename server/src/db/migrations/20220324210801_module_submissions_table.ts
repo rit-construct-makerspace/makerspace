@@ -7,8 +7,12 @@ export async function up(knex: Knex): Promise<void> {
       if (!exists) {
         return knex.schema.createTable("ModuleSubmissions", function (t) {
           t.increments("id").primary();
-          t.integer("moduleID").references("id").inTable("TrainingModule");
-          t.integer('makerID').references('id').inTable('Users');
+          t.integer("moduleID").references("id").inTable("TrainingModule")
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
+          t.integer('makerID').references('id').inTable('Users')
+            .onUpdate('CASCADE')
+            .onDelete('CASCADE');
           t.timestamp("submissionDate").defaultTo(knex.fn.now());
           t.boolean("passed");
         });
