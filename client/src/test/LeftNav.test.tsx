@@ -5,7 +5,7 @@ import Privilege from "../types/Privilege";
 
 test("render logo and current user", async () => {
   renderApp();
-  await screen.findByAltText("Construct logo");
+  await screen.findByAltText("SHED logo");
   screen.getByAltText("Profile picture");
   screen.getByText("John Smith");
 });

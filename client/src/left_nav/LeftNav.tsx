@@ -12,7 +12,7 @@ import Avatar from "@mui/material/Avatar";
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import Typography from "@mui/material/Typography";
 import NavLink from "./NavLink";
-import LogoSvg from "../assets/logo.svg";
+import LogoSvg from "../assets/acronym_logo.svg";
 import styled from "styled-components";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
@@ -63,7 +63,7 @@ export default function LeftNav() {
         variant="permanent"
         anchor="left"
       >
-        <StyledLogo src={LogoSvg} alt="Construct logo" onClick={() => navigate(`/`)} />
+        <StyledLogo src={LogoSvg} alt="SHED logo" onClick={() => navigate(`/`)} />
 
         <Stack direction="row" alignItems="center" spacing={2} padding={2}>
           <Avatar
