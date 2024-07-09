@@ -1,5 +1,5 @@
 import React from "react";
-import {Stack} from "@mui/material";
+import { Alert, Stack } from "@mui/material";
 import Page from "../../Page";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
@@ -23,24 +23,29 @@ const Homepage: React.FC = () => {
 
     return (
         <Page title={welcomeMsg} maxWidth={"1250px"}>
-                <Typography variant="h5">Dashboard</Typography>
-                <div className="flexo" style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    flexWrap: "wrap",
-                    justifyContent: "space-around",
-                    alignContent: "flex-start",
-                    gap: "1em"
-                }}>
-                    {/* <AccountBalanceCard /> */}
-                    <ExpiringSoonCard />
-                    <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")}/>
+            {!currentUser.hasCardTag &&
+            <Alert variant="standard" color="error">
+                Your RIT ID has not been registered! You can still complete trainings but you must speak to a SHED Makerspace employee before gaining access to our equipment.
+            </Alert>
+            }
+            <Typography variant="h5">Dashboard</Typography>
+            <div className="flexo" style={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                justifyContent: "space-around",
+                alignContent: "flex-start",
+                gap: "1em"
+            }}>
+                {/* <AccountBalanceCard /> */}
+                <ExpiringSoonCard />
+                <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")} />
 
-                    <OperationHoursCard />
-                    <AnnouncementsCard/>
+                <OperationHoursCard />
+                <AnnouncementsCard />
 
-                    <UpcomingEventsCard />
-                </div>
+                <UpcomingEventsCard />
+            </div>
         </Page>
     );
 };
