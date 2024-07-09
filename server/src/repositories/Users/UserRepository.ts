@@ -9,6 +9,7 @@ import { EntityNotFound } from "../../EntityNotFound";
 import { UserRow } from "../../db/tables";
 import { createHash } from "crypto";
 import { use } from "passport";
+import { User } from "@node-saml/passport-saml/lib/types";
 
 
 /**
@@ -72,6 +73,17 @@ export async function getUserByUniversityID(
 ): Promise<UserRow | undefined> {
   const hashedUniversityID = hashUniversityID(universityID);
   return knex("Users").first().where({ universityID: hashedUniversityID });
+}
+
+/**
+ * Fetch a user by the hash on their RIT ID
+ * @param cardTagID the hash retrieved from scanning an RIT ID
+ * @returns the user object
+ */
+export async function getUserByCardTagID(
+  cardTagID: string
+): Promise<UserRow | undefined> {
+  return knex("Users").first().where("cardTagID", cardTagID);
 }
 
 /**

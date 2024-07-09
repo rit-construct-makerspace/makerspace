@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
 
     return knex.schema.alterTable("Users", function (t) {
       t.string("universityID");
+      t.string("cardTagID");
     });
   });
 }
@@ -17,6 +18,7 @@ export async function down(knex: Knex): Promise<void> {
     if (exists) {
       return knex.schema.alterTable("Users", function (t) {
         t.dropColumn("universityID");
+        t.string("cardTagID");
       });
     }
   });
