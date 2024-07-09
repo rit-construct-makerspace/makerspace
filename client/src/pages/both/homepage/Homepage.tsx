@@ -32,7 +32,7 @@ const Homepage: React.FC = () => {
                     alignContent: "flex-start",
                     gap: "1em"
                 }}>
-                    <AccountBalanceCard />
+                    {/* <AccountBalanceCard /> */}
                     <ExpiringSoonCard />
                     <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")}/>
 
