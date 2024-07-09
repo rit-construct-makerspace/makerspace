@@ -15,6 +15,7 @@ import HoldCard from "./HoldCard";
 import Privilege from "../../../types/Privilege";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import CloseButton from "../../../common/CloseButton";
+import CardTagSettings from "./CardTagSettings";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -218,6 +219,9 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
                 View logs
               </Button>
             </Stack>
+
+            <CardTagSettings userID={user.id} hasCardTag={user.hasCardTag} />
+
           </Stack>
         )}
       />
