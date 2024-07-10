@@ -150,6 +150,20 @@ export async function setPrivilege(
   return await getUserByID(userID);
 }
 
+/**
+ * Update the Card Tag ID of a user
+ * @param userID the ID of the user to update
+ * @param cardTagID the ID string to set
+ * @returns updated user
+ */
+export async function setCardTagID(
+  userID: number,
+  cardTagID: string
+): Promise<UserRow> {
+  await knex("Users").where({ id: userID }).update("cardtagID", cardTagID);
+  return await getUserByID(userID);
+}
+
 export async function archiveUser(userID: number): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ archived: true });
   return await getUserByID(userID);

@@ -78,20 +78,36 @@ const UsersResolvers = {
           });
       }),
 
+    setCardTagID: async (
+      _parent: any,
+      args: { userID: string, cardTagID: string },
+      { ifAllowed }: ApolloContext
+    ) => 
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
+        const userSubject = await UserRepo.setCardTagID(Number(args.userID), args.cardTagID);
+
+        await createLog(
+          `{user} updated {user}'s Card Tag ID.`,
+          { id: executingUser.id, label: getUsersFullName(executingUser) },
+          { id: userSubject.id, label: getUsersFullName(userSubject) }
+        );
+      }),
+
+
     setPrivilege: async (
       _parent: any,
       args: { userID: string; privilege: Privilege },
       { ifAllowed }: ApolloContext
     ) =>
-        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
-          const userSubject = await UserRepo.setPrivilege(Number(args.userID), args.privilege);
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
+        const userSubject = await UserRepo.setPrivilege(Number(args.userID), args.privilege);
 
-          await createLog(
-            `{user} set {user}'s access level to ${args.privilege}.`,
-            { id: executingUser.id, label: getUsersFullName(executingUser) },
-            { id: userSubject.id, label: getUsersFullName(userSubject) }
-          );
-        }),
+        await createLog(
+          `{user} set {user}'s access level to ${args.privilege}.`,
+          { id: executingUser.id, label: getUsersFullName(executingUser) },
+          { id: userSubject.id, label: getUsersFullName(userSubject) }
+        );
+      }),
 
     archiveUser: async (
       _parent: any,
