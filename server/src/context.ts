@@ -4,6 +4,7 @@ import { GraphQLError } from "graphql/error/GraphQLError";
 
 export interface CurrentUser extends UserRow {
   hasHolds: boolean;
+  hasCardTag: boolean;
 }
 
 export interface ApolloContext {

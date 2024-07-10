@@ -126,6 +126,7 @@ export interface UserRow {
   ritUsername: string;
   archived: boolean;
   balance: string;
+  cardTagID: string;
 }
 
 export interface AnnouncementRow {
