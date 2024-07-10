@@ -276,7 +276,7 @@ export function setupStagingAuth(app: express.Application) {
     // Populate user.hasHolds
     const holds = await getHoldsByUser(currUser.id);
     currUser.hasHolds = holds.some((hold) => !hold.removeDate);
-    currUser.hasCardTag = currUser.cardTagID != null && currUser.cardTagID != "";
+    currUser.hasCardTag = (currUser.cardTagID != null && currUser.cardTagID != "");
 
     /* @ts-ignore */
     done(null, currUser);

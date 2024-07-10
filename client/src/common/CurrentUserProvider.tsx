@@ -24,7 +24,7 @@ export const GET_CURRENT_USER = gql`
         submissionDate
         expirationDate
       }
-      hasCardTag
+      cardTagID
     }
   }
 `;
@@ -45,7 +45,7 @@ export interface CurrentUser {
   balance: string;
   hasHolds: boolean;
   passedModules: PassedModule[];
-  hasCardTag: boolean
+  cardTagID: string;
 }
 
 const CurrentUserContext = createContext<CurrentUser | undefined>(undefined);
@@ -57,12 +57,12 @@ function mapUser(data: any): CurrentUser | undefined {
     (hold: { removeDate: string }) => !hold.removeDate
   );
 
-  const hasCardTag = data.currentUser.cardTagID != null && data.currentUser.cardTagID != "";
+  //const hasCardTag = data.currentUser.cardTagID != null && data.currentUser.cardTagID != "";
 
   return {
     ...data.currentUser,
     hasHolds,
-    hasCardTag,
+    //hasCardTag,
   };
 }
 
