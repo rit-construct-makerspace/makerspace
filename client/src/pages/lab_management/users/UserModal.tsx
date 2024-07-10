@@ -220,7 +220,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               </Button>
             </Stack>
 
-            <CardTagSettings userID={user.id} hasCardTag={user.hasCardTag} />
+            <CardTagSettings userID={user.id} hasCardTag={(user.cardTagID != null && user.cardTagID != "")} />
 
           </Stack>
         )}
