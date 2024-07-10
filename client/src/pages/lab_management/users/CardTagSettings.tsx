@@ -19,8 +19,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 
 
 const SET_CARD_TAG_ID = gql`
-  mutation SetCardTagID($userID: ID!, $cardTagID: string) {
-    setCardTagID(userID: $userID, $cardTagID: string) {
+  mutation SetCardTagID($userID: ID!, $cardTagID: String!) {
+    setCardTagID(userID: $userID, cardTagID: $cardTagID) {
       id
     }
   }
