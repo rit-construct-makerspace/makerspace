@@ -23,7 +23,7 @@ const Homepage: React.FC = () => {
 
     return (
         <Page title={welcomeMsg} maxWidth={"1250px"}>
-            {( currentUser.cardTagID != null && currentUser.cardTagID != "" ) &&
+            {( currentUser.cardTagID == null || currentUser.cardTagID == "" ) &&
             <Alert variant="standard" color="error">
                 Your RIT ID has not been registered! You can still complete trainings but you must speak to a SHED Makerspace employee before gaining access to our equipment.
             </Alert>
