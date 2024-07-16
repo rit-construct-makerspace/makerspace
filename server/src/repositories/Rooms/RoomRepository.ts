@@ -108,3 +108,27 @@ export async function getRecentSwipes(roomID: number): Promise<RoomSwipeRow[]> {
     .orderBy("dateTime", "DESC")
     .limit(10);
 }
+
+/**
+ * Check if a user has swiped into a room today
+ * @param roomID the room to check
+ * @param userID the user to check
+ * @returns true if swipe has occured today
+ */
+export async function hasSwipedToday(roomID: number, userID: number): Promise<boolean> {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  const swipe = knex('RoomSwipes')
+    .first()
+    .where({ roomID })
+    .where({ userID })
+    .where('dateTime', '>=', startOfDay.toISOString())
+    .where('dateTime', '<', endOfDay.toISOString());
+
+  if (!swipe) return false;
+  return true;
+}
