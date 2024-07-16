@@ -45,14 +45,12 @@ export const UPDATE_STUDENT_PROFILE = gql`
     $pronouns: String
     $college: String
     $expectedGraduation: String
-    $universityID: String
   ) {
     updateStudentProfile(
       userID: $userID
       pronouns: $pronouns
       college: $college
       expectedGraduation: $expectedGraduation
-      universityID: $universityID
     ) {
       id
     }
