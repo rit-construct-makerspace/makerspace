@@ -113,10 +113,9 @@ export async function updateStudentProfile(args: {
   pronouns: string;
   college: string;
   expectedGraduation: string;
-  universityID: string;
 }): Promise<UserRow> {
   const user = await getUserByID(args.userID);
-  user.universityID = hashUniversityID(user.universityID);
+  //user.universityID = hashUniversityID(user.universityID);
 
   if (!user.setupComplete) {
     await createLog("{user} has joined The SHED!", {
@@ -129,7 +128,6 @@ export async function updateStudentProfile(args: {
     pronouns: args.pronouns,
     college: args.college,
     expectedGraduation: args.expectedGraduation,
-    universityID: hashUniversityID(args.universityID),
     setupComplete: true,
   });
 
