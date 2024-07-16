@@ -50,6 +50,7 @@ export const GET_USER = gql`
       expectedGraduation
       registrationDate
       privilege
+      cardTagID
       holds {
         id
         creator {
