@@ -65,7 +65,6 @@ const UsersResolvers = {
         pronouns: string;
         college: string;
         expectedGraduation: string;
-        universityID: string;
       },
       { ifAllowedOrSelf }: ApolloContext) =>
       ifAllowedOrSelf(Number(args.userID), [Privilege.MENTOR, Privilege.STAFF], async (user) => {
@@ -73,8 +72,7 @@ const UsersResolvers = {
             userID: Number(args.userID),
             pronouns: args.pronouns,
             college: args.college,
-            expectedGraduation: args.expectedGraduation,
-            universityID: args.universityID
+            expectedGraduation: args.expectedGraduation
           });
       }),
 
