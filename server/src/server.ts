@@ -114,6 +114,11 @@ async function startServer() {
     res.redirect("/app/home");
   });
 
+  //stops refreshes from not grabbing the client page
+  app.get("/app/*", function(req , res) {
+    res.redirect("/app/home");
+  });
+
 
 
   // app.get("/app/", function (req, res) {
