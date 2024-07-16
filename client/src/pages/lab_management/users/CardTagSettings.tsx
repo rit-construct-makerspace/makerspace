@@ -44,7 +44,7 @@ export default function CardTagSettings({
   const isAdmin = currentUser.privilege === Privilege.STAFF;
 
   const handleSubmit = () => {
-    if (updatedCardTagID) {
+    if (!updatedCardTagID || updatedCardTagID == "") {
       window.alert(
         "New RIT ID cannot be empty."
       );
