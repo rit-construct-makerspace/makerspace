@@ -14,6 +14,7 @@ import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserR
 import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
 import { getEquipmentByID } from "./repositories/Equipment/EquipmentRepository";
+import { Room } from "./models/rooms/room";
 var morgan = require("morgan"); //Log provider
 var bodyParser = require('body-parser'); //JSON request body parser
 
@@ -109,7 +110,7 @@ async function startServer() {
 
 
   //redirects first landing make.rit.edu/ -> make.rit.edu/home
-  app.get("/*", function(req , res) {
+  app.get("/", function(req , res) {
     res.redirect("/app/home");
   });
 
@@ -139,7 +140,7 @@ async function startServer() {
    * Log a user signing in to a makerspace room. Return whether the user is in the database
    * Request (JSON body):
    * - Type: "Welcome"
-   * - Zone: the room id
+   * - Zone: the room ids
    * - ID: the uid of the requesting user
    * - Key: a verification token
    * Response:
@@ -151,30 +152,44 @@ async function startServer() {
     //If API Keys dont match, fail
     if (req.body.Key != process.env.API_KEY) {
       if (API_DEBUG_LOGGING) createLog("{uid} failed to swipe into a room with error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 403, label: "Invalid Key"});
-      return res.status(403).json({error: "Invalid Key"});
+      return res.status(403).json({error: "Invalid Key"}).send();
     }
 
     const uid = req.body.ID;
 
     const user = await getUserByCardTagID(uid);
 
-    const room = await getRoomByID(req.body.Zone);
+    const roomIDs = req.body.Zone.toString().split(",");
+
+    var rooms: (Room | null)[] = [];
+
+    roomIDs.forEach(async function(idString: string) {
+      rooms.push(await getRoomByID(parseInt(idString)));
+    });
 
     //If user is not found, fail
     if (user == undefined) {
       if (API_DEBUG_LOGGING) createLog("{uid} failed to swipe into a room with error '{error}'", {id: uid, label: req.body.ID}, {id: 406, label: "User does not exist"});
-      return res.status(406).json({error: "User does not exist"});
+      return res.status(406).json({error: "User does not exist"}).send();
     } 
     //If room is not found, fail
-    else if (room == null) {
+    else if (rooms.some(function(room) {
+      return room == null;
+    })) {
       if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a room with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Room does not exist"});
-      return res.status(406).json({error: "Room does not exist"});
+      return res.status(406).json({error: "Room does not exist"}).send();
     }
     //Success. Log and return.
     else {
-      swipeIntoRoom(req.body.Zone, user.id);
-      if (API_NORMAL_LOGGING) createLog("{user} has signed into {room}", {id: user.id, label: getUsersFullName(user)}, {id: req.body.Zone, label: room.name});
-      return res.status(202);
+      var roomNamesString = "";
+      rooms.forEach(function(room) {
+        if (room != null) {
+          roomNamesString += room.name;
+          swipeIntoRoom(room.id, user.id);
+        }
+      })
+      if (API_NORMAL_LOGGING) createLog("{user} has signed into {room}", {id: user.id, label: getUsersFullName(user)}, {id: req.body.Zone, label: roomNamesString});
+      return res.status(202).send();
     }
   });
 
@@ -194,14 +209,12 @@ async function startServer() {
   app.get("/api/auth", async function(req, res) {
     if (req.query.id == undefined || req.query.needswelcome == undefined || req.query.zone == undefined || req.query.machine == undefined) {
       if (API_DEBUG_LOGGING) createLog("Request failed to gain equipent access with error '{error}'", {id: 400, label: "Missing paramaters"});
-      return res.status(400).json({error: "Missing paramaters"});
+      return res.status(400).json({error: "Missing paramaters"}).send();
     }
 
     const user = await getUserByCardTagID(req.query.id.toString());
 
     const room = await getRoomByID(parseInt(req.query.zone.toString()));
-
-    const machine = await getEquipmentByID(parseInt(req.query.machine.toString()));
 
     //If user is not found, fail
     if (user == undefined) {
@@ -212,7 +225,7 @@ async function startServer() {
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "User does not exist"
-      });
+      }).send();
     } 
     //If room is not found, fail
     else if (room == null) {
@@ -223,10 +236,13 @@ async function startServer() {
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Room does not exist"
-      });
+      }).send();
     }
-    //If machine is not found, fail
-    else if (machine == null) {
+
+    var machine;
+    try {
+      machine = await getEquipmentByID(parseInt(req.query.machine.toString()));
+    } catch (EntityNotFound) {
       if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.machine.toString() + " does not exist"});
       return res.status(406).json({
         "Type": "Authorization",
@@ -234,12 +250,26 @@ async function startServer() {
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Machine does not exist"
-      });
+      }).send();
+    }
+
+    //If machine is not found, fail
+    if (machine == null) {
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.machine.toString() + " does not exist"});
+      return res.status(406).json({
+        "Type": "Authorization",
+        "Machine": req.query.machine,
+        "UID": req.query.id,
+        "Allowed": 0,
+        "Error": "Machine does not exist"
+      }).send();
     }
 
     //If needs welcome, check that room swipe has occured in the zone today
     if (req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
-      if (!hasSwipedToday(room.id, user.id)) {
+      console.log("Checking welcome status");
+      const welcomed = await hasSwipedToday(room.id, user.id);
+      if (!welcomed) {
         if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "User requires Welcome"});
         return res.status(401).json({
           "Type": "Authorization",
@@ -247,7 +277,7 @@ async function startServer() {
           "UID": req.query.id,
           "Allowed": 0,
           "Error": "User requires Welcome"
-        });
+        }).send();
       }
     }
 
@@ -258,7 +288,7 @@ async function startServer() {
       "Machine": machine.id,
       "UID": req.query.id,
       "Allowed": 1
-    });
+    }).send();
   });
 
 
@@ -309,12 +339,14 @@ async function startServer() {
    * 
    * TODO
    */
-  app.get("/api/message/:MachineID", function(req, res) {
+  app.get("/api/message/:MachineID", async function(req, res) {
+    const machine = await getEquipmentByID(parseInt(req.params.MachineID));
+
     if (req.query.message != undefined) {
-      createLog(req.query.message.toString());
-      return res.status(200);
+      createLog("{machine} message: " + req.query.message.toString(), {id: machine.id, label: machine.name});
+      return res.status(200).send();
     }
-    return res.status(400);
+    return res.status(400).send();
   });
 
   /**
