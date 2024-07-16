@@ -160,7 +160,7 @@ export async function setCardTagID(
   userID: number,
   cardTagID: string
 ): Promise<UserRow> {
-  await knex("Users").where({ id: userID }).update("cardtagID", cardTagID);
+  await knex("Users").where({ id: userID }).update("cardTagID", cardTagID);
   return await getUserByID(userID);
 }
 
