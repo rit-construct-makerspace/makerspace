@@ -252,6 +252,7 @@ async function startServer() {
     }
 
     //Success
+    if (API_NORMAL_LOGGING) createLog("{user} has activated {machine}", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name});
     return res.status(202).json({
       "Type": "Authorization",
       "Machine": machine.id,
