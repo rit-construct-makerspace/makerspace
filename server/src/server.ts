@@ -297,7 +297,7 @@ async function startServer() {
    * TODO
    */
   app.get("/api/auth/:MachineID", function(req, res) {
-
+    //Slack bot?
   });
 
 
@@ -310,7 +310,11 @@ async function startServer() {
    * TODO
    */
   app.get("/api/message/:MachineID", function(req, res) {
-
+    if (req.query.message != undefined) {
+      createLog(req.query.message.toString());
+      return res.status(200);
+    }
+    return res.status(400);
   });
 
   /**
