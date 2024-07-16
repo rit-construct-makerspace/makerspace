@@ -202,9 +202,7 @@ async function startServer() {
    * - machine: the ID of the machine according to the database
    * - zone: the room ID according to the database
    * - needswelcome: If true, check if user has signed into the room within the day
-   * - id
-   * 
-   * TODO
+   * - id: user uid
    */
   app.get("/api/auth", async function(req, res) {
     if (req.query.id == undefined || req.query.needswelcome == undefined || req.query.zone == undefined || req.query.machine == undefined) {
@@ -336,8 +334,6 @@ async function startServer() {
    * Submit an audit log
    * Request (header):
    * - message: The audit log message
-   * 
-   * TODO
    */
   app.get("/api/message/:MachineID", async function(req, res) {
     const machine = await getEquipmentByID(parseInt(req.params.MachineID));
