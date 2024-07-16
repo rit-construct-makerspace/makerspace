@@ -122,7 +122,7 @@ export async function hasSwipedToday(roomID: number, userID: number): Promise<bo
   const endOfDay = new Date();
   endOfDay.setHours(23, 59, 59, 999);
 
-  const swipe = knex('RoomSwipes')
+  const swipe = await knex('RoomSwipes')
     .first()
     .where({ roomID })
     .where({ userID })
