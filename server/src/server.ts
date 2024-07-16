@@ -11,7 +11,7 @@ import context from "./context";
 import { json } from "body-parser";
 import path from "path";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository";
-import { getRoomByID, swipeIntoRoom } from "./repositories/Rooms/RoomRepository";
+import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
 import { getEquipmentByID } from "./repositories/Equipment/EquipmentRepository";
 var morgan = require("morgan"); //Log provider
@@ -172,7 +172,7 @@ async function startServer() {
     }
     //Success. Log and return.
     else {
-      swipeIntoRoom(req.body.Zone, uid);
+      swipeIntoRoom(req.body.Zone, user.id);
       if (API_NORMAL_LOGGING) createLog("{user} has signed into {room}", {id: user.id, label: getUsersFullName(user)}, {id: req.body.Zone, label: room.name});
       return res.status(202);
     }
@@ -205,24 +205,59 @@ async function startServer() {
 
     //If user is not found, fail
     if (user == undefined) {
-      if (API_DEBUG_LOGGING) createLog("{uid} failed to swipe into a room with error '{error}'", {id: req.query.id, label: req.query.id.toString()}, {id: 406, label: "User does not exist"});
-      return res.status(406).json({error: "User does not exist"});
+      if (API_DEBUG_LOGGING) createLog("{uid} failed to activate a machine with error '{error}'", {id: req.query.id, label: req.query.id.toString()}, {id: 406, label: "User does not exist"});
+      return res.status(406).json({
+        "Type": "Authorization",
+        "Machine": req.query.machine,
+        "UID": req.query.id,
+        "Allowed": 0,
+        "Error": "User does not exist"
+      });
     } 
     //If room is not found, fail
     else if (room == null) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a room with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Room " + req.query.zone.toString() + " does not exist"});
-      return res.status(406).json({error: "Room does not exist"});
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Room " + req.query.zone.toString() + " does not exist"});
+      return res.status(406).json({
+        "Type": "Authorization",
+        "Machine": req.query.machine,
+        "UID": req.query.id,
+        "Allowed": 0,
+        "Error": "Room does not exist"
+      });
     }
     //If machine is not found, fail
     else if (machine == null) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a room with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.machine.toString() + " does not exist"});
-      return res.status(406).json({error: "Machine does not exist"});
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.machine.toString() + " does not exist"});
+      return res.status(406).json({
+        "Type": "Authorization",
+        "Machine": req.query.machine,
+        "UID": req.query.id,
+        "Allowed": 0,
+        "Error": "Machine does not exist"
+      });
     }
 
     //If needs welcome, check that room swipe has occured in the zone today
     if (req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
-      
+      if (!hasSwipedToday(room.id, user.id)) {
+        if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "User requires Welcome"});
+        return res.status(401).json({
+          "Type": "Authorization",
+          "Machine": machine.id,
+          "UID": req.query.id,
+          "Allowed": 0,
+          "Error": "User requires Welcome"
+        });
+      }
     }
+
+    //Success
+    return res.status(202).json({
+      "Type": "Authorization",
+      "Machine": machine.id,
+      "UID": req.query.id,
+      "Allowed": 1
+    });
   });
 
 
