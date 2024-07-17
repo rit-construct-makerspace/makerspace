@@ -129,6 +129,21 @@ export interface UserRow {
   cardTagID: string;
 }
 
+export interface ReaderRow {
+  id: number;
+  machineID: number;
+  machineType: string;
+  name: string;
+  zone: string;
+  temp: number;
+  state: string;
+  currentUID: string;
+  recentSessionLength: number;
+  lastStatusReason: string;
+  scheduledStatusFreq: number;
+  lastStatusTime: Date;
+}
+
 export interface AnnouncementRow {
   id: number;
   title: string;
@@ -149,5 +164,6 @@ declare module "knex/types/tables" {
     Rooms: RoomRow;
     TrainingModule: TrainingModuleRow;
     Users: UserRow;
+    Readers: ReaderRow;
   }
 }
