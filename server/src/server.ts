@@ -12,7 +12,7 @@ import { json } from "body-parser";
 import path from "path";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository";
 import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository";
-import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
+import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLogRepository";
 import { getEquipmentByID } from "./repositories/Equipment/EquipmentRepository";
 import { Room } from "./models/rooms/room";
 var morgan = require("morgan"); //Log provider
@@ -189,14 +189,16 @@ async function startServer() {
     }
     //Success. Log and return.
     else {
-      var roomNamesString = "";
+      var roomNamesArray = [{id: user.id, label: getUsersFullName(user)}];
+      var messageString = "{user} has signed into ";
       rooms.forEach(function(room) {
         if (room != null) {
-          roomNamesString += room.name;
+          roomNamesArray.push({id: room.id, label: room.name});
+          messageString += "{room}, ";
           swipeIntoRoom(room.id, user.id);
         }
-      })
-      if (API_NORMAL_LOGGING) createLog("{user} has signed into {room}", {id: user.id, label: getUsersFullName(user)}, {id: req.body.Zone, label: roomNamesString});
+      });
+      if (API_NORMAL_LOGGING) createLogWithArray(messageString.substring(0,messageString.length-2), roomNamesArray);
       return res.status(202).send();
     }
   });
