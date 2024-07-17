@@ -164,13 +164,16 @@ async function startServer() {
 
     const user = await getUserByCardTagID(uid);
 
-    const roomIDs = req.body.Zone.toString().split(",");
+    var roomIDs = req.body.Zone.toString().split(",");
 
     var rooms: (Room | null)[] = [];
 
-    roomIDs.forEach(async function(idString: string) {
+    // .forEach will not await the interior statements. Unsure why, so we use a normal for loop
+    for (var i = 0; i < roomIDs.length; i++) {
+      var idString = roomIDs[i];
+      console.log(await getRoomByID(parseInt(idString)));
       rooms.push(await getRoomByID(parseInt(idString)));
-    });
+    }
 
     //If user is not found, fail
     if (user == undefined) {

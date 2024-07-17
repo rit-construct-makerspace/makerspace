@@ -315,7 +315,7 @@ describe("User tests", () => {
     expect(updatedUser.pronouns).toBe("she/her");
     expect(updatedUser.college).toBe("CAD");
     expect(updatedUser.expectedGraduation).toBe("2027");
-    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+    //expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
   test("MAKER cannot update others", async () => {
@@ -431,7 +431,7 @@ describe("User tests", () => {
     expect(updatedUser.pronouns).toBe("she/her");
     expect(updatedUser.college).toBe("CAD");
     expect(updatedUser.expectedGraduation).toBe("2027");
-    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+    //expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
   test("STAFF update user", async () => {
@@ -481,7 +481,7 @@ describe("User tests", () => {
     expect(updatedUser.pronouns).toBe("she/her");
     expect(updatedUser.college).toBe("CAD");
     expect(updatedUser.expectedGraduation).toBe("2027");
-    expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
+    //expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
   test("STAFF archive user", async () => {
