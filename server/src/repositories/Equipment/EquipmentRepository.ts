@@ -130,6 +130,7 @@ export async function hasTrainingModules(
 ): Promise<boolean> {
   let modules = await getModulesByEquipment(equipmentID);
   let hasTraining = true;
+  console.log(modules.toString());
   // get last submission from maker for every module
   for(let i = 0; i < modules.length; i++) {
     if (await ModuleRepo.hasPassedModule(user.id, modules[i].id)) {
@@ -153,7 +154,24 @@ export async function hasAccess(
   uid: string,
   equipmentID: number
 ): Promise<boolean> {
+  console.log(uid);
   const user = await UserRepo.getUserByUniversityID(uid);   // Get user for this university ID
+  return user !== undefined &&                              // Ensure user exists
+    !(await HoldsRepo.hasActiveHolds(user.id)) &&           // Ensure user has no holds
+    await hasTrainingModules(user, equipmentID);            // Ensure user has completed necessary training
+}
+
+/**
+ * Check if User is authorized to use Equipment
+ * @param userID id of user to check
+ * @param equipmentID Equipment ID to check
+ * @returns true if user is authorized
+ */
+export async function hasAccessByID(
+  userID: number,
+  equipmentID: number
+): Promise<boolean> {
+  const user = await UserRepo.getUserByID(userID);   // Get user for this university ID
   return user !== undefined &&                              // Ensure user exists
     !(await HoldsRepo.hasActiveHolds(user.id)) &&           // Ensure user has no holds
     await hasTrainingModules(user, equipmentID);            // Ensure user has completed necessary training

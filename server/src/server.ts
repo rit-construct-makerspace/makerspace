@@ -13,8 +13,9 @@ import path from "path";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository";
 import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository";
 import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLogRepository";
-import { getEquipmentByID } from "./repositories/Equipment/EquipmentRepository";
+import { getEquipmentByID, hasAccess, hasAccessByID } from "./repositories/Equipment/EquipmentRepository";
 import { Room } from "./models/rooms/room";
+import { Privilege } from "./schemas/usersSchema";
 var morgan = require("morgan"); //Log provider
 var bodyParser = require('body-parser'); //JSON request body parser
 
@@ -273,6 +274,19 @@ async function startServer() {
       }).send();
     }
 
+
+    //Staff bypass. Skip Welcome and training check.
+    if (user.privilege == Privilege.STAFF) {
+      if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} with STAFF access", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name});
+      return res.status(202).json({
+        "Type": "Authorization",
+        "Machine": machine.id,
+        "UID": req.query.id,
+        "Allowed": 1
+      }).send();
+    }
+
+
     //If needs welcome, check that room swipe has occured in the zone today
     if (req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
       console.log("Checking welcome status");
@@ -287,6 +301,18 @@ async function startServer() {
           "Error": "User requires Welcome"
         }).send();
       }
+    }
+
+    //Check that all required trainings are passed
+    if (!(await hasAccessByID(user.id, machine.id))) {
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "Incomplete trainings"});
+      return res.status(401).json({
+        "Type": "Authorization",
+        "Machine": machine.id,
+        "UID": req.query.id,
+        "Allowed": 0,
+        "Error": "Incomplete trainings"
+      }).send();
     }
 
     //Success
