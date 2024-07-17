@@ -138,8 +138,8 @@ async function startServer() {
    * These are the endpoints that the ACS hardware will access to authorize users and perform checks.
    * Note: JSON attributes are all Title case
   ===================================================================================================*/
-  const API_NORMAL_LOGGING = true;
-  const API_DEBUG_LOGGING = true;
+  const API_NORMAL_LOGGING = process.env.API_NORMAL_LOGGING == "true";
+  const API_DEBUG_LOGGING = process.env.API_DEBUG_LOGGING == "true";
 
   /**
    * WELCOME----
