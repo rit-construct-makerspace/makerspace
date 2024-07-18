@@ -10,6 +10,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import HistoryIcon from "@mui/icons-material/History";
 import Avatar from "@mui/material/Avatar";
 import AnnouncementIcon from '@mui/icons-material/Announcement';
+import AdfScannerIcon from '@mui/icons-material/AdfScanner';
 import Typography from "@mui/material/Typography";
 import NavLink from "./NavLink";
 import LogoSvg from "../assets/acronym_logo.svg";
@@ -143,6 +144,11 @@ export default function LeftNav() {
               to="/admin/history"
               primary="History"
               icon={<HistoryIcon />}
+            />
+            <NavLink
+              to="/admin/readers"
+              primary="Access Devices"
+              icon={<AdfScannerIcon />}
             />
           </List>
         )}
