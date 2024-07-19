@@ -16,6 +16,7 @@ import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLog
 import { getEquipmentByID, hasAccess, hasAccessByID } from "./repositories/Equipment/EquipmentRepository";
 import { Room } from "./models/rooms/room";
 import { Privilege } from "./schemas/usersSchema";
+import { createReader, getReaderByID, getReaderByMachineID, updateReaderStatus } from "./repositories/Readers/ReaderRepository";
 var morgan = require("morgan"); //Log provider
 var bodyParser = require('body-parser'); //JSON request body parser
 
@@ -341,11 +342,39 @@ async function startServer() {
    * - Source: Reason for the status message
    * - Frequency: How often scheduled status messages will be sent
    * - Key: API key for authorization
-   * 
-   * TODO
    */
-  app.get("/api/auth/:MachineID", function(req, res) {
+  app.put("/api/status/:MachineID", async function(req, res) {
+    //If API Keys dont match, fail
+    if (req.body.Key != process.env.API_KEY) {
+      if (API_DEBUG_LOGGING) createLog("Card Reader Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 403, label: "Invalid Key"});
+      return res.status(403).json({error: "Invalid Key"}).send();
+    }
 
+    var reader = await getReaderByMachineID(parseInt(req.params.MachineID));
+    if (reader == undefined) {
+      reader = await createReader({
+        machineID: req.body.Machine,
+        machineType: req.body.MachineType,
+        zone: req.body.Zone
+      });
+      if (reader == undefined) {
+        if (API_DEBUG_LOGGING) createLog("Card Reader Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+        return res.status(400).json({error: "Reader does not exist"}).send();
+      }
+    }
+    updateReaderStatus({
+      id: reader.id,
+      machine: reader.machineID,
+      machineType: reader.machineType,
+      zone: reader.zone,
+      temp: req.body.Temp,
+      state: req.body.State,
+      currentUID: req.body.UID,
+      recentSessionLength: req.body.Time,
+      lastStatusReason: req.body.Source,
+      scheduledStatusFreq: req.body.Frequency
+    });
+    return res.status(200).send();
   });
 
 
@@ -360,7 +389,7 @@ async function startServer() {
    * 
    * TODO
    */
-  app.get("/api/auth/:MachineID", function(req, res) {
+  app.get("/api/help/:MachineID", function(req, res) {
     //Slack bot?
   });
 
