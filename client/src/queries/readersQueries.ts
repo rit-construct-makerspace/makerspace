@@ -17,7 +17,7 @@ export interface Reader {
 
 export const GET_READERS = gql`
   query GetReaders {
-    getAllReaders {
+    readers {
       id
       machineID
       machineType
@@ -36,7 +36,7 @@ export const GET_READERS = gql`
 
 export const GET_READER = gql`
   query GetReader($id: ID!) {
-    getReader(id: $id) {
+    reader(id: $id) {
       id
       machineID
       machineType
