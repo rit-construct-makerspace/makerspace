@@ -1,8 +1,9 @@
 import { gql } from "@apollo/client";
+import Equipment from "../types/Equipment";
 
 export interface Reader {
   id: number,
-  machineID: number,
+  machineID: Equipment,
   machineType: string,
   name: string,
   zone: string
@@ -19,7 +20,10 @@ export const GET_READERS = gql`
   query GetReaders {
     readers {
       id
-      machineID
+      machineID {
+        id
+        name
+      }
       machineType
       name
       zone

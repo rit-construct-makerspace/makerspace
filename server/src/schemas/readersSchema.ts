@@ -5,6 +5,7 @@ export const ReaderTypeDefs = gql`
     id: ID!,
     machineID: Equipment,
     machineType: String,
+    name: String,
     zone: String,
     temp: String,
     state: String,
