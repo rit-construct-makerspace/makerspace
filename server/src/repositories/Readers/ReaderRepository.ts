@@ -48,7 +48,7 @@ export async function createReader(reader: {
  */
 export async function updateReaderStatus(reader: {
     id: number,
-    machine: number,
+    machineID: number,
     machineType: string,
     zone: string,
     temp: number,
@@ -59,7 +59,7 @@ export async function updateReaderStatus(reader: {
     scheduledStatusFreq: number,
 }): Promise<ReaderRow | undefined> {
     await knex("Readers").where({ id: reader.id }).update({
-        machineID: reader.machine,
+        machineID: reader.machineID,
         machineType: reader.machineType,
         zone: reader.zone,
         temp: reader.temp,
