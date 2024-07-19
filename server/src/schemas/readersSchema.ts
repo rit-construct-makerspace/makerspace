@@ -3,7 +3,7 @@ import { gql } from "graphql-tag";
 export const ReaderTypeDefs = gql`
   type Reader {
     id: ID!,
-    machineID: Equipment,
+    machineID: String,
     machineType: String,
     name: String,
     zone: String,
