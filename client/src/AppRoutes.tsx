@@ -87,6 +87,8 @@ export default function AppRoutes() {
 
           <Route path="/admin/history" element={<AuditLogsPage />} />
 
+          <Route path="/admin/readers" element={<AuditLogsPage />} />
+
           <Route path="/logoutprompt" element={<LogoutPromptPage />} />
 
           <Route path="*" element={<NotFoundPage />} />
