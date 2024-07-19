@@ -1,4 +1,4 @@
-import knex from "knex";
+import { knex } from "../../db";
 import { ReaderRow } from "../../db/tables";
 
 /**
@@ -18,7 +18,7 @@ export async function getReaderByID(
 export async function getReaderByMachineID(
     machineID: number
 ): Promise<ReaderRow | undefined> {
-    return await knex("Readers").first().where({ machineID: machineID });
+    return await knex("Readers").from("Readers").first().where({ machineID: machineID });
 }
 
 /**
@@ -59,7 +59,7 @@ export async function updateReaderStatus(reader: {
     scheduledStatusFreq: number,
 }): Promise<ReaderRow | undefined> {
     await knex("Readers").where({ id: reader.id }).update({
-        machine: reader.machine,
+        machineID: reader.machine,
         machineType: reader.machineType,
         zone: reader.zone,
         temp: reader.temp,
