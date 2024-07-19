@@ -9,10 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Equipment from "../../../types/Equipment";
 
 interface ReaderCardProps {
     id: number,
-    machineID: number,
+    machine?: Equipment,
     machineType: string,
     name: string,
     zone: string
@@ -25,8 +26,8 @@ interface ReaderCardProps {
     lastStatusTime: string
 }
 
-export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, currentUID, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime }: ReaderCardProps) {
-  const machineContent = machineID == undefined ? ", Machine: " + machineID : "";
+export default function ReaderCard({ id, machine, machineType, name, zone, temp, state, currentUID, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime }: ReaderCardProps) {
+  const machineContent = machine != undefined ? ", Machine: " + machine.name : "";
 
   const stateContent = state === "Active" ? (
     "Current User: " + currentUID + "\nSession Length" + recentSessionLength
