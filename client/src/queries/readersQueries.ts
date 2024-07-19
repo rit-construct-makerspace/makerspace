@@ -56,10 +56,10 @@ export const GET_READER = gql`
 export const CREATE_READER = gql`
   mutation CreateReader(
     $id: ID!,
-    machineID: string,
-    machineType: string,
-    name: string,
-    zone: string,
+    $machineID: string,
+    $machineType: string,
+    $name: string,
+    $zone: string,
   ) {
     createReader(
       id: $id,
