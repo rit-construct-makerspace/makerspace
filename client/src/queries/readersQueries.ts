@@ -3,7 +3,7 @@ import Equipment from "../types/Equipment";
 
 export interface Reader {
   id: number,
-  machineID: Equipment,
+  machineID: string,
   machineType: string,
   name: string,
   zone: string
@@ -20,10 +20,7 @@ export const GET_READERS = gql`
   query GetReaders {
     readers {
       id
-      machineID {
-        id
-        name
-      }
+      machineID
       machineType
       name
       zone
