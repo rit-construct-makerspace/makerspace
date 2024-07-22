@@ -12,6 +12,10 @@ function getEntityUrl(entityType: string, id: string) {
       return "/admin/people/" + id;
     case "room":
       return "/admin/rooms/" + id;
+    case "equipment":
+      return "/admin/equipment/" + id;
+    case "module":
+      return "/admin/training/" + id;
     default:
       return "/admin/history";
   }
