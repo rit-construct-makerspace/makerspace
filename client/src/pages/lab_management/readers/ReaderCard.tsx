@@ -26,7 +26,7 @@ interface ReaderCardProps {
 }
 
 export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, currentUID, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime }: ReaderCardProps) {
-  const machineContent = machineID == undefined ? ", Machine: " + machineID : "";
+  const machineContent = machineID != undefined ? ", Machine: " + machineID : "";
 
   const stateContent = state === "Active" ? (
     "Current User: " + currentUID + "\nSession Length" + recentSessionLength
