@@ -66,7 +66,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
                   Temp
               </Typography>
               <Typography
-                  variant="body2"
+                  variant="h3"
                   component="div"
                   sx={{ lineHeight: 1, mb: 1 }}
                   noWrap
@@ -86,12 +86,12 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
                   {state == null ? "NULL" : state}
               </Typography>
               <Typography
-                  variant="body2"
+                  variant="h6"
                   component="div"
                   sx={{ lineHeight: 1, mb: 1 }}
                   noWrap
               >
-                  
+                  {stateContent}
               </Typography>
           </CardContent>
               <Typography
