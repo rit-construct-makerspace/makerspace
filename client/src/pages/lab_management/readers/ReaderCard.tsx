@@ -100,8 +100,8 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
                   sx={{ lineHeight: 1, mb: 1 }}
                   noWrap
               >
-                  Last Status: {lastStatusTime} - {lastStatusReason}<br></br>
-                  Regular Status Interval: {scheduledStatusFreq}
+                  <b>Last Status:</b> {lastStatusTime == null ? "NULL" : lastStatusTime} - <b>Reason:</b> {lastStatusReason}<br></br>
+                  <b>Regular Status Interval:</b> {scheduledStatusFreq}
               </Typography>
         </Card>
       </CardContent>
