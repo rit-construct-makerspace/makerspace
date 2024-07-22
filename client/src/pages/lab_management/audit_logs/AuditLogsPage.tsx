@@ -44,7 +44,7 @@ function parseDateForQuery(
 export default function LogPage() {
   const { search } = useLocation();
   const navigate = useNavigate();
-  const [query, queryResult] = useLazyQuery(GET_LOGS);
+  const [query, queryResult] = useLazyQuery(GET_LOGS, {pollInterval: 2000});
   const [searchText, setSearchText] = useState("");
 
   const [startDateString, setStartDateString] = useState("");

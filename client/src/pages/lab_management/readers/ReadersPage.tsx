@@ -11,7 +11,7 @@ import ReaderCard from "./ReaderCard";
 
 
 export default function ReadersPage() {
-  const getReadersResult = useQuery(GET_READERS);
+  const getReadersResult = useQuery(GET_READERS, {pollInterval: 2000});
 
   const url = "/admin/readers";
 
