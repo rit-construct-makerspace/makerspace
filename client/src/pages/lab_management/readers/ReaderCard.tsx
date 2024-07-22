@@ -36,76 +36,75 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
 
   return (
     <Card sx={{ width: 250 }}>
-      <CardActionArea>
-        <CardHeader>
-            action={
-            <IconButton aria-label="settings">
-                <MoreVertIcon />
-            </IconButton>
-            }
-            title={name}
-            subheader={machineType}
-        </CardHeader>
-        <CardContent>
-          <Typography
-            variant="body2"
-            component="div"
-            sx={{ lineHeight: 1, mb: 1 }}
-            noWrap
-          >
-            Device ID: {id}, Zone(s): {zone}{machineContent}<br></br>
-          </Typography>
-          <Card variant="outlined">
-            <CardContent>
-                <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ lineHeight: 1, mb: 1 }}
-                    noWrap
-                >
-                    Temp
-                </Typography>
-                <Typography
-                    variant="body2"
-                    component="div"
-                    sx={{ lineHeight: 1, mb: 1 }}
-                    noWrap
-                >
-                    {temp}
-                </Typography>
-            </CardContent>
-          </Card>
-          <Card variant="outlined">
-            <CardContent>
-                <Typography
-                    variant="h6"
-                    component="div"
-                    sx={{ lineHeight: 1, mb: 1 }}
-                    noWrap
-                >
-                    {state}
-                </Typography>
-                <Typography
-                    variant="body2"
-                    component="div"
-                    sx={{ lineHeight: 1, mb: 1 }}
-                    noWrap
-                >
-                    
-                </Typography>
-            </CardContent>
-                <Typography
-                    variant="body2"
-                    component="div"
-                    sx={{ lineHeight: 1, mb: 1 }}
-                    noWrap
-                >
-                    Last Status: {lastStatusTime} - {lastStatusReason}<br></br>
-                    Regular Status Interval: {scheduledStatusFreq}
-                </Typography>
-          </Card>
-        </CardContent>
-      </CardActionArea>
+      <CardHeader
+        action={
+          <IconButton aria-label="settings">
+              <MoreVertIcon />
+          </IconButton>
+          }
+          title={name}
+          subheader={machineType}
+      >
+      </CardHeader>
+      <CardContent>
+        <Typography
+          variant="body2"
+          component="div"
+          sx={{ lineHeight: 1, mb: 1 }}
+          noWrap
+        >
+          Device ID: {id}, Zone(s): {zone}{machineContent}<br></br>
+        </Typography>
+        <Card variant="outlined">
+          <CardContent>
+              <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ lineHeight: 1, mb: 1 }}
+                  noWrap
+              >
+                  Temp
+              </Typography>
+              <Typography
+                  variant="body2"
+                  component="div"
+                  sx={{ lineHeight: 1, mb: 1 }}
+                  noWrap
+              >
+                  {temp}
+              </Typography>
+          </CardContent>
+        </Card>
+        <Card variant="outlined">
+          <CardContent>
+              <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ lineHeight: 1, mb: 1 }}
+                  noWrap
+              >
+                  {state}
+              </Typography>
+              <Typography
+                  variant="body2"
+                  component="div"
+                  sx={{ lineHeight: 1, mb: 1 }}
+                  noWrap
+              >
+                  
+              </Typography>
+          </CardContent>
+              <Typography
+                  variant="body2"
+                  component="div"
+                  sx={{ lineHeight: 1, mb: 1 }}
+                  noWrap
+              >
+                  Last Status: {lastStatusTime} - {lastStatusReason}<br></br>
+                  Regular Status Interval: {scheduledStatusFreq}
+              </Typography>
+        </Card>
+      </CardContent>
     </Card>
   );
 }
