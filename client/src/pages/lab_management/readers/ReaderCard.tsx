@@ -83,7 +83,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
                   sx={{ lineHeight: 1, mb: 1 }}
                   noWrap
               >
-                  {state}
+                  {state == null ? "NULL" : state}
               </Typography>
               <Typography
                   variant="body2"
