@@ -78,7 +78,7 @@ export function setupSessions(app: express.Application) {
       cookie: {
         secure: process.env.NODE_ENV === "production" ? true : false, // this will make cookies send only over https
         httpOnly: true, // cookies are sent in requests, but not accessible to client-side JS
-        maxAge: 900000, // 15 minutes in milliseconds
+        maxAge: 2400000, // 40 minutes in milliseconds
         sameSite: process.env.NODE_ENV === "development" ? "lax" : "strict" // allow cookies to send between local ports in development
       },
     })
