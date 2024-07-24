@@ -1,8 +1,17 @@
-
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { ApolloContext } from "../context";
 import { getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository";
 const AccessChecksResolver = {
+
+    AccessCheck: {
+      equipment: async (
+        parent: {equipmentID: string },
+        _args: any,
+        _context: ApolloContext) => {
+          return EquipmentRepo.getEquipmentByID(Number(parent.equipmentID));
+        }
+    },
     
     Query: {
       getAllAccessChecks: async (

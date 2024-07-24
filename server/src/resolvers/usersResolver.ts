@@ -6,7 +6,6 @@ import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { ApolloContext } from "../context";
 import { getUsersFullName } from "../repositories/Users/UserRepository";
-import { getAccessCheckByUserID } from "../repositories/Equipment/AccessChecksRepository";
 
 const UsersResolvers = {
   User: {
