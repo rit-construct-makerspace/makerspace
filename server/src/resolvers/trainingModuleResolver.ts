@@ -8,6 +8,7 @@ import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
 import { MODULE_PASSING_THRESHOLD } from "../constants";
 import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
+import { createAccessCheck } from "../repositories/Equipment/AccessChecksRepository";
 
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   for (let item of quiz) {
@@ -226,6 +227,15 @@ const TrainingModuleResolvers = {
               { id: user.id, label: getUsersFullName(user) },
               { id: args.moduleID, label: module.name }
             );
+
+            //If all trainings for equipment done, add access check for all passed equipment
+            if (grade >= MODULE_PASSING_THRESHOLD) {
+              const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
+              
+              equipmentIDsToCheck.forEach(async equipmentID => {
+                await createAccessCheck(user.id, equipmentID);
+              });
+            }
 
             return id;
           });
