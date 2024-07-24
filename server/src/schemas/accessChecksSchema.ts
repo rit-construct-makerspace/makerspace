@@ -6,7 +6,7 @@ export const AccessCheckTypeDefs = gql`
         userID: ID,
         equipmentID: ID,
         readyDate: DateTime,
-        approved: boolean
+        approved: Boolean
     }
 
     extend type Query {
@@ -17,6 +17,6 @@ export const AccessCheckTypeDefs = gql`
     }
 
     extend type Mutation {
-        setApproved(id: ID!, approved: boolean): AccessCheck
+        setApproved(id: ID!, approved: Boolean): AccessCheck
     }
 `;
