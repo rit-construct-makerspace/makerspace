@@ -7,7 +7,7 @@ export async function up(knex: Knex): Promise<void> {
         t.increments("id").primary();
         t.integer("userID").references("id").inTable("Users").notNullable();
         t.integer("equipmentID").references("id").inTable("Equipment").notNullable();
-        t.date('readyDate').defaultTo(knex.raw('CURRENT_TIMESTAMP'));
+        t.date("readyDate").defaultTo(knex.fn.now());
         t.boolean("approved").defaultTo(false);
       });
     }
