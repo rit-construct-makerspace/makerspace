@@ -150,6 +150,14 @@ export interface AnnouncementRow {
   description: string;
 }
 
+export interface AccessCheckRow {
+  id: number;
+  userID: number;
+  machineID: number;
+  readyDate: Date;
+  approved: boolean;
+}
+
 declare module "knex/types/tables" {
   interface Tables {
     AuditLogs: AuditLogRow;
@@ -165,5 +173,6 @@ declare module "knex/types/tables" {
     TrainingModule: TrainingModuleRow;
     Users: UserRow;
     Readers: ReaderRow;
+    AccessChecks: AccessCheckRow
   }
 }
