@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
       return knex.schema.createTable("AccessChecks", function (t) {
         t.increments("id").primary();
         t.integer("userID").references("id").inTable("Users").notNullable();
-        t.integer("machineID").references("id").inTable("Equipment").notNullable();
+        t.integer("equipmentID").references("id").inTable("Equipment").notNullable();
         t.date('readyDate').defaultTo(knex.raw('CURRENT_TIMESTAMP'));
         t.boolean("approved").defaultTo(false);
       });

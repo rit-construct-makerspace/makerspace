@@ -4,7 +4,7 @@ export const AccessCheckTypeDefs = gql`
     type AccessCheck {
         id: ID!,
         userID: ID,
-        machineID: ID,
+        equipmentID: ID,
         readyDate: DateTime,
         approved: boolean
     }

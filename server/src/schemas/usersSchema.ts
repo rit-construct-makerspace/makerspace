@@ -34,6 +34,12 @@ export const UsersTypeDefs = gql`
     expirationDate: DateTime!
   }
 
+  type UserAccessCheck {
+    id: ID!
+    equipmentID: ID!
+
+  }
+
   type User {
     id: ID!
     firstName: String!

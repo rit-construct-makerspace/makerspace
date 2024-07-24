@@ -153,7 +153,7 @@ export interface AnnouncementRow {
 export interface AccessCheckRow {
   id: number;
   userID: number;
-  machineID: number;
+  equipmentID: number;
   readyDate: Date;
   approved: boolean;
 }
