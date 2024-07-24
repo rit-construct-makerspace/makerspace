@@ -65,6 +65,14 @@ export const GET_USER = gql`
         removeDate
         description
       }
+      accessChecks {
+        id
+        equipment {
+          id
+          name
+        }
+        approved
+      }
     }
   }
 `;
