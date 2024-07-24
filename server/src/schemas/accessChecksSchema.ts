@@ -6,7 +6,7 @@ export const AccessCheckTypeDefs = gql`
         userID: ID,
         equipmentID: ID,
         readyDate: DateTime,
-        approved: boolean
+        approved: Boolean
     }
 
     extend type Query {
