@@ -54,7 +54,7 @@ jobs:
         run: npm ci
 
       - name: Run Knex migrations
-        run: npm run build && npm run knex:migrate:latest DEBUG=knex:tx
+        run: npm run build:server && npm run knex:migrate:latest DEBUG=knex:tx
         env:
           DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
 
