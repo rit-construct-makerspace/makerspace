@@ -218,7 +218,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               Access Checks
             </Typography>
             
-            {user.accessChecks.length === 0 && (
+            {user.accessChecks != null && user.accessChecks.length === 0 && (
               <Stack direction="row" spacing={1} sx={{ opacity: 0.8 }}>
                 <CheckCircleIcon color="success" fontSize="small" />
                 <Typography variant="body1" fontStyle="italic">
