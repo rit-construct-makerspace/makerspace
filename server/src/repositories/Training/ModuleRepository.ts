@@ -3,7 +3,7 @@
  */
 
 import { knex } from "../../db";
-import { TrainingModuleRow, TrainingModuleItem } from "../../db/tables";
+import { TrainingModuleRow, TrainingModuleItem, ModulesForEquipmentRow } from "../../db/tables";
 import { EntityNotFound } from "../../EntityNotFound";
 import { PassedModule } from "../../schemas/usersSchema";
 
@@ -158,4 +158,61 @@ export async function hasPassedModule(
     // User has this training if they have a passing and non-expired submission
     return passedModule?.moduleID === moduleID && passedModule?.expirationDate > new Date();
   });
+}
+
+
+/**
+ * Get all equipment ids associated with a specified module
+ * @param moduleID the module ID
+ * @returns all ModulesForEquipment rows associated with the module
+ */
+export async function getEquipmentIDsByModuleID(
+  moduleID: number
+): Promise<ModulesForEquipmentRow[]> {
+  return await knex("ModulesForEquipment").select("*").where({moduleID: moduleID});
+}
+
+/**
+ * Get all module ids associated with an equipment
+ * @param equipmentID the equipment ID
+ * @returns all ModulesForEquipment rows associated with the equipment
+ */
+export async function getModulesIDsByEquipmentID(
+  equipmentID: number
+): Promise<ModulesForEquipmentRow[]> {
+  return await knex("ModulesForEquipment").select("*").where({equipmentID: equipmentID});
+}
+
+/**
+ * Given the ID of a recently passed module, find all equipments a user has passed all modules for
+ * @param moduleID the ID of the recently passed module
+ * @param userID the submitting user's id
+ * @returns every equipment ID where all required trainings are passed
+ */
+export async function getPassedEquipmentIDsByModuleID(
+  moduleID: number,
+  userID: number
+): Promise<number[]> {
+  const equipmentIdRows = await getEquipmentIDsByModuleID(moduleID);
+
+  var equipmentPassed: number[] = [];
+  
+  equipmentIdRows.forEach(async equipmentIdRow => {
+    const equipmentID = equipmentIdRow.equipmentID;
+    const modulesForEquipment = await getModulesIDsByEquipmentID(equipmentID);
+
+    var passed = true;
+
+    modulesForEquipment.forEach(async moduleIdRow => {
+      if (!(await hasPassedModule(userID, moduleIdRow.moduleID))) {
+        passed = false;
+      }
+    });
+
+    if (passed) {
+      equipmentPassed.push(equipmentID);
+    }
+  });
+
+  return equipmentPassed;
 }

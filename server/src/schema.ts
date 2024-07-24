@@ -28,6 +28,7 @@ import calendarEventsResolver from "./resolvers/calendarEventsResolver";
 import AnnouncementsResolver from "./resolvers/announcementsResolver";
 import { ReaderTypeDefs } from "./schemas/readersSchema";
 import ReadersResolver from "./resolvers/readersResolver";
+import { AccessCheckTypeDefs } from "./schemas/accessChecksSchema";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -49,7 +50,8 @@ export const schema = makeExecutableSchema({
     AuditLogsTypeDefs,
     CalendarEventsTypeDefs,
     AnnouncementsTypeDefs,
-    ReaderTypeDefs
+    ReaderTypeDefs,
+    AccessCheckTypeDefs
   ],
   resolvers: mergeResolvers([
     resolveFunctions,

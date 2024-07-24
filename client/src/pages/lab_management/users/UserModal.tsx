@@ -16,6 +16,7 @@ import Privilege from "../../../types/Privilege";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import CloseButton from "../../../common/CloseButton";
 import CardTagSettings from "./CardTagSettings";
+import AccessCheckCard from "./AccessCheckCard";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -37,6 +38,15 @@ export interface Hold {
   };
   createDate: string;
   removeDate?: string;
+}
+
+export interface AccessCheck {
+  id: string;
+  equipment: {
+    id: string;
+    name: string;
+  }
+  approved: boolean;
 }
 
 export const GET_USER = gql`
@@ -64,6 +74,14 @@ export const GET_USER = gql`
         createDate
         removeDate
         description
+      }
+      accessChecks {
+        id
+        equipment {
+          id
+          name
+        }
+        approved
       }
     }
   }
@@ -195,6 +213,25 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             >
               Place hold
             </Button>
+
+            <Typography variant="h6" component="div" mt={6} mb={1}>
+              Access Checks
+            </Typography>
+            
+            {user.accessChecks.length === 0 && (
+              <Stack direction="row" spacing={1} sx={{ opacity: 0.8 }}>
+                <CheckCircleIcon color="success" fontSize="small" />
+                <Typography variant="body1" fontStyle="italic">
+                  No avaiable checks.
+                </Typography>
+              </Stack>
+            )}
+
+            <Stack spacing={2}>
+              {user.accessChecks.map((accessCheck: AccessCheck) => (
+                <AccessCheckCard key={accessCheck.id} accessCheck={accessCheck} userID={user.id} />
+              ))}
+            </Stack>
 
             <Typography variant="h6" component="div" mt={6} mb={1}>
               Actions

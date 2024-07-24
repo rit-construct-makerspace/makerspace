@@ -1,6 +1,7 @@
 import * as UserRepo from "../repositories/Users/UserRepository";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
+import * as AccessCheckRepo from "../repositories/Equipment/AccessChecksRepository";
 import { Privilege } from "../schemas/usersSchema";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
 import { ApolloContext } from "../context";
@@ -21,6 +22,14 @@ const UsersResolvers = {
       _context: ApolloContext) => {
         return ModuleRepo.getPassedModulesByUser(Number(parent.id));
       },
+
+    accessChecks: async (
+      parent: {id: string },
+      _args: any,
+      _context: ApolloContext) => {
+        return AccessCheckRepo.getAccessCheckByUserID(Number(parent.id));
+      }
+
   },
 
   Query: {
