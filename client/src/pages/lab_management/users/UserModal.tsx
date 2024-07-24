@@ -228,7 +228,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             )}
 
             <Stack spacing={2}>
-              {user.accessChecks.map((accessCheck: AccessCheck) => (
+              {user.accessChecks != null && user.accessChecks.map((accessCheck: AccessCheck) => (
                 <AccessCheckCard key={accessCheck.id} accessCheck={accessCheck} userID={user.id} />
               ))}
             </Stack>
