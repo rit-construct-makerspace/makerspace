@@ -173,6 +173,6 @@ declare module "knex/types/tables" {
     TrainingModule: TrainingModuleRow;
     Users: UserRow;
     Readers: ReaderRow;
-    AccessChecks: AccessCheckRow
+    AccessChecks: AccessCheckRow;
   }
 }
