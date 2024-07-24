@@ -31,3 +31,9 @@ export async function setAccessCheckApproval(id: number, approved: boolean): Pro
         approved: approved
     }).where({id: id}).returning("*").first();
 }
+
+export async function isApproved(userID: number, machineID: number): Promise<boolean> {
+    const check = await knex("AccessChecks").select("*").where({userID: userID, machineID: machineID }).first();
+    if (check?.approved) return true;
+    return false;
+}

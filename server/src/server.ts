@@ -17,6 +17,7 @@ import { getEquipmentByID, hasAccess, hasAccessByID } from "./repositories/Equip
 import { Room } from "./models/rooms/room";
 import { Privilege } from "./schemas/usersSchema";
 import { createReader, getReaderByID, getReaderByMachineID, updateReaderStatus } from "./repositories/Readers/ReaderRepository";
+import { isApproved } from "./repositories/Equipment/AccessChecksRepository";
 var morgan = require("morgan"); //Log provider
 var bodyParser = require('body-parser'); //JSON request body parser
 
@@ -313,6 +314,18 @@ async function startServer() {
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Incomplete trainings"
+      }).send();
+    }
+
+    //Check that equipment access check is completed
+    if (!(await isApproved(user.id, machine.id))) {
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "Missing Staff Approval"});
+      return res.status(401).json({
+        "Type": "Authorization",
+        "Machine": machine.id,
+        "UID": req.query.id,
+        "Allowed": 0,
+        "Error": "Missing Staff Approval"
       }).send();
     }
 
