@@ -363,7 +363,8 @@ async function startServer() {
       return res.status(403).json({error: "Invalid Key"}).send();
     }
 
-    var reader = await getReaderByName(req.params.MachineID);
+    var reader = await getReaderByName(req.body.MachineID);
+    console.log(reader);
     if (reader == undefined) {
       reader = await createReader({
         name: req.body.MachineID,
