@@ -41,13 +41,13 @@ const useStyles = makeStyles({
 
 export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, currentUID, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
-    "Current User: " + currentUID + "\nSession Length" + recentSessionLength
+    "Current User: " + currentUID + "\nSession Length" + recentSessionLength + " sec"
   ) : (
-    "Last Session Length: " + recentSessionLength
+    "Last Session Length: " + recentSessionLength + " sec"
   );
 
   const machineResult = useQuery(GET_EQUIPMENT_BY_ID, {
-    variables: { id }
+    variables: { id: machineID }
   });
 
   const rooms = useQuery(GET_ROOMS);
@@ -59,7 +59,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card sx={{ width: 350 }} className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : ""}>
+      <Card sx={{ width: 350, minHeight: 550}} className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : ""}>
         <CardHeader
           action={
             <IconButton aria-label="settings">
@@ -102,7 +102,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
                     sx={{ lineHeight: 1, mb: 1 }}
                     noWrap
                 >
-                    Temp
+                    Temp (&#176;C)
                 </Typography>
                 <Typography
                     variant="h3"
@@ -144,7 +144,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               noWrap
           >
               <b>Last Status:</b> {lastStatusTime == null ? "NULL" : lastStatusTime} - <b>Reason:</b> <span className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
-              <b>Regular Status Interval:</b> {scheduledStatusFreq}
+              <b>Regular Status Interval:</b> {scheduledStatusFreq} sec
           </Typography>
           <Typography
               variant="body2"
