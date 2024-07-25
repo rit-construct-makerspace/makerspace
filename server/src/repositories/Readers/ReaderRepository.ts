@@ -96,3 +96,8 @@ export async function setReaderName(
     await knex("Readers").where({ id: id }).update({ name });
     return await getReaderByID(id);
 }
+
+export async function toggleHelpRequested(id: number): Promise<void> {
+    const oldRow = await knex("Readers").select("*").where({ id: id }).first()
+    return await knex("Readers").where({ id: id }).update({ helpRequested: !(oldRow?.helpRequested)})
+}

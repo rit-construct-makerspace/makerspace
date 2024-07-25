@@ -16,6 +16,7 @@ export async function up(knex: Knex): Promise<void> {
         t.string("lastStatusReason");
         t.integer("scheduledStatusFreq");
         t.timestamp("lastStatusTime");
+        t.boolean("helpRequested").defaultTo(false);
       });
     }
   });

@@ -142,6 +142,7 @@ export interface ReaderRow {
   lastStatusReason: string;
   scheduledStatusFreq: number;
   lastStatusTime: Date;
+  helpRequested: boolean;
 }
 
 export interface AnnouncementRow {

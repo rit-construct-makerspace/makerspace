@@ -13,7 +13,8 @@ export const ReaderTypeDefs = gql`
     recentSessionLength: String,
     lastStatusReason: String,
     scheduledStatusFreq: String,
-    lastStatusTime: DateTime
+    lastStatusTime: DateTime,
+    helpRequested: Boolean
   }
 
   extend type Query {
