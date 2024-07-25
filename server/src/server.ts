@@ -356,7 +356,7 @@ async function startServer() {
    * - Frequency: How often scheduled status messages will be sent
    * - Key: API key for authorization
    */
-  app.put("/api/status/:MachineID", async function(req, res) {
+  app.put("/api/status", async function(req, res) {
     //If API Keys dont match, fail
     if (req.body.Key != process.env.API_KEY) {
       if (API_DEBUG_LOGGING) createLog("Card Reader Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 403, label: "Invalid Key"});
