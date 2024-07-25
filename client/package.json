@@ -27,6 +27,7 @@
     "react-router-dom": "^6.8.0",
     "react-scripts": "^5.0.1",
     "react-string-replace": "^1.0.0",
+    "react-timeago": "^7.2.0",
     "react-toastify": "^9.0.8",
     "semantic-ui-react": "^2.1.4",
     "styled-components": "^5.3.3",
@@ -81,6 +82,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "7.21.11",
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.5.0",
@@ -91,12 +93,12 @@
     "@types/react-beautiful-dnd": "^13.1.2",
     "@types/react-dom": "^17.0.14",
     "@types/react-router-dom": "^5.3.3",
+    "@types/react-timeago": "^4.1.7",
     "@types/styled-components": "^5.1.24",
     "@types/uuid": "^8.3.4",
     "cross-env": "^7.0.3",
     "husky": "^7.0.4",
     "lint-staged": "^12.3.7",
-    "prettier": "^2.6.0",
-    "@babel/plugin-proposal-private-property-in-object": "7.21.11"
+    "prettier": "^2.6.0"
   }
 }
