@@ -15,8 +15,8 @@ export async function getAccessCheckByID(id: number): Promise<AccessCheckRow | u
     return await knex("AccessChecks").select("*").first().where({id: id});
 }
 
-export async function getAccessCheckByUserID(userID: number): Promise<AccessCheckRow | undefined> {
-    return await knex("AccessChecks").select("*").first().where({userID: userID});
+export async function getAccessChecksByUserID(userID: number): Promise<AccessCheckRow[]> {
+    return await knex("AccessChecks").select("*").where({userID: userID});
 }
 
 export async function getAccessChecksByApproved(approved: boolean): Promise<AccessCheckRow[]> {
@@ -27,13 +27,14 @@ export async function createAccessCheck(userID: number, equipmentID: number): Pr
     return await knex("AccessChecks").insert({
         userID: userID,
         equipmentID: equipmentID
-    }).returning("*").first();
+    });
 }
 
 export async function setAccessCheckApproval(id: number, approved: boolean): Promise<AccessCheckRow | undefined> {
-    return await knex("AccessChecks").update({
+    await knex("AccessChecks").update({
         approved: approved
-    }).where({id: id}).returning("*").first();
+    }).where({id: id});
+    return await getAccessCheckByID(id);
 }
 
 export async function isApproved(userID: number, equipmentID: number): Promise<boolean> {

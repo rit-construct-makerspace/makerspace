@@ -42,10 +42,7 @@ export interface Hold {
 
 export interface AccessCheck {
   id: string;
-  equipment: {
-    id: string;
-    name: string;
-  }
+  equipmentID: string;
   approved: boolean;
 }
 
@@ -77,10 +74,7 @@ export const GET_USER = gql`
       }
       accessChecks {
         id
-        equipment {
-          id
-          name
-        }
+        equipmentID
         approved
       }
     }

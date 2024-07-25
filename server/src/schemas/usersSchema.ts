@@ -36,7 +36,7 @@ export const UsersTypeDefs = gql`
 
   type UserAccessCheck {
     id: ID!
-    equipment: Equipment
+    equipmentID: ID!
     approved: Boolean!
   }
 

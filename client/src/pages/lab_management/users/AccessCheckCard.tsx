@@ -1,21 +1,23 @@
 import React from "react";
 import { Card, CardActions, Stack, Typography } from "@mui/material";
 import { AccessCheck, GET_USER, Hold } from "./UserModal";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
+import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
+import InfoBlob from "./InfoBlob";
 
 const APPROVE_CHECK = gql`
-  mutation ApproveCheck($id: ID!) {
-    approveCheck(id: $id) {
+  mutation ApproveAccessCheck($id: ID!) {
+    approveAccessCheck(id: $id) {
       id
     }
   }
 `;
 
 const UNAPPROVE_CHECK = gql`
-  mutation UnapproveCheck($id: ID!) {
-    unapproveCheck(id: $id) {
+  mutation UnapproveAccessCheck($id: ID!) {
+    unapproveAccessCheck(id: $id) {
       id
     }
   }
@@ -36,17 +38,30 @@ export default function AccessCheckCard({ accessCheck, userID }: AccessCheckCard
     refetchQueries: [{ query: GET_USER, variables: { id: userID } }],
   });
 
-  const approved = accessCheck.approved
+  const approved = accessCheck.approved;
+
+  const equipment = useQuery(GET_EQUIPMENT_BY_ID, {variables: {id: accessCheck.equipmentID}});
 
   return (
     <Card
       sx={{
-        backgroundColor: approved ? "grey.100" : "#fafff8",
-        border: `1px solid ${approved ? "grey" : "lime"}`,
+        backgroundColor: !approved ? "grey.100" : "#fafff8",
+        border: `1px solid ${!approved ? "grey" : "lime"}`,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingLeft: '1em',
+        paddingRight: '1em'
       }}
     >
-      <AuditLogEntity entityCode={"equipment:" + accessCheck.equipment.id + ":" + accessCheck.equipment.name}></AuditLogEntity>
+      <div>
+        <AuditLogEntity entityCode={"equipment:" + accessCheck.equipmentID + ":" + (equipment.data != undefined ? equipment.data.equipment.name : "Loading...")}></AuditLogEntity>
+      </div>
       <CardActions sx={{ px: 2 }}>
+        <span style={{paddingRight: '.5em'}}>
+          <b>Status: </b>{accessCheck.approved ? "Approved" : "Pending Approval"}
+        </span>
         {!approved && (
           <LoadingButton
             size="small"
@@ -54,7 +69,7 @@ export default function AccessCheckCard({ accessCheck, userID }: AccessCheckCard
             loading={approveCheckResult.loading}
             onClick={() => approveCheck()}
           >
-            Approve
+            <b>Approve</b>
           </LoadingButton>
         )}
         {approved && (

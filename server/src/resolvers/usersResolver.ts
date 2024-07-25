@@ -13,22 +13,22 @@ const UsersResolvers = {
       parent: { id: string },
       _args: any,
       _context: ApolloContext) => {
-        return HoldsRepo.getHoldsByUser(Number(parent.id));
-      },
+      return HoldsRepo.getHoldsByUser(Number(parent.id));
+    },
 
     passedModules: async (
       parent: { id: string },
       _args: any,
       _context: ApolloContext) => {
-        return ModuleRepo.getPassedModulesByUser(Number(parent.id));
-      },
+      return ModuleRepo.getPassedModulesByUser(Number(parent.id));
+    },
 
     accessChecks: async (
-      parent: {id: string },
+      parent: { id: string },
       _args: any,
       _context: ApolloContext) => {
-        return AccessCheckRepo.getAccessCheckByUserID(Number(parent.id));
-      }
+      return AccessCheckRepo.getAccessChecksByUserID(Number(parent.id));
+    }
 
   },
 
@@ -36,26 +36,26 @@ const UsersResolvers = {
     users: async (
       _parent: any,
       _args: any,
-      {ifAllowed}: ApolloContext) =>
-        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-          return await UserRepo.getUsers();
-        }),
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await UserRepo.getUsers();
+      }),
 
     user: async (
       _parent: any,
       args: { id: string },
-      {ifAllowedOrSelf} : ApolloContext) =>
-        ifAllowedOrSelf(Number(args.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
-          return await UserRepo.getUserByID(Number(args.id));
-        }),
+      { ifAllowedOrSelf }: ApolloContext) =>
+      ifAllowedOrSelf(Number(args.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await UserRepo.getUserByID(Number(args.id));
+      }),
 
     currentUser: async (
       _parent: any,
       _args: any,
       { user, ifAuthenticated }: ApolloContext) =>
-        ifAuthenticated(async () => {
-          return user;
-        }),
+      ifAuthenticated(async () => {
+        return user;
+      }),
   },
 
   Mutation: {
@@ -63,8 +63,8 @@ const UsersResolvers = {
       _parent: any,
       args: any,
       { ifAllowed }: ApolloContext) =>
-        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-          return await UserRepo.createUser(args);
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await UserRepo.createUser(args);
       }),
 
     updateStudentProfile: async (
@@ -77,19 +77,19 @@ const UsersResolvers = {
       },
       { ifAllowedOrSelf }: ApolloContext) =>
       ifAllowedOrSelf(Number(args.userID), [Privilege.MENTOR, Privilege.STAFF], async (user) => {
-          return await UserRepo.updateStudentProfile({
-            userID: Number(args.userID),
-            pronouns: args.pronouns,
-            college: args.college,
-            expectedGraduation: args.expectedGraduation
-          });
+        return await UserRepo.updateStudentProfile({
+          userID: Number(args.userID),
+          pronouns: args.pronouns,
+          college: args.college,
+          expectedGraduation: args.expectedGraduation
+        });
       }),
 
     setCardTagID: async (
       _parent: any,
       args: { userID: string, cardTagID: string },
       { ifAllowed }: ApolloContext
-    ) => 
+    ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
         const userSubject = await UserRepo.setCardTagID(Number(args.userID), args.cardTagID);
 

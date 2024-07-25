@@ -231,7 +231,6 @@ const TrainingModuleResolvers = {
             //If all trainings for equipment done, add access check for all passed equipment
             if (grade >= MODULE_PASSING_THRESHOLD) {
               const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
-              
               equipmentIDsToCheck.forEach(async equipmentID => {
                 await createAccessCheck(user.id, equipmentID);
               });
