@@ -55,6 +55,9 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
 
   const classes = useStyles();
 
+  const now = new Date();
+  const lastTimeDifference = now.getTime() - (new Date(lastStatusTime).getTime());
+
   return (
     <RequestWrapper
     loading={machineResult.loading}
@@ -144,7 +147,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               sx={{ lineHeight: 1, mb: 1 }}
               noWrap
           >
-              <b>Last Status:</b> <TimeAgo date={lastStatusTime} locale="en-US"/> - <b>Reason:</b> <span className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
+              <b>Last Status:</b> <span style={{fontWeight: lastTimeDifference > 60000 ? 'bold' : 'regular', color:  lastTimeDifference > 60000 ? 'red' : 'inherit'}}><TimeAgo date={lastStatusTime} locale="en-US"/></span> - <b>Reason:</b> <span className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
               <b>Regular Status Interval:</b> {scheduledStatusFreq} sec
           </Typography>
           <Typography
