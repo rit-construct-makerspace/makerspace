@@ -67,7 +67,8 @@ export async function updateReaderStatus(reader: {
         currentUID: reader.currentUID,
         recentSessionLength: reader.recentSessionLength,
         lastStatusReason: reader.lastStatusReason,
-        scheduledStatusFreq: reader.scheduledStatusFreq
+        scheduledStatusFreq: reader.scheduledStatusFreq,
+        lastStatusTime: knex.fn.now()
     })
 
     return getReaderByID(reader.id);
