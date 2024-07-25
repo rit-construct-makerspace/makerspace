@@ -16,7 +16,7 @@ import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLog
 import { getEquipmentByID, hasAccess, hasAccessByID } from "./repositories/Equipment/EquipmentRepository";
 import { Room } from "./models/rooms/room";
 import { Privilege } from "./schemas/usersSchema";
-import { createReader, getReaderByID, getReaderByMachineID, updateReaderStatus } from "./repositories/Readers/ReaderRepository";
+import { createReader, getReaderByID, getReaderByMachineID, getReaderByName, updateReaderStatus } from "./repositories/Readers/ReaderRepository";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository";
 var morgan = require("morgan"); //Log provider
 var bodyParser = require('body-parser'); //JSON request body parser
@@ -363,7 +363,7 @@ async function startServer() {
       return res.status(403).json({error: "Invalid Key"}).send();
     }
 
-    var reader = await getReaderByMachineID(parseInt(req.params.MachineID));
+    var reader = await getReaderByName(req.params.MachineID);
     if (reader == undefined) {
       reader = await createReader({
         name: req.body.MachineID,
