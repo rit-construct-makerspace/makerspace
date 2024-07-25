@@ -65,13 +65,8 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     >
       <Card sx={{ width: 350, minHeight: 550}} className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : ""}>
         <CardHeader
-          action={
-            <IconButton aria-label="settings">
-                <MoreVertIcon />
-            </IconButton>
-            }
-            title={name}
-            subheader={"Type: " + machineType}
+          title={name}
+          subheader={"Type: " + machineType}
         >
         </CardHeader>
         <CardContent>

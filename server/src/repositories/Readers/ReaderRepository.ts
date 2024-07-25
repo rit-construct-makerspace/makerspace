@@ -15,6 +15,16 @@ export async function getReaderByID(
  * Fetch areader by the id of the machine it is associated with
  * @param machineID the machine ID of the machine
  */
+export async function getReaderByName(
+    name: string
+): Promise<ReaderRow | undefined> {
+    return await knex("Readers").from("Readers").first().where({ name: name });
+}
+
+/**
+ * Fetch areader by the id of the machine it is associated with
+ * @param machineID the machine ID of the machine
+ */
 export async function getReaderByMachineID(
     machineID: number
 ): Promise<ReaderRow | undefined> {
