@@ -13,6 +13,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/getRooms";
 import { useQuery } from "@apollo/client";
+import TimeAgo from 'react-timeago'
 
 interface ReaderCardProps {
     id: number,
@@ -143,7 +144,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               sx={{ lineHeight: 1, mb: 1 }}
               noWrap
           >
-              <b>Last Status:</b> {lastStatusTime == null ? "NULL" : lastStatusTime} - <b>Reason:</b> <span className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
+              <b>Last Status:</b> <TimeAgo date={lastStatusTime} locale="en-US"/> - <b>Reason:</b> <span className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
               <b>Regular Status Interval:</b> {scheduledStatusFreq} sec
           </Typography>
           <Typography
