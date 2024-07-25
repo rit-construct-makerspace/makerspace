@@ -378,7 +378,7 @@ async function startServer() {
     }
     updateReaderStatus({
       id: reader.id,
-      machineID: reader.machineID,
+      machineID: parseInt(reader.machineType),
       machineType: reader.machineType,
       zone: reader.zone,
       temp: req.body.Temp,
