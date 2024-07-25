@@ -366,7 +366,8 @@ async function startServer() {
     var reader = await getReaderByMachineID(parseInt(req.params.MachineID));
     if (reader == undefined) {
       reader = await createReader({
-        machineID: req.body.Machine,
+        name: req.body.MachineID,
+        machineID: req.body.MachineType,
         machineType: req.body.MachineType,
         zone: req.body.Zone
       });
