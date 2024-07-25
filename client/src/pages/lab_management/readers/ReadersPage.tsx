@@ -21,7 +21,7 @@ export default function ReadersPage() {
     <Page title="Readers" maxWidth="1250px">
       <Stack direction="row" spacing={2}>
         <SearchBar
-          placeholder="Search equipment"
+          placeholder="Search access devices"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
