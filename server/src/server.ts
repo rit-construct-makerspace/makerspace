@@ -442,12 +442,10 @@ async function startServer() {
 
   /**
    * CHECK----
-   * Report a card reader's current state to the database
-   * 
-   * TODO
+   * Return 200
    */
   app.get("/api/check/:MachineID", function(req, res) {
-
+    return res.status(200).send();
   });
 
 
