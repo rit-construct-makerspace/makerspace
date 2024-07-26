@@ -359,7 +359,7 @@ async function startServer() {
   app.put("/api/status", async function(req, res) {
     //If API Keys dont match, fail
     if (req.body.Key != process.env.API_KEY) {
-      if (API_DEBUG_LOGGING) createLog("Card Reader Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 403, label: "Invalid Key"});
+      if (API_DEBUG_LOGGING) createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 403, label: "Invalid Key"});
       return res.status(403).json({error: "Invalid Key"}).send();
     }
 
@@ -374,7 +374,7 @@ async function startServer() {
         zone: req.body.Zone
       });
       if (reader == undefined) {
-        if (API_DEBUG_LOGGING) createLog("Card Reader Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+        if (API_DEBUG_LOGGING) createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
         return res.status(400).json({error: "Reader does not exist"}).send();
       }
     }
@@ -402,12 +402,25 @@ async function startServer() {
    * - Machine: the ID of the machine according to the database
    * - Zone: the room ID according to the database
    * - Key: API key for authorization
-   * 
-   * TODO
    */
   app.get("/api/help/:MachineID", async function(req, res) {
-    // const reader = await getReaderByName(req.params.MachineID);
-    // return await toggleHelpRequested(reader?.id);
+    //If API Keys dont match, fail
+    if (req.body.Key != process.env.API_KEY) {
+      if (API_DEBUG_LOGGING) createLog("Access Device Help request failed with error '{error}'", {id: 403, label: "Invalid Key"});
+      return res.status(403).json({error: "Invalid Key"}).send();
+    }
+
+    const reader = await getReaderByName(req.body.Machine);
+    if (reader == undefined) {
+      if (API_DEBUG_LOGGING) createLog("Access Device Help request failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+      return res.status(400).json({error: "Reader does not exist"}).send();
+    }
+    await toggleHelpRequested(reader?.id);
+    if (API_NORMAL_LOGGING) {
+      if (!reader.helpRequested) createLog("Help requested at {access_device}!", {id: reader.id, label: reader.name}); //Prev was false, new is true
+      else createLog("Help dismissed at {access_device}", {id: reader.id, label: reader.name}); //Prev was true, new is false
+    }
+    return res.status(200).send();
   });
 
 
