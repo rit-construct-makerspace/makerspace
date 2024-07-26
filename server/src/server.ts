@@ -405,7 +405,7 @@ async function startServer() {
    */
   app.put("/api/help", async function(req, res) {
     //If API Keys dont match, fail
-    console.log("HELP: " + req);
+    console.log("HELP: " + req.body);
     if (req.body.Key != process.env.API_KEY) {
       if (API_DEBUG_LOGGING) createLog("Access Device Help request failed with error '{error}'", {id: 403, label: "Invalid Key"});
       return res.status(403).json({error: "Invalid Key"}).send();
