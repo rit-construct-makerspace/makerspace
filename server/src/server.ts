@@ -16,7 +16,7 @@ import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLog
 import { getEquipmentByID, hasAccess, hasAccessByID } from "./repositories/Equipment/EquipmentRepository";
 import { Room } from "./models/rooms/room";
 import { Privilege } from "./schemas/usersSchema";
-import { createReader, getReaderByID, getReaderByMachineID, getReaderByName, updateReaderStatus } from "./repositories/Readers/ReaderRepository";
+import { createReader, getReaderByID, getReaderByMachineID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository";
 var morgan = require("morgan"); //Log provider
 var bodyParser = require('body-parser'); //JSON request body parser
@@ -218,7 +218,7 @@ async function startServer() {
    * - id: user uid
    */
   app.get("/api/auth", async function(req, res) {
-    if (req.query.id == undefined || req.query.needswelcome == undefined || req.query.zone == undefined || req.query.machine == undefined) {
+    if (req.query.id == undefined || req.query.needswelcome == undefined || req.query.zone == undefined || req.query.type == undefined) {
       if (API_DEBUG_LOGGING) createLog("Request failed to gain equipent access with error '{error}'", {id: 400, label: "Missing paramaters"});
       return res.status(400).json({error: "Missing paramaters"}).send();
     }
@@ -252,12 +252,12 @@ async function startServer() {
 
     var machine;
     try {
-      machine = await getEquipmentByID(parseInt(req.query.machine.toString()));
+      machine = await getEquipmentByID(parseInt(req.query.type.toString()));
     } catch (EntityNotFound) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.machine.toString() + " does not exist"});
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.type.toString() + " does not exist"});
       return res.status(406).json({
         "Type": "Authorization",
-        "Machine": req.query.machine,
+        "Machine": req.query.type,
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Machine does not exist"
@@ -266,10 +266,10 @@ async function startServer() {
 
     //If machine is not found, fail
     if (machine == null) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.machine.toString() + " does not exist"});
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.type.toString() + " does not exist"});
       return res.status(406).json({
         "Type": "Authorization",
-        "Machine": req.query.machine,
+        "Machine": req.query.type,
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Machine does not exist"
@@ -356,29 +356,31 @@ async function startServer() {
    * - Frequency: How often scheduled status messages will be sent
    * - Key: API key for authorization
    */
-  app.put("/api/status/:MachineID", async function(req, res) {
+  app.put("/api/status", async function(req, res) {
     //If API Keys dont match, fail
     if (req.body.Key != process.env.API_KEY) {
-      if (API_DEBUG_LOGGING) createLog("Card Reader Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 403, label: "Invalid Key"});
+      if (API_DEBUG_LOGGING) createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 403, label: "Invalid Key"});
       return res.status(403).json({error: "Invalid Key"}).send();
     }
 
-    var reader = await getReaderByName(req.params.MachineID);
+    console.log(req.body.Machine);
+    var reader = await getReaderByName(req.body.Machine);
+    console.log(reader);
     if (reader == undefined) {
       reader = await createReader({
-        name: req.body.MachineID,
+        name: req.body.Machine,
         machineID: req.body.MachineType,
         machineType: req.body.MachineType,
         zone: req.body.Zone
       });
       if (reader == undefined) {
-        if (API_DEBUG_LOGGING) createLog("Card Reader Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+        if (API_DEBUG_LOGGING) createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
         return res.status(400).json({error: "Reader does not exist"}).send();
       }
     }
     updateReaderStatus({
       id: reader.id,
-      machineID: reader.machineID,
+      machineID: parseInt(reader.machineType),
       machineType: reader.machineType,
       zone: reader.zone,
       temp: req.body.Temp,
@@ -400,11 +402,25 @@ async function startServer() {
    * - Machine: the ID of the machine according to the database
    * - Zone: the room ID according to the database
    * - Key: API key for authorization
-   * 
-   * TODO
    */
-  app.get("/api/help/:MachineID", function(req, res) {
-    //Slack bot?
+  app.get("/api/help/:MachineID", async function(req, res) {
+    //If API Keys dont match, fail
+    if (req.body.Key != process.env.API_KEY) {
+      if (API_DEBUG_LOGGING) createLog("Access Device Help request failed with error '{error}'", {id: 403, label: "Invalid Key"});
+      return res.status(403).json({error: "Invalid Key"}).send();
+    }
+
+    const reader = await getReaderByName(req.body.Machine);
+    if (reader == undefined) {
+      if (API_DEBUG_LOGGING) createLog("Access Device Help request failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+      return res.status(400).json({error: "Reader does not exist"}).send();
+    }
+    await toggleHelpRequested(reader?.id);
+    if (API_NORMAL_LOGGING) {
+      if (!reader.helpRequested) createLog("Help requested at {access_device}!", {id: reader.id, label: reader.name}); //Prev was false, new is true
+      else createLog("Help dismissed at {access_device}", {id: reader.id, label: reader.name}); //Prev was true, new is false
+    }
+    return res.status(200).send();
   });
 
 
@@ -415,10 +431,10 @@ async function startServer() {
    * - message: The audit log message
    */
   app.get("/api/message/:MachineID", async function(req, res) {
-    const machine = await getEquipmentByID(parseInt(req.params.MachineID));
+    const machine = await getReaderByName(req.params.MachineID);
 
-    if (req.query.message != undefined) {
-      createLog("{machine} message: " + req.query.message.toString(), {id: machine.id, label: machine.name});
+    if (req.query.message != undefined && machine != undefined) {
+      createLog("{access_device} message: " + req.query.message.toString(), {id: machine.id, label: machine.name});
       return res.status(200).send();
     }
     return res.status(400).send();
@@ -426,12 +442,10 @@ async function startServer() {
 
   /**
    * CHECK----
-   * Report a card reader's current state to the database
-   * 
-   * TODO
+   * Return 200
    */
   app.get("/api/check/:MachineID", function(req, res) {
-
+    return res.status(200).send();
   });
 
 

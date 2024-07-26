@@ -14,6 +14,7 @@ import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/getRooms";
 import { useQuery } from "@apollo/client";
 import TimeAgo from 'react-timeago'
+import { blue } from "@mui/material/colors";
 
 interface ReaderCardProps {
     id: number,
@@ -27,7 +28,8 @@ interface ReaderCardProps {
     recentSessionLength: number,
     lastStatusReason: string,
     scheduledStatusFreq: number,
-    lastStatusTime: string
+    lastStatusTime: string,
+    helpRequested: boolean
 }
 
 const useStyles = makeStyles({
@@ -37,10 +39,13 @@ const useStyles = makeStyles({
   },
   errorCard: {
     border: "3px solid red"
+  },
+  notifCard: {
+    border: "3px solid blue"
   }
 });
 
-export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, currentUID, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime }: ReaderCardProps) {
+export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, currentUID, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
     "Current User: " + currentUID + "\nSession Length" + recentSessionLength + " sec"
   ) : (
@@ -63,7 +68,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card sx={{ width: 350, minHeight: 550}} className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : ""}>
+      <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
         <CardHeader
           title={name}
           subheader={"Type: " + machineType}
@@ -132,6 +137,16 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
                     align="center"
                 >
                     {state == null ? "NULL" : state}
+                    {helpRequested && 
+                    <Typography
+                      variant="h6"
+                      component="div"
+                      sx={{ lineHeight: 1, mb: 1, color: "blue" }}
+                      noWrap
+                      align="center"
+                    >
+                      Help Requested!
+                    </Typography>}
                 </Typography>
             </CardContent>
           </Card>
