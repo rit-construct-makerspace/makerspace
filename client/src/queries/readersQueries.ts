@@ -2,6 +2,7 @@ import { gql } from "@apollo/client";
 import Equipment from "../types/Equipment";
 
 export interface Reader {
+  helpRequested: boolean;
   id: number,
   machineID: string,
   machineType: string,
@@ -31,6 +32,7 @@ export const GET_READERS = gql`
       lastStatusReason
       scheduledStatusFreq
       lastStatusTime
+      helpRequested
     }
   }
 `
