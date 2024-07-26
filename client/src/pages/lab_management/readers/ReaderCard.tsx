@@ -14,7 +14,6 @@ import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/getRooms";
 import { useQuery } from "@apollo/client";
 import TimeAgo from 'react-timeago'
-import useSound from 'use-sound';
 
 interface ReaderCardProps {
     id: number,
@@ -63,14 +62,17 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
   const now = new Date();
   const lastTimeDifference = now.getTime() - (new Date(lastStatusTime).getTime());
 
-  const audio = new Audio("../../../assets/help.mp3");
+  const audio = new Audio("/audio/help.mp3");
+  const startAudio = () => {
+    audio.play()
+  }
 
   return (
     <RequestWrapper
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card onClick={audio} sx={{ width: 350, minHeight: 600}} className={(lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
+      <Card onLoad={startAudio} sx={{ width: 350, minHeight: 600}} className={(lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
         <CardHeader
           title={name}
           subheader={"Type: " + machineType}

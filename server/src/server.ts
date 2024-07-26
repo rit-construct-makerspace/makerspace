@@ -20,6 +20,7 @@ import { createReader, getReaderByID, getReaderByMachineID, getReaderByName, tog
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository";
 var morgan = require("morgan"); //Log provider
 var bodyParser = require('body-parser'); //JSON request body parser
+var fileSystem = require('fs'); //File system navigator
 
 const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu"];
 
@@ -122,6 +123,20 @@ async function startServer() {
     res.redirect("/app/home");
   });
 
+
+  app.get("/audio/help.mp3", function(req, res) {
+    var filePath = path.join(__dirname, 'data/help.mp3');
+    var stat = fileSystem.statSync(filePath);
+
+    res.writeHead(200, {
+        'Content-Type': 'audio/mpeg',
+        'Content-Length': stat.size
+    });
+
+    var readStream = fileSystem.createReadStream(filePath);
+    // We replaced all the event handlers with a simple call to readStream.pipe()
+    readStream.pipe(res);
+  });
 
 
   // app.get("/app/", function (req, res) {
