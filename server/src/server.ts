@@ -403,7 +403,7 @@ async function startServer() {
    * - Zone: the room ID according to the database
    * - Key: API key for authorization
    */
-  app.get("/api/help/:MachineID", async function(req, res) {
+  app.put("/api/help/:MachineID", async function(req, res) {
     //If API Keys dont match, fail
     if (req.body.Key != process.env.API_KEY) {
       if (API_DEBUG_LOGGING) createLog("Access Device Help request failed with error '{error}'", {id: 403, label: "Invalid Key"});
