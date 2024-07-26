@@ -72,7 +72,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card onLoad={startAudio} sx={{ width: 350, minHeight: 600}} className={(lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
+      <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
         <CardHeader
           title={name}
           subheader={"Type: " + machineType}
@@ -149,7 +149,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
                       noWrap
                       align="center"
                     >
-                      Help Requested!
+                      <span onLoad={startAudio}>Help Requested!</span>
                     </Typography>}
                 </Typography>
             </CardContent>
