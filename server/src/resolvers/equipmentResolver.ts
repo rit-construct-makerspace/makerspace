@@ -37,6 +37,11 @@ const EquipmentResolvers = {
     reservation: async (_parent: any, args: { id: string }, _context: any) => {
       return await reservationRepo.getReservationById(Number(args.id));
     },
+
+    anyEquipment: async (_parent: any, args: { id: string }, _context: any) => {
+      return await EquipmentRepo.getEquipmentByID(Number(args.id));
+    },
+
   },
 
   Equipment: {
