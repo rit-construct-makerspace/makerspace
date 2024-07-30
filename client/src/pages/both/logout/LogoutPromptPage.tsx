@@ -1,7 +1,7 @@
 import Page from "../../Page";
 import {Button, Grid, Stack, Typography} from "@mui/material";
 import {useCallback} from "react";
-import {useNavigate} from "react-router-dom";
+import {redirect, useNavigate} from "react-router-dom";
 
 export default function LogoutPromptPage() {
 
@@ -21,12 +21,12 @@ export default function LogoutPromptPage() {
 
                 //reload is needed to force logout user, in the future should make this happen in a better way
                 //possibly redirect to login page?
-                navigate("/logout")
 
             })
             .catch(function(err) {
                 console.info(err);
             });
+        redirect("https://shibboleth.main.ad.rit.edu/logout.html");
     }, []);
 
 
