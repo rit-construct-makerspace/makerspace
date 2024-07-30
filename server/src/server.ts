@@ -453,11 +453,20 @@ async function startServer() {
     /**
    * STATE----
    * Check a machine's last returned State
-   * 
-   * TODO
    */
-    app.get("/api/state/:MachineID", function(req, res) {
+    app.get("/api/state/:MachineID", async function(req, res) {
+      const reader =  await getReaderByName(req.params.MachineID);
 
+      if (reader == undefined) {
+        if (API_DEBUG_LOGGING) createLog("Access Device State fetch failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+        return res.status(400).json({error: "Reader does not exist"}).send();
+      }
+
+      return res.status(200).json({
+        Type: "State",
+        MachineID: reader?.name,
+        State: reader?.state
+      })
     });
 
 
