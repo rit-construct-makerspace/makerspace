@@ -21,7 +21,7 @@ import { isApproved } from "./repositories/Equipment/AccessChecksRepository";
 var morgan = require("morgan"); //Log provider
 var bodyParser = require('body-parser'); //JSON request body parser
 
-const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu"];
+const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
 
 /**
  * set up Cross-Origin Request allowances
@@ -117,16 +117,14 @@ async function startServer() {
     res.redirect("/app/home");
   });
 
-  //stops refreshes from not grabbing the client page
-  app.get("/app/*", function(req , res) {
-    res.redirect("/app/home");
+
+
+
+
+  app.get("/app/*", function (req, res) {
+    res.header
+    res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
   });
-
-
-
-  // app.get("/app/", function (req, res) {
-  //   res.sendFile(path.join(__dirname, "../../client/build", "index.html"));
-  // });
 
   // app.get('*', (req, res) => {
   //   res.redirect("/app");
