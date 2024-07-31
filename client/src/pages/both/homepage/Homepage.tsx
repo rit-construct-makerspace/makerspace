@@ -33,18 +33,21 @@ const Homepage: React.FC = () => {
                 display: "flex",
                 flexDirection: "row",
                 flexWrap: "wrap",
-                justifyContent: "space-around",
+                justifyContent: "flex-start",
                 alignContent: "flex-start",
                 gap: "1em"
             }}>
                 {/* <AccountBalanceCard /> */}
-                <ExpiringSoonCard />
-                <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")} />
-
-                <OperationHoursCard />
                 <AnnouncementsCard />
+                <Stack direction={"column"}>
+                    <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")} />
+                    <ExpiringSoonCard />
+                </Stack>
 
-                <UpcomingEventsCard />
+                <Stack direction={"column"}>
+                    <OperationHoursCard />
+                    <UpcomingEventsCard />
+                </Stack>
             </div>
         </Page>
     );
