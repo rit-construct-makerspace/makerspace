@@ -28,6 +28,24 @@ export const GET_EQUIPMENT_BY_ID = gql`
   }
 `;
 
+export const GET_ANY_EQUIPMENT_BY_ID = gql`
+  query GetAnyEquipment($id: ID!) {
+    anyEquipment(id: $id) {
+      id
+      name
+      archived
+      room {
+        id
+        name
+      }
+      trainingModules {
+        id
+        name
+      }
+    }
+  }
+`;
+
 export const GET_ARCHIVED_EQUIPMENTS = gql`
   query GetArchivedEquipment {
     archivedEquipments {

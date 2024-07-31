@@ -172,7 +172,7 @@ async function startServer() {
     // .forEach will not await the interior statements. Unsure why, so we use a normal for loop
     for (var i = 0; i < roomIDs.length; i++) {
       var idString = roomIDs[i];
-      console.log(await getRoomByID(parseInt(idString)));
+      //console.log(await getRoomByID(parseInt(idString)));
       rooms.push(await getRoomByID(parseInt(idString)));
     }
 
@@ -289,7 +289,7 @@ async function startServer() {
 
     //If needs welcome, check that room swipe has occured in the zone today
     if (req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
-      console.log("Checking welcome status");
+      //console.log("Checking welcome status");
       const welcomed = await hasSwipedToday(room.id, user.id);
       if (!welcomed) {
         if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "User requires Welcome"});
@@ -361,9 +361,9 @@ async function startServer() {
       return res.status(403).json({error: "Invalid Key"}).send();
     }
 
-    console.log(req.body.Machine);
+    //console.log(req.body.Machine);
     var reader = await getReaderByName(req.body.Machine);
-    console.log(reader);
+    //console.log(reader);
     if (reader == undefined) {
       reader = await createReader({
         name: req.body.Machine,
@@ -401,8 +401,9 @@ async function startServer() {
    * - Zone: the room ID according to the database
    * - Key: API key for authorization
    */
-  app.get("/api/help/:MachineID", async function(req, res) {
+  app.put("/api/help", async function(req, res) {
     //If API Keys dont match, fail
+    //console.log("HELP: " + JSON.stringify(req.body, null, 4));
     if (req.body.Key != process.env.API_KEY) {
       if (API_DEBUG_LOGGING) createLog("Access Device Help request failed with error '{error}'", {id: 403, label: "Invalid Key"});
       return res.status(403).json({error: "Invalid Key"}).send();
