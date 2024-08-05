@@ -23,6 +23,7 @@ import {Stack, Box, Button} from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import PrinterOsIcon from "../common/PrinterOSIcon";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -94,6 +95,11 @@ export default function LeftNav() {
             to="/maker/materials"
             primary="Materials"
             icon={<InventoryIcon />}
+          />
+          <NavLink
+            to="https://cloud.3dprinteros.com/ssosaml/rit/auth"
+            primary="3DPrinterOS"
+            icon={<PrinterOsIcon />}
           />
         </List>
 
