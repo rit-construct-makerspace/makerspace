@@ -12,7 +12,7 @@ import { PassedModule } from "../../schemas/usersSchema";
  * @returns {TrainingModuleRow[]} modules
  */
 export async function getModules(): Promise<TrainingModuleRow[]> {
-  return knex("TrainingModule").select();
+  return knex("TrainingModule").select().orderBy("name", "asc");
 }
 
 /**
@@ -23,7 +23,8 @@ export async function getModules(): Promise<TrainingModuleRow[]> {
 export async function getModulesWhereArchived(archived: boolean): Promise<TrainingModuleRow[]> {
   return knex("TrainingModule")
           .select()
-          .where({ archived: archived });
+          .where({ archived: archived })
+          .orderBy("name", "asc");
 }
 
 /**
@@ -67,7 +68,8 @@ export async function getModuleByIDWhereArchived(id: number, archived: boolean):
                                 .where({
                                   id: id,
                                   archived: archived
-                                });  
+                                })
+                                .orderBy("name", "asc");  
 
   if (!trainingModule)
     throw new EntityNotFound(`Training module #${id} not found`);
@@ -154,7 +156,8 @@ export async function getPassedModulesByUser(
       "ModuleSubmissions.expirationDate"
     )
     .where("ModuleSubmissions.makerID", userID)
-    .andWhere("ModuleSubmissions.passed", true);
+    .andWhere("ModuleSubmissions.passed", true)
+    .orderBy("name", "asc");;
 }
 
 /**
