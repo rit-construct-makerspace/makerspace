@@ -9,6 +9,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
 import { ObjectSummary } from "../../../types/Common";
 import { useState } from "react";
+import Equipment from "../../../types/Equipment";
 
 export default function EquipmentPage() {
   const { id } = useParams<{ id: string }>();
@@ -33,13 +34,13 @@ export default function EquipmentPage() {
       error={getEquipmentsResult.error}
     >
         <Grid container spacing={3} mt={2}>
-          {getEquipmentsResult.data?.equipments?.filter((m: ObjectSummary) =>
+          {getEquipmentsResult.data?.equipments?.filter((m: Equipment) =>
               m.name
                 .toLocaleLowerCase()
                 .includes(searchText.toLocaleLowerCase())
-            ).map((e: ObjectSummary) => (
+            ).map((e: Equipment) => (
               <Grid key={e.id} item>
-                <EquipmentCard id={e.id} name={e.name} to={url + e.id} />
+                <EquipmentCard id={e.id??0} name={e.name} to={url + e.id} imageUrl={(e.imageUrl == undefined || e.imageUrl == null ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : process.env.PUBLIC_URL + "/" + e.imageUrl)} />
               </Grid>
           ))}
         </Grid>

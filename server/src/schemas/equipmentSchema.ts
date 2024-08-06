@@ -16,6 +16,7 @@ export const EquipmentTypeDefs = gql`
     addedAt: DateTime!
     inUse: Boolean!
     hasAccess(uid: String): Boolean!
+    imageUrl: String
   }
 
   input EquipmentInput {
