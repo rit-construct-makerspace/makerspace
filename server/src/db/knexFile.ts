@@ -1,3 +1,6 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+
 require("dotenv").config({ path: __dirname + "/./../../.env" });
 
 // Update with your config settings.
