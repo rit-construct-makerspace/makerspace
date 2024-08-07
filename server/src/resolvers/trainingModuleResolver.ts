@@ -9,6 +9,37 @@ import { MODULE_PASSING_THRESHOLD } from "../constants";
 import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import { createAccessCheck } from "../repositories/Equipment/AccessChecksRepository";
+import("got");
+
+
+const ID_3DPRINTEROS_QUIZ = Number(process.env.ID_3DPRINTEROS_QUIZ);
+
+async function add3DPrinterOSUser(username: string) {
+  //Login API User
+  var options = {
+    body: "username:" + process.env.CLOUDPRINT_API_USERNAME + "\npassword:" + process.env.CLOUDPRINT_API_PASSWORD,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+  }
+  const body = await fetch((process.env.CLOUDPRINT_API_URL + "login"), options).then(function (res) {
+    //Currently the compiler will not allow us to parse res.json() since it is typed as 'unknown'
+    //To fix this, we will simply lie to the compiler and say it is 'any'
+    return res.json() as any;
+  }).then(async function (json) {
+    //Add user to workgroups
+    if (json.body == null) return;
+    var options = {
+      body: "session:" + JSON.parse(json.body).message.session + "\nworkgroup_id:" + process.env.CLOUDPRINT_API_WORKGROUP + "\nemail:" + username + "@rit.edu",
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    }
+    return fetch((process.env.CLOUDPRINT_API_URL + "add_user_to_workgroup"), options)
+  }).then(function (res) {
+    return res?.json() as any;
+  }).then(function (res) {
+    return res.body;
+  });
+
+  console.log(body);
+}
 
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   for (let item of quiz) {
@@ -230,10 +261,15 @@ const TrainingModuleResolvers = {
 
             //If all trainings for equipment done, add access check for all passed equipment
             if (grade >= MODULE_PASSING_THRESHOLD) {
-              const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
-              equipmentIDsToCheck.forEach(async equipmentID => {
-                await createAccessCheck(user.id, equipmentID);
-              });
+              if (Number(args.moduleID) === ID_3DPRINTEROS_QUIZ) {
+                //If 3D Printer Training, add them to the workgroup instead of using an access check
+                add3DPrinterOSUser(user.ritUsername)
+              } else {
+                const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
+                equipmentIDsToCheck.forEach(async equipmentID => {
+                  await createAccessCheck(user.id, equipmentID);
+                });
+              }
             }
 
             return id;

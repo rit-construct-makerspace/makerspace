@@ -8,7 +8,7 @@ import cors from "cors";
 import { schema } from "./schema";
 import { setupSessions, setupDevAuth, setupStagingAuth, setupAuth } from "./auth";
 import context from "./context";
-import { json } from "body-parser";
+import json from "body-parser";
 import path from "path";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository";
 import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository";
@@ -18,10 +18,14 @@ import { Room } from "./models/rooms/room";
 import { Privilege } from "./schemas/usersSchema";
 import { createReader, getReaderByID, getReaderByMachineID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository";
-var morgan = require("morgan"); //Log provider
-var bodyParser = require('body-parser'); //JSON request body parser
+import morgan from "morgan"; //Log provider
+import bodyParser from "body-parser"; //JSON request body parser
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
+
+const __dirname = import.meta.dirname;
 
 /**
  * set up Cross-Origin Request allowances
@@ -449,24 +453,24 @@ async function startServer() {
   });
 
 
-    /**
+  /**
    * STATE----
    * Check a machine's last returned State
    */
-    app.get("/api/state/:MachineID", async function(req, res) {
-      const reader =  await getReaderByName(req.params.MachineID);
+  app.get("/api/state/:MachineID", async function(req, res) {
+    const reader =  await getReaderByName(req.params.MachineID);
 
-      if (reader == undefined) {
-        if (API_DEBUG_LOGGING) createLog("Access Device State fetch failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
-        return res.status(400).json({error: "Reader does not exist"}).send();
-      }
+    if (reader == undefined) {
+      if (API_DEBUG_LOGGING) createLog("Access Device State fetch failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+      return res.status(400).json({error: "Reader does not exist"}).send();
+    }
 
-      return res.status(200).json({
-        Type: "State",
-        MachineID: reader?.name,
-        State: reader?.state
-      })
-    });
+    return res.status(200).json({
+      Type: "State",
+      MachineID: reader?.name,
+      State: reader?.state
+    })
+  });
 
 
   const server = new ApolloServer({

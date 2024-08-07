@@ -1,4 +1,6 @@
-import { knex } from "knex";
+import knex from "knex";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
 const connection =
   require("../db/knexFile")[process.env.NODE_ENV || "development"];
