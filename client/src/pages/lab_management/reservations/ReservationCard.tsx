@@ -44,7 +44,7 @@ export default function ReservationCard({ reservation }: ReservationCardProps) {
         component="img"
         height="140"
         alt=""
-        image={reservation.equipment.image}
+        image={reservation.equipment.imageUrl}
       />
       <Stack direction="row" alignItems="flex-end" spacing={1}>
         <Avatar

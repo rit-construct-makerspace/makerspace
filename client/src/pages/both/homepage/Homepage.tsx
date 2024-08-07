@@ -11,6 +11,7 @@ import ExpiringSoonCard from "./ExpiringSoonCard";
 import AnnouncementsCard from "./AnnouncementsCard";
 import { useNavigate } from "react-router-dom";
 import { wrap } from "module";
+import ResourcesCard from "./ResourcesCard";
 // import RequestWrapper from "../../../common/RequestWrapper";
 // import { useQuery } from "@apollo/client";
 // import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
@@ -38,7 +39,10 @@ const Homepage: React.FC = () => {
                 gap: "1em"
             }}>
                 {/* <AccountBalanceCard /> */}
-                <AnnouncementsCard />
+                <Stack direction={"column"}>
+                    <ResourcesCard />
+                    <AnnouncementsCard />
+                </Stack>
                 <Stack direction={"column"}>
                     <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")} />
                     <ExpiringSoonCard />

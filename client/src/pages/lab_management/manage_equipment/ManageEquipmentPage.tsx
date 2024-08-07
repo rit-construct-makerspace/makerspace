@@ -8,6 +8,7 @@ import { GET_EQUIPMENTS, GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipm
 import { ObjectSummary } from "../../../types/Common";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EditableEquipmentCard from "./EditableEquipmentCard";
+import Equipment from "../../../types/Equipment";
 
 export default function ManageEquipmentPage() {
   const { id } = useParams<{ id: string }>();
@@ -48,14 +49,14 @@ export default function ManageEquipmentPage() {
             >
                 <Grid container spacing={3} mt={2}>
                     {getEquipmentsResult.data?.equipments
-                    .filter((m: ObjectSummary) =>
+                    .filter((m: Equipment) =>
                         m.name
                         .toLocaleLowerCase()
                         .includes(searchText.toLocaleLowerCase())
                     )
-                    .map((e: ObjectSummary) => (
+                    .map((e: Equipment) => (
                         <Grid key={e.id} item>
-                            <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} />
+                            <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} imageUrl={(e.imageUrl == undefined || e.imageUrl == null ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : process.env.PUBLIC_URL + "/" + e.imageUrl)} />
                         </Grid>
                     ))}
                 </Grid>
@@ -71,14 +72,14 @@ export default function ManageEquipmentPage() {
             >
                 <Grid container spacing={3} mt={2}>
                     {getArchivedEquipmentsResult.data?.archivedEquipments
-                    .filter((m: ObjectSummary) =>
+                    .filter((m: Equipment) =>
                         m.name
                         .toLocaleLowerCase()
                         .includes(searchText.toLocaleLowerCase())
                     )
-                    .map((e: ObjectSummary) => (
+                    .map((e: Equipment) => (
                         <Grid key={e.id} item>
-                            <EditableEquipmentCard id={e.id} name={e.name} to={url + "/archived/" + e.id} archived={true} />
+                            <EditableEquipmentCard id={e.id} name={e.name} to={url + "/archived/" + e.id} archived={true}  imageUrl={(e.imageUrl == undefined || e.imageUrl == null ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : process.env.PUBLIC_URL + "/" + e.imageUrl)} />
                         </Grid>
                     ))}
                 </Grid>

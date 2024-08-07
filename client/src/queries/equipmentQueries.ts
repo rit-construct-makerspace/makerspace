@@ -6,6 +6,7 @@ export const GET_EQUIPMENTS = gql`
       id
       name
       archived
+      imageUrl
     }
   }
 `;
@@ -52,6 +53,7 @@ export const GET_ARCHIVED_EQUIPMENTS = gql`
       id
       name
       archived
+      imageUrl
     }
   }
 `;

@@ -386,7 +386,8 @@ async function startServer() {
       currentUID: req.body.UID,
       recentSessionLength: req.body.Time,
       lastStatusReason: req.body.Source,
-      scheduledStatusFreq: req.body.Frequency
+      scheduledStatusFreq: req.body.Frequency,
+      helpRequested: req.body.Help == null ? reader.helpRequested : (req.body.Help === "1")
     });
     return res.status(200).send();
   });
