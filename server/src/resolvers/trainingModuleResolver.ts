@@ -9,7 +9,7 @@ import { MODULE_PASSING_THRESHOLD } from "../constants";
 import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
 import { createAccessCheck } from "../repositories/Equipment/AccessChecksRepository";
-import("got");
+import fetch from "node-fetch";
 
 
 const ID_3DPRINTEROS_QUIZ = Number(process.env.ID_3DPRINTEROS_QUIZ);
