@@ -30,13 +30,13 @@ function shuffle(array: any[] | undefined) {
 export default function QuizPage() {
   const { id } = useParams<{ id: string }>();
   const result = useQuery(GET_MODULE, { variables: { id } });
-  console.log(result)
-  if (!result.loading) {
-    result.data.module.quiz.forEach(function(quizItem: QuizItem) {
-      quizItem.options = shuffle(quizItem.options);
-    })
-  }
-  console.log(result)
+  // console.log(result)
+  // if (!result.loading) {
+  //   result.data.module.quiz.forEach(function(quizItem: QuizItem) {
+  //     quizItem.options = shuffle(quizItem.options);
+  //   })
+  // }
+  // console.log(result)
   return (
     <RequestWrapper2
       result={result}
