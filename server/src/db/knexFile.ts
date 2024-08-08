@@ -1,5 +1,6 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
+const __dirname = import.meta.dirname;
 
 require("dotenv").config({ path: __dirname + "/./../../.env" });
 
