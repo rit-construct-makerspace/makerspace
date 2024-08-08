@@ -19,6 +19,8 @@ import { CurrentUser } from "./context.js";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository.js";
 import path from "path";
 
+const __dirname = import.meta.dirname;
+
 /**
  * General information gathered from a Shibboleth response
  */
