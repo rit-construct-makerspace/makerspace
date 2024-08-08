@@ -1,5 +1,5 @@
 import {Knex} from "knex";
-import {Privilege} from "../../schemas/usersSchema";
+import {Privilege} from "../../schemas/usersSchema.js";
 
 
 exports.seed = function(knex: Knex) {
