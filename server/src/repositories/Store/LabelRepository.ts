@@ -2,8 +2,8 @@
  * DB operations endpoint for Labels table
  */
 
-import { knex } from "../../db";
-import { getEquipmentByID } from "../Equipment/EquipmentRepository";
+import { knex } from "../../db/index.js";
+import { getEquipmentByID } from "../Equipment/EquipmentRepository.js";
 
 /**
  * Fetch all labels in table

@@ -1,4 +1,4 @@
-import { Privilege } from "../schemas/usersSchema";
+import { Privilege } from "../schemas/usersSchema.js";
 
 export interface AuditLogRow {
   id: number;
@@ -160,7 +160,7 @@ export interface AccessCheckRow {
   approved: boolean;
 }
 
-declare module "knex/types/tables" {
+declare module "knex/types/tables.js" {
   interface Tables {
     AuditLogs: AuditLogRow;
     Equipment: EquipmentRow;

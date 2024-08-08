@@ -1,14 +1,14 @@
-import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import { AnswerInput } from "../schemas/trainingModuleSchema";
-import { ApolloContext } from "../context";
-import { Privilege } from "../schemas/usersSchema";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "../repositories/Users/UserRepository";
-import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
-import { MODULE_PASSING_THRESHOLD } from "../constants";
-import { TrainingModuleItem, TrainingModuleRow } from "../db/tables";
-import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
-import { createAccessCheck } from "../repositories/Equipment/AccessChecksRepository";
+import * as ModuleRepo from "../repositories/Training/ModuleRepository.js";
+import { AnswerInput } from "../schemas/trainingModuleSchema.js";
+import { ApolloContext } from "../context.js";
+import { Privilege } from "../schemas/usersSchema.js";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
+import { getUsersFullName } from "../repositories/Users/UserRepository.js";
+import * as SubmissionRepo from "../repositories/Training/SubmissionRepository.js";
+import { MODULE_PASSING_THRESHOLD } from "../constants.js";
+import { TrainingModuleItem, TrainingModuleRow } from "../db/tables.js";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import { createAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
 import fetch from "node-fetch";
 
 
@@ -77,7 +77,7 @@ const TrainingModuleResolvers = {
       _args: any,
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         let modules = await ModuleRepo.getModulesWhereArchived(false);
 
         if (user.privilege === "MAKER")
@@ -91,7 +91,7 @@ const TrainingModuleResolvers = {
       args: { id: number },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, false);
 
         if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
@@ -139,7 +139,7 @@ const TrainingModuleResolvers = {
       args: { name: string; quiz: object },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         const module = await ModuleRepo.addModule(
           args.name,
           args.quiz
@@ -159,7 +159,7 @@ const TrainingModuleResolvers = {
       args: { id: string; name: string; quiz: object; reservationPrompt: object },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         const module = await ModuleRepo.updateModule(
           Number(args.id),
           args.name,
@@ -179,7 +179,7 @@ const TrainingModuleResolvers = {
       args: { id: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         const module = await ModuleRepo.setModuleArchived(Number(args.id), true);
 
         await createLog(
@@ -196,7 +196,7 @@ const TrainingModuleResolvers = {
       args: { id: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         const module = await ModuleRepo.setModuleArchived(Number(args.id), false);
 
         await createLog(
@@ -215,7 +215,7 @@ const TrainingModuleResolvers = {
     ) => {
       return ifAllowed(
         [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+        async (user: any) => {
           const module = await ModuleRepo.getModuleByIDWhereArchived(Number(args.moduleID), false);
 
           if (!module || module.archived) {
@@ -229,7 +229,7 @@ const TrainingModuleResolvers = {
           let correct = 0;
           let incorrect = 0;
 
-          const questions = module.quiz.filter((i) =>
+          const questions = module.quiz.filter((i: any) =>
             ["CHECKBOXES", "MULTIPLE_CHOICE"].includes(i.type)
           );
 
@@ -240,8 +240,8 @@ const TrainingModuleResolvers = {
               );
 
             const correctOptionIDs = question.options
-              .filter((o) => o.correct)
-              .map((o) => o.id);
+              .filter((o: any) => o.correct)
+              .map((o: any) => o.id);
 
             const submittedOptionIDs = args.answerSheet.find(
               (item) => item.itemID === question.id

@@ -1,5 +1,5 @@
-import * as SubmissionRepo from "../repositories/Training/SubmissionRepository";
-import { ApolloContext } from "../context";
+import * as SubmissionRepo from "../repositories/Training/SubmissionRepository.js";
+import { ApolloContext } from "../context.js";
 
 const TrainingSubmissionResolvers = {
   Query: {
@@ -8,7 +8,7 @@ const TrainingSubmissionResolvers = {
       args: { submissionID: string },
       { ifAuthenticated }: ApolloContext
     ) => 
-      ifAuthenticated (async (user) => {
+      ifAuthenticated (async (user: any) => {
         return SubmissionRepo.getSubmission(Number(args.submissionID));
     }),
     submissions: async (
@@ -16,7 +16,7 @@ const TrainingSubmissionResolvers = {
       args: { moduleID: string },
       { ifAuthenticated }: ApolloContext
     ) =>
-      ifAuthenticated(async (user) => {
+      ifAuthenticated(async (user: any) => {
         return args.moduleID ? 
           await SubmissionRepo.getSubmissionsByModule(user.id, Number(args.moduleID)) :
           await SubmissionRepo.getSubmissionsByUser(user.id)
@@ -26,7 +26,7 @@ const TrainingSubmissionResolvers = {
       args: { moduleID: string },
       { ifAuthenticated }: ApolloContext
     ) =>
-      ifAuthenticated(async (user) => {
+      ifAuthenticated(async (user: any) => {
         return args.moduleID ? 
           await SubmissionRepo.getLatestSubmissionByModule(user.id, Number(args.moduleID)) :
           await SubmissionRepo.getLatestSubmission(user.id)

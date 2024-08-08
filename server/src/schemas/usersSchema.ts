@@ -1,5 +1,5 @@
 import { gql } from "graphql-tag";
-import { UserRow } from "../db/tables";
+import { UserRow } from "../db/tables.js";
 
 export enum Privilege {
   MAKER = "MAKER",    // Maker

@@ -1,5 +1,5 @@
-import { knex } from "../../db";
-import { ReaderRow } from "../../db/tables";
+import { knex } from "../../db/index.js";
+import { ReaderRow } from "../../db/tables.js";
 
 /**
  * Fetch a card ready buy it's primary key
@@ -49,7 +49,7 @@ export async function createReader(reader: {
     zone?: string
 }): Promise<ReaderRow | undefined> {
     const [newID] = await knex("Readers").insert(reader, "id");
-    return await getReaderByID(newID);
+    return await getReaderByID(newID.id);
 }
 
 /**

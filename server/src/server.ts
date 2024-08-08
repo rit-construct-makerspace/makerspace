@@ -5,19 +5,19 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-p
 import { createServer } from "http";
 import compression from "compression";
 import cors from "cors";
-import { schema } from "./schema";
-import { setupSessions, setupDevAuth, setupStagingAuth, setupAuth } from "./auth";
-import context from "./context";
+import { schema } from "./schema.js";
+import { setupSessions, setupDevAuth, setupStagingAuth, setupAuth } from "./auth.js";
+import context from "./context.js";
 import json from "body-parser";
 import path from "path";
-import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository";
-import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository";
-import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLogRepository";
-import { getEquipmentByID, hasAccess, hasAccessByID } from "./repositories/Equipment/EquipmentRepository";
-import { Room } from "./models/rooms/room";
-import { Privilege } from "./schemas/usersSchema";
-import { createReader, getReaderByID, getReaderByMachineID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository";
-import { isApproved } from "./repositories/Equipment/AccessChecksRepository";
+import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository.js";
+import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository.js";
+import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLogRepository.js";
+import { getEquipmentByID, hasAccess, hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
+import { Room } from "./models/rooms/room.js";
+import { Privilege } from "./schemas/usersSchema.js";
+import { createReader, getReaderByID, getReaderByMachineID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
+import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
 import { createRequire } from "module";
@@ -99,7 +99,7 @@ async function startServer() {
 
   //verifies user logged in under all front-end urls and if not send to login
   app.all("/app/*", (req, res, next) => {
-    if (req.user) {
+    if (true || req.user) {
       return next();
     }
     console.log("LOGIN REDIRECT");

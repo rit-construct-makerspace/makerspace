@@ -6,7 +6,7 @@ import path from 'path';
 import { promises as fs } from 'fs';
 import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
-import { CalendarEvent } from '../../schemas/calendarEventsSchema';
+import { CalendarEvent } from '../../schemas/calendarEventsSchema.js';
 import { calendar_v3 } from 'googleapis/build/src/apis/calendar';
 
 const TOKEN_PATH = "/gapi/token.json";

@@ -2,9 +2,9 @@
  * DB operations endpoint for Announcements table
  */
 
-import { EntityNotFound } from "../../EntityNotFound";
-import { knex } from "../../db";
-import { AnnouncementRow } from "../../db/tables";
+import { EntityNotFound } from "../../EntityNotFound.js";
+import { knex } from "../../db/index.js";
+import { AnnouncementRow } from "../../db/tables.js";
 
 /**
  * fetch every Announcement

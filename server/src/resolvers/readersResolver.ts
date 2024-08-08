@@ -1,9 +1,9 @@
-import * as ReaderRepo from "../repositories/Readers/ReaderRepository";
-import { ApolloContext } from "../context";
-import { Privilege } from "../schemas/usersSchema";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "../repositories/Users/UserRepository";
-import { EntityNotFound } from "../EntityNotFound";
+import * as ReaderRepo from "../repositories/Readers/ReaderRepository.js";
+import { ApolloContext } from "../context.js";
+import { Privilege } from "../schemas/usersSchema.js";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
+import { getUsersFullName } from "../repositories/Users/UserRepository.js";
+import { EntityNotFound } from "../EntityNotFound.js";
 
 const ReadersResolver = {
   Query: {
@@ -38,7 +38,7 @@ const ReadersResolver = {
       args: { id: string; name: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async (executingUser) => {
+      ifAllowed([Privilege.STAFF], async (executingUser: any) => {
         const readerSubject = await ReaderRepo.getReaderByID(Number(args.id));
         if (readerSubject == undefined) {
           throw EntityNotFound;

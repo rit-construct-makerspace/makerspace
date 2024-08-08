@@ -2,9 +2,9 @@
  * DB operations endpoint for ModuleSubmissions table
  */
 
-import { knex } from "../../db";
-import { ModuleSubmissionRow } from "../../db/tables";
-import { EntityNotFound } from "../../EntityNotFound";
+import { knex } from "../../db/index.js";
+import { ModuleSubmissionRow } from "../../db/tables.js";
+import { EntityNotFound } from "../../EntityNotFound.js";
 
 /**
  * Create a Module SUbmission and append it to the table

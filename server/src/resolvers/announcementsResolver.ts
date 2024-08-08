@@ -1,7 +1,7 @@
 
-import { Privilege } from "../schemas/usersSchema";
-import { ApolloContext } from "../context";
-import { getAnnouncements, getAnnouncementByID, createAnnouncement, updateAnnouncement, deleteAnnouncement } from "../repositories/Announcements/AnnouncementsRepository";
+import { Privilege } from "../schemas/usersSchema.js";
+import { ApolloContext } from "../context.js";
+import { getAnnouncements, getAnnouncementByID, createAnnouncement, updateAnnouncement, deleteAnnouncement } from "../repositories/Announcements/AnnouncementsRepository.js";
 
 const AnnouncementsResolver = {
     
