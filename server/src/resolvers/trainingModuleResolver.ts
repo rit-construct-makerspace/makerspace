@@ -17,28 +17,34 @@ const ID_3DPRINTEROS_QUIZ = Number(process.env.ID_3DPRINTEROS_QUIZ);
 async function add3DPrinterOSUser(username: string) {
   //Login API User
   var options = {
-    body: "username:" + process.env.CLOUDPRINT_API_USERNAME + "\npassword:" + process.env.CLOUDPRINT_API_PASSWORD,
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    body: "username=" + process.env.CLOUDPRINT_API_USERNAME + "&password=" + process.env.CLOUDPRINT_API_PASSWORD,
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    method: "POST"
   }
-  const body = await fetch((process.env.CLOUDPRINT_API_URL + "login"), options).then(function (res) {
+  console.log(options);
+  const addRequestBody = await fetch((process.env.CLOUDPRINT_API_URL + "login"), options).then(async function (res) {
     //Currently the compiler will not allow us to parse res.json() since it is typed as 'unknown'
     //To fix this, we will simply lie to the compiler and say it is 'any'
-    return res.json() as any;
+    //console.log(res.json());
+    return await res.json() as any;
   }).then(async function (json) {
     //Add user to workgroups
-    if (json.body == null) return;
+    console.log("Session: ");
+    console.log(json.message.session);
     var options = {
-      body: "session:" + JSON.parse(json.body).message.session + "\nworkgroup_id:" + process.env.CLOUDPRINT_API_WORKGROUP + "\nemail:" + username + "@rit.edu",
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      body: "session=" + json.message.session + "&workgroup_id=" + process.env.CLOUDPRINT_API_WORKGROUP + "&email=" + username + "@rit.edu",
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      method: "POST"
     }
-    return fetch((process.env.CLOUDPRINT_API_URL + "add_user_to_workgroup"), options)
-  }).then(function (res) {
-    return res?.json() as any;
-  }).then(function (res) {
-    return res.body;
+    return await fetch((process.env.CLOUDPRINT_API_URL + "add_user_to_workgroup"), options)
+    .then(function (res) {
+      return res.json() as any;
+    }).then(async function (res) {
+      return res;
+    });
   });
 
-  console.log(body);
+  return addRequestBody.result;
 }
 
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
@@ -263,7 +269,19 @@ const TrainingModuleResolvers = {
             if (grade >= MODULE_PASSING_THRESHOLD) {
               if (Number(args.moduleID) === ID_3DPRINTEROS_QUIZ) {
                 //If 3D Printer Training, add them to the workgroup instead of using an access check
-                add3DPrinterOSUser(user.ritUsername)
+                add3DPrinterOSUser(user.ritUsername).then(async function(result) {
+                  if (result) {
+                    await createLog(
+                      `{user} has been automatically added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_WORKGROUP}.`,
+                      { id: user.id, label: getUsersFullName(user) }
+                    );
+                  } else {
+                    await createLog(
+                      `{user} has failed to be added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_WORKGROUP}. Check server logs.`,
+                      { id: user.id, label: getUsersFullName(user) }
+                    );
+                  }
+                })
               } else {
                 const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
                 equipmentIDsToCheck.forEach(async equipmentID => {
