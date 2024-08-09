@@ -12,7 +12,9 @@
     "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
     "sourceMap": true,
     "moduleResolution": "Node16",                                   /* Source map for debug */
-    //"allowImportingTsExtensions": true
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true
   },
   "ts-node": {
     "esm": true, // «———— enabling ESM for ts-node   
