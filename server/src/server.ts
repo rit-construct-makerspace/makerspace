@@ -99,7 +99,7 @@ async function startServer() {
 
   //verifies user logged in under all front-end urls and if not send to login
   app.all("/app/*", (req, res, next) => {
-    if (true || req.user) {
+    if (req.user) {
       return next();
     }
     console.log("LOGIN REDIRECT");
