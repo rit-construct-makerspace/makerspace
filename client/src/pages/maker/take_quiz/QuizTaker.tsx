@@ -11,13 +11,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Markdown from 'react-markdown'
 import { makeStyles } from '@material-ui/core/styles';
-import { Document, pdfjs } from 'react-pdf'
 
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
+const StyledDiv = styled.div`
+  border-radius: 4px;
+  border: none;
+  height: 1000px;
+`;
 
 const useStyles = makeStyles({
   strongerBolds: {
@@ -189,10 +189,11 @@ export default function QuizTaker({ module }: QuizTakerProps) {
             );
           case QuizItemType.PdfEmbed:
             return (
-              <Document
-                key={quizItem.id}
-                file={quizItem.text}
-              />
+              <StyledDiv>
+                <object data={quizItem.text} type="application/pdf" width="100%" height="100%">
+                  <p><a href={quizItem.text}>Embeded PDF</a></p>
+                </object>
+              </StyledDiv>
             );
         }
       })}

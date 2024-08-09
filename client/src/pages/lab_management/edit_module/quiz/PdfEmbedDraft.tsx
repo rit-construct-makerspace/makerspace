@@ -3,12 +3,11 @@ import styled from "styled-components";
 import { Stack, TextField } from "@mui/material";
 import QuizItemDraft from "./QuizItemDraft";
 import { QuizItem } from "../../../../types/Quiz";
-import { Document, pdfjs } from 'react-pdf'
 
-const StyledIFrame = styled.iframe`
+const StyledDiv = styled.div`
   border-radius: 4px;
   border: none;
-  height: 300px;
+  height: 1000px;
 `;
 
 interface PdfEmbedProps {
@@ -26,10 +25,6 @@ export default function PdfEmbedDraft({
   onRemove,
   onDuplicate,
 }: PdfEmbedProps) {
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-  ).toString();
   return (
     <QuizItemDraft onRemove={onRemove} onDuplicate={onDuplicate} index={index} itemId={pdfEmbed.id}>
       <Stack padding={2} spacing={2}>
@@ -43,7 +38,11 @@ export default function PdfEmbedDraft({
           }}
         />
         {pdfEmbed.text && (
-          <Document file={{url: pdfEmbed.text}} />
+          <StyledDiv>
+            <object data={pdfEmbed.text} type="application/pdf" width="100%" height="100%">
+              <p><a href={pdfEmbed.text}>Embeded PDF</a></p>
+            </object>
+          </StyledDiv>
         )}
       </Stack>
     </QuizItemDraft>
