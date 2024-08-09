@@ -11,6 +11,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Markdown from 'react-markdown'
 import { makeStyles } from '@material-ui/core/styles';
+import { Document, pdfjs } from 'react-pdf'
+
+
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url,
+).toString();
 
 const useStyles = makeStyles({
   strongerBolds: {
@@ -178,6 +185,13 @@ export default function QuizTaker({ module }: QuizTakerProps) {
               <StyledIFrame
                 key={quizItem.id}
                 src={`https://www.youtube.com/embed/${quizItem.text}`}
+              />
+            );
+          case QuizItemType.PdfEmbed:
+            return (
+              <Document
+                key={quizItem.id}
+                file={quizItem.text}
               />
             );
         }

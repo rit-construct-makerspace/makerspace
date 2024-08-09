@@ -33,7 +33,12 @@ export default function YouTubeEmbedDraft({
           placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
           value={youtubeEmbed.text}
           onChange={(e) => {
-            const embedId = new URL(e.target.value).searchParams.get("v") ?? "";
+            var embedId = ""
+            try {
+              embedId = new URL(e.target.value).searchParams.get("v") ?? "";
+            } catch (Exception) {
+              embedId = e.target.value;
+            }
             updateYoutubeEmbed({ ...youtubeEmbed, text: embedId });
           }}
         />
