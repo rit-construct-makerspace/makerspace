@@ -98,9 +98,6 @@ export default function EquipmentEditor({
                   : <ArchiveEquipmentButton equipmentID={equipment.id} appearance="medium" />
                 : null
             }
-            {
-              console.log(equipment.id + ": " + equipment.archived)
-            }
           </Stack>
         )}
 

@@ -9,6 +9,19 @@ import { LoadingButton } from "@mui/lab";
 import { GET_CURRENT_USER } from "../../../common/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Markdown from 'react-markdown'
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  strongerBolds: {
+    '& p': {
+      fontWeight: 400
+    },
+    '& strong': {
+      fontWeight: 900
+    }
+  }
+});
 
 const elevationTwoShadow = css`
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -123,15 +136,17 @@ export default function QuizTaker({ module }: QuizTakerProps) {
     trainingCancelAnimation();
   };
 
+  const classes = useStyles();
+
   return (
-    <Stack spacing={4}>
+    <Stack spacing={4} className={classes.strongerBolds}>
       {module.quiz.map((quizItem) => {
         const selectedOptionIDs =
           answerSheet.find((qi) => qi.itemID === quizItem.id)?.optionIDs ?? [];
 
         switch (quizItem.type) {
           case QuizItemType.Text:
-            return <Typography key={quizItem.id}>{quizItem.text}</Typography>;
+            return <Typography key={quizItem.id}><Markdown className={classes.strongerBolds}>{quizItem.text}</Markdown></Typography>;
           case QuizItemType.MultipleChoice:
             return (
               <Question
