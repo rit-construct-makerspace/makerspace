@@ -2,7 +2,7 @@
  * Map Audit Log entry to attributes
  */
 
-import { AuditLog } from "../../schemas/auditLogsSchema";
+import { AuditLog } from "../../schemas/auditLogsSchema.js";
 
 export function logsToDomain(raw: any): AuditLog[] {
   return raw.map((i: any) => {

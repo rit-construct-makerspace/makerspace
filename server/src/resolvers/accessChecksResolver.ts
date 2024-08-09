@@ -1,7 +1,7 @@
-import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
-import { Privilege } from "../schemas/usersSchema";
-import { ApolloContext } from "../context";
-import { getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import { Privilege } from "../schemas/usersSchema.js";
+import { ApolloContext } from "../context.js";
+import { getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository.js";
 const AccessChecksResolver = {
 
   Query: {

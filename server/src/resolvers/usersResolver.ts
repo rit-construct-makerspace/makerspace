@@ -1,11 +1,11 @@
-import * as UserRepo from "../repositories/Users/UserRepository";
-import * as ModuleRepo from "../repositories/Training/ModuleRepository";
-import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
-import * as AccessCheckRepo from "../repositories/Equipment/AccessChecksRepository";
-import { Privilege } from "../schemas/usersSchema";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { ApolloContext } from "../context";
-import { getUsersFullName } from "../repositories/Users/UserRepository";
+import * as UserRepo from "../repositories/Users/UserRepository.js";
+import * as ModuleRepo from "../repositories/Training/ModuleRepository.js";
+import * as HoldsRepo from "../repositories/Holds/HoldsRepository.js";
+import * as AccessCheckRepo from "../repositories/Equipment/AccessChecksRepository.js";
+import { Privilege } from "../schemas/usersSchema.js";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
+import { ApolloContext } from "../context.js";
+import { getUsersFullName } from "../repositories/Users/UserRepository.js";
 
 const UsersResolvers = {
   User: {
@@ -90,7 +90,7 @@ const UsersResolvers = {
       args: { userID: string, cardTagID: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser: any) => {
         const userSubject = await UserRepo.setCardTagID(Number(args.userID), args.cardTagID);
 
         await createLog(
@@ -106,7 +106,7 @@ const UsersResolvers = {
       args: { userID: string; privilege: Privilege },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser: any) => {
         const userSubject = await UserRepo.setPrivilege(Number(args.userID), args.privilege);
 
         await createLog(
@@ -123,7 +123,7 @@ const UsersResolvers = {
     ) =>
       ifAllowed(
         [Privilege.STAFF],
-        async (user) => {
+        async (user: any) => {
 
           const userSubject = await UserRepo.getUserByID(Number(args.userID));
 

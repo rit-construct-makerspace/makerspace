@@ -1,6 +1,6 @@
-import * as CalenderEventsRepository from "../repositories/CalendarEvents/CalendarEventsRepository";
-import { ApolloContext, CurrentUser } from "../context";
-import { Privilege } from "../schemas/usersSchema";
+import * as CalenderEventsRepository from "../repositories/CalendarEvents/CalendarEventsRepository.js";
+import { ApolloContext, CurrentUser } from "../context.js";
+import { Privilege } from "../schemas/usersSchema.js";
 
 const CalendarEventsResolver = {
   Query: {

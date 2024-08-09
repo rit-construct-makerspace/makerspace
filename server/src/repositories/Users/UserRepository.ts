@@ -2,14 +2,14 @@
  * DB operations endpoint for Users table
  */
 
-import { Privilege } from "../../schemas/usersSchema";
-import { knex } from "../../db";
-import { createLog } from "../AuditLogs/AuditLogRepository";
-import { EntityNotFound } from "../../EntityNotFound";
-import { UserRow } from "../../db/tables";
+import { Privilege } from "../../schemas/usersSchema.js";
+import { knex } from "../../db/index.js";
+import { createLog } from "../AuditLogs/AuditLogRepository.js";
+import { EntityNotFound } from "../../EntityNotFound.js";
+import { UserRow } from "../../db/tables.js";
 import { createHash } from "crypto";
 import { use } from "passport";
-import { User } from "@node-saml/passport-saml/lib/types";
+import { User } from "@node-saml/passport-saml/lib/types.js";
 
 
 /**
@@ -100,7 +100,7 @@ export async function createUser(user: {
   console.log("Creating user entry: " + user.ritUsername);
   user.universityID = hashUniversityID(user.universityID);
   const [newID] = await knex("Users").insert(user, "id");
-  return await getUserByID(newID);
+  return await getUserByID(newID.id);
 }
 
 /**

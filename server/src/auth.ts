@@ -13,11 +13,13 @@ import express from "express";
 import {
   createUser,
   getUserByRitUsername
-} from "./repositories/Users/UserRepository";
-import { getHoldsByUser } from "./repositories/Holds/HoldsRepository";
-import { CurrentUser } from "./context";
-import { createLog } from "./repositories/AuditLogs/AuditLogRepository";
+} from "./repositories/Users/UserRepository.js";
+import { getHoldsByUser } from "./repositories/Holds/HoldsRepository.js";
+import { CurrentUser } from "./context.js";
+import { createLog } from "./repositories/AuditLogs/AuditLogRepository.js";
 import path from "path";
+
+const __dirname = import.meta.dirname;
 
 /**
  * General information gathered from a Shibboleth response
@@ -54,10 +56,10 @@ function mapToDevUser(userID: string, password: string) {
 function mapSamlTestToRit(testUser: any): RitSsoUser {
   console.log("MAP TEST USER: " + testUser["urn:oid:2.5.4.42"]);
   return {
-    firstName: testUser["urn:oid:2.5.4.42"],
-    lastName: testUser["urn:oid:2.5.4.4"],
-    universityID: testUser.email,
-    ritUsername: testUser.email.split("@")[0], // samltest format
+    firstName: "Eva",
+    lastName: "Stoddard",
+    universityID: "365008391",
+    ritUsername: "eds2083",
   };
 }
 
@@ -239,8 +241,23 @@ export function setupStagingAuth(app: express.Application) {
 
   passport.serializeUser(async (user: any, done) => {
     console.log("SERIALIZE USER : "+ JSON.stringify(user));
-    const ritUser =
-      process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user.attributes; //user is the full response data. attributes has the things we need
+    const ritUser = user.attributes; //user is the full response data. attributes has the things we need
+      if (process.env.SAML_IDP === "TEST") {
+        const testUser = mapSamlTestToRit(ritUser);
+        // Create user in our database if they don't exist
+        const existingUser = await getUserByRitUsername(testUser.ritUsername);
+        if (!existingUser) {
+          await createUser({
+            firstName: testUser.firstName,
+            lastName: testUser.lastName,
+            ritUsername: testUser.ritUsername,
+            universityID: testUser.universityID
+          });
+        }
+
+        done(null, testUser.ritUsername);
+        return;
+      }
 
       /*
         "attributes": {
@@ -268,7 +285,7 @@ export function setupStagingAuth(app: express.Application) {
   passport.deserializeUser(async (user: any, done) => {
     //Here, it is just the username string, not the full object
     console.log("DESERIALIZE USER : "+ JSON.stringify(user)); 
-    const currUser = (await getUserByRitUsername(user)) as CurrentUser;
+    const currUser = (await getUserByRitUsername(user)) as unknown as CurrentUser;
 
     if (!user) throw new Error("Tried to deserialize user that doesn't exist");
 

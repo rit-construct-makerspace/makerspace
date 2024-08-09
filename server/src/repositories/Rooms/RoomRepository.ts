@@ -2,15 +2,15 @@
  * DB operations endpoint for Rooms table
  */
 
-import { Room } from "../../models/rooms/room";
-import { knex } from "../../db";
+import { Room } from "../../models/rooms/room.js";
+import { knex } from "../../db/index.js";
 import {
   roomsToDomain,
   singleRoomToDomain,
-} from "../../mappers/rooms/roomMapper";
+} from "../../mappers/rooms/roomMapper.js";
 import assert from "assert";
-import { RoomSwipeRow } from "../../db/tables";
-import { EntityNotFound } from "../../EntityNotFound";
+import { RoomSwipeRow } from "../../db/tables.js";
+import { EntityNotFound } from "../../EntityNotFound.js";
 
 
 /**
@@ -50,7 +50,7 @@ export async function addRoom(room: Room): Promise<Room> {
       "id"
     )
   )[0];
-  const newRoom = await getRoomByID(newID);
+  const newRoom = await getRoomByID(newID.id);
   assert(newRoom);
   return newRoom;
 }

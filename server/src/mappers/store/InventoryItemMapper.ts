@@ -2,7 +2,7 @@
  * Map inventory item entires to attributes
  */
 
-import { InventoryItem } from "../../schemas/storeFrontSchema";
+import { InventoryItem } from "../../schemas/storeFrontSchema.js";
 
 export function inventoryItemsToDomain(raw: any): InventoryItem[] {
   return raw.map((i: any) => {
