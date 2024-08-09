@@ -2,17 +2,17 @@
  * DB operations endpoint for Holds table
  */
 
-import { knex } from "../../db";
-import { EntityNotFound } from "../../EntityNotFound";
+import { knex } from "../../db/index.js";
+import { EntityNotFound } from "../../EntityNotFound.js";
 import {
   inventoryItemsToDomain,
   singleInventoryItemToDomain,
-} from "../../mappers/store/InventoryItemMapper";
+} from "../../mappers/store/InventoryItemMapper.js";
 import {
   InventoryItem,
   InventoryItemInput,
-} from "../../schemas/storeFrontSchema";
-import { getEquipmentByID } from "../Equipment/EquipmentRepository";
+} from "../../schemas/storeFrontSchema.js";
+import { getEquipmentByID } from "../Equipment/EquipmentRepository.js";
 
 export async function getLabels(itemId: number): Promise<string[] | null> {
   const knexResult = await knex("InventoryItemLabel")
@@ -94,8 +94,8 @@ export async function addItem(
     )
   )[0];
   if (item.labels && item.labels.length > 0)
-    await addLabels(newId, item.labels);
-  return await getItemById(newId);
+    await addLabels(newId.id, item.labels);
+  return await getItemById(newId.id);
 }
 
 export async function addItemAmount(
@@ -113,7 +113,7 @@ export async function addItemAmount(
       )
   )[0];
 
-  return await getItemById(updateItem);
+  return await getItemById(updateItem.id);
 }
 
 export async function archiveItem(

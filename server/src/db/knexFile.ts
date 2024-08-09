@@ -1,7 +1,11 @@
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const __dirname = import.meta.dirname;
+
 require("dotenv").config({ path: __dirname + "/./../../.env" });
 
 // Update with your config settings.
-module.exports = {
+const config: any = {
   development: {
     client: "pg",
     connection: {
@@ -77,3 +81,5 @@ module.exports = {
     },
   },
 };
+
+export default config;

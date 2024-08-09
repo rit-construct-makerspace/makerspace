@@ -2,10 +2,10 @@
  * DB operations endpoint for Equipment table
  */
 
-import { knex } from "../../db";
-import { ReservationInput } from "../../models/equipment/reservationInput";
-import { EntityNotFound } from "../../EntityNotFound";
-import { ReservationRow, ReservationEventRow } from "../../db/tables";
+import { knex } from "../../db/index.js";
+import { ReservationInput } from "../../models/equipment/reservationInput.js";
+import { EntityNotFound } from "../../EntityNotFound.js";
+import { ReservationRow, ReservationEventRow } from "../../db/tables.js";
 
 export interface IReservationRepository {
   getReservationById(id: number): Promise<ReservationRow>;

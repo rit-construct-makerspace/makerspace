@@ -1,10 +1,10 @@
-import { ApolloContext } from "../context";
-import { Privilege } from "../schemas/usersSchema";
-import * as HoldsRepo from "../repositories/Holds/HoldsRepository";
-import * as UsersRepo from "../repositories/Users/UserRepository";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "../repositories/Users/UserRepository";
-import { HoldRow } from "../db/tables";
+import { ApolloContext } from "../context.js";
+import { Privilege } from "../schemas/usersSchema.js";
+import * as HoldsRepo from "../repositories/Holds/HoldsRepository.js";
+import * as UsersRepo from "../repositories/Users/UserRepository.js";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
+import { getUsersFullName } from "../repositories/Users/UserRepository.js";
+import { HoldRow } from "../db/tables.js";
 
 const HoldsResolvers = {
   Hold: {
@@ -34,7 +34,7 @@ const HoldsResolvers = {
       args: { userID: string; description: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         const userWithHold = await UsersRepo.getUserByID(Number(args.userID));
 
         await createLog(
@@ -51,7 +51,7 @@ const HoldsResolvers = {
       args: { holdID: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         const hold = await HoldsRepo.getHold(Number(args.holdID));
         const userWithHold = await UsersRepo.getUserByID(hold.userID);
 

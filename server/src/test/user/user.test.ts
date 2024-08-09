@@ -1,12 +1,12 @@
-import { knex } from "../../db";
-import * as UserRepo from "../../repositories/Users/UserRepository";
-import * as ModuleRepo from "../../repositories/Training/ModuleRepository";
-import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository";
-import { PassedModule, Privilege, User } from "../../schemas/usersSchema";
-import { ifAllowed, ifAllowedOrSelf, ifAuthenticated } from "../../context";
-import { TrainingModuleItem, UserRow } from "../../db/tables";
+import { knex } from "../../db/index.js";
+import * as UserRepo from "../../repositories/Users/UserRepository.js";
+import * as ModuleRepo from "../../repositories/Training/ModuleRepository.js";
+import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository.js";
+import { PassedModule, Privilege, User } from "../../schemas/usersSchema.js";
+import { ifAllowed, ifAllowedOrSelf, ifAuthenticated } from "../../context.js";
+import { TrainingModuleItem, UserRow } from "../../db/tables.js";
 import { ApolloServer, GraphQLResponse } from "@apollo/server";
-import { schema } from "../../schema";
+import { schema } from "../../schema.js";
 import assert from "assert";
 
 const url = process.env.GRAPHQL_ENDPOINT ?? "https://localhost:3000";

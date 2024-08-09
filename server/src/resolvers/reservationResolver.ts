@@ -1,9 +1,9 @@
-import { ReservationInput } from "../models/equipment/reservationInput";
-import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
-import { ApolloContext } from "../context";
-import { Privilege } from "../schemas/usersSchema";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "../repositories/Users/UserRepository";
+import { ReservationInput } from "../models/equipment/reservationInput.js";
+import { ReservationRepository } from "../repositories/Equipment/ReservationRepository.js";
+import { ApolloContext } from "../context.js";
+import { Privilege } from "../schemas/usersSchema.js";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
+import { getUsersFullName } from "../repositories/Users/UserRepository.js";
 
 const reservationRepo = new ReservationRepository();
 
@@ -26,7 +26,7 @@ const ReservationResolvers = {
       args: { reservation: ReservationInput },
       { ifAllowed }: ApolloContext
     ) => {
-      ifAllowed([Privilege.MAKER], async (user) => {
+      ifAllowed([Privilege.MAKER], async (user: any) => {
         const eligible = await reservationRepo.userIsEligible(args.reservation);
         const noConflicts = await reservationRepo.noConflicts(args.reservation);
         if (eligible && noConflicts) {
@@ -49,7 +49,7 @@ const ReservationResolvers = {
 
     addComment: async (_parent: any, args: { resID: string, commentText: string },
     { ifAllowed }: ApolloContext) => 
-        ifAllowed([Privilege.MAKER], async (user) => {
+        ifAllowed([Privilege.MAKER], async (user: any) => {
           return await reservationRepo.addComment(Number(args.resID), user.id, args.commentText);
     }),
 

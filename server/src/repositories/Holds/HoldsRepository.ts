@@ -2,9 +2,9 @@
  * DB operations endpoint for Holds table
  */
 
-import { knex } from "../../db";
-import { EntityNotFound } from "../../EntityNotFound";
-import { HoldRow } from "../../db/tables";
+import { knex } from "../../db/index.js";
+import { EntityNotFound } from "../../EntityNotFound.js";
+import { HoldRow } from "../../db/tables.js";
 
 /**
  * Fetcha  hold by it's unique ID
@@ -42,7 +42,7 @@ export async function createHold(
     "id"
   );
 
-  return getHold(holdID);
+  return getHold(holdID.id);
 }
 
 /**

@@ -2,7 +2,7 @@
  * Map room entries to attributes
  */
 
-import { Room } from "../../models/rooms/room";
+import { Room } from "../../models/rooms/room.js";
 
 export function roomsToDomain(raw: any): Room[] {
   return raw.map((i: any) => {

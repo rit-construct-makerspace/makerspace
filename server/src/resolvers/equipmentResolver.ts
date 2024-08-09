@@ -1,12 +1,12 @@
-import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository";
-import * as RoomRepo from "../repositories/Rooms/RoomRepository";
-import { ReservationRepository } from "../repositories/Equipment/ReservationRepository";
-import { ApolloContext } from "../context";
-import { Privilege } from "../schemas/usersSchema";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository";
-import { getUsersFullName } from "../repositories/Users/UserRepository";
-import { EquipmentRow } from "../db/tables";
-import { EquipmentInput } from "../schemas/equipmentSchema";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import * as RoomRepo from "../repositories/Rooms/RoomRepository.js";
+import { ReservationRepository } from "../repositories/Equipment/ReservationRepository.js";
+import { ApolloContext } from "../context.js";
+import { Privilege } from "../schemas/usersSchema.js";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
+import { getUsersFullName } from "../repositories/Users/UserRepository.js";
+import { EquipmentRow } from "../db/tables.js";
+import { EquipmentInput } from "../schemas/equipmentSchema.js";
 
 const reservationRepo = new ReservationRepository();
 
@@ -64,7 +64,7 @@ const EquipmentResolvers = {
       args: { equipment: EquipmentInput },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async (user) => {
+      ifAllowed([Privilege.STAFF], async (user: any) => {
         const equipment = await EquipmentRepo.addEquipment(args.equipment);
 
         await createLog(

@@ -2,9 +2,9 @@
  * DB operations endpoint for AuditLog table
  */
 
-import { knex } from "../../db";
-import { logsToDomain } from "../../mappers/auditLogs/auditLogMapper";
-import { AuditLog } from "../../schemas/auditLogsSchema";
+import { knex } from "../../db/index.js";
+import { logsToDomain } from "../../mappers/auditLogs/auditLogMapper.js";
+import { AuditLog } from "../../schemas/auditLogsSchema.js";
 
 /**
  * Create an AuditLog and append it to the table

@@ -2,13 +2,13 @@
  * DB operations endpoint for Equipment table
  */
 
-import { knex } from "../../db";
-import { EntityNotFound } from "../../EntityNotFound";
-import { EquipmentRow, TrainingModuleRow, UserRow } from "../../db/tables";
-import { EquipmentInput } from "../../schemas/equipmentSchema";
-import * as ModuleRepo from "../Training/ModuleRepository";
-import * as HoldsRepo from "../Holds/HoldsRepository";
-import * as UserRepo from "../Users/UserRepository";
+import { knex } from "../../db/index.js";
+import { EntityNotFound } from "../../EntityNotFound.js";
+import { EquipmentRow, TrainingModuleRow, UserRow } from "../../db/tables.js";
+import { EquipmentInput } from "../../schemas/equipmentSchema.js";
+import * as ModuleRepo from "../Training/ModuleRepository.js";
+import * as HoldsRepo from "../Holds/HoldsRepository.js";
+import * as UserRepo from "../Users/UserRepository.js";
 
 /**
  * fetch every Equipment entry
@@ -261,7 +261,7 @@ export async function addEquipment(
   );
 
   if (equipment.moduleIDs?.length)
-    await addModulesToEquipment(id, equipment.moduleIDs);
+    await addModulesToEquipment(id.id, equipment.moduleIDs);
 
-  return await getEquipmentByID(id);
+  return await getEquipmentByID(id.id);
 }
