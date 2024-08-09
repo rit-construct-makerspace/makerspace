@@ -12,8 +12,8 @@ import {
     FormControl,
     InputLabel
   } from "@mui/material";
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import { DateTimePicker } from '@mui/lab';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { DateTimePicker } from '@mui/x-date-pickers';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import { useQuery } from '@apollo/client';
 import { GET_RESERVABLE_EQUIPMENT_FOR_MODULE } from "../../../queries/equipmentQueries";
@@ -63,10 +63,10 @@ export default function ReservationPromptCard({
                       <DateTimePicker
                           label="Date+Time Picker"
                           value={new Date(new Date().getFullYear(), 0, 1, 12)}
-                          onChange={(newValue)=>{
+                          onChange={(newValue: any)=>{
                             updateReservation({ ...reservation, dateTime: newValue });
                           }}
-                          renderInput={(params) =>
+                          renderInput={(params: any) =>
                               <TextField
                                   sx={{width:1}}
                                   {...params}
