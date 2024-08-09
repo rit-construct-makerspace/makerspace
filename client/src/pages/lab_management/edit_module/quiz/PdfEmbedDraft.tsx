@@ -11,11 +11,6 @@ const StyledIFrame = styled.iframe`
   height: 300px;
 `;
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url,
-  ).toString();
-
 interface PdfEmbedProps {
   index: number;
   pdfEmbed: QuizItem;
@@ -31,6 +26,10 @@ export default function PdfEmbedDraft({
   onRemove,
   onDuplicate,
 }: PdfEmbedProps) {
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+    'pdfjs-dist/build/pdf.worker.min.mjs',
+    import.meta.url,
+  ).toString();
   return (
     <QuizItemDraft onRemove={onRemove} onDuplicate={onDuplicate} index={index} itemId={pdfEmbed.id}>
       <Stack padding={2} spacing={2}>
@@ -44,7 +43,7 @@ export default function PdfEmbedDraft({
           }}
         />
         {pdfEmbed.text && (
-          <Document file={pdfEmbed.text} />
+          <Document file={{url: pdfEmbed.text}} />
         )}
       </Stack>
     </QuizItemDraft>
