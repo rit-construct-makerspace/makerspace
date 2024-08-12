@@ -1,15 +1,15 @@
 import React, { useState } from "react";
-import Page from "../../Page";
-import SearchBar from "../../../common/SearchBar";
+import Page from "../../Page.tsx";
+import SearchBar from "../../../common/SearchBar.tsx";
 import { Divider, Stack, Typography } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client"
 import { LoadingButton } from "@mui/lab";
-import RequestWrapper from "../../../common/RequestWrapper";
-import TrainingModuleRow from "./TrainingModuleRow";
-import { GET_TRAINING_MODULES, GET_ARCHIVED_TRAINING_MODULES } from "../../../queries/trainingQueries";
-import { ObjectSummary } from "../../../types/Common";
+import RequestWrapper from "../../../common/RequestWrapper.tsx";
+import TrainingModuleRow from "./TrainingModuleRow.tsx";
+import { GET_TRAINING_MODULES, GET_ARCHIVED_TRAINING_MODULES } from "../../../queries/trainingQueries.ts";
+import { ObjectSummary } from "../../../types/Common.ts";
 
 export default function TrainingModulesPage() {
   const navigate = useNavigate();

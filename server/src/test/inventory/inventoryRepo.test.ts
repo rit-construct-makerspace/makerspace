@@ -1,7 +1,7 @@
-import { knex } from "../../db";
-import { InventoryItemInput } from "../../schemas/storeFrontSchema";
-import * as InventoryRepo from "../../repositories/Store/InventoryRepository";
-import * as LabelRepo from "../../repositories/Store/LabelRepository";
+import { knex } from "../../db/index.js";
+import { InventoryItemInput } from "../../schemas/storeFrontSchema.js";
+import * as InventoryRepo from "../../repositories/Store/InventoryRepository.js";
+import * as LabelRepo from "../../repositories/Store/LabelRepository.js";
 
 const tables = ["InventoryItem", "Label", "InventoryItemLabel"];
 
