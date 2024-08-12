@@ -46,10 +46,18 @@ export default function EditableEquipmentCard({ id, name, to, archived, imageUrl
         <CardActions
           sx={{
             minHeight: 0.12,
-            justifyContent: "flex-end",
+            justifyContent: "space-between",
             mt: 0,
             padding: 0.25
           }}>
+              <Typography
+                variant="subtitle1"
+                component="div"
+                minHeight="120"
+                sx={{ lineHeight: 1, mb: 1, paddingLeft: 1 }}
+              >
+                {"ID " + id}
+              </Typography>
               {
                 archived
                   ? <PublishEquipmentButton equipmentID={id} appearance="icon-only" />
