@@ -206,7 +206,7 @@ const TrainingModuleResolvers = {
         const module = await ModuleRepo.setModuleArchived(Number(args.id), false);
 
         await createLog(
-          "{user} archived the {module} module.",
+          "{user} unarchived the {module} module.",
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
