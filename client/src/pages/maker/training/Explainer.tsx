@@ -63,7 +63,9 @@ export default function Explainer() {
           </Stack>
           <Stack alignItems="center">
             <EventIcon className="explainer-icon" />
-            Create a reservation
+            Speak to a Makerspace
+            <br />
+            Mentor or Staff
           </Stack>
           <Stack alignItems="center">
             <CarpenterIcon className="explainer-icon" />
