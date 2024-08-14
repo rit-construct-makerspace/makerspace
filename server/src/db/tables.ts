@@ -45,6 +45,7 @@ export interface ModuleSubmissionRow {
   submissionDate: Date;
   passed: boolean;
   expirationDate: Date;
+  summary: string;
 }
 
 export interface ModulesForEquipmentRow {

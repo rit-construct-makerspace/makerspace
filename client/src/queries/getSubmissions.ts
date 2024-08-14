@@ -35,6 +35,7 @@ export const GET_LATEST_SUBMISSION = gql`
       submissionDate
       passed
       expirationDate
+      summary
     }
   }
 `;

@@ -9,6 +9,7 @@ import { Module } from "../../../types/Quiz";
 import Page from "../../Page";
 import ReservationPromptCard from "./ReservationPrompt";
 import SubmissionCard from "./SubmissionCard";
+import ResultsCard from "./ResultsCard";
 
 export default function QuizResults() {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +58,8 @@ export default function QuizResults() {
               : null
             }
           </Grid>
+          <br />
+          <ResultsCard summary={submissionResult.data?.latestSubmission.summary}></ResultsCard>
         </Page>
       </RequestWrapper>
     </RequestWrapper>

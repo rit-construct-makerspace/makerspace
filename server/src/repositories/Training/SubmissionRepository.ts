@@ -16,9 +16,10 @@ import { EntityNotFound } from "../../EntityNotFound.js";
 export async function addSubmission(
     makerID: number,
     moduleID: number,
-    passed: boolean
+    passed: boolean,
+    summary: string
 ) {
-    return await knex("ModuleSubmissions").insert({ makerID, moduleID, passed }).returning('id');
+    return await knex("ModuleSubmissions").insert({ makerID, moduleID, passed, summary }).returning('id');
 }
 
 /**
