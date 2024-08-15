@@ -4,7 +4,8 @@ export enum QuizItemType {
   Text = "TEXT",
   YoutubeEmbed = "YOUTUBE_EMBED",
   ImageEmbed = "IMAGE_EMBED",
-  ReservationPrompt = "RESERVATION PROMPT"
+  ReservationPrompt = "RESERVATION PROMPT",
+  PdfEmbed = "PDF_EMBED"
 }
 
 export interface Option {

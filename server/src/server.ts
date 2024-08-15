@@ -21,6 +21,7 @@ import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
 import { createRequire } from "module";
+import { getHoursByZone, WeekDays } from "./repositories/ZoneHours/ZoneHoursRepository.js";
 const require = createRequire(import.meta.url);
 
 const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -99,7 +100,7 @@ async function startServer() {
 
   //verifies user logged in under all front-end urls and if not send to login
   app.all("/app/*", (req, res, next) => {
-    if (true || req.user) {
+    if (req.user) {
       return next();
     }
     console.log("LOGIN REDIRECT");
@@ -470,6 +471,62 @@ async function startServer() {
       MachineID: reader?.name,
       State: reader?.state
     })
+  });
+
+
+  /**
+   * HOURS--
+   * Fetch the hours associated with a zone string
+   */
+  app.get("/api/hours/:zone", async function(req, res) {
+    const hourRows = await getHoursByZone(req.params.zone);
+
+    var hoursString = "";
+    hourRows.forEach(function(hourRow) {
+      /**
+       * Format:
+       * Monday Open: 09:00
+       * Monday Close: 22:00
+       * Tuesday Open: 09:00
+       * etc.
+       */
+
+      switch (hourRow.dayOfTheWeek) {
+        case WeekDays.SUNDAY: 
+          hoursString += "Sunday "; 
+          break;
+        case WeekDays.MONDAY: 
+          hoursString += "Monday "; 
+          break;
+        case WeekDays.MONDAY: 
+          hoursString += "Tuesday "; 
+          break;
+        case WeekDays.MONDAY: 
+          hoursString += "Wednesday "; 
+          break;
+        case WeekDays.MONDAY: 
+          hoursString += "Thursday "; 
+          break;
+        case WeekDays.MONDAY: 
+          hoursString += "Friday "; 
+          break;
+        case WeekDays.MONDAY: 
+          hoursString += "Saturday "; 
+          break;
+        default:
+          hoursString += "Undefined "; 
+          break;
+      };
+
+      hoursString += hourRow.type + ": ";
+
+      hoursString += hourRow.time + "\n";
+    });
+
+    return res.status(200).json({
+      text: hoursString,
+      obj: hourRows
+    }).send();
   });
 
 

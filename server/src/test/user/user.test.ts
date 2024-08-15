@@ -546,7 +546,7 @@ describe("User tests", () => {
     }]
 
     const moduleID = (await ModuleRepo.addModule('Test Module', exampleQuiz)).id;
-    const submissionID = (await SubmissionRepo.addSubmission(userZero.id, moduleID, true))[0];
+    const submissionID = (await SubmissionRepo.addSubmission(userZero.id, moduleID, true, ""))[0];
 
     let server = new ApolloServer({
         schema

@@ -7,6 +7,7 @@ export interface Submission {
     submissionDate: string;
     passed: boolean;
     expirationDate: string;
+    summary: JSON;
 }
 
 export const TrainingSubmissionTypeDefs = gql`
@@ -17,6 +18,7 @@ export const TrainingSubmissionTypeDefs = gql`
     submissionDate: String
     passed: Boolean
     expirationDate: String!
+    summary: JSON
   }
 
   extend type Query {

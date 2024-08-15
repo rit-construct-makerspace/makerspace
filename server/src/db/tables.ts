@@ -45,6 +45,7 @@ export interface ModuleSubmissionRow {
   submissionDate: Date;
   passed: boolean;
   expirationDate: Date;
+  summary: string;
 }
 
 export interface ModulesForEquipmentRow {
@@ -160,6 +161,14 @@ export interface AccessCheckRow {
   approved: boolean;
 }
 
+export interface ZoneHoursRow {
+  id: number;
+  zone: string;
+  type: string;
+  dayOfTheWeek: number;
+  time: string;
+}
+
 declare module "knex/types/tables.js" {
   interface Tables {
     AuditLogs: AuditLogRow;
@@ -176,5 +185,6 @@ declare module "knex/types/tables.js" {
     Users: UserRow;
     Readers: ReaderRow;
     AccessChecks: AccessCheckRow;
+    ZoneHours: ZoneHoursRow;
   }
 }

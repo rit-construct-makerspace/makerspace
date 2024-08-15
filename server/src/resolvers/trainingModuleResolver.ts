@@ -47,6 +47,12 @@ async function add3DPrinterOSUser(username: string) {
   return addRequestBody.result;
 }
 
+interface ChoiceSummary {
+  questionNum: string;
+  questionText: string;
+  correct: boolean;
+}
+
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   for (let item of quiz) {
     if (item.options) {
@@ -200,7 +206,7 @@ const TrainingModuleResolvers = {
         const module = await ModuleRepo.setModuleArchived(Number(args.id), false);
 
         await createLog(
-          "{user} archived the {module} module.",
+          "{user} unarchived the {module} module.",
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
@@ -228,6 +234,7 @@ const TrainingModuleResolvers = {
 
           let correct = 0;
           let incorrect = 0;
+          var choiceSummary: ChoiceSummary[] = [];
 
           const questions = module.quiz.filter((i: any) =>
             ["CHECKBOXES", "MULTIPLE_CHOICE"].includes(i.type)
@@ -247,9 +254,14 @@ const TrainingModuleResolvers = {
               (item) => item.itemID === question.id
             )?.optionIDs;
 
-            submittedOptionIDsCorrect(correctOptionIDs, submittedOptionIDs)
-              ? correct++
-              : incorrect++;
+            if (submittedOptionIDsCorrect(correctOptionIDs, submittedOptionIDs)) {
+              correct++;
+              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: true });
+            } else {
+              incorrect++;
+              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: false });
+            }
+              
           }
 
           const grade = (correct / (incorrect + correct)) * 100;
@@ -257,7 +269,8 @@ const TrainingModuleResolvers = {
           SubmissionRepo.addSubmission(
             user.id,
             Number(args.moduleID),
-            grade >= MODULE_PASSING_THRESHOLD
+            grade >= MODULE_PASSING_THRESHOLD,
+            JSON.stringify(choiceSummary)
           ).then(async (id) => {
             await createLog(
               `{user} submitted attempt of {module} with a grade of ${grade}.`,

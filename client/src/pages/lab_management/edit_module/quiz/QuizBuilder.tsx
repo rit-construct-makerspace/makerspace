@@ -7,6 +7,7 @@ import ContactSupportIcon from "@mui/icons-material/ContactSupport";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import TextFieldsIcon from "@mui/icons-material/TextFields";
 import ImageIcon from "@mui/icons-material/Image";
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import YouTubeEmbedDraft from "./YouTubeEmbedDraft";
 import ImageEmbedDraft from "./ImageEmbedDraft";
 import TextDraft from "./TextDraft";
@@ -14,6 +15,7 @@ import { Module, QuizItem, QuizItemType } from "../../../../types/Quiz";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import EmptyPageSection from "../../../../common/EmptyPageSection";
 import { Moduledraft } from "../../../../types/Quiz";
+import PdfEmbedDraft from "./PdfEmbedDraft";
 
 interface QuizBuilderProps {
   quiz: QuizItem[];
@@ -71,6 +73,13 @@ export default function QuizBuilder({ quiz, handleAdd, handleRemove, handleUpdat
       type: QuizItemType.ImageEmbed,
       text: "",
     });
+
+    const createPdfEmbed = () =>
+      addItem({
+        id: uuidv4(),
+        type: QuizItemType.PdfEmbed,
+        text: "",
+      });
 
   const onDragEnd = (result: DropResult) => 
     handleOnDragEnd(result)
@@ -136,6 +145,19 @@ export default function QuizBuilder({ quiz, handleAdd, handleRemove, handleUpdat
                         onDuplicate={() => duplicateItem(item)}
                       />
                     );
+                  case QuizItemType.PdfEmbed:
+                    return (
+                      <PdfEmbedDraft
+                        key={item.id}
+                        index={index}
+                        pdfEmbed={item}
+                        updatepdfEmbed={(updatedPdfEmbed) => {
+                          updateItem(item.id, updatedPdfEmbed);
+                        }}
+                        onRemove={() => removeItem(item.id)}
+                        onDuplicate={() => duplicateItem(item)}
+                      />
+                    );
                   default:
                     return null;
                 }
@@ -167,6 +189,10 @@ export default function QuizBuilder({ quiz, handleAdd, handleRemove, handleUpdat
 
           <Button sx={{fontSize: 13}} startIcon={<ImageIcon />} onClick={createImageEmbed}>
             Image
+          </Button>
+
+          <Button sx={{fontSize: 13}} startIcon={<DocumentScannerIcon/>} onClick={createPdfEmbed}>
+            PDF
           </Button>
         </ButtonGroup>
       </Stack>

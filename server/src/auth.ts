@@ -56,10 +56,10 @@ function mapToDevUser(userID: string, password: string) {
 function mapSamlTestToRit(testUser: any): RitSsoUser {
   console.log("MAP TEST USER: " + testUser["urn:oid:2.5.4.42"]);
   return {
-    firstName: "Eva",
-    lastName: "Stoddard",
-    universityID: "365008391",
-    ritUsername: "eds2083",
+    firstName: testUser["urn:oid:2.5.4.42"],
+    lastName: testUser["urn:oid:2.5.4.4"],
+    universityID: testUser.email,
+    ritUsername: testUser.email.split("@")[0], // samltest format
   };
 }
 
@@ -80,7 +80,7 @@ export function setupSessions(app: express.Application) {
       cookie: {
         secure: process.env.NODE_ENV === "production" ? true : false, // this will make cookies send only over https
         httpOnly: true, // cookies are sent in requests, but not accessible to client-side JS
-        maxAge: 2400000, // 40 minutes in milliseconds
+        maxAge: 7200000, // 40 minutes in milliseconds
         sameSite: process.env.NODE_ENV === "development" ? "lax" : "strict" // allow cookies to send between local ports in development
       },
     })
@@ -241,23 +241,8 @@ export function setupStagingAuth(app: express.Application) {
 
   passport.serializeUser(async (user: any, done) => {
     console.log("SERIALIZE USER : "+ JSON.stringify(user));
-    const ritUser = user.attributes; //user is the full response data. attributes has the things we need
-      if (process.env.SAML_IDP === "TEST") {
-        const testUser = mapSamlTestToRit(ritUser);
-        // Create user in our database if they don't exist
-        const existingUser = await getUserByRitUsername(testUser.ritUsername);
-        if (!existingUser) {
-          await createUser({
-            firstName: testUser.firstName,
-            lastName: testUser.lastName,
-            ritUsername: testUser.ritUsername,
-            universityID: testUser.universityID
-          });
-        }
-
-        done(null, testUser.ritUsername);
-        return;
-      }
+    const ritUser =
+      process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user.attributes; //user is the full response data. attributes has the things we need
 
       /*
         "attributes": {

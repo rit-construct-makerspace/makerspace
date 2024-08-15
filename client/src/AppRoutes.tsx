@@ -92,11 +92,6 @@ export default function AppRoutes() {
 
           <Route path="/logoutprompt" element={<LogoutPromptPage />} />
 
-          <Route path='/3dprinteros' element={() => {
-              window.location.href = 'https://cloud.3dprinteros.com/ssosaml/rit/auth';
-              return null;
-          }}/>
-
           <Route path="*" element={<NotFoundPage />} />
         </Route>
     </Routes>

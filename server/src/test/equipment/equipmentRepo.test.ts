@@ -354,7 +354,7 @@ describe("EquipmentRepository tests", () => {
     await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
 
     // Add passed attempt to user
-    await SubmissionRepo.addSubmission(userID, moduleID, true);
+    await SubmissionRepo.addSubmission(userID, moduleID, true, "");
 
     //expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(true);
   });

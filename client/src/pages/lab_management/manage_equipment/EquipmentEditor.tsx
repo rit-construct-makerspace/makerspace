@@ -98,9 +98,6 @@ export default function EquipmentEditor({
                   : <ArchiveEquipmentButton equipmentID={equipment.id} appearance="medium" />
                 : null
             }
-            {
-              console.log(equipment.id + ": " + equipment.archived)
-            }
           </Stack>
         )}
 
@@ -121,7 +118,7 @@ export default function EquipmentEditor({
               }}
             />
             <Autocomplete
-              renderInput={(params) => (
+              renderInput={(params: any) => (
                 <TextField {...params} label="Location" />
               )}
               /* Autocomplete's value prop wants undefined, not null.
@@ -158,7 +155,7 @@ export default function EquipmentEditor({
               {module.name}
             </li>
           )}
-          renderInput={(params) => (
+          renderInput={(params: any) => (
             <TextField {...params} label="Attach module" key={module.id} />
           )}
           options={getModuleOptions()}

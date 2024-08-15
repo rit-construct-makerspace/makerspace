@@ -61,7 +61,7 @@ export default function ReservationPromptDraft({
                           label="Date+Time Picker"
                           value={new Date(new Date().getFullYear(), 0, 1, 12)}
                           onChange={()=>{}}
-                          renderInput={(params) =>
+                          renderInput={(params: any) =>
                               <TextField
                                   {...params}
                                   sx={{width:0.5, ml: 1}}
