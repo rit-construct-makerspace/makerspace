@@ -57,6 +57,7 @@ export const GET_USER = gql`
       expectedGraduation
       registrationDate
       privilege
+      ritUsername
       cardTagID
       holds {
         id
@@ -161,7 +162,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               />
               <Stack>
                 <Typography variant="h5" component="div" fontWeight={500}>
-                  {`${user.firstName} ${user.lastName}`}
+                  {`${user.firstName} ${user.lastName}  (${user.ritUsername})`}
                 </Typography>
                 <Typography>{user.pronouns}</Typography>
               </Stack>

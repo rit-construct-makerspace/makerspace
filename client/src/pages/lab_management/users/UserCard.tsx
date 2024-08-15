@@ -30,6 +30,17 @@ export default function UserCard({ user, onClick }: UserCardProps) {
             flex={1}
           >
             {`${user.firstName} ${user.lastName}`}
+            <br />
+            <Typography
+              variant="caption"
+              fontWeight={200}
+              width={120}
+              textAlign="center"
+              lineHeight={1}
+              flex={1}
+            >
+              {`${user.ritUsername}`}
+            </Typography>
           </Typography>
 
           <PrivilegeChip privilege={user.privilege} />

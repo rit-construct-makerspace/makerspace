@@ -34,7 +34,7 @@ export default function UsersPage() {
         <Stack direction="row" flexWrap="wrap">
           {getUsersResult.data?.users
             ?.filter((m: { id: number; ritUsername: String; firstName: string; lastName: string }) =>
-              (m.firstName + " " + m.lastName)
+              (m.firstName + " " + m.lastName + " " + m.ritUsername)
                 .toLocaleLowerCase()
                 .includes(searchText.toLocaleLowerCase())
             ).map((user: PartialUser) => (
