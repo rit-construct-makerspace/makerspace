@@ -169,6 +169,14 @@ export interface ZoneHoursRow {
   time: string;
 }
 
+export interface EquipmentSessionRow {
+  id: number;
+  start: Date;
+  equipmentID: number;
+  userID: number;
+  sessionLength: number;
+}
+
 declare module "knex/types/tables.js" {
   interface Tables {
     AuditLogs: AuditLogRow;

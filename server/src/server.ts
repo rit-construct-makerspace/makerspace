@@ -22,6 +22,7 @@ import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
 import { createRequire } from "module";
 import { getHoursByZone, WeekDays } from "./repositories/ZoneHours/ZoneHoursRepository.js";
+import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 const require = createRequire(import.meta.url);
 
 const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -283,6 +284,7 @@ async function startServer() {
     //Staff bypass. Skip Welcome and training check.
     if (user.privilege == Privilege.STAFF) {
       if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} with STAFF access", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name});
+      createEquipmentSession(machine.id, user.id);
       return res.status(202).json({
         "Type": "Authorization",
         "Machine": machine.id,
@@ -334,6 +336,7 @@ async function startServer() {
 
     //Success
     if (API_NORMAL_LOGGING) createLog("{user} has activated {machine}", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name});
+    createEquipmentSession(machine.id, user.id);
     return res.status(202).json({
       "Type": "Authorization",
       "Machine": machine.id,
@@ -381,7 +384,8 @@ async function startServer() {
         return res.status(400).json({error: "Reader does not exist"}).send();
       }
     }
-    updateReaderStatus({
+
+    await updateReaderStatus({
       id: reader.id,
       machineID: parseInt(reader.machineType),
       machineType: reader.machineType,
@@ -394,6 +398,21 @@ async function startServer() {
       scheduledStatusFreq: req.body.Frequency,
       helpRequested: req.body.Help == null ? reader.helpRequested : (req.body.Help === "1")
     });
+
+    //If in a user session or just finished a user session
+    if (req.body.UID != null || reader.currentUID != null) {
+      //Update said user session length
+      await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
+    }
+    //If session just finished
+    if (req.body.UID == null && reader.currentUID != null && API_NORMAL_LOGGING) {
+      const user = await getUserByCardTagID(reader.currentUID)
+      const equipment = await getEquipmentByID(parseInt(reader.machineType));
+      if (user != undefined) {
+        await createLog(`{user} signed out of {equipment} (Session: ${req.body.Time} sec)`, {id: user.id, label: getUsersFullName(user)}, {id: equipment.id, label: equipment.name});
+      }
+    }
+
     return res.status(200).send();
   });
 
