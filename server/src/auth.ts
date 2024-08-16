@@ -56,10 +56,10 @@ function mapToDevUser(userID: string, password: string) {
 function mapSamlTestToRit(testUser: any): RitSsoUser {
   console.log("MAP TEST USER: " + testUser["urn:oid:2.5.4.42"]);
   return {
-    firstName: testUser["urn:oid:2.5.4.42"],
-    lastName: testUser["urn:oid:2.5.4.4"],
-    universityID: testUser.email,
-    ritUsername: testUser.email.split("@")[0], // samltest format
+    firstName: "Eva",
+    lastName: "Stoddard",
+    universityID: "365008391",
+    ritUsername: "eds2083",
   };
 }
 
@@ -241,8 +241,23 @@ export function setupStagingAuth(app: express.Application) {
 
   passport.serializeUser(async (user: any, done) => {
     console.log("SERIALIZE USER : "+ JSON.stringify(user));
-    const ritUser =
-      process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user.attributes; //user is the full response data. attributes has the things we need
+    const ritUser = user.attributes; //user is the full response data. attributes has the things we need
+      if (process.env.SAML_IDP === "TEST") {
+        const testUser = mapSamlTestToRit(ritUser);
+        // Create user in our database if they don't exist
+        const existingUser = await getUserByRitUsername(testUser.ritUsername);
+        if (!existingUser) {
+          await createUser({
+            firstName: testUser.firstName,
+            lastName: testUser.lastName,
+            ritUsername: testUser.ritUsername,
+            universityID: testUser.universityID
+          });
+        }
+
+        done(null, testUser.ritUsername);
+        return;
+      }
 
       /*
         "attributes": {
