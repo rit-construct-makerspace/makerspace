@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +16,8 @@ function getEntityUrl(entityType: string, id: string) {
       return "/admin/equipment/" + id;
     case "module":
       return "/admin/training/" + id;
+    case "conceal":
+      return "#";
     default:
       return "/admin/history";
   }
@@ -28,9 +30,22 @@ export default function AuditLogEntity({ entityCode }: AuditLogEntityProps) {
 
   const url = getEntityUrl(entityType, id);
 
+  const [reveal, setReveal] = useState(entityType != "conceal");
+
+  const toggleConcealment = () => {
+      setReveal(reveal => !reveal)
+  }
+
   return (
-    <Link onClick={() => navigate(url)} sx={{ cursor: "pointer" }}>
+    <span>
+      {!reveal
+      ? <Link onClick={toggleConcealment}>
+      Click to Reveal
+      </Link>
+      : <Link onClick={() => navigate(url)} sx={{ cursor: "pointer" }}>
       {label}
-    </Link>
+      </Link>
+      }
+    </span>
   );
 }

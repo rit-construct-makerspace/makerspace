@@ -162,7 +162,7 @@ async function startServer() {
   app.put("/api/welcome", async function(req, res) {
     //If API Keys dont match, fail
     if (req.body.Key != process.env.API_KEY) {
-      if (API_DEBUG_LOGGING) createLog("UID " + req.body.ID + " failed to swipe into a room with error '{error}'", {id: 403, label: "Invalid Key"});
+      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to swipe into a room with error '{error}'", {id: 0, label: req.body.ID}, {id: 403, label: "Invalid Key"});
       return res.status(403).json({error: "Invalid Key"}).send();
     }
 
@@ -183,7 +183,7 @@ async function startServer() {
 
     //If user is not found, fail
     if (user == undefined) {
-      if (API_DEBUG_LOGGING) createLog("UID " + req.body.ID + " failed to swipe into a room with error '{error}'", {id: 406, label: "User does not exist"});
+      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to swipe into a room with error '{error}'", {id: 0, label: req.body.ID}, {id: 406, label: "User does not exist"});
       return res.status(406).json({error: "User does not exist"}).send();
     } 
     //If room is not found, fail
@@ -232,7 +232,7 @@ async function startServer() {
 
     //If user is not found, fail
     if (user == undefined) {
-      if (API_DEBUG_LOGGING) createLog("UID " + req.query.id + " failed to activate a machine with error '{error}'", {id: 406, label: "User does not exist"});
+      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to activate a machine with error '{error}'", {id: 0, label: req.body.ID}, {id: 406, label: "User does not exist"});
       return res.status(406).json({
         "Type": "Authorization",
         "Machine": req.query.machine,
