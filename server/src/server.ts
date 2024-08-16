@@ -233,7 +233,7 @@ async function startServer() {
 
     //If user is not found, fail
     if (user == undefined) {
-      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to activate a machine with error '{error}'", {id: 0, label: req.body.ID}, {id: 406, label: "User does not exist"});
+      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to activate a machine with error '{error}'", {id: 0, label: req.query.id?.toString() ?? "undefined_uid"}, {id: 406, label: "User does not exist"});
       return res.status(406).json({
         "Type": "Authorization",
         "Machine": req.query.machine,
