@@ -261,10 +261,10 @@ const TrainingModuleResolvers = {
 
             if (submittedOptionIDsCorrect(correctOptionIDs, submittedOptionIDs)) {
               correct++;
-              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: true, answers: submittedOptions });
+              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: true, answers: args });
             } else {
               incorrect++;
-              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: false, answers: submittedOptions });
+              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: false, answers: args });
             }
               
           }
