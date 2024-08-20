@@ -51,7 +51,6 @@ interface ChoiceSummary {
   questionNum: string;
   questionText: string;
   correct: boolean;
-  answers: any;
 }
 
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
@@ -255,16 +254,12 @@ const TrainingModuleResolvers = {
               (item) => item.itemID === question.id
             )?.optionIDs;
 
-            const submittedOptions = args.answerSheet.find(
-              (item) => item.itemID === question.id
-            );
-
             if (submittedOptionIDsCorrect(correctOptionIDs, submittedOptionIDs)) {
               correct++;
-              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: true, answers: submittedOptions });
+              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: true});
             } else {
               incorrect++;
-              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: false, answers: submittedOptions });
+              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: false});
             }
               
           }
