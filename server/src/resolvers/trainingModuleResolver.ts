@@ -71,7 +71,7 @@ function submittedOptionIDsCorrect(
   if (!submitted || correct.length !== submitted.length) return false;
 
   for (let i = 0; i < correct.length; i++) {
-    if (correct[i] !== submitted[i]) return false;
+    if (!correct.includes(submitted[i])) return false;
   }
 
   return true;
