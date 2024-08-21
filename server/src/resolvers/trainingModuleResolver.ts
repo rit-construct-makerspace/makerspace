@@ -298,8 +298,8 @@ const TrainingModuleResolvers = {
               } else {
                 const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
                 equipmentIDsToCheck.forEach(async equipmentID => {
-                  //check if access check already exists
-                  if (await accessCheckExists(user.id, equipmentID)) {
+                  //check if access check does not already exists
+                  if (!(await accessCheckExists(user.id, equipmentID))) {
                     await createAccessCheck(user.id, equipmentID);
                   }
                 });
