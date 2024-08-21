@@ -4,10 +4,12 @@ import type { Knex } from "knex";
 export async function up(knex: Knex): Promise<void> {
     knex.schema.hasTable("EquipmentSessions").then(function (exists) {
         if (!exists) return;
-        return knex.schema.hasColumn("EquipmentSessions", "equipmentID").then(function (exists) {
+        return knex.schema.hasColumn("EquipmentSessions", "equipmentID").then(async function (exists) {
             if (!exists) return;
-            return knex.schema.alterTable("EquipmentSessions", function (t) {
+            await knex.schema.alterTable("EquipmentSessions", function (t) {
                 t.dropColumn("equipmentID");
+            });
+            return await knex.schema.alterTable("EquipmentSessions", function (t) {
                 t.integer("equipmentID").references("id").inTable("Equipment");
             });
         })
