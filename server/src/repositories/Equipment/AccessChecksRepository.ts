@@ -15,8 +15,8 @@ export async function getAccessCheckByID(id: number): Promise<AccessCheckRow | u
     return await knex("AccessChecks").select("*").first().where({id: id});
 }
 
-export async function getAccessChecksByUserID(userID: number): Promise<AccessCheckRow[]> {
-    return await knex("AccessChecks").select("*").where({userID: userID});
+export async function accessCheckExists(userID: number, equipmentID: number): Promise<boolean> {
+    return (await knex("AccessChecks").select("*").first().where({userID: userID, equipmentID: equipmentID})) != undefined;
 }
 
 export async function getAccessChecksByApproved(approved: boolean): Promise<AccessCheckRow[]> {

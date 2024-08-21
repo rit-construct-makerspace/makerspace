@@ -8,7 +8,7 @@ import * as SubmissionRepo from "../repositories/Training/SubmissionRepository.j
 import { MODULE_PASSING_THRESHOLD } from "../constants.js";
 import { TrainingModuleItem, TrainingModuleRow } from "../db/tables.js";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
-import { createAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
+import { accessCheckExists, createAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
 import fetch from "node-fetch";
 
 
@@ -298,7 +298,10 @@ const TrainingModuleResolvers = {
               } else {
                 const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
                 equipmentIDsToCheck.forEach(async equipmentID => {
-                  await createAccessCheck(user.id, equipmentID);
+                  //check if access check already exists
+                  if (await accessCheckExists(user.id, equipmentID)) {
+                    await createAccessCheck(user.id, equipmentID);
+                  }
                 });
               }
             }
