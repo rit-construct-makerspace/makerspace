@@ -13,8 +13,9 @@ import fetch from "node-fetch";
 
 
 const ID_3DPRINTEROS_QUIZ = Number(process.env.ID_3DPRINTEROS_QUIZ);
+const ID_3DPRINTEROS_FS_QUIZ = Number(process.env.ID_3DPRINTEROS_FS_QUIZ);
 
-async function add3DPrinterOSUser(username: string) {
+async function add3DPrinterOSUser(username: string, workgroupId: string) {
   //Login API User
   var options = {
     body: "username=" + process.env.CLOUDPRINT_API_USERNAME + "&password=" + process.env.CLOUDPRINT_API_PASSWORD,
@@ -32,7 +33,7 @@ async function add3DPrinterOSUser(username: string) {
     console.log("Session: ");
     console.log(json.message.session);
     var options = {
-      body: "session=" + json.message.session + "&workgroup_id=" + process.env.CLOUDPRINT_API_WORKGROUP + "&email=" + username + "@rit.edu",
+      body: "session=" + json.message.session + "&workgroup_id=" + workgroupId + "&email=" + username + "@rit.edu",
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       method: "POST"
     }
@@ -282,7 +283,7 @@ const TrainingModuleResolvers = {
             if (grade >= MODULE_PASSING_THRESHOLD) {
               if (Number(args.moduleID) === ID_3DPRINTEROS_QUIZ) {
                 //If 3D Printer Training, add them to the workgroup instead of using an access check
-                add3DPrinterOSUser(user.ritUsername).then(async function(result) {
+                add3DPrinterOSUser(user.ritUsername, process.env.CLOUDPRINT_API_WORKGROUP ?? "").then(async function(result) {
                   if (result) {
                     await createLog(
                       `{user} has been automatically added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_WORKGROUP}.`,
@@ -294,7 +295,24 @@ const TrainingModuleResolvers = {
                       { id: user.id, label: getUsersFullName(user) }
                     );
                   }
-                })
+                });
+              } else if (grade >= MODULE_PASSING_THRESHOLD) {
+                if (Number(args.moduleID) === ID_3DPRINTEROS_FS_QUIZ) {
+                  //If 3D Printer Full Service Training, add them to the workgroup instead of using an access check
+                  add3DPrinterOSUser(user.ritUsername, process.env.CLOUDPRINT_API_WORKGROUP ?? "").then(async function(result) {
+                    if (result) {
+                      await createLog(
+                        `{user} has been automatically added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_FS_WORKGROUP}.`,
+                        { id: user.id, label: getUsersFullName(user) }
+                      );
+                    } else {
+                      await createLog(
+                        `{user} has failed to be added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_FS_WORKGROUP}. Check server logs.`,
+                        { id: user.id, label: getUsersFullName(user) }
+                      );
+                    }
+                  })
+                } 
               } else {
                 const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
                 equipmentIDsToCheck.forEach(async equipmentID => {
