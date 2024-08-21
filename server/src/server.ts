@@ -217,19 +217,16 @@ async function startServer() {
    * Request (Header):
    * - type: string representing the machine type
    * - machine: the ID of the machine according to the database
-   * - zone: the room ID according to the database
    * - needswelcome: If true, check if user has signed into the room within the day
    * - id: user uid
    */
   app.get("/api/auth", async function(req, res) {
-    if (req.query.id == undefined || req.query.needswelcome == undefined || req.query.zone == undefined || req.query.type == undefined) {
+    if (req.query.id == undefined || req.query.needswelcome == undefined || req.query.type == undefined) {
       if (API_DEBUG_LOGGING) createLog("Request failed to gain equipent access with error '{error}'", {id: 400, label: "Missing paramaters"});
       return res.status(400).json({error: "Missing paramaters"}).send();
     }
 
     const user = await getUserByCardTagID(req.query.id.toString());
-
-    const room = await getRoomByID(parseInt(req.query.zone.toString()));
 
     //If user is not found, fail
     if (user == undefined) {
@@ -242,17 +239,6 @@ async function startServer() {
         "Error": "User does not exist"
       }).send();
     } 
-    //If room is not found, fail
-    else if (room == null) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Room " + req.query.zone.toString() + " does not exist"});
-      return res.status(406).json({
-        "Type": "Authorization",
-        "Machine": req.query.machine,
-        "UID": req.query.id,
-        "Allowed": 0,
-        "Error": "Room does not exist"
-      }).send();
-    }
 
     var machine;
     try {
@@ -297,7 +283,7 @@ async function startServer() {
     //If needs welcome, check that room swipe has occured in the zone today
     if (req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
       //console.log("Checking welcome status");
-      const welcomed = await hasSwipedToday(room.id, user.id);
+      const welcomed = await hasSwipedToday(machine.roomID, user.id);
       if (!welcomed) {
         if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "User requires Welcome"});
         return res.status(401).json({
