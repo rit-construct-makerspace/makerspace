@@ -6,10 +6,11 @@ export async function up(knex: Knex): Promise<void> {
         if (!exists) return;
         return knex.schema.hasColumn("EquipmentSessions", "equipmentID").then(async function (exists) {
             if (!exists) return;
-            await knex.schema.alterTable("EquipmentSessions", function (t) {
+            return knex.schema.alterTable("EquipmentSessions", function (t) {
                 t.dropColumn("equipmentID");
             });
-            return await knex.schema.alterTable("EquipmentSessions", function (t) {
+        }).then(function(t) {
+            return knex.schema.alterTable("EquipmentSessions", function (t) {
                 t.integer("equipmentID").references("id").inTable("Equipment");
             });
         })
