@@ -8,17 +8,18 @@ import * as SubmissionRepo from "../repositories/Training/SubmissionRepository.j
 import { MODULE_PASSING_THRESHOLD } from "../constants.js";
 import { TrainingModuleItem, TrainingModuleRow } from "../db/tables.js";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
-import { createAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
+import { accessCheckExists, createAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
 import fetch from "node-fetch";
 
 
 const ID_3DPRINTEROS_QUIZ = Number(process.env.ID_3DPRINTEROS_QUIZ);
+const ID_3DPRINTEROS_FS_QUIZ = Number(process.env.ID_3DPRINTEROS_FS_QUIZ);
 
-async function add3DPrinterOSUser(username: string) {
+async function add3DPrinterOSUser(username: string, workgroupId: string) {
   //Login API User
   var options = {
     body: "username=" + process.env.CLOUDPRINT_API_USERNAME + "&password=" + process.env.CLOUDPRINT_API_PASSWORD,
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     method: "POST"
   }
   console.log(options);
@@ -32,18 +33,19 @@ async function add3DPrinterOSUser(username: string) {
     console.log("Session: ");
     console.log(json.message.session);
     var options = {
-      body: "session=" + json.message.session + "&workgroup_id=" + process.env.CLOUDPRINT_API_WORKGROUP + "&email=" + username + "@rit.edu",
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: "session=" + json.message.session + "&workgroup_id=" + workgroupId + "&email=" + username + "@rit.edu",
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       method: "POST"
     }
+    console.log(options);
     return await fetch((process.env.CLOUDPRINT_API_URL + "add_user_to_workgroup"), options)
-    .then(function (res) {
-      return res.json() as any;
-    }).then(async function (res) {
-      return res;
-    });
+      .then(function (res) {
+        return res.json() as any;
+      }).then(async function (res) {
+        return res;
+      });
   });
-
+  console.log(addRequestBody);
   return addRequestBody.result;
 }
 
@@ -70,7 +72,7 @@ function submittedOptionIDsCorrect(
   if (!submitted || correct.length !== submitted.length) return false;
 
   for (let i = 0; i < correct.length; i++) {
-    if (correct[i] !== submitted[i]) return false;
+    if (!correct.includes(submitted[i])) return false;
   }
 
   return true;
@@ -229,7 +231,7 @@ const TrainingModuleResolvers = {
           }
 
           if (module.quiz.length === 0) {
-              throw Error("Provided module has no questions");
+            throw Error("Provided module has no questions");
           }
 
           let correct = 0;
@@ -256,12 +258,12 @@ const TrainingModuleResolvers = {
 
             if (submittedOptionIDsCorrect(correctOptionIDs, submittedOptionIDs)) {
               correct++;
-              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: true });
+              choiceSummary.push({ questionNum: question.id, questionText: question.text, correct: true });
             } else {
               incorrect++;
-              choiceSummary.push({questionNum: question.id, questionText: question.text, correct: false });
+              choiceSummary.push({ questionNum: question.id, questionText: question.text, correct: false });
             }
-              
+
           }
 
           const grade = (correct / (incorrect + correct)) * 100;
@@ -282,7 +284,7 @@ const TrainingModuleResolvers = {
             if (grade >= MODULE_PASSING_THRESHOLD) {
               if (Number(args.moduleID) === ID_3DPRINTEROS_QUIZ) {
                 //If 3D Printer Training, add them to the workgroup instead of using an access check
-                add3DPrinterOSUser(user.ritUsername).then(async function(result) {
+                add3DPrinterOSUser(user.ritUsername, process.env.CLOUDPRINT_API_WORKGROUP ?? "").then(async function (result) {
                   if (result) {
                     await createLog(
                       `{user} has been automatically added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_WORKGROUP}.`,
@@ -294,11 +296,31 @@ const TrainingModuleResolvers = {
                       { id: user.id, label: getUsersFullName(user) }
                     );
                   }
-                })
-              } else {
+                });
+              }
+              else if (Number(args.moduleID) === ID_3DPRINTEROS_FS_QUIZ) {
+                //If 3D Printer Full Service Training, add them to the workgroup instead of using an access check
+                add3DPrinterOSUser(user.ritUsername, process.env.CLOUDPRINT_API_FS_WORKGROUP ?? "").then(async function (result) {
+                  if (result) {
+                    await createLog(
+                      `{user} has been automatically added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_FS_WORKGROUP}.`,
+                      { id: user.id, label: getUsersFullName(user) }
+                    );
+                  } else {
+                    await createLog(
+                      `{user} has failed to be added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_FS_WORKGROUP}. Check server logs.`,
+                      { id: user.id, label: getUsersFullName(user) }
+                    );
+                  }
+                });
+              }
+              else {
                 const equipmentIDsToCheck = await ModuleRepo.getPassedEquipmentIDsByModuleID(Number(args.moduleID), user.id);
                 equipmentIDsToCheck.forEach(async equipmentID => {
-                  await createAccessCheck(user.id, equipmentID);
+                  //check if access check does not already exists
+                  if (!(await accessCheckExists(user.id, equipmentID))) {
+                    await createAccessCheck(user.id, equipmentID);
+                  }
                 });
               }
             }

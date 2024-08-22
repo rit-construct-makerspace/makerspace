@@ -91,11 +91,11 @@ export default function LeftNav() {
             primary="Training"
             icon={<SchoolIcon />}
           />
-          <NavLink
+          {/*<NavLink
             to="/maker/materials"
             primary="Materials"
             icon={<InventoryIcon />}
-          />
+          />*/}
           <NavLink
             to="https://cloud.3dprinteros.com/ssosaml/rit/auth"
             primary="3DPrinterOS"

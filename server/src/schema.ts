@@ -54,7 +54,7 @@ export const schema = makeExecutableSchema({
     ReaderTypeDefs,
     AccessCheckTypeDefs
   ],
-  resolvers: mergeResolvers([
+  resolvers: mergeResolvers([ //resolvers might be marked as "not assignable". Ignore it - NPM issue
     resolveFunctions,
     EquipmentResolvers,
     trainingModuleResolvers,

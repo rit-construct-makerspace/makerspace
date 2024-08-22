@@ -6,6 +6,7 @@ import {
 import { useQuery } from "@apollo/client";
 import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
+import Markdown from "react-markdown";
 
 export default function AnnouncementsCard() {
     const getAnnouncementsResult = useQuery(GET_ANNOUNCEMENTS);
@@ -22,7 +23,7 @@ export default function AnnouncementsCard() {
                         {getAnnouncementsResult.data?.getAllAnnouncements?.map((announcement: Announcement) => (
                             <Stack>
                                 <Typography variant="h5" color={"darkorange"}>{announcement.title}</Typography>
-                                <Typography variant="body1">{announcement.description}</Typography>
+                                <Typography variant="body1"><Markdown>{announcement.description}</Markdown></Typography>
                             </Stack>
                         ))}
                         {!getAnnouncementsResult.data?.getAllAnnouncements &&(
