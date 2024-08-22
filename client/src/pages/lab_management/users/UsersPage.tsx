@@ -27,7 +27,8 @@ export default function UsersPage() {
     >
       <Page title="People" maxWidth="1250px">
         <SearchBar 
-          placeholder="Search people" sx={{ mb: 2, maxWidth: 300 }} 
+          placeholder={"Search " + getUsersResult.data?.users?.length + " people"}
+          sx={{ mb: 2, maxWidth: 300 }} 
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />

@@ -27,7 +27,7 @@ export default function ManageEquipmentPage() {
             spacing={2}
         >
             <Stack direction="row" spacing={2}>
-                <SearchBar placeholder="Search equipment"
+                <SearchBar placeholder={"Search " + getEquipmentsResult.data?.equipments.length + " equipment"}
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                 />
