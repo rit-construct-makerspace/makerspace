@@ -1,0 +1,40 @@
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import { Privilege } from "../schemas/usersSchema.js";
+import { ApolloContext } from "../context.js";
+import { createZoneHours, deleteZoneHours, getZoneHours } from "../repositories/ZoneHours/ZoneHoursRepository.js";
+
+const ZoneHoursResolver = {
+
+  Query: {
+    zoneHours: async (
+      _parent: any,
+      _args: any,
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await getZoneHours();
+      }),
+  },
+
+  Mutation: {
+    addZoneHours: async (
+      _parent: any,
+      args: { zone: string, type: string, dayOfTheWeek: string, time: string },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.STAFF], async () => {
+        const time = args.time.replace(":", "") + "00";
+        console.log(`${args.zone}, ${args.type}, ${(args.dayOfTheWeek)}, ${time}`)
+        return await createZoneHours(args.zone, args.type, Number(args.dayOfTheWeek), time);
+      }),
+
+    deleteZoneHours: async (
+      _parent: any,
+      args: { id: number },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.STAFF], async () => {
+        await deleteZoneHours(args.id);
+        return (await getZoneHours())[0];
+      }),
+  }
+};
+
+export default ZoneHoursResolver;

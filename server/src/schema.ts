@@ -30,6 +30,8 @@ import { ReaderTypeDefs } from "./schemas/readersSchema.js";
 import ReadersResolver from "./resolvers/readersResolver.js";
 import { AccessCheckTypeDefs } from "./schemas/accessChecksSchema.js";
 import AccessChecksResolver from "./resolvers/accessChecksResolver.js";
+import ZoneHoursResolver from "./resolvers/zoneHoursResolver.js";
+import { ZoneHoursTypeDefs } from "./schemas/zoneHoursSchema.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -52,7 +54,8 @@ export const schema = makeExecutableSchema({
     CalendarEventsTypeDefs,
     AnnouncementsTypeDefs,
     ReaderTypeDefs,
-    AccessCheckTypeDefs
+    AccessCheckTypeDefs,
+    ZoneHoursTypeDefs
   ],
   resolvers: mergeResolvers([ //resolvers might be marked as "not assignable". Ignore it - NPM issue
     resolveFunctions,
@@ -67,6 +70,7 @@ export const schema = makeExecutableSchema({
     calendarEventsResolver,
     AnnouncementsResolver,
     ReadersResolver,
-    AccessChecksResolver
+    AccessChecksResolver,
+    ZoneHoursResolver
   ]),
 });
