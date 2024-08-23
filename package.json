@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "fix": "ts-jest config:migrate jest.config.js",
-    "start": "tsx 'server/dist/server.js'",
+    "start": "tsx server/dist/server.js",
     "build": "npm run build:server && npm run build:client",
     "build:server": "cd server/ && tsc  --build --clean && tsc -p .",
     "build:client": "cd client/ && npm install --force && npm run build",

@@ -57,7 +57,7 @@ export const schema = makeExecutableSchema({
     AccessCheckTypeDefs,
     ZoneHoursTypeDefs
   ],
-  resolvers: mergeResolvers([ //resolvers might be marked as "not assignable". Ignore it - NPM issue
+  resolvers: [ 
     resolveFunctions,
     EquipmentResolvers,
     trainingModuleResolvers,
@@ -72,5 +72,5 @@ export const schema = makeExecutableSchema({
     ReadersResolver,
     AccessChecksResolver,
     ZoneHoursResolver
-  ]),
+  ],
 });
