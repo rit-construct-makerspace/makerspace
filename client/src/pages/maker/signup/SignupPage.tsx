@@ -169,8 +169,9 @@ export default function SignupPage() {
         select
         label="College"
         value={college}
+        hidden={IS_FACULTY_REGEX.test(currentUser.ritUsername)}
         onChange={(e) => setCollege(e.target.value)}
-        sx={{ mt: 8 }}
+        sx={{ mt: 8, display: (IS_FACULTY_REGEX.test(currentUser.ritUsername) ? "none" : null) }}
       >
         {COLLEGES.map((c) => (
           <MenuItem value={c.split(" ")[0]} key={c}>
@@ -184,7 +185,7 @@ export default function SignupPage() {
         label="Expected Graduation"
         value={expectedGraduation}
         onChange={(e) => setExpectedGraduation(e.target.value)}
-        sx={{ mt: 4 }}
+        sx={{ mt: 4, display: (IS_FACULTY_REGEX.test(currentUser.ritUsername) ? "none" : null)}}
         hidden={IS_FACULTY_REGEX.test(currentUser.ritUsername) ? true : undefined} //Only if faculty/staff
       >
         {generateGradDates().map((d) => (
