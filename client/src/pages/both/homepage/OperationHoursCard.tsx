@@ -3,7 +3,7 @@ import {
     Typography
 } from "@mui/material";
 
-export default function AccountBalanceCard() {
+export default function OperationHoursCard() {
     return (
         <Card sx={{ width: 350, maxHeight: 150, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1  }} >
             <Typography variant="h4">Lab Hours <Typography variant="h6">(Week of 8/25)</Typography></Typography>

@@ -55,7 +55,7 @@ export default function SelectRoomPage() {
         >
           Open Hours
         </Typography>
-        <ZoneHourOptions></ZoneHourOptions>
+        Hours Editing has been temportarily disabled for database revisions.
       </Page>
     </RequestWrapper>
   );
