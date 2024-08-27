@@ -40,7 +40,6 @@ export default function ZoneHourRow({id, zoneID, type, dayOfTheWeek, time}: Zone
   const currentUser = useCurrentUser();
 
   const handleDeleteZoneHoursClicked = () => {
-    console.log(id)
     const result = window.confirm(
       `Are you sure you wish to delete this entry? This cannot be undone.`
     );

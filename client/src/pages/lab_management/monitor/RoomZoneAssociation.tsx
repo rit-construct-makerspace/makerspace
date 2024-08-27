@@ -63,8 +63,6 @@ export default function RoomZoneAssociation({
     });
   };
 
-  console.log(zoneID);
-
   return (
     <>
       <FormControl disabled={!isAdmin || setNewZoneResult.loading}>

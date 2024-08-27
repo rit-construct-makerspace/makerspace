@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Stack } from "@mui/material";
 import Page from "../../Page";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
@@ -22,22 +22,28 @@ const Homepage: React.FC = () => {
     const welcomeMsg = "Welcome, " + currentUser.firstName;
     const navigate = useNavigate();
 
+    const [width, setWidth] = useState<number>(window.innerWidth);
+    function handleWindowSizeChange() {
+        setWidth(window.innerWidth);
+    }
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+    const isMobile = width <= 768;
+
+
     return (
-        <Page title={welcomeMsg} maxWidth={"1250px"}>
+        <Page title="" maxWidth={"1250px"}>
             {( currentUser.cardTagID == null || currentUser.cardTagID == "" ) &&
             <Alert variant="standard" color="error">
                 Your RIT ID has not been registered! You can still complete trainings but you must speak to a SHED Makerspace employee before gaining access to our equipment.
             </Alert>
             }
             <Typography variant="h5">Dashboard</Typography>
-            <div className="flexo" style={{
-                display: "flex",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "flex-start",
-                alignContent: "flex-start",
-                gap: "1em"
-            }}>
+            <Stack className="flexo" direction={isMobile ? "column" : "row"}>
                 {/* <AccountBalanceCard /> */}
                 <Stack direction={"column"}>
                     <ResourcesCard />
@@ -52,7 +58,7 @@ const Homepage: React.FC = () => {
                     <OperationHoursCard />
                     <UpcomingEventsCard />
                 </Stack>
-            </div>
+            </Stack>
         </Page>
     );
 };

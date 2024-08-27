@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Divider, Paper, Stack } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import QuizIcon from "@mui/icons-material/Quiz";
 import EventIcon from "@mui/icons-material/Event";
@@ -26,9 +27,22 @@ const StyledExplainer = styled.div`
 `;
 
 export default function Explainer() {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 768;
+
+
   return (
     <StyledExplainer>
-      <Paper elevation={2} sx={{ px: 4, pb: 4, pt: 3 }}>
+      <Paper elevation={2} sx={{ px: 4, pb: 4, pt: 3, width: (!isMobile ? "auto" : "80vw") }}>
         <Stack sx={{ textAlign: "left", mb: 4 }}>
           <div className="explainer-tagline">
             Be safe and sure with training at the SHED.
@@ -41,11 +55,13 @@ export default function Explainer() {
         </Stack>
 
         <Stack
-          direction="row"
+          direction={isMobile ? "column" : "row"}
           spacing={2}
           divider={
-            <Divider orientation="vertical" flexItem>
-              <ArrowForwardIcon sx={{ opacity: 0.5 }} />
+            <Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem>
+              {isMobile
+              ? <ArrowDownwardIcon sx={{ opacity: 0.5 }} />
+              : <ArrowForwardIcon sx={{ opacity: 0.5 }} />}
             </Divider>
           }
         >
