@@ -53,7 +53,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment
@@ -73,7 +74,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add and get ID
@@ -92,7 +94,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
@@ -120,7 +123,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
@@ -151,7 +155,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
@@ -188,7 +193,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
@@ -223,7 +229,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
@@ -260,7 +267,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
@@ -308,7 +316,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
@@ -363,7 +372,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
@@ -410,7 +420,8 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
