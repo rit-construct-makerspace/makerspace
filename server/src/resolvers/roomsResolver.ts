@@ -30,7 +30,7 @@ const RoomResolvers = {
     },
 
     zone: async (parent: Room) => {
-      console.log(parent);
+      if (parent.zoneID === null) return null;
       return await ZoneRepo.getZoneByID(parent.zoneID);
     },
 
