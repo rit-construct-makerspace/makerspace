@@ -12,10 +12,10 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import ZoneHourRow from "./ZoneHourRow";
 
 export const GET_ZONE_HOURS = gql`
-  query GetZoneHours {
-    zoneHours {
+  query GetZoneHoursByZone($zoneID: ID!) {
+    zoneHoursByZone(zoneID: $zoneID) {
       id
-      zone
+      zoneID
       type
       dayOfTheWeek
       time
@@ -24,32 +24,28 @@ export const GET_ZONE_HOURS = gql`
 `;
 
 const ADD_ZONE_HOURS = gql`
-  mutation AddZoneHours($zone: String!, $type: String!, $dayOfTheWeek: String!, $time: String!) {
-    addZoneHours(zone: $zone, type: $type, dayOfTheWeek: $dayOfTheWeek, time: $time) {
+  mutation AddZoneHours($zoneID: ID!, $type: String!, $dayOfTheWeek: String!, $time: String!) {
+    addZoneHours(zoneID: $zoneID, type: $type, dayOfTheWeek: $dayOfTheWeek, time: $time) {
       id
     }
   }
 `;
 
-export default function ZoneHourOptions() {
-  const navigate = useNavigate();
-  const getZoneHoursResult = useQuery(GET_ZONE_HOURS);
+interface ZoneHourOptionsProps {
+  zoneID: number
+}
+
+export default function ZoneHourOptions({zoneID}: ZoneHourOptionsProps) {
+  const getZoneHoursResult = useQuery(GET_ZONE_HOURS, {variables: {zoneID}});
   const [addZoneHours, result] = useMutation(ADD_ZONE_HOURS);
 
   const currentUser = useCurrentUser();
 
-  const [zone, setZone] = useState("");
   const [type, setType] = useState("");
   const [day, setDay] = useState("");
   const [time, setTime] = useState("");
-  const [deleteID, setDeleteID] = useState(0);
 
   const handleSubmit = () => {
-    if (!zone) {
-      window.alert("Please set the zone.");
-      return;
-    }
-
     if (!type) {
       window.alert("Please select the type.");
       return;
@@ -67,12 +63,12 @@ export default function ZoneHourOptions() {
 
     addZoneHours({
       variables: {
-        zone,
+        zoneID,
         type,
         dayOfTheWeek: day,
-        time
+        time,
       },
-      refetchQueries: [{ query: GET_ZONE_HOURS }],
+      refetchQueries: [{ query: GET_ZONE_HOURS, variables: {zoneID} }],
     });
   };
 
@@ -87,9 +83,6 @@ export default function ZoneHourOptions() {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Zone
-                </TableCell>
-                <TableCell>
                   Type
                 </TableCell>
                 <TableCell>
@@ -102,19 +95,11 @@ export default function ZoneHourOptions() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {getZoneHoursResult.data != null && getZoneHoursResult.data.zoneHours.map((zoneHour: ZoneHour) => (
-                <ZoneHourRow id={zoneHour.id} zone={zoneHour.zone} type={zoneHour.type} dayOfTheWeek={zoneHour.dayOfTheWeek} time={zoneHour.time}></ZoneHourRow>
+              {getZoneHoursResult.data != undefined && getZoneHoursResult.data?.zoneHoursByZone.map((zoneHour: ZoneHour) => (
+                <ZoneHourRow id={zoneHour.id} zoneID={zoneHour.zoneID} type={zoneHour.type} dayOfTheWeek={zoneHour.dayOfTheWeek} time={zoneHour.time}></ZoneHourRow>
               ))}
 
               <TableRow>
-                <TableCell>
-                  <TextField
-                    label="Zone (ex: 1,2,3)"
-                    value={zone}
-                    onChange={(e) => setZone(e.target.value)}
-                  >
-                  </TextField>
-                </TableCell>
                 <TableCell>
                   <Select
                     value={type}

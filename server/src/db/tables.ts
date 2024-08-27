@@ -85,6 +85,7 @@ export interface RoomRow {
   id: number;
   name: string;
   archived: boolean;
+  zoneID: number | null;
 }
 
 export interface TrainingModuleRow {
@@ -163,10 +164,20 @@ export interface AccessCheckRow {
 
 export interface ZoneHoursRow {
   id: number;
-  zone: string;
+  zoneID: number | null;
   type: string;
   dayOfTheWeek: number;
   time: string;
+}
+
+export interface ZoneRow {
+  id: number;
+  name: string;
+}
+
+export interface RoomsForZonesRow {
+  zoneID: number;
+  roomID: number;
 }
 
 export interface EquipmentSessionRow {
@@ -193,6 +204,8 @@ declare module "knex/types/tables.js" {
     Users: UserRow;
     Readers: ReaderRow;
     AccessChecks: AccessCheckRow;
+    Zones: ZoneRow;
+    RoomsForZones: RoomsForZonesRow
     ZoneHours: ZoneHoursRow;
   }
 }

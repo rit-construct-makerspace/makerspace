@@ -21,7 +21,7 @@ import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
 import { createRequire } from "module";
-import { getHoursByZone, WeekDays } from "./repositories/ZoneHours/ZoneHoursRepository.js";
+import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursRepository.js";
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 const require = createRequire(import.meta.url);
 
@@ -484,7 +484,7 @@ async function startServer() {
    * Fetch the hours associated with a zone string
    */
   app.get("/api/hours/:zone", async function(req, res) {
-    const hourRows = await getHoursByZone(req.params.zone);
+    const hourRows = await getHoursByZone(Number(req.params.zone));
 
     var hoursString = "";
     hourRows.forEach(function(hourRow) {

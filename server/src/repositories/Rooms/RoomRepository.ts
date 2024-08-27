@@ -20,7 +20,7 @@ import { EntityNotFound } from "../../EntityNotFound.js";
  */
 export async function getRoomByID(roomID: number): Promise<Room | null> {
   const knexResult = await knex
-    .first("id", "name")
+    .first("id", "name", "zoneID")
     .from("Rooms")
     .where("id", roomID);
 
@@ -33,6 +33,16 @@ export async function getRoomByID(roomID: number): Promise<Room | null> {
  */
 export async function getRooms(): Promise<Room[]> {
   const knexResult = await knex("Rooms").select("Rooms.id", "Rooms.name");
+  return roomsToDomain(knexResult);
+}
+
+/**
+ * Fetch all rooms in the table associated with zone
+ * @param zone zone id
+ * @returns {Room[]} rooms
+ */
+export async function getRoomsByZone(zoneID: number): Promise<Room[]> {
+  const knexResult = await knex("Rooms").select().where({zoneID});
   return roomsToDomain(knexResult);
 }
 
@@ -82,6 +92,24 @@ export async function updateRoomName(
 ): Promise<Room | null> {
   await knex("Rooms").where({ id: roomID }).update({
     name: name,
+  });
+
+  return await getRoomByID(roomID);
+}
+
+/**
+ * Update the zone of an existing room
+ * @param roomID the ID of the room to update
+ * @param zoneID the new zone
+ * @returns the updated room
+ */
+export async function updateZone(
+  roomID: number,
+  zoneID: number
+): Promise<Room | null> {
+  console.log(roomID + " " + zoneID)
+  await knex("Rooms").where({ id: roomID }).update({
+    zoneID
   });
 
   return await getRoomByID(roomID);

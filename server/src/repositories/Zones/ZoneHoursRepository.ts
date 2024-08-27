@@ -11,16 +11,16 @@ export enum WeekDays {
     SATURDAY = 7
 }
 
-export async function getHoursByZone(zone: string): Promise<ZoneHoursRow[]> {
-    return await knex("OpenHours").select().where({zone});
+export async function getHoursByZone(zoneID: number): Promise<ZoneHoursRow[]> {
+    return await knex("OpenHours").select().where({zoneID});
 }
 
 export async function getZoneHours(): Promise<ZoneHoursRow[]> {
-    return await knex("OpenHours").select().orderBy("zone", "desc").orderBy("dayOfTheWeek", "asc").orderBy("time", "asc");
+    return await knex("OpenHours").select().orderBy("zoneID", "desc").orderBy("dayOfTheWeek", "asc").orderBy("time", "asc");
 }
 
-export async function createZoneHours(zone: string, type: string, dayOfTheWeek: WeekDays, time: string): Promise<ZoneHoursRow> {
-    await knex("OpenHours").insert({zone, type, dayOfTheWeek, time});
+export async function createZoneHours(zoneID: number, type: string, dayOfTheWeek: WeekDays, time: string): Promise<ZoneHoursRow> {
+    await knex("OpenHours").insert({zoneID, type, dayOfTheWeek, time});
     return await knex("OpenHours").select().orderBy("id", "desc").first();
 }
 
