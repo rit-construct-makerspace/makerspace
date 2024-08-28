@@ -12,7 +12,7 @@ export enum WeekDays {
 }
 
 export async function getHoursByZone(zoneID: number): Promise<ZoneHoursRow[]> {
-    return await knex("OpenHours").select().where({zoneID});
+    return await knex("OpenHours").select().where({zoneID}).orderBy("dayOfTheWeek", "asc").orderBy("time", "asc");
 }
 
 export async function getZoneHours(): Promise<ZoneHoursRow[]> {
