@@ -80,4 +80,5 @@ export const schema = makeExecutableSchema({
     ZonesResolver,
     ZoneHoursResolver,
     DataPointsResolver
+  ]
 });
