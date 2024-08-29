@@ -13,7 +13,7 @@ const ZonesResolver = {
       _args: any,
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
         return getRoomsByZone(parent.id);
       }
     ),
@@ -22,7 +22,7 @@ const ZonesResolver = {
       _args: any,
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
         return getHoursByZone(parent.id);
       }
     ),
@@ -33,7 +33,7 @@ const ZonesResolver = {
       _parent: any,
       _args: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
         return await getZones();
       }),
   },
