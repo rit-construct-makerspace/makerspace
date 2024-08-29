@@ -63,7 +63,7 @@ export const schema = makeExecutableSchema({
     ZoneHoursTypeDefs,
     DataPointsTypeDefs
   ],
-  resolvers: mergeResolvers([ //resolvers might be marked as "not assignable". Ignore it - NPM issue
+  resolvers: [ 
     resolveFunctions,
     EquipmentResolvers,
     trainingModuleResolvers,
@@ -80,5 +80,4 @@ export const schema = makeExecutableSchema({
     ZonesResolver,
     ZoneHoursResolver,
     DataPointsResolver
-  ]),
 });
