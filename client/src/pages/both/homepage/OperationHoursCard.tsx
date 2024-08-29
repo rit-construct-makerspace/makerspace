@@ -119,7 +119,7 @@ export default function OperationHoursCard() {
                 {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
                     <HoursTabPanel value={currentTab} index={indexCount++} title={zone.name} hours={zone.hours}></HoursTabPanel>
                 ))}
-                <Typography variant="body1">(Closed Monday 7/2 for Labor Day)</Typography>
+                <Typography variant="body1">(Closed Monday 9/2 for Labor Day)</Typography>
             </Card>
         </RequestWrapper>
     );
