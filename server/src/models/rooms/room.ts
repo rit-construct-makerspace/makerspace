@@ -4,4 +4,5 @@
 export interface Room {
     id: number;
     name: string;
+    zoneID: number | null
 }

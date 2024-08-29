@@ -28,33 +28,31 @@ function dayOfTheWeekConvert(day: number) {
 
 interface ZoneHourRowProps {
   id: number;
-  zone: string;
+  zoneID: number;
   type: string;
   dayOfTheWeek: number;
   time: string;
 }
 
-export default function ZoneHourRow({id, zone, type, dayOfTheWeek, time}: ZoneHourRowProps) {
+export default function ZoneHourRow({id, zoneID, type, dayOfTheWeek, time}: ZoneHourRowProps) {
   const [deleteZoneHours] = useMutation(DELETE_ZONE_HOURS);
 
   const currentUser = useCurrentUser();
 
   const handleDeleteZoneHoursClicked = () => {
-    console.log(id)
     const result = window.confirm(
       `Are you sure you wish to delete this entry? This cannot be undone.`
     );
     if (result) {
       deleteZoneHours({
         variables: { id: id },
-        refetchQueries: [{ query: GET_ZONE_HOURS }],
+        refetchQueries: [{ query: GET_ZONE_HOURS, variables: {zoneID} }],
       });
     };
   }
 
   return(
     <TableRow>
-    <TableCell>{zone}</TableCell>
     <TableCell>{type}</TableCell>
     <TableCell>{dayOfTheWeekConvert(Number(dayOfTheWeek))}</TableCell>
     <TableCell>{time}</TableCell>

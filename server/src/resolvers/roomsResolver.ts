@@ -7,6 +7,7 @@ import assert from "assert";
 import { Room } from "../models/rooms/room.js";
 import { ApolloContext } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
+import * as ZoneRepo from "../repositories/Zones/ZonesRespository.js";
 
 const RoomResolvers = {
   Query: {
@@ -26,6 +27,11 @@ const RoomResolvers = {
   Room: {
     equipment: async (parent: Room) => {
       return await EquipmentRepo.getEquipmentWithRoomID(parent.id, false);
+    },
+
+    zone: async (parent: Room) => {
+      if (parent.zoneID === null) return null;
+      return await ZoneRepo.getZoneByID(parent.zoneID);
     },
 
     recentSwipes: async (parent: Room) => {
@@ -58,6 +64,11 @@ const RoomResolvers = {
 
     updateRoomName: async (_parent: any, args: any) => {
       return await RoomRepo.updateRoomName(args.id, args.name);
+    },
+
+    setZone: async (_parent: any, args: any) => {
+      console.log(args);
+      return await RoomRepo.updateZone(args.roomID, args.zoneID);
     },
 
     swipeIntoRoom: async (

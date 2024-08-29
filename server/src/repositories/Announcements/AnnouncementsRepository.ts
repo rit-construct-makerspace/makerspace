@@ -11,7 +11,7 @@ import { AnnouncementRow } from "../../db/tables.js";
  * @returns array of AnnouncementRow
  */
 export async function getAnnouncements() {
-  return knex('Announcements');
+  return knex('Announcements').orderBy("id", "desc");
 }
 
 /**
@@ -37,7 +37,7 @@ export async function createAnnouncement(announcement: {
   description: string;
 }): Promise<AnnouncementRow> {
   const [newID] = await knex("Announcements").insert(announcement, "id");
-  return await getAnnouncementByID(newID);
+  return await getAnnouncementByID(newID.id);
 }
 
 /**

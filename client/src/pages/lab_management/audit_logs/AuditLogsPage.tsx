@@ -150,6 +150,7 @@ export default function LogPage() {
                   message={log.message}
                 />
               ))}
+              <Typography variant="body2">This page is limitted to 100 logs. Consider narrowing your search criteria.</Typography>
             </Stack>
           );
         }}

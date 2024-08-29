@@ -3,9 +3,14 @@ export default interface Room {
   name: string;
 }
 
+export default interface Zone {
+  id: number;
+  name: string;
+}
+
 export default interface ZoneHour {
   id: number;
-  zone: string;
+  zoneID: number;
   type: string;
   dayOfTheWeek: number;
   time: string;

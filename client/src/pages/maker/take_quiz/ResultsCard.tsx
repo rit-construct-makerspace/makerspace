@@ -36,7 +36,6 @@ const useStyles = makeStyles({
 
 
 export default function SubmissionCard({ summary }: ResultsCardProps) {
-  console.log(summary);
 
   //const summaryObj: Array<ChoiceSummary> = JSON.parse(summary);
 

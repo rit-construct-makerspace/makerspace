@@ -21,8 +21,9 @@ import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
 import { createRequire } from "module";
-import { getHoursByZone, WeekDays } from "./repositories/ZoneHours/ZoneHoursRepository.js";
+import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursRepository.js";
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
+import { incrementDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 const require = createRequire(import.meta.url);
 
 const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -115,6 +116,7 @@ async function startServer() {
   // and this solves the issue
   app.get("/app/home", function(req, res) {
     res.redirect("/app/")
+    incrementDataPointValue(1, 1);
   })
 
 
@@ -484,7 +486,7 @@ async function startServer() {
    * Fetch the hours associated with a zone string
    */
   app.get("/api/hours/:zone", async function(req, res) {
-    const hourRows = await getHoursByZone(req.params.zone);
+    const hourRows = await getHoursByZone(Number(req.params.zone));
 
     var hoursString = "";
     hourRows.forEach(function(hourRow) {

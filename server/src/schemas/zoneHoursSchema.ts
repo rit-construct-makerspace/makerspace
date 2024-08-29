@@ -4,7 +4,7 @@ import { ZoneHoursRow } from "../db/tables.js";
 export const ZoneHoursTypeDefs = gql`
   type ZoneHours {
     id: ID!
-    zone: String!
+    zoneID: ID!
     type: String!
     dayOfTheWeek: String!
     time: String!
@@ -12,10 +12,11 @@ export const ZoneHoursTypeDefs = gql`
 
   extend type Query {
     zoneHours: [ZoneHours]
+    zoneHoursByZone(zoneID: ID!): [ZoneHours]
   }
 
   extend type Mutation {
     deleteZoneHours(id: ID!): ZoneHours
-    addZoneHours(zone: String!, type: String!, dayOfTheWeek: String!, time: String!): ZoneHours
+    addZoneHours(zoneID: ID!, type: String!, dayOfTheWeek: String!, time: String!): ZoneHours
   }
 `;

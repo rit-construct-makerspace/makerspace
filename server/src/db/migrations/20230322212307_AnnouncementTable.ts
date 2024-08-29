@@ -8,7 +8,7 @@ export async function up(knex: Knex): Promise<void> {
         return knex.schema.createTable("Announcements", function (t) {
             t.increments('id').primary;
             t.string('title', 255).notNullable();
-            t.string('description', 255);
+            t.text('description');
             t.date('postDate').defaultTo(knex.raw('CURRENT_TIMESTAMP'));
             t.date('expDate').defaultTo(knex.raw("(CURRENT_TIMESTAMP + '1 week'::interval)"));
         });

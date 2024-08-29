@@ -47,7 +47,7 @@ export default function IncompleteTrainingsCard({onClick}: IncompleteTrainingsCa
                 const reordered = [...notTaken];
 
                 return (
-                    <Card sx={{ width: 350, maxWidth: 500, height: 296, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll"  }} >
+                    <Card sx={{ minWidth: 250, maxWidth: 500, height: 296, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll"  }} >
                             <Typography variant="h4">Incomplete Trainings</Typography>
                             {reordered.map((ms: ModuleStatus) => (
                                 <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />

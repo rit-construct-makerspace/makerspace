@@ -17,6 +17,7 @@ export const RoomTypeDefs = gql`
   type Room {
     id: ID!
     name: String!
+    zone: Zone
     equipment: [Equipment]
     recentSwipes: [Swipe]
     mentors: [User]
@@ -36,6 +37,7 @@ export const RoomTypeDefs = gql`
     removeRoom(roomID: ID!): Room
 
     updateRoomName(roomID: ID!, name: String): Room
+    setZone(roomID: ID!, zoneID: ID!): Room
 
     swipeIntoRoom(roomID: ID!, universityID: String!): User
   }
