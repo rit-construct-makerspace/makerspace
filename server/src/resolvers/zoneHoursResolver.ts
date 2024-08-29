@@ -10,7 +10,7 @@ const ZoneHoursResolver = {
       _parent: any,
       _args: any,
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
         return await getZoneHours();
       }),
 
@@ -18,7 +18,7 @@ const ZoneHoursResolver = {
         _parent: any,
         args: {zoneID: string},
         { ifAllowed }: ApolloContext) =>
-        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
           return await getHoursByZone(Number(args.zoneID));
         }),
   },
