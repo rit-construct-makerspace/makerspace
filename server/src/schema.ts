@@ -34,6 +34,8 @@ import ZoneHoursResolver from "./resolvers/zoneHoursResolver.js";
 import { ZoneHoursTypeDefs } from "./schemas/zoneHoursSchema.js";
 import ZonesResolver from "./resolvers/zonesResolver.js";
 import { ZonesTypeDefs } from "./schemas/zonesSchema.js";
+import { DataPointsTypeDefs } from "./schemas/dataPointsSchema.js";
+import DataPointsResolver from "./resolvers/dataPointResolver.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -58,7 +60,8 @@ export const schema = makeExecutableSchema({
     ReaderTypeDefs,
     AccessCheckTypeDefs,
     ZonesTypeDefs,
-    ZoneHoursTypeDefs
+    ZoneHoursTypeDefs,
+    DataPointsTypeDefs
   ],
   resolvers: mergeResolvers([ //resolvers might be marked as "not assignable". Ignore it - NPM issue
     resolveFunctions,
@@ -75,6 +78,7 @@ export const schema = makeExecutableSchema({
     ReadersResolver,
     AccessChecksResolver,
     ZonesResolver,
-    ZoneHoursResolver
+    ZoneHoursResolver,
+    DataPointsResolver
   ]),
 });

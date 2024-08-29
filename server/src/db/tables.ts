@@ -88,6 +88,12 @@ export interface RoomRow {
   zoneID: number | null;
 }
 
+export interface DataPointsRow {
+  id: number;
+  label: string;
+  value: number;
+}
+
 export interface TrainingModuleRow {
   id: number;
   name: string;
@@ -207,5 +213,6 @@ declare module "knex/types/tables.js" {
     Zones: ZoneRow;
     RoomsForZones: RoomsForZonesRow
     ZoneHours: ZoneHoursRow;
+    DataPoints: DataPointsRow;
   }
 }
