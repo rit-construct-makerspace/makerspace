@@ -49,10 +49,11 @@ const Homepage: React.FC = () => {
                     <ResourcesCard />
                     <AnnouncementsCard />
                 </Stack>
-                <Stack direction={"column"}>
+
+                {!isMobile && <Stack direction={"column"}>
                     <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")} />
                     <ExpiringSoonCard />
-                </Stack>
+                </Stack>}
 
                 <Stack direction={"column"}>
                     <OperationHoursCard />
