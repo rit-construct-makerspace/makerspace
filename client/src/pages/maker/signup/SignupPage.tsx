@@ -82,7 +82,7 @@ export default function SignupPage() {
   const [agreedToAbide, setAgreedToAbide] = useState(false);
 
   const handleSubmit = () => {
-    if (!college) {
+    if (!college && !IS_FACULTY_REGEX.test(currentUser.ritUsername)) {
       window.alert("Please select your college.");
       return;
     }
