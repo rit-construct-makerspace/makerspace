@@ -79,7 +79,6 @@ export default function SignupPage() {
   const [pronouns, setPronouns] = useState("");
   const [college, setCollege] = useState("");
   const [expectedGraduation, setExpectedGraduation] = useState("");
-  const [agreedToAbide, setAgreedToAbide] = useState(false);
 
   const handleSubmit = () => {
     if (!college && !IS_FACULTY_REGEX.test(currentUser.ritUsername)) {
@@ -89,13 +88,6 @@ export default function SignupPage() {
 
     if (!expectedGraduation && !IS_FACULTY_REGEX.test(currentUser.ritUsername)) {
       window.alert("Please select your expected graduation date.");
-      return;
-    }
-
-    if (!agreedToAbide) {
-      window.alert(
-        "You must agree to abide by The SHED's rules and policies."
-      );
       return;
     }
 
@@ -194,22 +186,6 @@ export default function SignupPage() {
           </MenuItem>
         ))}
       </TextField>
-
-      <Stack direction="row" alignItems="center" mt={4}>
-        <Checkbox
-          checked={agreedToAbide}
-          onChange={(e) => setAgreedToAbide(e.target.checked)}
-        />
-        <Typography variant="body1">
-          I have read, understand, and agree to abide by{" "}
-          <Link
-            href="https://hack.rit.edu/index.php/tools-equipment/"
-            target="_blank"
-          >
-            The SHED's rules and policies
-          </Link>
-        </Typography>
-      </Stack>
 
       <LoadingButton
         loading={result.loading}
