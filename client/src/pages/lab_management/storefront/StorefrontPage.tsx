@@ -12,6 +12,7 @@ import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
+import AdminPage from "../../AdminPage";
 
 const REMOVE_INVENTORY_ITEM_AMOUNT = gql`
   mutation RemoveInventoryItemAmount($itemID: ID!, $amountToRemove: Int!) {
@@ -107,7 +108,7 @@ export default function StorefrontPage() {
 
   return (
     <RequestWrapper loading={loading} error={error}>
-      <Page
+      <AdminPage
         title="Storefront"
         maxWidth="1250px"
         topRightAddons={
@@ -165,7 +166,7 @@ export default function StorefrontPage() {
             item={activeItem}
           />
         )}
-      </Page>
+      </AdminPage>
     </RequestWrapper>
   );
 }

@@ -22,6 +22,7 @@ import SwipedUserCard from "./SwipedUserCard";
 import styled from "styled-components";
 import HistoryIcon from "@mui/icons-material/History";
 import RoomZoneAssociation from "./RoomZoneAssociation";
+import AdminPage from "../../AdminPage";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -90,7 +91,7 @@ export default function MonitorRoomPage() {
     <RequestWrapper2
       result={queryResult}
       render={({ room }) => (
-        <Page title={room.name} maxWidth="1250px">
+        <AdminPage title={room.name} maxWidth="1250px">
           <Collapse in={cardError}>
             <Alert
               severity="error"
@@ -160,7 +161,7 @@ export default function MonitorRoomPage() {
             </Button>
             <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(id)}></RoomZoneAssociation>
           </Stack>
-        </Page>
+        </AdminPage>
       )}
     />
   );

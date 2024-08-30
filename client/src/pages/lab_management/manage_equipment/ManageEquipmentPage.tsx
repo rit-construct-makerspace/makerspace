@@ -9,6 +9,7 @@ import { ObjectSummary } from "../../../types/Common";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EditableEquipmentCard from "./EditableEquipmentCard";
 import Equipment from "../../../types/Equipment";
+import AdminPage from "../../AdminPage";
 
 export default function ManageEquipmentPage() {
   const { id } = useParams<{ id: string }>();
@@ -22,7 +23,7 @@ export default function ManageEquipmentPage() {
   const url = "/admin/equipment/";
 
   return (
-    <Page title="Equipment" maxWidth="1250px">
+    <AdminPage title="Equipment" maxWidth="1250px">
         <Stack
             spacing={2}
         >
@@ -85,6 +86,6 @@ export default function ManageEquipmentPage() {
                 </Grid>
             </RequestWrapper>
         </Stack>
-    </Page>
+    </AdminPage>
   );
 }

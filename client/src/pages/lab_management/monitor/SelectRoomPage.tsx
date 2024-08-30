@@ -10,6 +10,7 @@ import Room from "../../../types/Room";
 import ZoneHourOptions from "./ZoneHourOptions";
 import ZoneCard from "./ZoneCard";
 import { GET_ZONES } from "../../../queries/getZones";
+import AdminPage from "../../AdminPage";
 
 const CREATE_ROOM = gql`
   mutation CreateRoom($name: String!) {
@@ -57,7 +58,7 @@ export default function SelectRoomPage() {
       loading={getRoomsResult.loading}
       error={getRoomsResult.error}
     >
-      <Page title="Rooms" maxWidth="1250px">
+      <AdminPage title="Rooms" maxWidth="1250px">
         <Stack direction="row" spacing={2} mb={4}>
           <Button variant="contained" onClick={handleCreateRoom}>
             + Add Room
@@ -88,7 +89,7 @@ export default function SelectRoomPage() {
             <ZoneCard key={zone.id} id={zone.id} name={zone.name} />
           ))}
         </Stack>
-      </Page>
+      </AdminPage>
     </RequestWrapper>
   );
 }

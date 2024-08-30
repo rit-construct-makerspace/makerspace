@@ -14,6 +14,7 @@ import AuditLogRow from "./AuditLogRow";
 import { useLocation, useNavigate } from "react-router-dom";
 import { endOfDay, parse, startOfDay } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
+import AdminPage from "../../AdminPage";
 
 const GET_LOGS = gql`
   query GetLogs(
@@ -91,7 +92,7 @@ export default function LogPage() {
     startDateString || stopDateString || search.includes("q=");
 
   return (
-    <Page title="History" maxWidth="1250px">
+    <AdminPage title="History" maxWidth="1250px">
       <Stack direction="row" spacing={2}>
         <TextField
           label="Start"
@@ -155,6 +156,6 @@ export default function LogPage() {
           );
         }}
       />
-    </Page>
+    </AdminPage>
   );
 }

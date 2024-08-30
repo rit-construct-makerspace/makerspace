@@ -8,6 +8,7 @@ import DeleteMaterialButton from "../inventory/DeleteMaterialButton";
 import SaveIcon from "@mui/icons-material/Save";
 import { useNavigate } from "react-router-dom";
 import Page from "../../Page";
+import AdminPage from "../../AdminPage";
 
 
 interface InputErrors {
@@ -52,7 +53,7 @@ export default function NewAnnouncementPage() {
     };
 
     return (
-        <Page title={""} maxWidth="1250px">
+        <AdminPage title={""} maxWidth="1250px">
             <Typography variant="h5" mb={2}>
                 New Announcement
             </Typography>
@@ -96,6 +97,6 @@ export default function NewAnnouncementPage() {
                     Save
                 </LoadingButton>
             </Stack>
-        </Page>
+        </AdminPage>
     );
 }

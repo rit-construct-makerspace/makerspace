@@ -26,11 +26,19 @@ import { useNavigate } from "react-router-dom";
 import PrinterOsIcon from "../common/PrinterOSIcon";
 import { useEffect, useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
+import RequestWrapper from "../common/RequestWrapper";
+import { gql, useQuery } from "@apollo/client";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
   &:hover {
     cursor: pointer;
+  }
+`;
+
+const IS_MENTOR_OR_HIGHER = gql`
+  query IsMentorOrHigher {
+    isMentorOrHigher
   }
 `;
 
@@ -59,6 +67,9 @@ export default function LeftNav() {
       }
   }, []);
   const isMobile = width <= 768;
+
+
+  const isMentorOrHigherResult = useQuery(IS_MENTOR_OR_HIGHER);
 
   const drawerContent = (
     <>
@@ -99,62 +110,67 @@ export default function LeftNav() {
           icon={<PrinterOsIcon />}
         />
       </List>
-
-      {!isMaker && (
-        <List component="nav">
-          <Divider textAlign="left">STAFF</Divider>
-          <NavLink
-            to="/admin/equipment"
-            primary="Equipment"
-            icon={<HandymanIcon />}
-          />
-          <NavLink
-            to="/admin/training"
-            primary="Training"
-            icon={<SchoolIcon />}
-          />
-          <NavLink
-            to="/admin/inventory"
-            primary="Materials"
-            icon={<InventoryIcon />}
-          />
-          <NavLink
-            to="/admin/storefront"
-            primary="Storefront"
-            icon={<StorefrontIcon />}
-          />
-          <NavLink
-            to="/admin/rooms"
-            primary="Rooms"
-            icon={<MeetingRoomIcon />}
-          />
-          <NavLink
-            to="/admin/reservations"
-            primary="Reservations"
-            icon={<EventIcon />}
-          />
-          <NavLink
-            to="/admin/announcements"
-            primary="Announcements"
-            icon={<AnnouncementIcon />}
-          />
-          <NavLink
-            to="/admin/people"
-            primary="People"
-            icon={<PeopleIcon />}
-          />
-          <NavLink
-            to="/admin/history"
-            primary="History"
-            icon={<HistoryIcon />}
-          />
-          <NavLink
-            to="/admin/readers"
-            primary="Access Devices"
-            icon={<AdfScannerIcon />}
-          />
-        </List>
-      )}
+      
+      <RequestWrapper loading={isMentorOrHigherResult.loading} error={isMentorOrHigherResult.error}>
+        <>
+        {!isMaker && (
+          <List component="nav">
+            <Divider textAlign="left">STAFF</Divider>
+            <NavLink
+              to="/admin/equipment"
+              primary="Equipment"
+              icon={<HandymanIcon />}
+            />
+            <NavLink
+              to="/admin/training"
+              primary="Training"
+              icon={<SchoolIcon />}
+            />
+            <NavLink
+              to="/admin/inventory"
+              primary="Materials"
+              icon={<InventoryIcon />}
+            />
+            <NavLink
+              to="/admin/storefront"
+              primary="Storefront"
+              icon={<StorefrontIcon />}
+            />
+            <NavLink
+              to="/admin/rooms"
+              primary="Rooms"
+              icon={<MeetingRoomIcon />}
+            />
+            <NavLink
+              to="/admin/reservations"
+              primary="Reservations"
+              icon={<EventIcon />}
+            />
+            <NavLink
+              to="/admin/announcements"
+              primary="Announcements"
+              icon={<AnnouncementIcon />}
+            />
+            <NavLink
+              to="/admin/people"
+              primary="People"
+              icon={<PeopleIcon />}
+            />
+            <NavLink
+              to="/admin/history"
+              primary="History"
+              icon={<HistoryIcon />}
+            />
+            <NavLink
+              to="/admin/readers"
+              primary="Access Devices"
+              icon={<AdfScannerIcon />}
+            />
+          </List>
+        )}
+        </>
+      </RequestWrapper>
+      
         {/*Logout Button*/}
       <List component={"nav"}>
         <NavLink

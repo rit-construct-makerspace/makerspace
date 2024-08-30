@@ -14,6 +14,7 @@ import AttachedModule from "./AttachedModule";
 import ArchiveEquipmentButton from "./ArchiveEquipmentButton";
 import PublishEquipmentButton from "./PublishEquipmentButton";
 import { ObjectSummary } from "../../../types/Common";
+import AdminPage from "../../AdminPage";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -79,7 +80,7 @@ export default function EquipmentEditor({
       loading={getRoomsResult.loading || getModulesResult.loading}
       error={getRoomsResult.error || getModulesResult.error}
     >
-      <Page
+      <AdminPage
         title={`${newEquipment ? "Create new" : "Manage"} equipment`}
         maxWidth="800px"
       >
@@ -172,7 +173,7 @@ export default function EquipmentEditor({
         >
           Save
         </Button>
-      </Page>
+      </AdminPage>
     </RequestWrapper>
   );
 }

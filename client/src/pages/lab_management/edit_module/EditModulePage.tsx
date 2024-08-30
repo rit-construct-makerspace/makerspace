@@ -15,6 +15,7 @@ import PublishTrainingModuleButton from "../training_modules/PublishTrainingModu
 import ArchiveTrainingModuleButton from "../training_modules/ArchiveTrainingModuleButton";
 import { DropResult } from "react-beautiful-dnd";
 import { useNavigate } from "react-router-dom";
+import AdminPage from "../../AdminPage";
 interface EditModulePageProps {
   moduleInitialValue: Module;
   deleteModule: () => Promise<void>;
@@ -106,7 +107,7 @@ export default function EditModulePage({
   };
 
   return (
-    <Page title="Edit training module" maxWidth="600px">
+    <AdminPage title="Edit training module" maxWidth="600px">
           <Grid container
             rowSpacing={2}
             columnSpacing={2}
@@ -158,6 +159,6 @@ export default function EditModulePage({
                 <SaveIcon />
               )}
           </Fab>
-    </Page>
+    </AdminPage>
   );
 }

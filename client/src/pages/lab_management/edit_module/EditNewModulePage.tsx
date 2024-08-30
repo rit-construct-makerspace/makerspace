@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import SaveIcon from "@mui/icons-material/Save";
 import { ChangeEventHandler } from "react";
 import { DropResult } from "react-beautiful-dnd";
+import AdminPage from "../../AdminPage";
 
 
 export default function EditNewModulePage() {
@@ -108,7 +109,7 @@ export default function EditNewModulePage() {
     };
 
     return (
-        <Page title="New training module" maxWidth="600px">
+        <AdminPage title="New training module" maxWidth="600px">
             <Grid container
                 rowSpacing={2}
                 columnSpacing={2}
@@ -147,6 +148,6 @@ export default function EditNewModulePage() {
                     <SaveIcon />
                 )}
             </Fab>
-        </Page>
+        </AdminPage>
     );
 }

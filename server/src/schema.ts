@@ -36,6 +36,8 @@ import ZonesResolver from "./resolvers/zonesResolver.js";
 import { ZonesTypeDefs } from "./schemas/zonesSchema.js";
 import { DataPointsTypeDefs } from "./schemas/dataPointsSchema.js";
 import DataPointsResolver from "./resolvers/dataPointResolver.js";
+import PermissionResolver from "./resolvers/permissionResolver.js";
+import { PermissionTypeDefs } from "./schemas/permissionSchema.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -61,7 +63,8 @@ export const schema = makeExecutableSchema({
     AccessCheckTypeDefs,
     ZonesTypeDefs,
     ZoneHoursTypeDefs,
-    DataPointsTypeDefs
+    DataPointsTypeDefs,
+    PermissionTypeDefs
   ],
   resolvers: [ 
     resolveFunctions,
@@ -79,6 +82,7 @@ export const schema = makeExecutableSchema({
     AccessChecksResolver,
     ZonesResolver,
     ZoneHoursResolver,
-    DataPointsResolver
+    DataPointsResolver,
+    PermissionResolver
   ]
 });

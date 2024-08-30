@@ -11,6 +11,7 @@ import InventoryItem from "../../../types/InventoryItem";
 import RequestWrapper from "../../../common/RequestWrapper";
 import MaterialModal from "./MaterialModal";
 import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
+import AdminPage from "../../AdminPage";
 
 function sortItemsByName(items: InventoryItem[]): InventoryItem[] {
   return [...items].sort((a, b) => (a.name > b.name ? 1 : -1)) ?? [];
@@ -31,7 +32,7 @@ export default function InventoryPage() {
 
   return (
     <RequestWrapper loading={loading} error={error}>
-      <Page title="Inventory" maxWidth="1250px">
+      <AdminPage title="Inventory" maxWidth="1250px">
         <PageSectionHeader top>Running Low</PageSectionHeader>
 
         <Stack divider={<Divider flexItem />}>
@@ -77,7 +78,7 @@ export default function InventoryPage() {
           itemId={modalItemId}
           onClose={() => setModalItemId("")}
         />
-      </Page>
+      </AdminPage>
     </RequestWrapper>
   );
 }

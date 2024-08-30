@@ -9,6 +9,7 @@ import { LoadingButton } from "@mui/lab";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import AnnouncementModule from "./AnnouncementModule";
+import AdminPage from "../../AdminPage";
 
 
 export default function AnnouncementsPage() {
@@ -33,7 +34,7 @@ export default function AnnouncementsPage() {
       loading={getAnnouncementsResults.loading}
       error={getAnnouncementsResults.error}
     >
-      <Page title="Announcements" maxWidth="1250px">
+      <AdminPage title="Announcements" maxWidth="1250px">
         <Stack direction="row" alignItems="center" spacing={1}>
           <SearchBar
             placeholder="Search announcements"
@@ -66,7 +67,7 @@ export default function AnnouncementsPage() {
               <AnnouncementModule key={m.id} id={m.id} title={m.title} />
             ))}
         </Stack>
-      </Page>
+      </AdminPage>
     </RequestWrapper>
   );
 }

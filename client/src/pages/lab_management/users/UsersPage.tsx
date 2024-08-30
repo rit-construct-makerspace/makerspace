@@ -8,6 +8,7 @@ import GET_USERS, { PartialUser } from "../../../queries/getUsers";
 import RequestWrapper from "../../../common/RequestWrapper";
 import UserModal from "./UserModal";
 import { useNavigate, useParams } from "react-router-dom";
+import AdminPage from "../../AdminPage";
 
 export default function UsersPage() {
   const { id } = useParams<{ id: string }>();
@@ -25,7 +26,7 @@ export default function UsersPage() {
       loading={getUsersResult.loading}
       error={getUsersResult.error}
     >
-      <Page title="People" maxWidth="1250px">
+      <AdminPage title="People" maxWidth="1250px">
         <SearchBar 
           placeholder={"Search " + getUsersResult.data?.users?.length + " people"}
           sx={{ mb: 2, maxWidth: 300 }} 
@@ -48,7 +49,7 @@ export default function UsersPage() {
         </Stack>
 
         <UserModal selectedUserID={id ?? ""} onClose={handleUserModalClosed} />
-      </Page>
+      </AdminPage>
     </RequestWrapper>
   );
 }

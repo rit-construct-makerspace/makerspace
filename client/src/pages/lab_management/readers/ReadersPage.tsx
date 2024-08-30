@@ -8,6 +8,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import { ObjectSummary } from "../../../types/Common";
 import { useState } from "react";
 import ReaderCard from "./ReaderCard";
+import AdminPage from "../../AdminPage";
 
 
 export default function ReadersPage() {
@@ -18,7 +19,7 @@ export default function ReadersPage() {
   const [searchText, setSearchText] = useState("");
 
   return (
-    <Page title="Readers" maxWidth="1250px">
+    <AdminPage title="Readers" maxWidth="1250px">
       <Stack direction="row" spacing={2}>
         <SearchBar
           placeholder="Search access devices"
@@ -46,6 +47,6 @@ export default function ReadersPage() {
           ))}
         </Grid>
       </RequestWrapper>
-    </Page>
+    </AdminPage>
   );
 }
