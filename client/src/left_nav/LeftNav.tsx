@@ -24,6 +24,7 @@ import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import PrinterOsIcon from "../common/PrinterOSIcon";
+import SlackIcon from "../common/SlackIcon";
 import { useEffect, useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import RequestWrapper from "../common/RequestWrapper";
@@ -109,6 +110,11 @@ export default function LeftNav() {
           to="https://cloud.3dprinteros.com/ssosaml/rit/auth"
           primary="3DPrinterOS"
           icon={<PrinterOsIcon />}
+        />
+        <NavLink
+          to="https://rit.enterprise.slack.com/archives/C0440KNF916"
+          primary="Slack"
+          icon={<SlackIcon />}
         />
       </List>
 
