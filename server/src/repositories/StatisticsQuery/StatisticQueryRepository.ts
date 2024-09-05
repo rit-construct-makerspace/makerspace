@@ -67,14 +67,8 @@ export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, 
             // IDE Interpreter will call this an error. It is not.
             // Don't know why
             .then(result => {
-                result.forEach(function(countResult: {roomID: number, 
-                count_8: string, count_9: string, count_10: string, count_11: string, count_12: string, count_13: string, 
-                count_14: string, count_15: string, count_16: string, count_17: string, count_18: string, count_19: string, 
-                count_20: string, count_21: string, count_22: string, count_23: string}) {
-                
-
-
-                const newResultEntry: RoomSwipesByRoomByWeekDayByHour = {
+                result.forEach(function(countResult: any) {
+                    const newResultEntry: RoomSwipesByRoomByWeekDayByHour = {
                     day: weekDays[i],
                     roomID: countResult.roomID,
                     data: [
