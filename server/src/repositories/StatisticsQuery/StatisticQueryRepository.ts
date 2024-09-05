@@ -22,7 +22,7 @@ export interface RoomSwipesByRoomByWeekDayByHour {
  * @returns 
  */
 export async function getEquipmentSessionsByDayOfTheWeek(dayOfTheWeek: string, startDate: string, stopDate: string): Promise<EquipmentSessionRow[]> {
- return await knex("EquipmentSessions").select().where(knex.raw(`to_char("start", 'dy') = ${dayOfTheWeek}`)).andWhereBetween("dateTime", [startDate, stopDate]);
+ return await knex("EquipmentSessions").select().where(knex.raw(`to_char("start", 'dy') = ${dayOfTheWeek}`)).andWhereBetween(`("dateTime" at time zone 'EST5EDT')`, [startDate, stopDate]);
 }
 
 export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, stopDate: string): Promise<RoomSwipesByRoomByWeekDayByHour[]> {
@@ -40,26 +40,26 @@ export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, 
     for (var i = 0; i < weekDays.length; i++) {
         //This query can be written with a loop, but it's best to try to limit server processing here
         const sums = await knex("RoomSwipes")
-            .whereBetween("dateTime", [startDate, stopDate])
+            .where(knex.raw(`("dateTime" at time zone 'EST5EDT') BETWEEN '${new Date(startDate).toISOString().split('T')[0]}' AND '${new Date(stopDate).toISOString().split('T')[0]}'`))
             .select(knex.raw(`"roomID",
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '8' THEN 1 ELSE 0 END) AS count_8,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '9' THEN 1 ELSE 0 END) AS count_9,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '10' THEN 1 ELSE 0 END) AS count_10,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '11' THEN 1 ELSE 0 END) AS count_11,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '12' THEN 1 ELSE 0 END) AS count_12,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '13' THEN 1 ELSE 0 END) AS count_13,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '14' THEN 1 ELSE 0 END) AS count_14,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '15' THEN 1 ELSE 0 END) AS count_15,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '16' THEN 1 ELSE 0 END) AS count_16,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '17' THEN 1 ELSE 0 END) AS count_17,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '18' THEN 1 ELSE 0 END) AS count_18,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '19' THEN 1 ELSE 0 END) AS count_19,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '20' THEN 1 ELSE 0 END) AS count_20,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '21' THEN 1 ELSE 0 END) AS count_21,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '22' THEN 1 ELSE 0 END) AS count_22,
-                SUM(CASE WHEN to_char("dateTime", 'HH24') = '23' THEN 1 ELSE 0 END) AS count_23
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '8' THEN 1 ELSE 0 END) AS count_8,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '9' THEN 1 ELSE 0 END) AS count_9,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '10' THEN 1 ELSE 0 END) AS count_10,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '11' THEN 1 ELSE 0 END) AS count_11,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '12' THEN 1 ELSE 0 END) AS count_12,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '13' THEN 1 ELSE 0 END) AS count_13,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '14' THEN 1 ELSE 0 END) AS count_14,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '15' THEN 1 ELSE 0 END) AS count_15,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '16' THEN 1 ELSE 0 END) AS count_16,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '17' THEN 1 ELSE 0 END) AS count_17,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '18' THEN 1 ELSE 0 END) AS count_18,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '19' THEN 1 ELSE 0 END) AS count_19,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '20' THEN 1 ELSE 0 END) AS count_20,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '21' THEN 1 ELSE 0 END) AS count_21,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '22' THEN 1 ELSE 0 END) AS count_22,
+                SUM(CASE WHEN to_char(("dateTime" at time zone 'EST5EDT'), 'HH24') = '23' THEN 1 ELSE 0 END) AS count_23
             `))
-            .where(knex.raw(`to_char("dateTime", 'dy') = '${weekDays[i]}'`))
+            .where(knex.raw(`to_char(("dateTime" at time zone 'EST5EDT'), 'dy') = '${weekDays[i]}'`))
             .groupBy("roomID")
             .orderBy("roomID")
             // Promise contains data entries which each contain a Promise which contains a data entry
@@ -97,3 +97,9 @@ export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, 
 
     return results;
 }
+
+
+
+// function getNumUsersRegisteredToday(): Promise<number> {
+//     return knex("Users").count().where("registrationDate=" + ((new Date()).toISOString().split('T')[0]))
+// }
