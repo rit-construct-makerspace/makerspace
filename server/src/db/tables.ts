@@ -192,6 +192,7 @@ export interface EquipmentSessionRow {
   equipmentID: number;
   userID: number;
   sessionLength: number;
+  readerSlug: string;
 }
 
 declare module "knex/types/tables.js" {
