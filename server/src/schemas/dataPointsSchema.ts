@@ -9,10 +9,11 @@ export const DataPointsTypeDefs = gql`
 
     extend type Query {
         dataPoint(id: ID!): DataPoint
+        dailySiteVisits: DataPoint
+        incrementSiteVisits: ID
     }
 
     extend type Mutation {
         setDataPointValue(id: ID!, value: Int!): ID
-        incrementDataPointValue(id: ID!, increment: Int!): ID
     }
 `;

@@ -38,6 +38,8 @@ import { DataPointsTypeDefs } from "./schemas/dataPointsSchema.js";
 import DataPointsResolver from "./resolvers/dataPointResolver.js";
 import PermissionResolver from "./resolvers/permissionResolver.js";
 import { PermissionTypeDefs } from "./schemas/permissionSchema.js";
+import { StatisticQueryTypeDefs } from "./schemas/statisticQuerySchema.js";
+import StatisticQueryResolver from "./resolvers/statisticQueryResolver.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -64,7 +66,8 @@ export const schema = makeExecutableSchema({
     ZonesTypeDefs,
     ZoneHoursTypeDefs,
     DataPointsTypeDefs,
-    PermissionTypeDefs
+    PermissionTypeDefs,
+    StatisticQueryTypeDefs
   ],
   resolvers: [ 
     resolveFunctions,
@@ -83,6 +86,7 @@ export const schema = makeExecutableSchema({
     ZonesResolver,
     ZoneHoursResolver,
     DataPointsResolver,
-    PermissionResolver
+    PermissionResolver,
+    StatisticQueryResolver
   ]
 });

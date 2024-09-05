@@ -214,5 +214,6 @@ declare module "knex/types/tables.js" {
     RoomsForZones: RoomsForZonesRow
     ZoneHours: ZoneHoursRow;
     DataPoints: DataPointsRow;
+    EquipmentSessions: EquipmentSessionRow
   }
 }

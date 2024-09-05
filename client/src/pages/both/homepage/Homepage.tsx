@@ -12,15 +12,25 @@ import AnnouncementsCard from "./AnnouncementsCard";
 import { useNavigate } from "react-router-dom";
 import { wrap } from "module";
 import ResourcesCard from "./ResourcesCard";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import RequestWrapper from "../../../common/RequestWrapper";
 // import RequestWrapper from "../../../common/RequestWrapper";
 // import { useQuery } from "@apollo/client";
 // import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
 //import UpcomingEventsCard from "./GoogleCalendarAPI";
 
+const INCREMENT_SITE_VISITS = gql`
+    query IncrementSiteVisits {
+        incrementSiteVisits
+    }
+`;
+
 const Homepage: React.FC = () => {
     const currentUser = useCurrentUser();
     const welcomeMsg = "Welcome, " + currentUser.firstName;
     const navigate = useNavigate();
+
+    const incrementSiteVisits = useQuery(INCREMENT_SITE_VISITS);
 
     const [width, setWidth] = useState<number>(window.innerWidth);
     function handleWindowSizeChange() {
@@ -37,6 +47,7 @@ const Homepage: React.FC = () => {
 
     return (
         <Page title="" maxWidth={"1250px"}>
+            <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
             {( currentUser.cardTagID == null || currentUser.cardTagID == "" ) &&
             <Alert variant="standard" color="error">
                 Your RIT ID has not been registered! You can still complete trainings but you must speak to a SHED Makerspace employee before gaining access to our equipment.

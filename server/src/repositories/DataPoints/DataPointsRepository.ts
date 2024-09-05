@@ -14,5 +14,5 @@ export async function setDataPointValue(id: number, value: number): Promise<numb
 export async function incrementDataPointValue(id: number, increment: number): Promise<number> {
     const data = await getDataPointByID(id);
     if (!data) return -1;
-    return await knex("DataPoints").update({value: data.value + increment}).where({id});
+    return await knex("DataPoints").update({value: (Number(data.value) + Number(increment))}).where({id});
 }
