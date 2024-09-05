@@ -109,7 +109,7 @@ export default function OperationHoursCard() {
         error={getZonesResult.error}
         >
             <Card sx={{ minWidth: 250, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1  }} >
-                <Typography variant="h6">Lab Hours (Week of 8/25)</Typography>
+                <Typography variant="h6">Lab Hours</Typography>
 
                 <Tabs value={currentTab} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile >
                     {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
