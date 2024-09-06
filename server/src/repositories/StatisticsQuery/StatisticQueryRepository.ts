@@ -28,6 +28,8 @@ export async function getEquipmentSessionsByDayOfTheWeek(dayOfTheWeek: string, s
 export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, stopDate: string): Promise<RoomSwipesByRoomByWeekDayByHour[]> {
     const weekDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
+    const rooms = await getRooms();
+
     const startMoment = moment(startDate);
     const stopMoment = moment(stopDate);
 
@@ -70,32 +72,63 @@ export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, 
             // IDE Interpreter will call this an error. It is not.
             // Don't know why
             .then(result => {
+                var providedRoomIDs: number[] = [];
                 result.forEach(function(countResult: any) {
+                    providedRoomIDs.push(countResult.roomID);
                     const newResultEntry: RoomSwipesByRoomByWeekDayByHour = {
-                    day: weekDays[i],
-                    roomID: countResult.roomID,
-                    data: [
-                        {hour: "8:00", sum: Number(countResult.count_8), avg: Number(countResult.count_8) / diffWeeks},
-                        {hour: "9:00", sum: Number(countResult.count_9), avg: Number(countResult.count_9) / diffWeeks},
-                        {hour: "10:00", sum: Number(countResult.count_10), avg: Number(countResult.count_10) / diffWeeks},
-                        {hour: "11:00", sum: Number(countResult.count_11), avg: Number(countResult.count_11) / diffWeeks},
-                        {hour: "12:00", sum: Number(countResult.count_12), avg: Number(countResult.count_12) / diffWeeks},
-                        {hour: "13:00", sum: Number(countResult.count_13), avg: Number(countResult.count_13) / diffWeeks},
-                        {hour: "14:00", sum: Number(countResult.count_14), avg: Number(countResult.count_14) / diffWeeks},
-                        {hour: "15:00", sum: Number(countResult.count_15), avg: Number(countResult.count_15) / diffWeeks},
-                        {hour: "16:00", sum: Number(countResult.count_16), avg: Number(countResult.count_16) / diffWeeks},
-                        {hour: "17:00", sum: Number(countResult.count_17), avg: Number(countResult.count_17) / diffWeeks},
-                        {hour: "18:00", sum: Number(countResult.count_18), avg: Number(countResult.count_18) / diffWeeks},
-                        {hour: "19:00", sum: Number(countResult.count_19), avg: Number(countResult.count_19) / diffWeeks},
-                        {hour: "20:00", sum: Number(countResult.count_20), avg: Number(countResult.count_20) / diffWeeks},
-                        {hour: "21:00", sum: Number(countResult.count_21), avg: Number(countResult.count_21) / diffWeeks},
-                        {hour: "22:00", sum: Number(countResult.count_22), avg: Number(countResult.count_22) / diffWeeks},
-                        {hour: "23:00", sum: Number(countResult.count_23), avg: Number(countResult.count_23) / diffWeeks},
-                    ]
-                };
-                results.push(newResultEntry);
-            }
-        )});
+                        day: weekDays[i],
+                        roomID: countResult.roomID,
+                        data: [
+                            {hour: "8:00", sum: Number(countResult.count_8), avg: Number(countResult.count_8) / diffWeeks},
+                            {hour: "9:00", sum: Number(countResult.count_9), avg: Number(countResult.count_9) / diffWeeks},
+                            {hour: "10:00", sum: Number(countResult.count_10), avg: Number(countResult.count_10) / diffWeeks},
+                            {hour: "11:00", sum: Number(countResult.count_11), avg: Number(countResult.count_11) / diffWeeks},
+                            {hour: "12:00", sum: Number(countResult.count_12), avg: Number(countResult.count_12) / diffWeeks},
+                            {hour: "13:00", sum: Number(countResult.count_13), avg: Number(countResult.count_13) / diffWeeks},
+                            {hour: "14:00", sum: Number(countResult.count_14), avg: Number(countResult.count_14) / diffWeeks},
+                            {hour: "15:00", sum: Number(countResult.count_15), avg: Number(countResult.count_15) / diffWeeks},
+                            {hour: "16:00", sum: Number(countResult.count_16), avg: Number(countResult.count_16) / diffWeeks},
+                            {hour: "17:00", sum: Number(countResult.count_17), avg: Number(countResult.count_17) / diffWeeks},
+                            {hour: "18:00", sum: Number(countResult.count_18), avg: Number(countResult.count_18) / diffWeeks},
+                            {hour: "19:00", sum: Number(countResult.count_19), avg: Number(countResult.count_19) / diffWeeks},
+                            {hour: "20:00", sum: Number(countResult.count_20), avg: Number(countResult.count_20) / diffWeeks},
+                            {hour: "21:00", sum: Number(countResult.count_21), avg: Number(countResult.count_21) / diffWeeks},
+                            {hour: "22:00", sum: Number(countResult.count_22), avg: Number(countResult.count_22) / diffWeeks},
+                            {hour: "23:00", sum: Number(countResult.count_23), avg: Number(countResult.count_23) / diffWeeks},
+                        ]
+                    };
+                    results.push(newResultEntry);
+                })
+                //Append rooms with no data
+                rooms.forEach((room: {id: number}) => {
+                    if (!providedRoomIDs.includes(room.id)) {
+                        results.push(
+                            {
+                                day: weekDays[i],
+                                roomID: room.id,
+                                data: [
+                                    {hour: "8:00", sum: 0, avg: 0 },
+                                    {hour: "9:00", sum: 0, avg: 0 },
+                                    {hour: "10:00", sum: 0, avg: 0 },
+                                    {hour: "11:00", sum: 0, avg: 0 },
+                                    {hour: "12:00", sum: 0, avg: 0 },
+                                    {hour: "13:00", sum: 0, avg: 0 },
+                                    {hour: "14:00", sum: 0, avg: 0 },
+                                    {hour: "15:00", sum: 0, avg: 0 },
+                                    {hour: "16:00", sum: 0, avg: 0 },
+                                    {hour: "17:00", sum: 0, avg: 0 },
+                                    {hour: "18:00", sum: 0, avg: 0 },
+                                    {hour: "19:00", sum: 0, avg: 0 },
+                                    {hour: "20:00", sum: 0, avg: 0 },
+                                    {hour: "21:00", sum: 0, avg: 0 },
+                                    {hour: "22:00", sum: 0, avg: 0 },
+                                    {hour: "23:00", sum: 0, avg: 0 },
+                                ]
+                            }
+                        )
+                    }
+                })
+        });
     };
 
     return results;
