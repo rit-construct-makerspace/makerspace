@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Page from "../../Page";
-import { Box, Button, FormControl, FormGroup, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, FormControl, FormGroup, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
 import CountCard from "./CountCard";
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import AdminPage from "../../AdminPage";
@@ -161,6 +161,9 @@ export default function StatisticsPage() {
 
   return (
     <AdminPage title="Statistics" maxWidth="1250px">
+      <Alert variant="standard" color="error">
+       Due to a current lack of recorded data, certain graphs may appear incomplete or empty when they should not be. This problem should cease by 9/13. 
+      </Alert>
       <Box>
         <Typography variant="h4">Today's Numbers</Typography>
         <Stack direction={"row"} flexWrap={"wrap"}>
@@ -224,7 +227,7 @@ export default function StatisticsPage() {
           </Stack>
           <Stack direction={"column"} spacing={2} alignItems={"center"} mt={5}>
             <Button
-            sx={{m: 1, width: 500}}
+              sx={{ m: 1, width: 500 }}
               color="primary"
               variant="outlined"
               onClick={() => getSumRoomSwipesByRoomByWeekDayByHour({ variables: { sumStartDate, sumStopDate, avgStartDate, avgStopDate } })}
@@ -235,7 +238,7 @@ export default function StatisticsPage() {
           </Stack>
         </FormControl>
         <Select
-          sx={{my: 2, minWidth: "100px", maxWidth: "715px", width: "50vw"}}
+          sx={{ my: 2, minWidth: "100px", maxWidth: "715px", width: "50vw" }}
           defaultValue="mon"
           label="Weekday"
           onChange={handleViewDayChange}
