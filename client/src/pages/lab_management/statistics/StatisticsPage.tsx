@@ -222,12 +222,17 @@ export default function StatisticsPage() {
               </Stack>
             </FormGroup>
           </Stack>
-          <Button
-            color="primary"
-            onClick={() => getSumRoomSwipesByRoomByWeekDayByHour({ variables: { sumStartDate, sumStopDate, avgStartDate, avgStopDate } })}
-          >
-            Fetch
-          </Button>
+          <Stack direction={"column"} spacing={2} alignItems={"center"} mt={5}>
+            <Button
+            sx={{m: 1, width: 500}}
+              color="primary"
+              variant="outlined"
+              onClick={() => getSumRoomSwipesByRoomByWeekDayByHour({ variables: { sumStartDate, sumStopDate, avgStartDate, avgStopDate } })}
+            >
+              Fetch
+            </Button>
+            <Typography variant="body2" color={"warning"} textAlign={"center"}>The graphs may not appear once the Fetch button is pressed.<br></br>If this occurs, select a different weekday below to refresh the graphs.</Typography>
+          </Stack>
         </FormControl>
         <Select
           sx={{my: 2, minWidth: "100px", maxWidth: "715px", width: "50vw"}}
