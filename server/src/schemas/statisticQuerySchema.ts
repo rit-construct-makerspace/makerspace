@@ -11,11 +11,17 @@ export const StatisticQueryTypeDefs = gql`
         hour: String!
         sum: Float
         avg: Float
+    }
 
+    type Count {
+        count: Int
     }
 
     extend type Query {
         equipmentSessionsByDayOfTheWeek(dayOfTheWeek: String!, startDate: String, stopDate: String): String
         sumRoomSwipesByRoomByWeekDayByHour(sumStartDate: String, sumStopDate: String, avgStartDate: String, avgStopDate: String): [RoomSwipeStats]
+        numNewUsersToday: Int
+        numRoomSwipesToday: Int
+        numEquipmentSessionsToday: Int
     }
 `;

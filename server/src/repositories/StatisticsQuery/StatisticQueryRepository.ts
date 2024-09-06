@@ -39,6 +39,9 @@ export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, 
 
     for (var i = 0; i < weekDays.length; i++) {
         //This query can be written with a loop, but it's best to try to limit server processing here
+
+        //IMPORTANT: Knex will fix the timezones in queries made with knex syntax. It will *NOT* do do this with knex.raw content
+        //Use ("dateTime" at time zone 'EST5EDT') as an alternative
         const sums = await knex("RoomSwipes")
             .where(knex.raw(`("dateTime" at time zone 'EST5EDT') BETWEEN '${new Date(startDate).toISOString().split('T')[0]}' AND '${new Date(stopDate).toISOString().split('T')[0]}'`))
             .select(knex.raw(`"roomID",
@@ -100,6 +103,32 @@ export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, 
 
 
 
-// function getNumUsersRegisteredToday(): Promise<number> {
-//     return knex("Users").count().where("registrationDate=" + ((new Date()).toISOString().split('T')[0]))
-// }
+export async function getNumUsersRegisteredToday(): Promise<number | undefined> {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+  
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+    //Length is Best option right now because for some reason knex does not do count correctly
+    return (await knex("Users").whereBetween("registrationDate", [startOfDay, endOfDay])).length;
+}
+
+export async function getNumRoomSwipesToday(): Promise<number | undefined> {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+  
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+    //Length is Best option right now because for some reason knex does not do count correctly
+    return (await knex("RoomSwipes").whereBetween("dateTime", [startOfDay, endOfDay])).length;
+}
+
+export async function getNumEquipmentSessionsToday(): Promise<number | undefined> {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+  
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+    //Length is Best option right now because for some reason knex does not do count correctly
+    return (await knex("EquipmentSessions").whereBetween("start", [startOfDay, endOfDay])).length;
+}

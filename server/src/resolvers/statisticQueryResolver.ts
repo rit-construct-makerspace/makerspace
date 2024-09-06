@@ -1,7 +1,7 @@
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
 import { getDataPointByID, incrementDataPointValue, setDataPointValue } from "../repositories/DataPoints/DataPointsRepository.js";
-import { getEquipmentSessionsByDayOfTheWeek, getCummRoomSwipesByRoomByWeekDayByHour, RoomSwipesByRoomByWeekDayByHour } from "../repositories/StatisticsQuery/StatisticQueryRepository.js";
+import { getEquipmentSessionsByDayOfTheWeek, getCummRoomSwipesByRoomByWeekDayByHour, RoomSwipesByRoomByWeekDayByHour, getNumUsersRegisteredToday, getNumRoomSwipesToday, getNumEquipmentSessionsToday } from "../repositories/StatisticsQuery/StatisticQueryRepository.js";
 
 function getMonthToPresentBounds(): {startOfMonth: Date, today: Date} {
   const startOfMonth = new Date();
@@ -68,6 +68,27 @@ const StatisticQueryResolver = {
 
           const combinedResult = fitSeperateRangeAverages(result, avgResult);
           return await combinedResult;
+        }),
+      numNewUsersToday: async (
+        _parent: any,
+        _args: any,
+        { ifAllowed }: ApolloContext) =>
+        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+          return await getNumUsersRegisteredToday();
+        }),
+      numRoomSwipesToday: async (
+        _parent: any,
+        _args: any,
+        { ifAllowed }: ApolloContext) =>
+        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+          return await getNumRoomSwipesToday();
+        }),
+      numEquipmentSessionsToday: async (
+        _parent: any,
+        _args: any,
+        { ifAllowed }: ApolloContext) =>
+        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+          return await getNumEquipmentSessionsToday();
         }),
   },
 };

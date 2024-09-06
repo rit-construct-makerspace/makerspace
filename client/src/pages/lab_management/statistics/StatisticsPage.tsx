@@ -35,6 +35,24 @@ const GET_NUM_SITE_VISITS = gql`
   }
 `;
 
+const GET_NUM_ROOM_SWIPES_TODAY = gql`
+  query GetNumRoomSwipesToday {
+    numRoomSwipesToday
+  }
+`;
+
+const GET_NUM_EQUIPMENT_SESSIONS_TODAY = gql`
+  query GetNumEquipmentSessionsToday {
+    numEquipmentSessionsToday
+  }
+`;
+
+const GET_NUM_NEW_USERS = gql`
+  query GetNumNewUsersToday {
+    numNewUsersToday
+  }
+`;
+
 const GET_EQUIPMENT_SESSIONS_BY_DOW = gql`
   query GetEquipmentSessionsByDayOfTheWeek($dayOfTheWeek: String!) {
     equipmentSessionsByDayOfTheWeek(dayOfTheWeek: $dayOfTheWeek) {
@@ -89,6 +107,9 @@ export default function StatisticsPage() {
 
   //const getNumNewUsersTodayResult = useQuery(GET_NUM_NEW_USERS, {variables: {dayRange}});
   const getNumSiteVisitsTodayResult = useQuery(GET_NUM_SITE_VISITS);
+  const getNumNewUsersToday = useQuery(GET_NUM_NEW_USERS);
+  const getNumRoomSwipesToday = useQuery(GET_NUM_ROOM_SWIPES_TODAY);
+  const GetNumEquipmentSessionsToday = useQuery(GET_NUM_EQUIPMENT_SESSIONS_TODAY);
 
   const [getSumRoomSwipesByRoomByWeekDayByHour, getSumRoomSwipesByRoomByWeekDayByHourResult] = useLazyQuery(GET_ROOM_SWIPE_COUNTS, {
     variables: {
@@ -143,12 +164,20 @@ export default function StatisticsPage() {
       <Box>
         <Typography variant="h4">Today's Numbers</Typography>
         <Stack direction={"row"} flexWrap={"wrap"}>
-          <CountCard label="Site Visits" count="N/A" query={getNumSiteVisitsTodayResult} unit="visits"></CountCard>
-          <CountCard label="Room Sign-ins" count="N/A" query={null} unit="sign-ins"></CountCard>
-          <CountCard label="Equipment Uses" count="N/A" query={null} unit="activations"></CountCard>
-          <CountCard label="New users" count="N/A" query={null} unit="users"></CountCard>
+          <RequestWrapper loading={getNumSiteVisitsTodayResult.loading} error={getNumSiteVisitsTodayResult.error}>
+            <CountCard label="Site Visits" count={getNumSiteVisitsTodayResult.data?.dailySiteVisits.value} unit="visits"></CountCard>
+          </RequestWrapper>
+          <RequestWrapper loading={getNumRoomSwipesToday.loading} error={getNumRoomSwipesToday.error}>
+            <CountCard label="Room Sign-ins" count={getNumRoomSwipesToday.data?.numRoomSwipesToday} unit="sign-ins"></CountCard>
+          </RequestWrapper>
+          <RequestWrapper loading={GetNumEquipmentSessionsToday.loading} error={GetNumEquipmentSessionsToday.error}>
+            <CountCard label="Equipment Uses*" count={GetNumEquipmentSessionsToday.data?.numEquipmentSessionsToday} unit="activations"></CountCard>
+          </RequestWrapper>
+          <RequestWrapper loading={getNumNewUsersToday.loading} error={getNumNewUsersToday.error}>
+            <CountCard label="New users" count={getNumNewUsersToday.data?.numNewUsersToday} unit="users"></CountCard>
+          </RequestWrapper>
         </Stack>
-        <Typography variant="body2">The above statistics are a work in progress and may not be accurate</Typography>
+        <Typography variant="body2">* Only counts ACS-connected equipment</Typography>
       </Box>
 
       <Box sx={{ mt: 5 }}>
