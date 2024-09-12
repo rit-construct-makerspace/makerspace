@@ -40,6 +40,8 @@ import PermissionResolver from "./resolvers/permissionResolver.js";
 import { PermissionTypeDefs } from "./schemas/permissionSchema.js";
 import { StatisticQueryTypeDefs } from "./schemas/statisticQuerySchema.js";
 import StatisticQueryResolver from "./resolvers/statisticQueryResolver.js";
+import { EquipmentSessionTypeDefs } from "./schemas/equipmentSessionsSchema.js";
+import EquipmentSessionsResolver from "./resolvers/equipmentSessionsResolver.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -67,7 +69,8 @@ export const schema = makeExecutableSchema({
     ZoneHoursTypeDefs,
     DataPointsTypeDefs,
     PermissionTypeDefs,
-    StatisticQueryTypeDefs
+    StatisticQueryTypeDefs,
+    EquipmentSessionTypeDefs
   ],
   resolvers: [ 
     resolveFunctions,
@@ -87,6 +90,7 @@ export const schema = makeExecutableSchema({
     ZoneHoursResolver,
     DataPointsResolver,
     PermissionResolver,
-    StatisticQueryResolver
+    StatisticQueryResolver,
+    EquipmentSessionsResolver
   ]
 });

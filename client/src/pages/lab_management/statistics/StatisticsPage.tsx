@@ -1,13 +1,15 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Page from "../../Page";
-import { Alert, Box, Button, FormControl, FormGroup, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
+import { Alert, Box, Button, CardContent, CardHeader, FormControl, FormGroup, Grid, MenuItem, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
 import CountCard from "./CountCard";
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import AdminPage from "../../AdminPage";
 import { Card } from "@material-ui/core";
-import { BarChart, LineChart } from "@mui/x-charts";
+import { BarChart, Gauge, LineChart } from "@mui/x-charts";
 import RequestWrapper from "../../../common/RequestWrapper";
+import TimeAgo from 'react-timeago'
 import GET_ROOMS from "../../../queries/getRooms";
+import { GET_EQUIPMENT_SESSIONS, GET_NUM_EQUIPMENT_SESSIONS_TODAY, GET_NUM_NEW_USERS, GET_NUM_ROOM_SWIPES_TODAY, GET_NUM_SITE_VISITS, GET_ROOM_SWIPE_COUNTS, GET_ZONE_HOURS } from "./statisticsQueries";
 
 
 function getMonthToPresentBounds(): { startOfMonth: Date, today: Date } {
@@ -27,67 +29,7 @@ function getSunday() {
 }
 
 
-const GET_NUM_SITE_VISITS = gql`
-  query GetNumSiteVisits {
-    dailySiteVisits {
-      value
-    }
-  }
-`;
 
-const GET_NUM_ROOM_SWIPES_TODAY = gql`
-  query GetNumRoomSwipesToday {
-    numRoomSwipesToday
-  }
-`;
-
-const GET_NUM_EQUIPMENT_SESSIONS_TODAY = gql`
-  query GetNumEquipmentSessionsToday {
-    numEquipmentSessionsToday
-  }
-`;
-
-const GET_NUM_NEW_USERS = gql`
-  query GetNumNewUsersToday {
-    numNewUsersToday
-  }
-`;
-
-const GET_EQUIPMENT_SESSIONS_BY_DOW = gql`
-  query GetEquipmentSessionsByDayOfTheWeek($dayOfTheWeek: String!) {
-    equipmentSessionsByDayOfTheWeek(dayOfTheWeek: $dayOfTheWeek) {
-      id
-      start
-      sessionLength
-      readerSlug
-      equipmentID
-    }
-  }
-`;
-
-const GET_ROOM_SWIPE_COUNTS = gql`
-  query SumRoomSwipesByRoomByWeekDayByHour(
-    $sumStartDate: String
-    $sumStopDate: String
-    $avgStartDate: String
-    $avgStopDate: String
-  ) {
-    sumRoomSwipesByRoomByWeekDayByHour(
-      sumStartDate: $sumStartDate
-      sumStopDate: $sumStopDate
-      avgStartDate: $avgStartDate
-      avgStopDate: $avgStopDate
-    ) {
-      day
-      roomID
-      data {
-        hour
-        sum
-        avg
-      }
-    }
-  }
-`;
 
 export default function StatisticsPage() {
   const { startOfMonth, today } = getMonthToPresentBounds();
@@ -101,6 +43,10 @@ export default function StatisticsPage() {
   const [avgStartDate, setAvgStartDate] = useState(startOfMonth);
   const [avgStopDate, setAvgStopDate] = useState(today);
 
+  //Date range used for fetching the equipment session statistics
+  const [sessionsStartDate, setSessionsStartDate] = useState(startOfMonth);
+  const [sessionsStopDate, setSessionsStopDate] = useState(today)
+
   //The day of the week to currently show graphs for
   const [viewDay, setViewDay] = useState("Sunday");
 
@@ -109,7 +55,16 @@ export default function StatisticsPage() {
   const getNumSiteVisitsTodayResult = useQuery(GET_NUM_SITE_VISITS);
   const getNumNewUsersToday = useQuery(GET_NUM_NEW_USERS);
   const getNumRoomSwipesToday = useQuery(GET_NUM_ROOM_SWIPES_TODAY);
-  const GetNumEquipmentSessionsToday = useQuery(GET_NUM_EQUIPMENT_SESSIONS_TODAY);
+  const getNumEquipmentSessionsToday = useQuery(GET_NUM_EQUIPMENT_SESSIONS_TODAY);
+  const getZoneHours = useQuery(GET_ZONE_HOURS)
+
+
+  const [getEquipmentSessions, getEquipmentSessionsResult] = useLazyQuery(GET_EQUIPMENT_SESSIONS, {
+    variables: {
+      startDate: sessionsStartDate,
+      stopDate: sessionsStopDate
+    }
+  });
 
   const [getSumRoomSwipesByRoomByWeekDayByHour, getSumRoomSwipesByRoomByWeekDayByHourResult] = useLazyQuery(GET_ROOM_SWIPE_COUNTS, {
     variables: {
@@ -159,10 +114,124 @@ export default function StatisticsPage() {
     setAvgStopDate(new Date(event.target.value));
   };
 
+  const handleSessionsStartDateChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSessionsStartDate(new Date(event.target.value));
+  };
+
+  const handleSessionsStopDateChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSessionsStopDate(new Date(event.target.value));
+  };
+
+  function findZoneHours(zoneHours: any[], type: string, zoneID: number | null, start: Date) {
+    if (!zoneID) {
+      if (type == "OPEN") return process.env.REACT_APP_DEFAULT_STAT_OPEN_TIME;
+      else return process.env.REACT_APP_DEFAULT_STAT_CLOSE_TIME;
+    }
+    console.log(zoneHours)
+    const result = zoneHours.find((zoneHour: { zoneID: number, type: string, dayOfTheWeek: number, time: number }) =>
+      zoneHour.zoneID == zoneID
+      && zoneHour.dayOfTheWeek == new Date(start).getDay()
+      && zoneHour.type == type
+    );
+    if (!result) {
+      if (type == "OPEN") return process.env.REACT_APP_DEFAULT_STAT_OPEN_TIME;
+      else return process.env.REACT_APP_DEFAULT_STAT_CLOSE_TIME;
+    }
+    console.log(result)
+    return result.time
+  }
+
+  function sameDay(d1: Date, d2: Date) {
+    return d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate();
+  }
+
+  function averageEquipmentActiveTime(equipmentSessions: {
+    id: number, start: Date, sessionLength: number, readerSlug: string, equipment: { id: number, name: string }, zone: { id: number, name: string }
+  }[]) {
+    if (equipmentSessions == undefined || equipmentSessions.length == 0 || getZoneHours.data == undefined) {
+      console.log("fail 1");
+      console.log(getZoneHours)
+      return []
+    }
+
+    const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+    const daysBetweenStartAndStop = Math.round(Math.abs((sessionsStartDate.getTime() - sessionsStopDate.getTime()) / oneDay));
+
+    var machineActiveTimes: { readerSlug: string, timeActive: number, maximumTimeActive: number, numSessions: number, averageActiveTime: number, averageDailySessions: number, numSessionsToday: number }[] = [];
+    equipmentSessions.forEach((session) => {
+      //Find the time the machine is first available
+
+      const openTime: Date = new Date();
+      var timeString = findZoneHours(getZoneHours.data.zoneHours, "OPEN", session.zone ? session.zone.id : null, session.start);
+      console.log(timeString)
+      var parts = timeString.split(":")
+      openTime.setHours(parts[0]);
+      openTime.setMinutes(parts[1]);
+      console.log("openTime")
+      console.log(openTime)
+      //Find the time the machine is no longer available
+      var closeTime: Date = new Date();
+      timeString = findZoneHours(getZoneHours.data.zoneHours, "CLOSE", session.zone ? session.zone.id : null, session.start);
+      console.log(timeString)
+      parts = timeString.split(":");
+      closeTime.setHours(parts[0]);
+      closeTime.setMinutes(parts[1]);
+      console.log("closeTime")
+      console.log(closeTime)
+
+      //Find the maximum time a machine could be used
+      const secondsOpen = (closeTime.getTime() - openTime.getTime()) / 1000;
+
+
+      //If theres already an entry for this machine, add the active time to it
+      //If not, make a new entry
+
+      const existingActiveTimeEntryIndex = machineActiveTimes.findIndex((entry) => entry.readerSlug == session.readerSlug);
+
+      if (existingActiveTimeEntryIndex == -1) {
+        machineActiveTimes.push({ 
+          readerSlug: session.readerSlug, 
+          timeActive: session.sessionLength, 
+          maximumTimeActive: secondsOpen, 
+          numSessions: 1, 
+          averageActiveTime: session.sessionLength, 
+          averageDailySessions: 1 / daysBetweenStartAndStop, 
+          numSessionsToday: (sameDay(new Date(session.start), new Date()) ? 1 : 0) });
+      }
+      else {
+        machineActiveTimes[existingActiveTimeEntryIndex].timeActive += session.sessionLength;
+        machineActiveTimes[existingActiveTimeEntryIndex].numSessions += 1;
+        machineActiveTimes[existingActiveTimeEntryIndex].averageActiveTime = machineActiveTimes[existingActiveTimeEntryIndex].timeActive / machineActiveTimes[existingActiveTimeEntryIndex].numSessions;
+        machineActiveTimes[existingActiveTimeEntryIndex].averageDailySessions = machineActiveTimes[existingActiveTimeEntryIndex].numSessions / daysBetweenStartAndStop;
+        machineActiveTimes[existingActiveTimeEntryIndex].numSessionsToday += (sameDay(new Date(session.start), new Date()) ? 1 : 0);
+      }
+    });
+    console.log(machineActiveTimes)
+    return machineActiveTimes;
+  }
+
+  function secondsToHms(d: number) {
+    d = Number(d);
+    var h = Math.floor(d / 3600);
+    var m = Math.floor(d % 3600 / 60);
+    var s = Math.floor(d % 3600 % 60);
+
+    var hDisplay = h > 0 ? h + (h == 1 ? " hour\n " : " hours\n ") : "";
+    var mDisplay = m > 0 ? m + (m == 1 ? " minute\n " : " minutes\n ") : "";
+    var sDisplay = s > 0 ? s + (s == 1 ? " second" : " seconds") : "";
+    if (hDisplay + mDisplay + sDisplay == "") {
+      if (d > 0 && d < 1) return "<1 second";
+      return "N/A";
+    }
+    return hDisplay + mDisplay + sDisplay; 
+  }
+
   return (
     <AdminPage title="Statistics" maxWidth="1250px">
       <Alert variant="standard" color="error">
-       Due to a current lack of recorded data, certain graphs may appear incomplete or empty when they should not be. This problem should cease by 9/13. 
+        Due to a current lack of recorded data, certain graphs may appear incomplete or empty when they should not be. This problem should cease by 9/13.
       </Alert>
       <Box>
         <Typography variant="h4">Today's Numbers</Typography>
@@ -173,8 +242,8 @@ export default function StatisticsPage() {
           <RequestWrapper loading={getNumRoomSwipesToday.loading} error={getNumRoomSwipesToday.error}>
             <CountCard label="Room Sign-ins" count={getNumRoomSwipesToday.data?.numRoomSwipesToday} unit="sign-ins"></CountCard>
           </RequestWrapper>
-          <RequestWrapper loading={GetNumEquipmentSessionsToday.loading} error={GetNumEquipmentSessionsToday.error}>
-            <CountCard label="Equipment Uses*" count={GetNumEquipmentSessionsToday.data?.numEquipmentSessionsToday} unit="activations"></CountCard>
+          <RequestWrapper loading={getNumEquipmentSessionsToday.loading} error={getNumEquipmentSessionsToday.error}>
+            <CountCard label="Equipment Uses*" count={getNumEquipmentSessionsToday.data?.numEquipmentSessionsToday} unit="activations"></CountCard>
           </RequestWrapper>
           <RequestWrapper loading={getNumNewUsersToday.loading} error={getNumNewUsersToday.error}>
             <CountCard label="New users" count={getNumNewUsersToday.data?.numNewUsersToday} unit="users"></CountCard>
@@ -183,10 +252,10 @@ export default function StatisticsPage() {
         <Typography variant="body2">* Only counts ACS-connected equipment</Typography>
       </Box>
 
-      <Box sx={{ mt: 5 }}>
+      <Box mt={5}>
         <Typography variant="h4">Room Usage</Typography>
 
-        <FormControl>
+        <FormControl sx={{maxWidth: 800}}>
           <Stack direction={"row"} spacing={10}>
             <FormGroup>
               <Typography sx={{ m: 1 }}>Graph Sum Range: </Typography>
@@ -355,6 +424,83 @@ export default function StatisticsPage() {
             </RequestWrapper>
           </RequestWrapper>
         </Stack>
+      </Box>
+      <Box mt={5}>
+        <Typography variant="h4">Equipment Usage</Typography>
+
+        <Stack direction={"column"} sx={{maxWidth: 800}}>
+          <Stack direction={"row"} spacing={10}>
+            <FormGroup>
+              <Typography sx={{ m: 1 }}>Range: </Typography>
+              <Stack direction={"row"}>
+                <TextField
+                  defaultValue={startOfWeek.toISOString().split('T')[0]}
+                  label="Start"
+                  type="date"
+                  onChange={handleSessionsStartDateChange}
+                />
+                <p> - </p>
+                <TextField
+                  defaultValue={today.toISOString().split('T')[0]}
+                  label="Stop"
+                  type="date"
+                  onChange={handleSessionsStopDateChange}
+                />
+              </Stack>
+            </FormGroup>
+          </Stack>
+          <Stack direction={"column"} spacing={2} alignItems={"center"} mt={5}>
+            <Button
+              sx={{ m: 1, width: 500 }}
+              color="primary"
+              variant="outlined"
+              onClick={() => {
+                getEquipmentSessions({ variables: { startDate: sessionsStartDate, stopDate: sessionsStopDate } }).then((result) => {
+                  console.log(result);
+                  console.log("func " + averageEquipmentActiveTime(result.data?.equipmentSessions));
+                });
+              }}
+            >
+              Fetch (may take up to a minute)
+            </Button>
+            <Typography></Typography>
+          </Stack>
+        </Stack>
+
+        <RequestWrapper loading={getEquipmentSessionsResult.loading} error={getEquipmentSessionsResult.error}>
+          <Stack direction={"row"} flexWrap={"wrap"}>
+            {getEquipmentSessionsResult.data != undefined && averageEquipmentActiveTime(getEquipmentSessionsResult.data?.equipmentSessions).map((entry) => (
+              <Card variant="outlined" style={{width: 250, margin: 5, padding: 5}}>
+                <CardHeader title={entry.readerSlug}></CardHeader>
+                <CardContent>
+                  <Grid>
+                    <div>
+                      <Typography>Total Sessions</Typography>
+                      <Typography variant="h4">{entry.numSessions}</Typography>
+                    </div>
+                    <div>
+                      <Typography>Time Active</Typography>
+                      <Gauge width={150} height={150} value={(entry.timeActive / entry.maximumTimeActive) * 100} text={`${Math.round(entry.timeActive / 60)} min\n\n${(entry.timeActive / entry.maximumTimeActive * 100).toFixed(2)}0%`} />
+                    </div>
+                    <div>
+                      <Typography>Average Session Length</Typography>
+                      <Typography variant="h6">{secondsToHms(entry.averageActiveTime)}</Typography>
+                    </div>
+                    <div>
+                      <Typography>Average Daily Sessions</Typography>
+                      <Typography variant="h4">{entry.averageDailySessions.toFixed(1)}</Typography>
+                    </div>
+                    <div>
+                      <Typography>Sessions Today</Typography>
+                      <Typography variant="h4">{entry.numSessionsToday}</Typography>
+                    </div>
+                  </Grid>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+        </RequestWrapper>
+
       </Box>
 
 
