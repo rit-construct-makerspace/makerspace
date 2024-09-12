@@ -124,8 +124,8 @@ export default function StatisticsPage() {
 
   function findZoneHours(zoneHours: any[], type: string, zoneID: number | null, start: Date) {
     if (!zoneID) {
-      if (type == "OPEN") return process.env.REACT_APP_DEFAULT_STAT_OPEN_TIME;
-      else return process.env.REACT_APP_DEFAULT_STAT_CLOSE_TIME;
+      if (type == "OPEN") return process.env.REACT_APP_DEFAULT_STAT_OPEN_TIME ?? "7:00:00";
+      else return process.env.REACT_APP_DEFAULT_STAT_CLOSE_TIME ?? "23:00:00";
     }
     console.log(zoneHours)
     const result = zoneHours.find((zoneHour: { zoneID: number, type: string, dayOfTheWeek: number, time: number }) =>
@@ -134,8 +134,8 @@ export default function StatisticsPage() {
       && zoneHour.type == type
     );
     if (!result) {
-      if (type == "OPEN") return process.env.REACT_APP_DEFAULT_STAT_OPEN_TIME;
-      else return process.env.REACT_APP_DEFAULT_STAT_CLOSE_TIME;
+      if (type == "OPEN") return process.env.REACT_APP_DEFAULT_STAT_OPEN_TIME ?? "7:00:00";
+      else return process.env.REACT_APP_DEFAULT_STAT_CLOSE_TIME ?? "23:00:00";
     }
     console.log(result)
     return result.time
