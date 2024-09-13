@@ -5,6 +5,7 @@
 import { knex } from "../../db/index.js";
 import { ModuleSubmissionRow } from "../../db/tables.js";
 import { EntityNotFound } from "../../EntityNotFound.js";
+import { getModules } from "./ModuleRepository.js";
 
 /**
  * Create a Module SUbmission and append it to the table
@@ -29,18 +30,18 @@ export async function addSubmission(
  */
 export async function getSubmission(
     submissionID: number
-): Promise<ModuleSubmissionRow | undefined>  {
+): Promise<ModuleSubmissionRow | undefined> {
     const submission = await knex("ModuleSubmissions")
-    .select()
-    .where(
-        {
-            id: submissionID
-        }
-    )
-    .first();
+        .select()
+        .where(
+            {
+                id: submissionID
+            }
+        )
+        .first();
 
     if (!submission) throw new EntityNotFound("Could not find submission id ${submissionID}");
-  
+
     return submission;
 }
 
@@ -61,7 +62,7 @@ export async function getSubmissionsByUser(
         );
 
     if (!submission) throw new EntityNotFound("Could not find any submissions for this user");
-  
+
     return submission;
 }
 
@@ -117,6 +118,38 @@ export async function getLatestSubmissionByModule(
         .first();
 
     // if (!submission) throw new EntityNotFound("Could not find submission for module ${moduleID}");
-  
+
     return submission;
+}
+
+/**
+ * Fetch the number of passed and failed submissions for a specified module in a specified date range
+ * @param moduleID the module ID to filter by
+ * @param startDate the beginning of the search range
+ * @param stopDate the end of the search range
+ * @returns the count of passed and failed submissions
+ */
+export async function getModulePassedandFailedCount(
+    moduleID: number,
+    startDate: string,
+    stopDate: string
+): Promise<any | undefined> {
+    return await knex("ModuleSubmissions").select(knex.raw(`
+        SUM(CASE WHEN "passed" = TRUE THEN 1 ELSE 0 END) AS passedSum,
+	    SUM(CASE WHEN "passed" = FALSE THEN 1 ELSE 0 END) AS failedSum`))
+        .where({ moduleID }).andWhereBetween("submissionDate", [startDate, stopDate])
+        .first();
+}
+
+export async function getModulePassedandFailedCountWithModuleName(startDate: string, stopDate: string) {
+    const result =  await getModules()
+    var moduleStats: { moduleID: number, moduleName: string, passedSum: number, failedSum: number }[] = [];
+    for (var i = 0; i < result.length; i++) {
+        const statsResult = await getModulePassedandFailedCount(result[i].id, startDate, stopDate);
+        const passedSum: number = Number(statsResult.passedsum) ?? 0;
+        const failedSum: number = Number(statsResult.failedsum) ?? 0;
+        moduleStats.push({ moduleID: result[i].id, moduleName: String(result[i].name), passedSum, failedSum });
+    }
+    return moduleStats;
+    
 }

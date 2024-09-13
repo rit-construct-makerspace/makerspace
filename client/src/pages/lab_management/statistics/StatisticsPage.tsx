@@ -9,7 +9,7 @@ import { BarChart, Gauge, LineChart } from "@mui/x-charts";
 import RequestWrapper from "../../../common/RequestWrapper";
 import TimeAgo from 'react-timeago'
 import GET_ROOMS from "../../../queries/getRooms";
-import { GET_EQUIPMENT_SESSIONS, GET_NUM_EQUIPMENT_SESSIONS_TODAY, GET_NUM_NEW_USERS, GET_NUM_ROOM_SWIPES_TODAY, GET_NUM_SITE_VISITS, GET_ROOM_SWIPE_COUNTS, GET_ZONE_HOURS } from "./statisticsQueries";
+import { GET_EQUIPMENT_SESSIONS, GET_MODULE_SCORES, GET_NUM_EQUIPMENT_SESSIONS_TODAY, GET_NUM_NEW_USERS, GET_NUM_ROOM_SWIPES_TODAY, GET_NUM_SITE_VISITS, GET_ROOM_SWIPE_COUNTS, GET_ZONE_HOURS } from "./statisticsQueries";
 
 
 function getMonthToPresentBounds(): { startOfMonth: Date, today: Date } {
@@ -50,6 +50,10 @@ export default function StatisticsPage() {
   //The day of the week to currently show graphs for
   const [viewDay, setViewDay] = useState("Sunday");
 
+  //Date range used for fetching the training statistics
+  const [trainingStartDate, setTrainingStartDate] = useState(startOfMonth);
+  const [trainingStopDate, setTrainingStopDate] = useState(today)
+
 
   //const getNumNewUsersTodayResult = useQuery(GET_NUM_NEW_USERS, {variables: {dayRange}});
   const getNumSiteVisitsTodayResult = useQuery(GET_NUM_SITE_VISITS);
@@ -70,6 +74,13 @@ export default function StatisticsPage() {
     variables: {
       sumStartDate, sumStopDate,
       avgStartDate, avgStopDate
+    }
+  });
+
+  const [getModuleScores, getModuleScoresResult] = useLazyQuery(GET_MODULE_SCORES, {
+    variables: {
+      startDate: trainingStartDate,
+      stopDate: trainingStopDate
     }
   });
 
@@ -122,12 +133,19 @@ export default function StatisticsPage() {
     setSessionsStopDate(new Date(event.target.value));
   };
 
+  const handleTrainingStartDateChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setTrainingStartDate(new Date(event.target.value));
+  };
+
+  const handleTrainingStopDateChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setTrainingStopDate(new Date(event.target.value));
+  };
+
   function findZoneHours(zoneHours: any[], type: string, zoneID: number | null, start: Date) {
     if (!zoneID) {
       if (type == "OPEN") return process.env.REACT_APP_DEFAULT_STAT_OPEN_TIME ?? "7:00:00";
       else return process.env.REACT_APP_DEFAULT_STAT_CLOSE_TIME ?? "23:00:00";
     }
-    console.log(zoneHours)
     const result = zoneHours.find((zoneHour: { zoneID: number, type: string, dayOfTheWeek: number, time: number }) =>
       zoneHour.zoneID == zoneID
       && zoneHour.dayOfTheWeek == new Date(start).getDay()
@@ -137,7 +155,6 @@ export default function StatisticsPage() {
       if (type == "OPEN") return process.env.REACT_APP_DEFAULT_STAT_OPEN_TIME ?? "7:00:00";
       else return process.env.REACT_APP_DEFAULT_STAT_CLOSE_TIME ?? "23:00:00";
     }
-    console.log(result)
     return result.time
   }
 
@@ -151,8 +168,6 @@ export default function StatisticsPage() {
     id: number, start: Date, sessionLength: number, readerSlug: string, equipment: { id: number, name: string }, zone: { id: number, name: string }
   }[]) {
     if (equipmentSessions == undefined || equipmentSessions.length == 0 || getZoneHours.data == undefined) {
-      console.log("fail 1");
-      console.log(getZoneHours)
       return []
     }
 
@@ -165,21 +180,15 @@ export default function StatisticsPage() {
 
       const openTime: Date = new Date();
       var timeString = findZoneHours(getZoneHours.data.zoneHours, "OPEN", session.zone ? session.zone.id : null, session.start);
-      console.log(timeString)
       var parts = timeString.split(":")
       openTime.setHours(parts[0]);
       openTime.setMinutes(parts[1]);
-      console.log("openTime")
-      console.log(openTime)
       //Find the time the machine is no longer available
       var closeTime: Date = new Date();
       timeString = findZoneHours(getZoneHours.data.zoneHours, "CLOSE", session.zone ? session.zone.id : null, session.start);
-      console.log(timeString)
       parts = timeString.split(":");
       closeTime.setHours(parts[0]);
       closeTime.setMinutes(parts[1]);
-      console.log("closeTime")
-      console.log(closeTime)
 
       //Find the maximum time a machine could be used
       const secondsOpen = (closeTime.getTime() - openTime.getTime()) / 1000;
@@ -191,14 +200,15 @@ export default function StatisticsPage() {
       const existingActiveTimeEntryIndex = machineActiveTimes.findIndex((entry) => entry.readerSlug == session.readerSlug);
 
       if (existingActiveTimeEntryIndex == -1) {
-        machineActiveTimes.push({ 
-          readerSlug: session.readerSlug, 
-          timeActive: session.sessionLength, 
-          maximumTimeActive: secondsOpen, 
-          numSessions: 1, 
-          averageActiveTime: session.sessionLength, 
-          averageDailySessions: 1 / daysBetweenStartAndStop, 
-          numSessionsToday: (sameDay(new Date(session.start), new Date()) ? 1 : 0) });
+        machineActiveTimes.push({
+          readerSlug: session.readerSlug,
+          timeActive: session.sessionLength,
+          maximumTimeActive: secondsOpen,
+          numSessions: 1,
+          averageActiveTime: session.sessionLength,
+          averageDailySessions: 1 / daysBetweenStartAndStop,
+          numSessionsToday: (sameDay(new Date(session.start), new Date()) ? 1 : 0)
+        });
       }
       else {
         machineActiveTimes[existingActiveTimeEntryIndex].timeActive += session.sessionLength;
@@ -208,7 +218,6 @@ export default function StatisticsPage() {
         machineActiveTimes[existingActiveTimeEntryIndex].numSessionsToday += (sameDay(new Date(session.start), new Date()) ? 1 : 0);
       }
     });
-    console.log(machineActiveTimes)
     return machineActiveTimes;
   }
 
@@ -225,7 +234,7 @@ export default function StatisticsPage() {
       if (d > 0 && d < 1) return "<1 second";
       return "N/A";
     }
-    return hDisplay + mDisplay + sDisplay; 
+    return hDisplay + mDisplay + sDisplay;
   }
 
   return (
@@ -252,7 +261,7 @@ export default function StatisticsPage() {
       <Box mt={5}>
         <Typography variant="h4">Room Usage</Typography>
 
-        <FormControl sx={{maxWidth: 800}}>
+        <FormControl sx={{ maxWidth: 800 }}>
           <Stack direction={"row"} spacing={10}>
             <FormGroup>
               <Typography sx={{ m: 1 }}>Graph Sum Range: </Typography>
@@ -425,7 +434,7 @@ export default function StatisticsPage() {
       <Box mt={5}>
         <Typography variant="h4">Equipment Usage</Typography>
 
-        <Stack direction={"column"} sx={{maxWidth: 800}}>
+        <Stack direction={"column"} sx={{ maxWidth: 800 }}>
           <Stack direction={"row"} spacing={10}>
             <FormGroup>
               <Typography sx={{ m: 1 }}>Range: </Typography>
@@ -452,10 +461,7 @@ export default function StatisticsPage() {
               color="primary"
               variant="outlined"
               onClick={() => {
-                getEquipmentSessions({ variables: { startDate: sessionsStartDate, stopDate: sessionsStopDate } }).then((result) => {
-                  console.log(result);
-                  console.log("func " + averageEquipmentActiveTime(result.data?.equipmentSessions));
-                });
+                getEquipmentSessions({ variables: { startDate: sessionsStartDate, stopDate: sessionsStopDate } });
               }}
             >
               Fetch (may take up to a minute)
@@ -467,7 +473,7 @@ export default function StatisticsPage() {
         <RequestWrapper loading={getEquipmentSessionsResult.loading} error={getEquipmentSessionsResult.error}>
           <Stack direction={"row"} flexWrap={"wrap"}>
             {getEquipmentSessionsResult.data != undefined && averageEquipmentActiveTime(getEquipmentSessionsResult.data?.equipmentSessions).map((entry) => (
-              <Card variant="outlined" style={{width: 250, margin: 5, padding: 5}}>
+              <Card variant="outlined" style={{ width: 250, margin: 5, padding: 5 }}>
                 <CardHeader title={entry.readerSlug}></CardHeader>
                 <CardContent>
                   <Grid>
@@ -499,7 +505,75 @@ export default function StatisticsPage() {
         </RequestWrapper>
 
       </Box>
+      <Box mt={5}>
+        <Typography variant="h4">Trainings</Typography>
 
+        <Stack direction={"column"} sx={{ maxWidth: 800 }}>
+          <Stack direction={"row"} spacing={10}>
+            <FormGroup>
+              <Typography sx={{ m: 1 }}>Range: </Typography>
+              <Stack direction={"row"}>
+                <TextField
+                  defaultValue={startOfWeek.toISOString().split('T')[0]}
+                  label="Start"
+                  type="date"
+                  onChange={handleTrainingStartDateChange}
+                />
+                <p> - </p>
+                <TextField
+                  defaultValue={today.toISOString().split('T')[0]}
+                  label="Stop"
+                  type="date"
+                  onChange={handleTrainingStopDateChange}
+                />
+              </Stack>
+            </FormGroup>
+          </Stack>
+          <Stack direction={"column"} spacing={2} alignItems={"center"} mt={5}>
+            <Button
+              sx={{ m: 1, width: 500 }}
+              color="primary"
+              variant="outlined"
+              onClick={() => {
+                getModuleScores({ variables: { startDate: trainingStartDate, stopDate: trainingStopDate } });
+              }}
+            >
+              Fetch
+            </Button>
+            <Typography></Typography>
+          </Stack>
+        </Stack>
+
+        <RequestWrapper loading={getModuleScoresResult.loading} error={getModuleScoresResult.error}>
+          <Stack direction={"row"} flexWrap={"wrap"}>
+            {getModuleScoresResult.data != undefined && getModuleScoresResult.data.moduleScores.map((entry: {moduleID: number, moduleName: string, passedSum: number, failedSum: number}) => (
+              <Card variant="outlined" style={{ width: 250, margin: 5, padding: 5 }}>
+                <CardHeader title={entry.moduleName}></CardHeader>
+                <CardContent>
+                  <Grid>
+                    <div>
+                      <Typography>Total Submissions</Typography>
+                      <Typography variant="h4">{entry.passedSum + entry.failedSum}</Typography>
+                    </div>
+                    <div>
+                      <Typography>Passing Rate</Typography>
+                      <Gauge width={150} height={150} value={(entry.passedSum / Math.max((entry.passedSum + entry.failedSum),1)) * 100} text={`${((entry.passedSum / Math.max((entry.passedSum + entry.failedSum),1)) * 100).toFixed(2)}%`} />
+                    </div>
+                    <div>
+                      <Typography>Passed</Typography>
+                      <Typography variant="h4" color={"success"}>{entry.passedSum}</Typography>
+                    </div>
+                    <div>
+                      <Typography>Failed</Typography>
+                      <Typography variant="h4" color={"error"}>{entry.failedSum}</Typography>
+                    </div>
+                  </Grid>
+                </CardContent>
+              </Card>
+            ))}
+          </Stack>
+        </RequestWrapper>
+      </Box>
 
     </AdminPage>
   );

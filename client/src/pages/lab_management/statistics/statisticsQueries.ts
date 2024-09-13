@@ -102,3 +102,21 @@ export const GET_ROOM_SWIPE_COUNTS = gql`
     }
   }
 `;
+
+export const GET_MODULE_SCORES = gql`
+  query GetModuleScores(
+    $startDate: String,
+    $stopDate: String,
+  ) {
+    moduleScores(
+      startDate: $startDate,
+      stopDate: $stopDate
+    ) {
+      moduleID
+      moduleName
+      passedSum
+      failedSum
+    }
+  }
+
+`;

@@ -2,6 +2,8 @@ import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
 import { getDataPointByID, incrementDataPointValue, setDataPointValue } from "../repositories/DataPoints/DataPointsRepository.js";
 import { getEquipmentSessionsByDayOfTheWeek, getCummRoomSwipesByRoomByWeekDayByHour, RoomSwipesByRoomByWeekDayByHour, getNumUsersRegisteredToday, getNumRoomSwipesToday, getNumEquipmentSessionsToday } from "../repositories/StatisticsQuery/StatisticQueryRepository.js";
+import { getModules } from "../repositories/Training/ModuleRepository.js";
+import { getModulePassedandFailedCount, getModulePassedandFailedCountWithModuleName } from "../repositories/Training/SubmissionRepository.js";
 
 function getMonthToPresentBounds(): {startOfMonth: Date, today: Date} {
   const startOfMonth = new Date();
@@ -68,6 +70,14 @@ const StatisticQueryResolver = {
 
           const combinedResult = fitSeperateRangeAverages(result, avgResult);
           return await combinedResult;
+      }),
+      moduleScores: async (
+        _parent: any,
+        args: {startDate: string, stopDate: string},
+        { ifAllowed }: ApolloContext) =>
+        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+          const result = await getModulePassedandFailedCountWithModuleName(args.startDate, args.stopDate);
+          return result
         }),
       numNewUsersToday: async (
         _parent: any,

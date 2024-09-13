@@ -17,11 +17,19 @@ export const StatisticQueryTypeDefs = gql`
         count: Int
     }
 
+    type ModuleStats {
+        moduleID: ID!
+        moduleName: String!
+        passedSum: Int
+        failedSum: Int
+    }
+
     extend type Query {
         equipmentSessionsByDayOfTheWeek(dayOfTheWeek: String!, startDate: String, stopDate: String): String
         sumRoomSwipesByRoomByWeekDayByHour(sumStartDate: String, sumStopDate: String, avgStartDate: String, avgStopDate: String): [RoomSwipeStats]
         numNewUsersToday: Int
         numRoomSwipesToday: Int
         numEquipmentSessionsToday: Int
+        moduleScores(startDate: String, stopDate: String): [ModuleStats]
     }
 `;
