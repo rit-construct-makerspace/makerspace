@@ -17,6 +17,7 @@ export const EquipmentTypeDefs = gql`
     inUse: Boolean!
     hasAccess(uid: String): Boolean!
     imageUrl: String
+    sopUrl: String
   }
 
   input EquipmentInput {
