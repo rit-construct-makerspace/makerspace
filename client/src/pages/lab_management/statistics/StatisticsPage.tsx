@@ -230,9 +230,6 @@ export default function StatisticsPage() {
 
   return (
     <AdminPage title="Statistics" maxWidth="1250px">
-      <Alert variant="standard" color="error">
-        Due to a current lack of recorded data, certain graphs may appear incomplete or empty when they should not be. This problem should cease by 9/13.
-      </Alert>
       <Box>
         <Typography variant="h4">Today's Numbers</Typography>
         <Stack direction={"row"} flexWrap={"wrap"}>
