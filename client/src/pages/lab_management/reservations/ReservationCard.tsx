@@ -78,7 +78,7 @@ export default function ReservationCard({ reservation }: ReservationCardProps) {
 
       <Stack spacing={0.5} sx={{ mx: 2 }}>
         {reservation.attachments.map((attachment) => (
-          <ReservationAttachment name={attachment.name} key={attachment.url} />
+          <ReservationAttachment name={attachment.name} url={attachment.url} />
         ))}
       </Stack>
 

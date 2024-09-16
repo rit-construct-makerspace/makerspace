@@ -81,6 +81,7 @@ const EquipmentResolvers = {
       args: { id: string; equipment: EquipmentInput },
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        console.log(args.equipment)
         return await EquipmentRepo.updateEquipment(Number(args.id), args.equipment);
     }),
 

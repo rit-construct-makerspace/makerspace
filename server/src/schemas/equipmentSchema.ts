@@ -4,6 +4,8 @@ export interface EquipmentInput {
   name: string;
   roomID: number;
   moduleIDs: number[];
+  imageUrl: string | null;
+  sopUrl: string | null
 }
 
 export const EquipmentTypeDefs = gql`
@@ -24,6 +26,8 @@ export const EquipmentTypeDefs = gql`
     name: String!
     roomID: ID!
     moduleIDs: [ID]
+    imageUrl: String!
+    sopUrl: String!
   }
 
   extend type Query {

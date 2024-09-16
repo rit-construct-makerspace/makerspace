@@ -7,6 +7,7 @@ export const GET_EQUIPMENTS = gql`
       name
       archived
       imageUrl
+      sopUrl
     }
   }
 `;
@@ -17,6 +18,8 @@ export const GET_EQUIPMENT_BY_ID = gql`
       id
       name
       archived
+      imageUrl
+      sopUrl
       room {
         id
         name
@@ -35,6 +38,8 @@ export const GET_ANY_EQUIPMENT_BY_ID = gql`
       id
       name
       archived
+      imageUrl
+      sopUrl
       room {
         id
         name
@@ -54,6 +59,7 @@ export const GET_ARCHIVED_EQUIPMENTS = gql`
       name
       archived
       imageUrl
+      sopUrl
     }
   }
 `;
@@ -64,6 +70,8 @@ export const GET_ARCHIVED_EQUIPMENT_BY_ID = gql`
       id
       name
       archived
+      imageUrl
+      sopUrl
       room {
         id
         name
@@ -94,10 +102,12 @@ export const UPDATE_EQUIPMENT = gql`
     $name: String!
     $roomID: ID!
     $moduleIDs: [ID]!
+    $imageUrl: String!
+    $sopUrl: String!
   ) {
     updateEquipment(
       id: $id
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl }
     ) {
       id
     }
@@ -121,9 +131,15 @@ export const PUBLISH_EQUIPMENT = gql`
 `;
 
 export const CREATE_EQUIPMENT = gql`
-  mutation CreateEquipment($name: String!, $roomID: ID!, $moduleIDs: [ID]!) {
+  mutation CreateEquipment(
+    $name: String!, 
+    $roomID: ID!, 
+    $moduleIDs: [ID]!,
+    $imageUrl: String!
+    $sopUrl: String!
+    ) {
     addEquipment(
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl }
     ) {
       id
     }
