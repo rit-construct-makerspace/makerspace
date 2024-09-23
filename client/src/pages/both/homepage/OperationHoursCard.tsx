@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import {
     Box,
-    Card, Stack,
+    Card, CardHeader, Stack,
     Tab,
     Table,
     TableCell,
@@ -108,8 +108,8 @@ export default function OperationHoursCard() {
         loading={getZonesResult.loading}
         error={getZonesResult.error}
         >
-            <Card sx={{ minWidth: 250, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1  }} >
-                <Typography variant="h6">Lab Hours</Typography>
+            <Card sx={{ minWidth: 250, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1, fontWeight: 'bold'  }} >
+            <CardHeader title="Lab Hours" sx={{pt: 0}} />
 
                 <Tabs value={currentTab} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile >
                     {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (

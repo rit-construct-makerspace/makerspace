@@ -27,7 +27,6 @@ const INCREMENT_SITE_VISITS = gql`
 
 const Homepage: React.FC = () => {
     const currentUser = useCurrentUser();
-    const welcomeMsg = "Welcome, " + currentUser.firstName;
     const navigate = useNavigate();
 
     const incrementSiteVisits = useQuery(INCREMENT_SITE_VISITS);

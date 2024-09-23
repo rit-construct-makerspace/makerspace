@@ -1,5 +1,6 @@
 import {
     Card,
+    CardHeader,
     Stack,
     Typography
 } from "@mui/material";
@@ -32,7 +33,7 @@ export default function AnnouncementsCard() {
         >
             <Card elevation={2} sx={{ minWidth: 250, maxWidth: 400, height: 500, padding: 2, justifyContent: "space-between", border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll"  }}>
                 <Stack direction={"column"} spacing={1}>
-                    <Typography variant="h4">Announcements</Typography>
+                    <CardHeader title="Announcements" sx={{pt: 0, fontWeight: 'bold'}} />
                     <Stack spacing={1}>
                         {getAnnouncementsResult.data?.getAllAnnouncements?.map((announcement: Announcement) => (
                             <Stack>
