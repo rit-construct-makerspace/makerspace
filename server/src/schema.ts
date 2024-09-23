@@ -42,6 +42,8 @@ import { StatisticQueryTypeDefs } from "./schemas/statisticQuerySchema.js";
 import StatisticQueryResolver from "./resolvers/statisticQueryResolver.js";
 import { EquipmentSessionTypeDefs } from "./schemas/equipmentSessionsSchema.js";
 import EquipmentSessionsResolver from "./resolvers/equipmentSessionsResolver.js";
+import { EventsTypeDefs } from "./schemas/eventsSchema.js";
+import { EventsResolver } from "./resolvers/eventsResolver.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -70,7 +72,8 @@ export const schema = makeExecutableSchema({
     DataPointsTypeDefs,
     PermissionTypeDefs,
     StatisticQueryTypeDefs,
-    EquipmentSessionTypeDefs
+    EquipmentSessionTypeDefs,
+    EventsTypeDefs
   ],
   resolvers: [ 
     resolveFunctions,
@@ -91,6 +94,7 @@ export const schema = makeExecutableSchema({
     DataPointsResolver,
     PermissionResolver,
     StatisticQueryResolver,
-    EquipmentSessionsResolver
+    EquipmentSessionsResolver,
+    EventsResolver
   ]
 });
