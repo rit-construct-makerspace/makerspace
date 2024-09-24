@@ -8,7 +8,8 @@ import { ObjectSummary } from "../../../types/Common";
 export type MutationCallback = (options: object) => void;
 
 export interface Equipment {
-  imageUrl?: string;
+  imageUrl: string | null;
+  sopUrl: string | null;
   id: number | null;
   name: string;
   room: ObjectSummary | null;
@@ -30,7 +31,8 @@ export default function EditEquipmentPage(props: EditEquipmentPageProps) {
     room: null,
     trainingModules: [],
     archived: props.archived,
-    imageUrl: undefined
+    imageUrl: null,
+    sopUrl: null
   });
 
   const newEquipment = id === "new";

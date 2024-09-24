@@ -14,6 +14,7 @@ export interface EquipmentRow {
   roomID: number;
   archived: boolean;
   imageUrl: string;
+  sopUrl: string;
 }
 
 export interface HoldRow {
@@ -85,6 +86,13 @@ export interface RoomRow {
   id: number;
   name: string;
   archived: boolean;
+  zoneID: number | null;
+}
+
+export interface DataPointsRow {
+  id: number;
+  label: string;
+  value: number;
 }
 
 export interface TrainingModuleRow {
@@ -163,10 +171,20 @@ export interface AccessCheckRow {
 
 export interface ZoneHoursRow {
   id: number;
-  zone: string;
+  zoneID: number | null;
   type: string;
   dayOfTheWeek: number;
   time: string;
+}
+
+export interface ZoneRow {
+  id: number;
+  name: string;
+}
+
+export interface RoomsForZonesRow {
+  zoneID: number;
+  roomID: number;
 }
 
 export interface EquipmentSessionRow {
@@ -175,6 +193,7 @@ export interface EquipmentSessionRow {
   equipmentID: number;
   userID: number;
   sessionLength: number;
+  readerSlug: string;
 }
 
 declare module "knex/types/tables.js" {
@@ -193,6 +212,10 @@ declare module "knex/types/tables.js" {
     Users: UserRow;
     Readers: ReaderRow;
     AccessChecks: AccessCheckRow;
+    Zones: ZoneRow;
+    RoomsForZones: RoomsForZonesRow
     ZoneHours: ZoneHoursRow;
+    DataPoints: DataPointsRow;
+    EquipmentSessions: EquipmentSessionRow
   }
 }

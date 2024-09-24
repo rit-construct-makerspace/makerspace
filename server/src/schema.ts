@@ -30,6 +30,20 @@ import { ReaderTypeDefs } from "./schemas/readersSchema.js";
 import ReadersResolver from "./resolvers/readersResolver.js";
 import { AccessCheckTypeDefs } from "./schemas/accessChecksSchema.js";
 import AccessChecksResolver from "./resolvers/accessChecksResolver.js";
+import ZoneHoursResolver from "./resolvers/zoneHoursResolver.js";
+import { ZoneHoursTypeDefs } from "./schemas/zoneHoursSchema.js";
+import ZonesResolver from "./resolvers/zonesResolver.js";
+import { ZonesTypeDefs } from "./schemas/zonesSchema.js";
+import { DataPointsTypeDefs } from "./schemas/dataPointsSchema.js";
+import DataPointsResolver from "./resolvers/dataPointResolver.js";
+import PermissionResolver from "./resolvers/permissionResolver.js";
+import { PermissionTypeDefs } from "./schemas/permissionSchema.js";
+import { StatisticQueryTypeDefs } from "./schemas/statisticQuerySchema.js";
+import StatisticQueryResolver from "./resolvers/statisticQueryResolver.js";
+import { EquipmentSessionTypeDefs } from "./schemas/equipmentSessionsSchema.js";
+import EquipmentSessionsResolver from "./resolvers/equipmentSessionsResolver.js";
+import { EventsTypeDefs } from "./schemas/eventsSchema.js";
+import { EventsResolver } from "./resolvers/eventsResolver.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -52,9 +66,16 @@ export const schema = makeExecutableSchema({
     CalendarEventsTypeDefs,
     AnnouncementsTypeDefs,
     ReaderTypeDefs,
-    AccessCheckTypeDefs
+    AccessCheckTypeDefs,
+    ZonesTypeDefs,
+    ZoneHoursTypeDefs,
+    DataPointsTypeDefs,
+    PermissionTypeDefs,
+    StatisticQueryTypeDefs,
+    EquipmentSessionTypeDefs,
+    EventsTypeDefs
   ],
-  resolvers: mergeResolvers([ //resolvers might be marked as "not assignable". Ignore it - NPM issue
+  resolvers: [ 
     resolveFunctions,
     EquipmentResolvers,
     trainingModuleResolvers,
@@ -67,6 +88,13 @@ export const schema = makeExecutableSchema({
     calendarEventsResolver,
     AnnouncementsResolver,
     ReadersResolver,
-    AccessChecksResolver
-  ]),
+    AccessChecksResolver,
+    ZonesResolver,
+    ZoneHoursResolver,
+    DataPointsResolver,
+    PermissionResolver,
+    StatisticQueryResolver,
+    EquipmentSessionsResolver,
+    EventsResolver
+  ]
 });

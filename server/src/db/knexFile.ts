@@ -15,6 +15,13 @@ const config: any = {
     pool: {
       min: 2,
       max: 10,
+      afterCreate: function(connection: any, callback: any) {
+        console.log("timezoning")
+        connection.query('SET TIME ZONE TO \'EST5EDT\';', function(err: Error) {
+          console.log(err)
+          callback(err, connection);
+        });
+      }
     },
     migrations: {
       tableName: "knex_migrations",

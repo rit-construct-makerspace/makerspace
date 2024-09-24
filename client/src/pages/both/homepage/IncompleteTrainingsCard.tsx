@@ -8,7 +8,7 @@ import {
 } from "../../../common/TrainingModuleUtils";
 import TrainingModuleRow from "../../../common/TrainingModuleRow";
 import { searchFilter } from "../../../common/SearchBar";
-import {Card, Typography} from "@mui/material";
+import {Card, CardHeader, Typography} from "@mui/material";
 
 
 export const GET_ALL_TRAINING_MODULES = gql`
@@ -47,8 +47,8 @@ export default function IncompleteTrainingsCard({onClick}: IncompleteTrainingsCa
                 const reordered = [...notTaken];
 
                 return (
-                    <Card sx={{ width: 350, maxWidth: 500, height: 296, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll"  }} >
-                            <Typography variant="h4">Incomplete Trainings</Typography>
+                    <Card sx={{ minWidth: 250, maxWidth: 500, height: 296, padding: 2, border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll"  }} >
+                            <CardHeader title="Incomplete Trainings" sx={{pt: 0, fontWeight: 'bold'}} />
                             {reordered.map((ms: ModuleStatus) => (
                                 <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
                             ))}

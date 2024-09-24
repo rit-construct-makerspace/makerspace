@@ -24,7 +24,8 @@ interface ReaderCardProps {
     zone: string
     temp: number,
     state: string,
-    currentUID: string,
+    userID: number | null,
+    userName: string | null,
     recentSessionLength: number,
     lastStatusReason: string,
     scheduledStatusFreq: number,
@@ -45,11 +46,11 @@ const useStyles = makeStyles({
   }
 });
 
-export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, currentUID, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested }: ReaderCardProps) {
+export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
-    "Current User: " + currentUID + "\nSession Length" + recentSessionLength + " sec"
+    <p>Current User: <AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity><br></br>Session Length: {recentSessionLength} sec</p>
   ) : (
-    "Last Session Length: " + recentSessionLength + " sec"
+    <p>Last User: {userID != null ? (<AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity>) : "NULL"}<br></br>Session Length: {recentSessionLength} sec</p>
   );
 
   const machineResult = useQuery(GET_EQUIPMENT_BY_ID, {

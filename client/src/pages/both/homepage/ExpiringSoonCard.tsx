@@ -8,7 +8,7 @@ import {
 } from "../../../common/TrainingModuleUtils";
 import TrainingModuleRow from "../../../common/TrainingModuleRow";
 import { searchFilter } from "../../../common/SearchBar";
-import {Card, Typography} from "@mui/material";
+import {Card, CardHeader, Typography} from "@mui/material";
 
 export const GET_ALL_TRAINING_MODULES = gql`
   query GetAllTrainingModules {
@@ -43,8 +43,8 @@ export default function ExpiringSoonCard() {
                 const reordered = [...expiringSoon];
 
                 return (
-                    <Card sx={{ width: 350, maxWidth: 500, height: 296, padding: 2, spacing: 5, border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll"  }} >
-                        <Typography variant="h4">Expiring Soon</Typography>
+                    <Card sx={{ minWidth: 250, maxWidth: 500, padding: 2, spacing: 5, border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll"  }} >
+                        <CardHeader title="Expiring Soon" sx={{pt: 0, fontWeight: 'bold'}} />
                         {reordered.length === 0 && (
                              <Typography variant="body1" style={{ color: "grey" }}>You're all caught up!</Typography>
                         )}

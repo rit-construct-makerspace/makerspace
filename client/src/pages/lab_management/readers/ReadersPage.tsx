@@ -8,6 +8,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import { ObjectSummary } from "../../../types/Common";
 import { useState } from "react";
 import ReaderCard from "./ReaderCard";
+import AdminPage from "../../AdminPage";
 
 
 export default function ReadersPage() {
@@ -18,7 +19,7 @@ export default function ReadersPage() {
   const [searchText, setSearchText] = useState("");
 
   return (
-    <Page title="Readers" maxWidth="1250px">
+    <AdminPage title="Readers" maxWidth="1250px">
       <Stack direction="row" spacing={2}>
         <SearchBar
           placeholder="Search access devices"
@@ -39,13 +40,13 @@ export default function ReadersPage() {
           ).map((e: Reader) => (
             <Grid key={e.id} item>
               <ReaderCard id={e.id} name={e.name} machineID={parseInt(e.machineID)} machineType={e.machineType} 
-                zone={e.zone} temp={e.temp} state={e.state} currentUID={e.currentUID} 
+                zone={e.zone} temp={e.temp} state={e.state} userID={e.user?.id} userName={e.user != null ? e.user.firstName + " " + e.user.lastName : null}
                 recentSessionLength={e.recentSessionLength} lastStatusReason={e.lastStatusReason} 
                 scheduledStatusFreq={e.scheduledStatusFreq} lastStatusTime={e.lastStatusTime} helpRequested={e.helpRequested} />
             </Grid>
           ))}
         </Grid>
       </RequestWrapper>
-    </Page>
+    </AdminPage>
   );
 }

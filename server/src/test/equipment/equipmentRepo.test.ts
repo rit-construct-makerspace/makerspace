@@ -53,14 +53,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment
     const equipmentData = await EquipmentRepo.addEquipment({
       name: "Test Equipment",
       roomID: roomID,
-      moduleIDs: <number[]>[]
+      moduleIDs: <number[]>[],
+      imageUrl: null,
+      sopUrl: null
     });
 
     // Expect one equipment
@@ -73,14 +76,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add and get ID
     const equipmentID = (await EquipmentRepo.addEquipment({
       name: "Test Equipment",
       roomID: roomID,
-      moduleIDs: <number[]>[]
+      moduleIDs: <number[]>[],
+      imageUrl: null,
+      sopUrl: null
     })).id;
 
     // Get by ID
@@ -92,14 +98,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     // Check added
@@ -109,7 +118,9 @@ describe("EquipmentRepository tests", () => {
     await EquipmentRepo.updateEquipment(equipmentID, {
         name: "Test Equipment Updated",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     });
 
     // Check name updated
@@ -120,14 +131,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     // Check added
@@ -151,14 +165,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     const exampleQuiz: TrainingModuleItem[] = [{
@@ -188,14 +205,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     const moduleOneID = (await ModuleRepo.addModule("Test Module I", exampleQuiz)).id;
@@ -223,14 +243,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     // Create user
@@ -260,14 +283,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     // Check added
@@ -308,14 +334,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     // Check added
@@ -363,14 +392,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     // Check added
@@ -410,14 +442,17 @@ describe("EquipmentRepository tests", () => {
     // Add a room
     const roomID = (await RoomRepo.addRoom({
         id: 0,
-        name: "Test Room"
+        name: "Test Room",
+        zoneID: null
     })).id;
 
     // Add equipment to the room
     const equipmentID = (await EquipmentRepo.addEquipment({
         name: "Test Equipment",
         roomID: roomID,
-        moduleIDs: <number[]>[]
+        moduleIDs: <number[]>[],
+        imageUrl: null,
+        sopUrl: null
     })).id;
 
     // Check added

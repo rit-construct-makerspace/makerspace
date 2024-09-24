@@ -5,6 +5,7 @@ import Page from "../../Page";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from '@mui/icons-material/Save';
 import { Accordion, AccordionDetails, AccordionSummary, Button, CircularProgress, Fab, FormControlLabel, FormGroup, Grid, Switch, TextField, Typography } from "@mui/material";
+import AdminPage from "../../AdminPage";
 
 export default function EditAnnouncementSample() {
 
@@ -12,7 +13,7 @@ export default function EditAnnouncementSample() {
     const [description, setDescription] = useState("");
 
   return (
-    <Page title={"Edit Announcement"}>
+    <AdminPage title={"Edit Announcement"}>
         <Grid container
             rowSpacing={5}
             columnSpacing={2}
@@ -77,6 +78,6 @@ export default function EditAnnouncementSample() {
               </Button>
             </Grid>
           </Grid>
-    </Page>
+    </AdminPage>
   );
 }

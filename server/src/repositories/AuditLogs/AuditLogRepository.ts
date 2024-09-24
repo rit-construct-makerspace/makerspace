@@ -68,7 +68,8 @@ export async function getLogs(
     .select()
     .whereBetween("dateTime", [startDate, stopDate])
     .where("message", "ilike", `%${searchText}%`)
-    .orderBy("dateTime", "DESC");
+    .orderBy("dateTime", "DESC")
+    .limit(100);
 
   return logsToDomain(knexResult);
 }

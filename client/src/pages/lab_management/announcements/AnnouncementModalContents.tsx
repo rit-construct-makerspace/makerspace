@@ -12,6 +12,7 @@ import { Announcement } from "../../../queries/announcementsQueries";
 import { useNavigate } from "react-router-dom";
 import DeleteAnnouncementButton from "./button/DeleteAnnouncementButton";
 import Page from "../../Page";
+import AdminPage from "../../AdminPage";
 
 interface InputErrors {
   title?: boolean;
@@ -69,7 +70,7 @@ export default function AnnouncementModalContents({
   const title = `${isNewAnnouncement ? "New" : "Edit"} Announcement`;
 
   return (
-    <Page title={""} maxWidth="1250px">
+    <AdminPage title={""} maxWidth="1250px">
       <Typography variant="h5" mb={2}>
         {title}
       </Typography>
@@ -118,6 +119,6 @@ export default function AnnouncementModalContents({
           Save
         </LoadingButton>
       </Stack>
-    </Page>
+    </AdminPage>
   );
 }

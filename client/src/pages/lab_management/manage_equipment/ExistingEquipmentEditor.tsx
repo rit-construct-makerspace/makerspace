@@ -53,6 +53,8 @@ export default function ExistingEquipmentEditor({
             name: equipment.name,
             roomID: equipment.room?.id,
             moduleIDs: equipment.trainingModules.map((m: ObjectSummary) => m.id),
+            imageUrl: equipment.imageUrl,
+            sopUrl: equipment.sopUrl
           })
         }
       />

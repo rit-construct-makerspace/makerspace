@@ -10,6 +10,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import TrainingModuleRow from "./TrainingModuleRow";
 import { GET_TRAINING_MODULES, GET_ARCHIVED_TRAINING_MODULES } from "../../../queries/trainingQueries";
 import { ObjectSummary } from "../../../types/Common";
+import AdminPage from "../../AdminPage";
 
 export default function TrainingModulesPage() {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ export default function TrainingModulesPage() {
   };
 
   return (
-    <Page title="Training modules" maxWidth="1250px">
+    <AdminPage title="Training modules" maxWidth="1250px">
     <Stack direction="row" alignItems="center" spacing={1}>
       <SearchBar
         placeholder="Search training modules"
@@ -106,6 +107,6 @@ export default function TrainingModulesPage() {
       </Stack>
     </RequestWrapper>
 
-  </Page>
+  </AdminPage>
   );
 }

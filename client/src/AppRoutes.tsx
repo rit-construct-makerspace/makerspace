@@ -29,6 +29,7 @@ import EditNewModulePage from "./pages/lab_management/edit_module/EditNewModuleP
 import NewAnnouncementPage from "./pages/lab_management/announcements/NewAnnouncementPage";
 import EditAnnouncement from "./pages/lab_management/announcements/EditAnnouncement";
 import ReadersPage from "./pages/lab_management/readers/ReadersPage";
+import StatisticsPage from "./pages/lab_management/statistics/StatisticsPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -89,6 +90,8 @@ export default function AppRoutes() {
           <Route path="/admin/history" element={<AuditLogsPage />} />
 
           <Route path="/admin/readers" element={<ReadersPage />} />
+
+          <Route path="/admin/statistics" element={<StatisticsPage />} />
 
           <Route path="/logoutprompt" element={<LogoutPromptPage />} />
 

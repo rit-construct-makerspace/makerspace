@@ -2,15 +2,27 @@ import React, { useState } from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import RoomCard from "./RoomCard";
-import { Button, Stack } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import GET_ROOMS from "../../../queries/getRooms";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
+import ZoneHourOptions from "./ZoneHourOptions";
+import ZoneCard from "./ZoneCard";
+import { GET_ZONES } from "../../../queries/getZones";
+import AdminPage from "../../AdminPage";
 
 const CREATE_ROOM = gql`
   mutation CreateRoom($name: String!) {
     addRoom(room: { name: $name }) {
+      id
+    }
+  }
+`;
+
+const CREATE_ZONE = gql`
+  mutation CreateZone($name: String!) {
+    addZone(name: $name) {
       id
     }
   }
@@ -28,6 +40,17 @@ export default function SelectRoomPage() {
     });
   };
 
+  const getZonesResult = useQuery(GET_ZONES);
+  const [createZone] = useMutation(CREATE_ZONE);
+
+  const handleCreateZone = () => {
+    const name = window.prompt("Enter zone name:");
+    createZone({
+      variables: { name },
+      refetchQueries: [{ query: GET_ZONES }],
+    });
+  };
+
   const [searchText, setSearchText] = useState("");
 
   return (
@@ -35,28 +58,38 @@ export default function SelectRoomPage() {
       loading={getRoomsResult.loading}
       error={getRoomsResult.error}
     >
-      <Page title="Rooms" maxWidth="1250px">
+      <AdminPage title="Rooms" maxWidth="1250px">
         <Stack direction="row" spacing={2} mb={4}>
-          <SearchBar 
-            placeholder="Search rooms"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-          />
           <Button variant="contained" onClick={handleCreateRoom}>
             + Add Room
           </Button>
         </Stack>
-        <Stack direction="row" flexWrap="wrap">
+        <Stack direction="column" flexWrap="nowrap">
           {getRoomsResult.data?.rooms
-            ?.filter((m: { id: number; name: string }) =>
-              m.name
-                .toLocaleLowerCase()
-                .includes(searchText.toLocaleLowerCase())
-            ).map((room: Room) => (
+            .map((room: Room) => (
             <RoomCard key={room.id} room={room} />
           ))}
         </Stack>
-      </Page>
+
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{ lineHeight: 1, m: 2 }}
+        >
+          Zones
+        </Typography>
+        <Stack direction="row" spacing={2} mb={4}>
+          <Button variant="contained" onClick={handleCreateZone}>
+            + Add Zone
+          </Button>
+        </Stack>
+        <Stack direction="column" flexWrap="nowrap">
+          {getZonesResult.data?.zones
+            .map((zone: {id: number, name: string}) => (
+            <ZoneCard key={zone.id} id={zone.id} name={zone.name} />
+          ))}
+        </Stack>
+      </AdminPage>
     </RequestWrapper>
   );
 }

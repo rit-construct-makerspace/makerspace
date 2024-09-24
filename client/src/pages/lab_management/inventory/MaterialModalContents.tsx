@@ -14,6 +14,7 @@ import SaveIcon from "@mui/icons-material/Save";
 import styled from "styled-components";
 import InventoryItem from "../../../types/InventoryItem";
 import Page from "../../Page";
+import AdminPage from "../../AdminPage";
 
 const StyledMaterialImage = styled.img`
   width: 200px;
@@ -110,7 +111,7 @@ export default function MaterialModalContents({
   const title = `${isNewItem ? "New" : "Edit"} Material`;
 
   return (
-    <Page title={""} maxWidth="1250px">
+    <AdminPage title={""} maxWidth="1250px">
       <Typography variant="h5" mb={2}>
         {title}
       </Typography>
@@ -208,6 +209,6 @@ export default function MaterialModalContents({
           Save
         </LoadingButton>
       </Stack>
-    </Page>
+    </AdminPage>
   );
 }

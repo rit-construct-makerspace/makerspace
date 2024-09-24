@@ -7,7 +7,7 @@ import {
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { Chip } from "@mui/material";
+import { Chip, ListItemButton } from "@mui/material";
 
 interface NavLinkProps {
   icon?: React.ReactElement;
@@ -35,8 +35,7 @@ export default function NavLink({
   );
 
   return (
-    <ListItem
-      button
+    <ListItemButton
       selected={url.pathname.includes(to)}
       component={renderLink}
     >
@@ -45,6 +44,6 @@ export default function NavLink({
       {notificationCount && (
         <Chip size="small" color="primary" label={notificationCount} />
       )}
-    </ListItem>
+    </ListItemButton>
   );
 }

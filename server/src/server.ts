@@ -10,6 +10,7 @@ import { setupSessions, setupDevAuth, setupStagingAuth, setupAuth } from "./auth
 import context from "./context.js";
 import json from "body-parser";
 import path from "path";
+import * as schedule from "node-schedule";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository.js";
 import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository.js";
 import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLogRepository.js";
@@ -21,8 +22,9 @@ import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
 import { createRequire } from "module";
-import { getHoursByZone, WeekDays } from "./repositories/ZoneHours/ZoneHoursRepository.js";
+import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursRepository.js";
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
+import { incrementDataPointValue, setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 const require = createRequire(import.meta.url);
 
 const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -484,7 +486,7 @@ async function startServer() {
    * Fetch the hours associated with a zone string
    */
   app.get("/api/hours/:zone", async function(req, res) {
-    const hourRows = await getHoursByZone(req.params.zone);
+    const hourRows = await getHoursByZone(Number(req.params.zone));
 
     var hoursString = "";
     hourRows.forEach(function(hourRow) {
@@ -533,6 +535,40 @@ async function startServer() {
       obj: hourRows
     }).send();
   });
+
+
+
+
+  /**=================================
+   * SCHEDULED ACTIONS
+  ==================================*/
+
+  /**
+   Cron Format:
+    *    *    *    *    *    *
+    ┬    ┬    ┬    ┬    ┬    ┬
+    │    │    │    │    │    │
+    │    │    │    │    │    └ day of week (0 - 7) (0 or 7 is Sun)
+    │    │    │    │    └───── month (1 - 12)
+    │    │    │    └────────── day of month (1 - 31)
+    │    │    └─────────────── hour (0 - 23)
+    │    └──────────────────── minute (0 - 59)
+    └───────────────────────── second (0 - 59, OPTIONAL)
+
+    --REMEMBER HEROKU SERVER RUNS IN UTC (EST+4)--
+   */
+
+  const dailyRule = new schedule.RecurrenceRule();
+  dailyRule.dayOfWeek = new schedule.Range(0,6);
+  dailyRule.hour = 4;
+  dailyRule.minute = 0;
+
+  const dailyJob = schedule.scheduleJob(dailyRule, function(){
+    console.log('Wiping daily records...');
+    setDataPointValue(1,0);
+  });
+
+
 
 
   const server = new ApolloServer({

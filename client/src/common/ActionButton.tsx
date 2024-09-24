@@ -9,6 +9,7 @@ interface ActionButtonProps {
   appearance: "icon-only" | "small" | "medium" | "large";
   handleClick: () => Promise<void>;
   loading: boolean;
+  disabled?: boolean
 }
 
 export default function ActionButton(props: React.PropsWithChildren<ActionButtonProps>) {
@@ -49,6 +50,7 @@ export default function ActionButton(props: React.PropsWithChildren<ActionButton
         props.appearance === "icon-only"
           ? (
             <IconButton
+              disabled={props.disabled}
               color={props.color}
               onClick={handleClick}
               sx={{
@@ -68,6 +70,7 @@ export default function ActionButton(props: React.PropsWithChildren<ActionButton
             )
           : (
               <LoadingButton
+                disabled={props.disabled}
                 loading={props.loading}
                 variant="outlined"
                 startIcon={props.children}

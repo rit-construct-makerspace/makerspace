@@ -10,7 +10,7 @@ export interface Reader {
   zone: string
   temp: number,
   state: string,
-  currentUID: string,
+  user: {id: number, firstName: string, lastName: string}
   recentSessionLength: number,
   lastStatusReason: string,
   scheduledStatusFreq: number,
@@ -27,7 +27,11 @@ export const GET_READERS = gql`
       zone
       temp
       state
-      currentUID
+      user {
+        id
+        firstName
+        lastName
+      }
       recentSessionLength
       lastStatusReason
       scheduledStatusFreq

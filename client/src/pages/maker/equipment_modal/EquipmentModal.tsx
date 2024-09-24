@@ -12,6 +12,7 @@ import {
   moduleStatusMapper,
 } from "../../../common/TrainingModuleUtils";
 import CloseButton from "../../../common/CloseButton";
+import ReservationAttachment from "../../lab_management/reservations/ReservationAttachment";
 
 interface EquipmentModalProps {
   equipmentID: string;
@@ -50,6 +51,8 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
                 <Stack>
                   <Typography variant="h4">{equipment.name}</Typography>
                   <Typography>{equipment.room.name}</Typography>
+                  {equipment.sopUrl
+                   && <ReservationAttachment name={"Standard Operating Procedure"} url={equipment.sopUrl} />}
                 </Stack>
               </Stack>
 

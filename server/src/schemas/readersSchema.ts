@@ -9,7 +9,7 @@ export const ReaderTypeDefs = gql`
     zone: String,
     temp: String,
     state: String,
-    currentUID: String,
+    user: User
     recentSessionLength: String,
     lastStatusReason: String,
     scheduledStatusFreq: String,

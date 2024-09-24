@@ -1,4 +1,4 @@
-import { ChangeEventHandler, SyntheticEvent } from "react";
+import { ChangeEvent, ChangeEventHandler, SyntheticEvent } from "react";
 import Page from "../../Page";
 import { Autocomplete, Button, Divider, Stack, TextField } from "@mui/material";
 import EngineeringIcon from "@mui/icons-material/Engineering";
@@ -14,6 +14,7 @@ import AttachedModule from "./AttachedModule";
 import ArchiveEquipmentButton from "./ArchiveEquipmentButton";
 import PublishEquipmentButton from "./PublishEquipmentButton";
 import { ObjectSummary } from "../../../types/Common";
+import AdminPage from "../../AdminPage";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -59,6 +60,20 @@ export default function EquipmentEditor({
     });
   };
 
+  const handleImageChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setEquipment({
+      ...equipment,
+      imageUrl: String(event.target.value),
+    });
+  };
+
+  const handleSopChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setEquipment({
+      ...equipment,
+      sopUrl: String(event.target.value),
+    });
+  };
+
   const handleModuleAdded = (e: SyntheticEvent, value: ObjectSummary | null) => {
     if (!value) return;
     setEquipment({
@@ -79,15 +94,12 @@ export default function EquipmentEditor({
       loading={getRoomsResult.loading || getModulesResult.loading}
       error={getRoomsResult.error || getModulesResult.error}
     >
-      <Page
+      <AdminPage
         title={`${newEquipment ? "Create new" : "Manage"} equipment`}
         maxWidth="800px"
       >
         {!newEquipment && (
           <Stack direction="row" spacing={1} sx={{ mt: -2, mb: 4 }}>
-            <Button variant="outlined" startIcon={<EngineeringIcon />}>
-              Schedule Maintenance
-            </Button>
             <Button variant="outlined" startIcon={<HistoryIcon />}>
               View Logs
             </Button>
@@ -102,11 +114,11 @@ export default function EquipmentEditor({
         )}
 
         <PageSectionHeader top>Information</PageSectionHeader>
-
+        
         <Stack direction="row" spacing={2}>
           <StyledMachineImage
             alt="Machine image"
-            src={(equipment.imageUrl == undefined || equipment.imageUrl == null ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : process.env.PUBLIC_URL + "/" + equipment.imageUrl)}
+            src={(equipment.imageUrl == undefined || equipment.imageUrl == null ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + equipment.imageUrl)}
           />
           <Stack spacing={2} flexGrow={1}>
             <TextField
@@ -116,6 +128,16 @@ export default function EquipmentEditor({
               inputProps={{
                 maxLength: 50
               }}
+            />
+            <TextField
+              label="Image URL"
+              value={equipment.imageUrl}
+              onChange={handleImageChanged}
+            />
+            <TextField
+              label="SOP URL"
+              value={equipment.sopUrl}
+              onChange={handleSopChanged}
             />
             <Autocomplete
               renderInput={(params: any) => (
@@ -172,7 +194,7 @@ export default function EquipmentEditor({
         >
           Save
         </Button>
-      </Page>
+      </AdminPage>
     </RequestWrapper>
   );
 }

@@ -21,6 +21,8 @@ import CardReader from "./CardReader";
 import SwipedUserCard from "./SwipedUserCard";
 import styled from "styled-components";
 import HistoryIcon from "@mui/icons-material/History";
+import RoomZoneAssociation from "./RoomZoneAssociation";
+import AdminPage from "../../AdminPage";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -49,6 +51,10 @@ export const GET_ROOM = gql`
   query GetRoom($id: ID!) {
     room(id: $id) {
       name
+      zone {
+        id
+        name
+      }
       recentSwipes {
         id
         user {
@@ -85,7 +91,7 @@ export default function MonitorRoomPage() {
     <RequestWrapper2
       result={queryResult}
       render={({ room }) => (
-        <Page title={room.name} maxWidth="1250px">
+        <AdminPage title={room.name} maxWidth="1250px">
           <Collapse in={cardError}>
             <Alert
               severity="error"
@@ -145,7 +151,7 @@ export default function MonitorRoomPage() {
           </Grid>
 
           <PageSectionHeader>Actions</PageSectionHeader>
-          <Stack direction="row" spacing={2}>
+          <Stack direction="column" spacing={2}>
             <Button
               variant="outlined"
               startIcon={<HistoryIcon />}
@@ -153,8 +159,9 @@ export default function MonitorRoomPage() {
             >
               View Logs
             </Button>
+            <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(id)}></RoomZoneAssociation>
           </Stack>
-        </Page>
+        </AdminPage>
       )}
     />
   );

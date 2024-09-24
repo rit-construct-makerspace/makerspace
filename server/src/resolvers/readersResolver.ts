@@ -2,10 +2,20 @@ import * as ReaderRepo from "../repositories/Readers/ReaderRepository.js";
 import { ApolloContext } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
-import { getUsersFullName } from "../repositories/Users/UserRepository.js";
+import { getUserByCardTagID, getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { EntityNotFound } from "../EntityNotFound.js";
+import { ReaderRow } from "../db/tables.js";
 
 const ReadersResolver = {
+  Reader: {
+    user: async (
+      parent: ReaderRow,
+      _args: any,
+      _context: ApolloContext) => {
+      return getUserByCardTagID(parent.currentUID);
+    },
+  },
+
   Query: {
     readers: async (
       _parent: any,

@@ -236,6 +236,8 @@ export async function updateEquipment(
   await knex("Equipment").where("id", id).update({
     name: equipment.name,
     roomID: equipment.roomID,
+    imageUrl: equipment.imageUrl ?? undefined,
+    sopUrl: equipment.sopUrl ?? undefined
   });
 
   await updateModules(id, equipment.moduleIDs);
@@ -255,7 +257,9 @@ export async function addEquipment(
     {
       name: equipment.name,
       roomID: equipment.roomID,
-      archived: true
+      archived: true,
+      imageUrl: equipment.imageUrl ?? undefined,
+      sopUrl: equipment.sopUrl ?? undefined
     },
     "id"
   );
