@@ -63,7 +63,8 @@ describe("EquipmentRepository tests", () => {
       roomID: roomID,
       moduleIDs: <number[]>[],
       imageUrl: null,
-      sopUrl: null
+      sopUrl: null,
+      notes: null
     });
 
     // Expect one equipment
@@ -86,7 +87,8 @@ describe("EquipmentRepository tests", () => {
       roomID: roomID,
       moduleIDs: <number[]>[],
       imageUrl: null,
-      sopUrl: null
+      sopUrl: null,
+      notes: null
     })).id;
 
     // Get by ID
@@ -108,7 +110,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     // Check added
@@ -120,7 +123,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     });
 
     // Check name updated
@@ -141,7 +145,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     // Check added
@@ -175,7 +180,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     const exampleQuiz: TrainingModuleItem[] = [{
@@ -215,7 +221,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     const moduleOneID = (await ModuleRepo.addModule("Test Module I", exampleQuiz)).id;
@@ -253,7 +260,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     // Create user
@@ -293,7 +301,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     // Check added
@@ -344,7 +353,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     // Check added
@@ -402,7 +412,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     // Check added
@@ -452,7 +463,8 @@ describe("EquipmentRepository tests", () => {
         roomID: roomID,
         moduleIDs: <number[]>[],
         imageUrl: null,
-        sopUrl: null
+        sopUrl: null,
+        notes: null
     })).id;
 
     // Check added
