@@ -237,7 +237,8 @@ export async function updateEquipment(
     name: equipment.name,
     roomID: equipment.roomID,
     imageUrl: equipment.imageUrl ?? undefined,
-    sopUrl: equipment.sopUrl ?? undefined
+    sopUrl: equipment.sopUrl ?? undefined,
+    notes: equipment.notes ?? undefined
   });
 
   await updateModules(id, equipment.moduleIDs);
@@ -259,7 +260,8 @@ export async function addEquipment(
       roomID: equipment.roomID,
       archived: true,
       imageUrl: equipment.imageUrl ?? undefined,
-      sopUrl: equipment.sopUrl ?? undefined
+      sopUrl: equipment.sopUrl ?? undefined,
+      notes: equipment.notes ?? undefined
     },
     "id"
   );

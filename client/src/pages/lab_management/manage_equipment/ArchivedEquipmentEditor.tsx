@@ -53,8 +53,9 @@ export default function ArchivedEquipmentEditor({
             name: equipment.name,
             roomID: equipment.room?.id,
             moduleIDs: equipment.trainingModules.map((m: ObjectSummary) => m.id),
-            imageUrl: equipment.imageUrl,
-            sopUrl: equipment.sopUrl
+            imageUrl: equipment.imageUrl ?? "",
+            sopUrl: equipment.sopUrl ?? "",
+            notes: equipment.notes ?? ""
           })
         }
       />

@@ -148,11 +148,6 @@ export default function LeftNav() {
                 icon={<MeetingRoomIcon />}
               />
               <NavLink
-                to="/admin/reservations"
-                primary="Reservations"
-                icon={<EventIcon />}
-              />
-              <NavLink
                 to="/admin/announcements"
                 primary="Announcements"
                 icon={<AnnouncementIcon />}

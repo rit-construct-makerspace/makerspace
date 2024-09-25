@@ -7,7 +7,6 @@ import { GET_LATEST_SUBMISSION, GET_SUBMISSION, GET_SUBMISSIONS } from "../../..
 import { GET_MODULE } from "../../../queries/trainingQueries";
 import { Module } from "../../../types/Quiz";
 import Page from "../../Page";
-import ReservationPromptCard from "./ReservationPrompt";
 import SubmissionCard from "./SubmissionCard";
 import ResultsCard from "./ResultsCard";
 
@@ -20,10 +19,6 @@ export default function QuizResults() {
       nextFetchPolicy: 'cache-first' // Caches this submission while we are using it
     }
   );
-  const [reservation, setReservationDraft] = useImmer<{ dateTime: Date | null, equipmentID: number | undefined }>({
-    dateTime: new Date(),
-    equipmentID: undefined
-  });
   const moduleResult = useQuery<{module: Module}>(
     GET_MODULE,
     {
@@ -45,18 +40,6 @@ export default function QuizResults() {
             <Grid item xs={12}>
               <SubmissionCard module={moduleResult.data?.module!} submission={submissionResult.data?.latestSubmission}/>
             </Grid>
-            {
-              moduleResult.data?.module?.reservationPrompt?.enabled && submissionResult.data?.latestSubmission?.passed ?
-                <Grid item xs={12}>
-                  <ReservationPromptCard
-                    moduleID={moduleResult.data?.module?.id}
-                    promptText={moduleResult.data.module.reservationPrompt.promptText}
-                    reservation={reservation}
-                    updateReservation={(reservation) => {setReservationDraft(reservation)}}
-                  />
-                </Grid>
-              : null
-            }
           </Grid>
           <br />
           <ResultsCard summary={submissionResult.data?.latestSubmission.summary}></ResultsCard>

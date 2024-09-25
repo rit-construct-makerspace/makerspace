@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
-import { Avatar, Button, Divider, Icon, Stack, Typography } from "@mui/material";
+import { Avatar, Button, Card, Divider, Icon, Stack, Typography } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import TrainingModuleRow from "../../../common/TrainingModuleRow";
@@ -13,6 +13,7 @@ import {
 } from "../../../common/TrainingModuleUtils";
 import CloseButton from "../../../common/CloseButton";
 import ReservationAttachment from "../../lab_management/reservations/ReservationAttachment";
+import Markdown from "react-markdown";
 
 interface EquipmentModalProps {
   equipmentID: string;
@@ -34,10 +35,6 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
         render={({ equipment }) => {
           const moduleStatuses = equipment.trainingModules.map(
             moduleStatusMapper(passedModules)
-          );
-
-          const reservationReady = moduleStatuses.every(
-            (ms: ModuleStatus) => ms.status === "Passed"
           );
 
           return (
@@ -66,15 +63,9 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
                 ))}
               </Stack>
 
-              <Button
-                startIcon={<EventIcon />}
-                variant="contained"
-                onClick={() => navigate("/create-reservation")}
-                //disabled={!reservationReady}
-                disabled={true}
-              >
-                Reservation Service Unavailable
-              </Button>
+              <Card sx={{px: 2}}>
+                <Markdown>{equipment.notes}</Markdown>
+              </Card>
               
             </Stack>
           );

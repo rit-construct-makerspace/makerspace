@@ -28,6 +28,7 @@ export const GET_EQUIPMENT_BY_ID = gql`
         id
         name
       }
+      notes
     }
   }
 `;
@@ -48,6 +49,7 @@ export const GET_ANY_EQUIPMENT_BY_ID = gql`
         id
         name
       }
+      notes
     }
   }
 `;
@@ -80,6 +82,7 @@ export const GET_ARCHIVED_EQUIPMENT_BY_ID = gql`
         id
         name
       }
+      notes
     }
   }
 `;
@@ -104,10 +107,11 @@ export const UPDATE_EQUIPMENT = gql`
     $moduleIDs: [ID]!
     $imageUrl: String!
     $sopUrl: String!
+    $notes: String!
   ) {
     updateEquipment(
       id: $id
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes }
     ) {
       id
     }
@@ -137,9 +141,10 @@ export const CREATE_EQUIPMENT = gql`
     $moduleIDs: [ID]!,
     $imageUrl: String!
     $sopUrl: String!
+    $notes: String!
     ) {
     addEquipment(
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes }
     ) {
       id
     }

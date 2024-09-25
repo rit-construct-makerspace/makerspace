@@ -23,7 +23,6 @@ async function checkMentorStaffNav() {
   screen.getByText("STAFF");
   screen.getByRole("link", { name: "Storefront" });
   screen.getByRole("link", { name: "Rooms" });
-  screen.getByRole("link", { name: "Reservations" });
   screen.getByRole("link", { name: "People" });
   screen.getByRole("link", { name: "History" });
 }
@@ -59,7 +58,6 @@ test("render properly for makers", async () => {
   // Don't show mentor/staff links
   expect(screen.queryByRole("link", { name: "Storefront" })).toBeNull();
   expect(screen.queryByRole("link", { name: "Rooms" })).toBeNull();
-  expect(screen.queryByRole("link", { name: "Reservations" })).toBeNull();
   expect(screen.queryByRole("link", { name: "People" })).toBeNull();
   expect(screen.queryByRole("link", { name: "History" })).toBeNull();
 });
