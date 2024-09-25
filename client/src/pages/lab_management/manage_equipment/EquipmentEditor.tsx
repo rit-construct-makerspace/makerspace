@@ -1,6 +1,6 @@
 import { ChangeEvent, ChangeEventHandler, SyntheticEvent } from "react";
 import Page from "../../Page";
-import { Autocomplete, Button, Divider, Stack, TextField } from "@mui/material";
+import { Autocomplete, Button, Divider, Stack, TextareaAutosize, TextField } from "@mui/material";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import HistoryIcon from "@mui/icons-material/History";
 import PageSectionHeader from "../../../common/PageSectionHeader";
@@ -89,6 +89,14 @@ export default function EquipmentEditor({
     });
   };
 
+  const handleNotesChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    console.log(event.target.value)
+    setEquipment({
+      ...equipment,
+      notes: String(event.target.value),
+    });
+  };
+
   return (
     <RequestWrapper
       loading={getRoomsResult.loading || getModulesResult.loading}
@@ -155,6 +163,14 @@ export default function EquipmentEditor({
               onChange={handleRoomChanged}
               disableClearable
             />
+            <br />
+            <TextareaAutosize 
+              style={{background: "none", fontFamily: "Roboto", fontSize: "1em", lineHeight: "2em"}}
+              aria-label="Notes" 
+              defaultValue={equipment.notes} 
+              placeholder="Notes (Markdown Compatible)" 
+              value={equipment.notes} 
+              onChange={handleNotesChanged}></TextareaAutosize>
           </Stack>
         </Stack>
 

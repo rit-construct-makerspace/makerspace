@@ -120,9 +120,6 @@ export default function MonitorRoomPage() {
             ))}
           </StyledRecentSwipes>
 
-          <PageSectionHeader>Reservations</PageSectionHeader>
-          <EmptyPageSection label="Coming soon!" />
-
           <PageSectionHeader>Equipment</PageSectionHeader>
           {room.equipment.length === 0 && (
             <EmptyPageSection label="No equipment found." />

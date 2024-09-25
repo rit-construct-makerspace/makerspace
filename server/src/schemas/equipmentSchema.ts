@@ -1,6 +1,7 @@
 import { gql } from "graphql-tag";
 
 export interface EquipmentInput {
+  notes: string | null;
   name: string;
   roomID: number;
   moduleIDs: number[];
@@ -20,6 +21,7 @@ export const EquipmentTypeDefs = gql`
     hasAccess(uid: String): Boolean!
     imageUrl: String
     sopUrl: String
+    notes: String
   }
 
   input EquipmentInput {
@@ -28,6 +30,7 @@ export const EquipmentTypeDefs = gql`
     moduleIDs: [ID]
     imageUrl: String!
     sopUrl: String!
+    notes: String!
   }
 
   extend type Query {
