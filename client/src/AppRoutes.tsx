@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
 import LeftNav from "./left_nav/LeftNav";
-import CreateReservationPage from "./pages/maker/create_reservation/CreateReservationPage";
 import EquipmentPage from "./pages/both/equipment/EquipmentPage";
 import EditEquipmentPage from "./pages/lab_management/manage_equipment/EditEquipmentPage";
 import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
@@ -12,7 +11,6 @@ import StorefrontPage from "./pages/lab_management/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/lab_management/users/UsersPage";
 import AuditLogsPage from "./pages/lab_management/audit_logs/AuditLogsPage";
-import ReservationsPage from "./pages/lab_management/reservations/ReservationsPage";
 import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPreviewPage";
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
@@ -50,8 +48,6 @@ export default function AppRoutes() {
 
           <Route path="/" element={<Homepage />} />
 
-          <Route path="/create-reservation" element={<CreateReservationPage />} />
-
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
 
@@ -71,8 +67,6 @@ export default function AppRoutes() {
           <Route path="/admin/training/archived/:id" element={<EditArchivedModulePage />} />
 
           <Route path="/admin/inventory" element={<InventoryPage />} />
-
-          <Route path="/admin/reservations" element={<ReservationsPage />} />
 
           <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
           <Route path="/admin/rooms" element={<SelectRoomPage />} />

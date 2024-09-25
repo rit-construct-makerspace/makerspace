@@ -15,6 +15,7 @@ export interface EquipmentRow {
   archived: boolean;
   imageUrl: string;
   sopUrl: string;
+  notes: string;
 }
 
 export interface HoldRow {
