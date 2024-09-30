@@ -12,6 +12,7 @@ import Markdown from "react-markdown";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@material-ui/core/styles";
+import { useEffect, useState } from "react";
 
 interface ResultsCardProps {
     summary: Array<ChoiceSummary>
@@ -36,6 +37,17 @@ const useStyles = makeStyles({
 
 
 export default function SubmissionCard({ summary }: ResultsCardProps) {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 768;
 
   //const summaryObj: Array<ChoiceSummary> = JSON.parse(summary);
 
@@ -44,7 +56,7 @@ export default function SubmissionCard({ summary }: ResultsCardProps) {
   const classes = useStyles();
 
   return (
-    <Card sx={{ width: 0.85 }}>
+    <Card sx={{ width: (isMobile ? "90vw" : 0.85) }}>
       <CardHeader title="Question Summary"></CardHeader>
       <CardContent>
         {summaryObj.map((choiceSummary: ChoiceSummary) => (
