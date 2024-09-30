@@ -92,7 +92,7 @@ export default function OperationHoursCard() {
             window.removeEventListener('resize', handleWindowSizeChange);
         }
     }, []);
-    const isMobile = width <= 768;
+    const isMobile = width <= 1100;
 
     const getZonesResult = useQuery(GET_ZONES_WITH_HOURS);
 
