@@ -52,7 +52,7 @@ export default function UpcomingEventsCard() {
         <RequestWrapper loading={getEvents.loading} error={getEvents.error}>
           <>
             {getEvents.data?.events.map((event: { name: { text: string; }; description: { html: string; }; summary: string; url: string; start: { local: string; }; end: { local: string; }; logo: { url: string; }; }) => (
-              <EventCard name={event.name.text} description={event.description.html} summary={event.summary} url={event.url} start={event.start.local} end={event.end.local} logoUrl={event.logo.url} />
+              <EventCard name={event.name.text} description={event.description.html} summary={event.summary} url={event.url} start={event.start.local} end={event.end.local} logoUrl={event.logo?.url} />
             ))}
             {getEvents.data?.events.length == 0 && <Typography variant="body1" color={"gray"} ml={2}>No events.</Typography>}
           </>

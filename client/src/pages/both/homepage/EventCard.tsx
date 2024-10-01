@@ -7,22 +7,24 @@ import { format } from "date-fns";
 import { Link } from "react-router-dom";
 
 interface EventCardProps {
-  name: string;
-  description: string;
-  summary: string;
-  url: string;
-  start: string;
-  end: string;
-  logoUrl: string;
+  name: string | null;
+  description: string | null;
+  summary: string | null;
+  url: string | null;
+  start: string | null;
+  end: string | null;
+  logoUrl: string | null;
 }
 
 export default function EventCard(props: EventCardProps) {
-  const startDate = new Date(props.start);
-  const endDate = new Date(props.end);
+  if (!props.start || !props.end || !props.url) return (<b>Failed to load event. Missing args.</b>)
+
+  const startDate = new Date(props.start ?? new Date());
+  const endDate = new Date(props.end ?? new Date());
 
   return (
     <Card sx={{width: '100%', mx: 0, my: 2}}>
-      <CardActionArea onClick={() => {window.location.href = props.url;}}>
+      <CardActionArea onClick={() => {window.location.href = props.url ?? "";}}>
         <CardHeader title={props.name} subheader={`${format(startDate, "MMM do, h:mm bb")} - ${format(endDate, "MMM do, h:mm bb")}`} sx={{"h5": {fontSize: '2em'}}}></CardHeader>
         {/* <CardMedia
           component="img"
