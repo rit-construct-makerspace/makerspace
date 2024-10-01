@@ -38,6 +38,19 @@ export interface InventoryItemRow {
   pricePerUnit: number;
   threshold: number;
   archived: boolean;
+  staffOnly: boolean;
+  storefrontVisible: boolean;
+}
+
+export interface InventoryLedgerRow {
+  id: number;
+  timestamp: Date;
+  initiator: number;
+  category: string;
+  totalCost: number;
+  purchaser: number;
+  notes: string;
+  items: string;
 }
 
 export interface ModuleSubmissionRow {
@@ -217,6 +230,7 @@ declare module "knex/types/tables.js" {
     RoomsForZones: RoomsForZonesRow
     ZoneHours: ZoneHoursRow;
     DataPoints: DataPointsRow;
-    EquipmentSessions: EquipmentSessionRow
+    EquipmentSessions: EquipmentSessionRow;
+    InventoryLedger: InventoryLedgerRow;
   }
 }
