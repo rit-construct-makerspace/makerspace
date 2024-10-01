@@ -67,7 +67,7 @@ const Homepage: React.FC = () => {
 
                 <Stack direction={"column"}>
                     <OperationHoursCard />
-                    <UpcomingEventsCard />
+                    {/* <UpcomingEventsCard /> */}
                 </Stack>
             </Stack>
         </Page>
