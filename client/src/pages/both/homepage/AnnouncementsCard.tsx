@@ -23,7 +23,7 @@ export default function AnnouncementsCard() {
             window.removeEventListener('resize', handleWindowSizeChange);
         }
     }, []);
-    const isMobile = width <= 768;
+    const isMobile = width <= 1100;
 
 
     return (

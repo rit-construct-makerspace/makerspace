@@ -141,9 +141,10 @@ export async function getNumUsersRegisteredToday(): Promise<number | undefined> 
     startOfDay.setHours(0, 0, 0, 0);
   
     const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setHours(0, 0, 0, 0);
+    endOfDay.setDate(endOfDay.getDate()+1);
     //Length is Best option right now because for some reason knex does not do count correctly
-    return (await knex("Users").whereBetween("registrationDate", [startOfDay, endOfDay])).length;
+    return (await knex("Users").whereRaw(`("registrationDate" at time zone 'EST5EDT') BETWEEN TIMESTAMP '${startOfDay.toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${endOfDay.toISOString().replace("T", " ").replace("Z", "")}'`)).length;
 }
 
 export async function getNumRoomSwipesToday(): Promise<number | undefined> {
@@ -151,9 +152,10 @@ export async function getNumRoomSwipesToday(): Promise<number | undefined> {
     startOfDay.setHours(0, 0, 0, 0);
   
     const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setHours(0, 0, 0, 0);
+    endOfDay.setDate(endOfDay.getDate()+1);
     //Length is Best option right now because for some reason knex does not do count correctly
-    return (await knex("RoomSwipes").whereBetween("dateTime", [startOfDay, endOfDay])).length;
+    return (await knex("RoomSwipes").whereRaw(`("dateTime" at time zone 'EST5EDT') BETWEEN TIMESTAMP '${startOfDay.toISOString().replace("T", " ").replace("Z", "")}-04' AND TIMESTAMP WITH TIME ZONE '${endOfDay.toISOString().replace("T", " ").replace("Z", "")}-04'`)).length;
 }
 
 export async function getNumEquipmentSessionsToday(): Promise<number | undefined> {
@@ -161,7 +163,8 @@ export async function getNumEquipmentSessionsToday(): Promise<number | undefined
     startOfDay.setHours(0, 0, 0, 0);
   
     const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
+    endOfDay.setHours(0, 0, 0, 0);
+    endOfDay.setDate(endOfDay.getDate()+1);
     //Length is Best option right now because for some reason knex does not do count correctly
-    return (await knex("EquipmentSessions").whereBetween("start", [startOfDay, endOfDay])).length;
+    return (await knex("EquipmentSessions").whereRaw(`("start" at time zone 'EST5EDT') BETWEEN TIMESTAMP '${startOfDay.toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${endOfDay.toISOString().replace("T", " ").replace("Z", "")}'`)).length;
 }

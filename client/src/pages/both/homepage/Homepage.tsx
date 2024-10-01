@@ -41,7 +41,7 @@ const Homepage: React.FC = () => {
             window.removeEventListener('resize', handleWindowSizeChange);
         }
     }, []);
-    const isMobile = width <= 768;
+    const isMobile = width <= 1100;
 
 
     return (

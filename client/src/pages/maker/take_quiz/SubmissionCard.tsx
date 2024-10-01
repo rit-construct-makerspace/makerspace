@@ -7,6 +7,7 @@ import {
   Grid
 } from "@mui/material";
 import { Module, Submission } from "../../../types/Quiz";
+import { useEffect, useState } from "react";
 
 interface SubmissionCardProps {
     submission: Submission;
@@ -14,12 +15,25 @@ interface SubmissionCardProps {
 }
 
 export default function SubmissionCard({ module, submission }: SubmissionCardProps) {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 768;
+
+
   let submissionDate = new Date(+(submission.submissionDate)).toLocaleString('en-US');
   return (
-    <Card sx={{ width: 0.85 }}>
+    <Card sx={{ width: (isMobile ? "90vw" : 0.85) }}>
         <CardActionArea>
           <CardContent>
-            <Grid container>
+            <Grid container direction={isMobile ? "column" : "row"}>
               <Grid item xs={12}>
                 <Typography
                   variant="h4"
@@ -37,14 +51,14 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
                   {`${module.name}`}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              {!isMobile && <Grid item xs={6}>
                 <Typography
                   variant="h6"
                   component="div"
                 >
                   Score
                 </Typography>
-              </Grid>
+              </Grid>}
               <Grid item xs={6}>
                 <Typography
                   sx={{fontSize: 16}}
@@ -53,7 +67,7 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
                   {`${submissionDate}`}
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              {!isMobile && <Grid item xs={6}>
                 <Typography
                   sx={{fontSize: 18}}
                   component="div"
@@ -62,11 +76,36 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
                   : `red`}
                 >
                   {submission.passed ?
-                      `>80`
-                    : `<80`}
+                      `>80 (Passed)`
+                    : `<80 (Failed)`}
                 </Typography>
-              </Grid>
+              </Grid>}
             </Grid>
+            {isMobile && 
+              <Grid>
+                <Grid item xs={6}>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                  >
+                    Score
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography
+                    sx={{fontSize: 18}}
+                    component="div"
+                    color={submission.passed ?
+                      `green`
+                    : `red`}
+                  >
+                    {submission.passed ?
+                        `>80 (Passed)`
+                      : `<80 (Failed)`}
+                  </Typography>
+                </Grid>
+              </Grid>
+            }
           </CardContent>
         </CardActionArea>
       </Card>

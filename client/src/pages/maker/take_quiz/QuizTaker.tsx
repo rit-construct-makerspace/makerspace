@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Module, QuizItem, QuizItemType } from "../../../types/Quiz";
 import { useImmer } from "use-immer";
 import { Button, Stack, Typography } from "@mui/material";
@@ -64,6 +64,20 @@ interface QuizTakerProps {
 }
 
 export default function QuizTaker({ module }: QuizTakerProps) {
+
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 950;
+
+  
   const initialAnswerSheet = module.quiz
     .filter(
       (item) =>
@@ -178,7 +192,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
             );
           case QuizItemType.ImageEmbed:
             return (
-              <StyledImageEmbed key={quizItem.id} alt="" src={quizItem.text} />
+              <StyledImageEmbed key={quizItem.id} alt="" src={quizItem.text} style={isMobile ? {width: "80vw"} : {}}/>
             );
           case QuizItemType.YoutubeEmbed:
             return (

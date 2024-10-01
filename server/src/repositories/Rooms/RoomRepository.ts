@@ -148,14 +148,14 @@ export async function hasSwipedToday(roomID: number, userID: number): Promise<bo
   startOfDay.setHours(0, 0, 0, 0);
 
   const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999);
+  endOfDay.setHours(0, 0, 0, 0);
+  endOfDay.setDate(endOfDay.getDate()+1);
 
   const swipe = await knex('RoomSwipes')
     .first()
     .where({ roomID })
     .where({ userID })
-    .where('dateTime', '>=', startOfDay.toISOString())
-    .where('dateTime', '<', endOfDay.toISOString());
+    .whereRaw(`("dateTime" at time zone 'EST5EDT') BETWEEN TIMESTAMP '${startOfDay.toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${endOfDay.toISOString().replace("T", " ").replace("Z", "")}'`)
 
   if (!swipe) return false;
   return true;

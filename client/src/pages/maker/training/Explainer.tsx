@@ -37,7 +37,7 @@ export default function Explainer() {
           window.removeEventListener('resize', handleWindowSizeChange);
       }
   }, []);
-  const isMobile = width <= 768;
+  const isMobile = width <= 950;
 
 
   return (

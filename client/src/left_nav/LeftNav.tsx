@@ -68,7 +68,7 @@ export default function LeftNav() {
           window.removeEventListener('resize', handleWindowSizeChange);
       }
   }, []);
-  const isMobile = width <= 768;
+  const isMobile = width <= 1100;
 
 
   const isMentorOrHigherResult = useQuery(IS_MENTOR_OR_HIGHER);
