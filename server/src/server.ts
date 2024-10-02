@@ -566,11 +566,12 @@ async function startServer() {
 
   const dailyRule = new schedule.RecurrenceRule();
   dailyRule.dayOfWeek = new schedule.Range(0,6);
-  dailyRule.hour = 4;
+  dailyRule.hour = 0;
   dailyRule.minute = 0;
 
-  const dailyJob = schedule.scheduleJob(dailyRule, function(){
+  const dailyJob = schedule.scheduleJob(dailyRule, async function() {
     console.log('Wiping daily records...');
+    if (API_DEBUG_LOGGING) await createLog('Daily Temp Records have been wiped.')
     setDataPointValue(1,0);
   });
 
