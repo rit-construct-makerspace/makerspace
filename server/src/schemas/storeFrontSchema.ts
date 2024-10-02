@@ -9,6 +9,8 @@ export interface InventoryItem {
   count: number;
   pricePerUnit: number;
   threshold: number;
+  staffOnly: boolean;
+  storefrontVisible: boolean;
 }
 
 export interface InventoryItemInput {
@@ -23,6 +25,8 @@ export interface InventoryItemInput {
 }
 
 export const StoreFrontTypeDefs = gql`
+  scalar DateTime
+
   type InventoryItem {
     id: ID!
     image: String
@@ -33,6 +37,8 @@ export const StoreFrontTypeDefs = gql`
     count: Int
     pricePerUnit: Float
     threshold: Int
+    staffOnly: Boolean
+    storefrontVisible: Boolean
   }
 
   input InventoryItemInput {
@@ -44,12 +50,37 @@ export const StoreFrontTypeDefs = gql`
     count: Int
     pricePerUnit: Float
     threshold: Int
+    staffOnly: Boolean
+    storefrontVisible: Boolean
+  }
+
+  type InventoryLedger {
+    id: ID!
+    timestamp: String!
+    initiator: User!
+    category: String!
+    totalCost: Float!
+    purchaser: User
+    notes: String
+    items: [LedgerItem]
+  }
+
+  type LedgerItem {
+    quantity: Int!
+    name: String!
+  }
+
+  type User {
+    id: ID
+    firstName: String
+    lastName: String
   }
 
   extend type Query {
     InventoryItems: [InventoryItem]
     InventoryItem(id: ID!): InventoryItem
     Labels: [String]
+    Ledgers(startDate: DateTime, stopDate: DateTime, searchText: String): [InventoryLedger]
   }
 
   extend type Mutation {
@@ -61,5 +92,8 @@ export const StoreFrontTypeDefs = gql`
     createLabel(label: String): String
     archiveLabel(label: String): String
     deleteInventoryItem(id: ID!): Boolean
+    setStaffOnly(id: ID!, staffOnly: Boolean!): InventoryItem
+    setStorefrontVisible(id: ID!, storefrontVisible: Boolean!): InventoryItem
+    deleteLedger(id: ID!): Boolean
   }
 `;

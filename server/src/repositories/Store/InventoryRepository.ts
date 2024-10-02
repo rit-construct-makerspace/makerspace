@@ -3,6 +3,7 @@
  */
 
 import { knex } from "../../db/index.js";
+import { InventoryItemRow } from "../../db/tables.js";
 import { EntityNotFound } from "../../EntityNotFound.js";
 import {
   inventoryItemsToDomain,
@@ -12,8 +13,6 @@ import {
   InventoryItem,
   InventoryItemInput,
 } from "../../schemas/storeFrontSchema.js";
-import { getEquipmentByID } from "../Equipment/EquipmentRepository.js";
-
 export async function getLabels(itemId: number): Promise<string[] | null> {
   const knexResult = await knex("InventoryItemLabel")
     .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
@@ -25,33 +24,30 @@ export async function getLabels(itemId: number): Promise<string[] | null> {
 }
 
 export async function getItems(): Promise<InventoryItem[]> {
-  const knexResult = await knex("InventoryItem").select(
-    "InventoryItem.id",
-    "InventoryItem.image",
-    "InventoryItem.name",
-    "InventoryItem.unit",
-    "InventoryItem.pluralUnit",
-    "InventoryItem.count",
-    "InventoryItem.pricePerUnit",
-    "InventoryItem.threshold"
-  ).where('archived', false);
+  const knexResult = await knex("InventoryItem").select().where('archived', false);
   return inventoryItemsToDomain(knexResult);
+}
+
+export async function getItemsWhereStaff(staffOnly: boolean): Promise<InventoryItem[]> {
+  return inventoryItemsToDomain(await knex("InventoryItem").select().where({staffOnly}));
+}
+
+export async function getItemsWhereStorefront(storefrontVisible: boolean): Promise<InventoryItem[]> {
+  return inventoryItemsToDomain(await knex("InventoryItem").select().where({storefrontVisible}));
+}
+
+export async function getItemByIdWhereStorefront(
+  id: number,
+  storefrontVisible: boolean
+): Promise<InventoryItem | null> {
+  return singleInventoryItemToDomain(await knex("InventoryItem").select().where({id, storefrontVisible}));
 }
 
 export async function getItemById(
   itemId: number
 ): Promise<InventoryItem | null> {
   const knexResult = await knex
-    .first(
-      "id",
-      "image",
-      "name",
-      "unit",
-      "pluralUnit",
-      "count",
-      "pricePerUnit",
-      "InventoryItem.threshold"
-    )
+    .first()
     .from("InventoryItem")
     .where("id", itemId);
 
@@ -165,4 +161,14 @@ export async function deleteInventoryItem(
 ): Promise<boolean> {
     await knex("InventoryItem").where({ id: itemId}).delete()
     return true
+}
+
+export async function setStorefrontVisible(id: number, storefrontVisible: boolean): Promise<boolean> {
+  await knex("InventoryItem").update({storefrontVisible}).where({id});
+  return true;
+}
+
+export async function setStaffOnly(id: number, staffOnly: boolean): Promise<boolean> {
+  await knex("InventoryItem").update({staffOnly}).where({id});
+  return true;
 }
