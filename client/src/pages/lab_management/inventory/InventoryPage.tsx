@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Page from "../../Page";
-import { Button, Divider, Stack } from "@mui/material";
+import { Button, Divider, Stack, Table, TableCell, TableHead, TableRow } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,8 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import MaterialModal from "./MaterialModal";
 import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
 import AdminPage from "../../AdminPage";
+import AdminInventoryRow from "./AdminInventoryRow";
+import Ledger from "./Ledger";
 
 function sortItemsByName(items: InventoryItem[]): InventoryItem[] {
   return [...items].sort((a, b) => (a.name > b.name ? 1 : -1)) ?? [];
@@ -27,23 +29,31 @@ export default function InventoryPage() {
 
   const safeData = data?.InventoryItems ?? [];
   const sortedItems = sortItemsByName(safeData);
-  const lowItems = sortedItems.filter((i) => i.count < i.threshold);
-  const matchingItems = sortedItems.filter((i) => i.name.toLowerCase().includes(searchText.toLowerCase()));
+  const lowItems = sortedItems.filter((i: any) => i.count < i.threshold);
+  const matchingItems = sortedItems.filter((i: any) => i.name.toLowerCase().includes(searchText.toLowerCase()));
 
   return (
     <RequestWrapper loading={loading} error={error}>
       <AdminPage title="Inventory" maxWidth="1250px">
         <PageSectionHeader top>Running Low</PageSectionHeader>
 
-        <Stack divider={<Divider flexItem />}>
+        <Table>
+          <TableHead>
+            <TableCell>Item</TableCell>
+            <TableCell>Units Available</TableCell>
+            <TableCell>Price/Unit</TableCell>
+            <TableCell>Staff Only</TableCell>
+            <TableCell>Available on Storefront</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableHead>
           {lowItems.map((item: InventoryItem) => (
-            <InventoryRow
+            <AdminInventoryRow
               item={item}
               key={item.id}
               onClick={() => setModalItemId(item.id + "")}
             />
           ))}
-        </Stack>
+        </Table>
 
         <PageSectionHeader>All Materials</PageSectionHeader>
 
@@ -64,15 +74,25 @@ export default function InventoryPage() {
           </Button>
         </Stack>
 
-        <Stack divider={<Divider flexItem />} mt={2}>
+        <Table>
+          <TableHead>
+            <TableCell>Item</TableCell>
+            <TableCell>Units Available</TableCell>
+            <TableCell>Price/Unit</TableCell>
+            <TableCell>Staff Only</TableCell>
+            <TableCell>Available on Storefront</TableCell>
+            <TableCell>Actions</TableCell>
+          </TableHead>
           {matchingItems.map((item: InventoryItem) => (
-            <InventoryRow
+            <AdminInventoryRow
               item={item}
               key={item.id}
               onClick={() => setModalItemId(item.id + "")}
             />
           ))}
-        </Stack>
+        </Table>
+
+        <Ledger></Ledger>
 
         <MaterialModal
           itemId={modalItemId}

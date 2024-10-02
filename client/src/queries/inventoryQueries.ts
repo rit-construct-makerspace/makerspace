@@ -10,6 +10,8 @@ export const GET_INVENTORY_ITEMS = gql`
       count
       pricePerUnit
       threshold
+      staffOnly
+      storefrontVisible
     }
   }
 `;
@@ -23,6 +25,42 @@ export const GET_INVENTORY_ITEM = gql`
       pricePerUnit
       count
       threshold
+      staffOnly
+      storefrontVisible
+    }
+  }
+`;
+
+export const GET_LEDGERS = gql`
+  query GetLedgers(
+    $startDate: DateTime
+    $stopDate: DateTime
+    $searchText: String
+  ) {
+    Ledgers(
+      startDate: $startDate
+      stopDate: $stopDate
+      searchText: $searchText
+    ) {
+      id
+      timestamp
+      initiator {
+        id
+        firstName
+        lastName
+      }
+      category
+      totalCost
+      purchaser {
+        id
+        firstName
+        lastName
+      }
+      notes
+      items {
+        quantity
+        name
+      }
     }
   }
 `;
@@ -44,6 +82,22 @@ export const DELETE_INVENTORY_ITEM = gql`
 export const CREATE_INVENTORY_ITEM = gql`
   mutation CreateInventoryItem($item: InventoryItemInput) {
     createInventoryItem(item: $item) {
+      id
+    }
+  }
+`;
+
+export const SET_STAFF_ONLY = gql`
+  mutation SetStaffOnly($id: ID!, $staffOnly: Boolean!) {
+    setStaffOnly(id: $id, staffOnly: $staffOnly) {
+      id
+    }
+  }
+`;
+
+export const SET_STOREFRONT_VISIBLE = gql`
+  mutation SetStorefrontVisible($id: ID!, $storefrontVisible: Boolean!) {
+    setStorefrontVisible(id: $id, storefrontVisible: $storefrontVisible) {
       id
     }
   }

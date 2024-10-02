@@ -52,6 +52,19 @@ export async function getUserByID(userID: number): Promise<UserRow> {
 }
 
 /**
+ * Fetch a user by their ID (NOT university ID)
+ * @param userID the ID of the user
+ * @returns the user object
+ */
+export async function getUserByIDOrUndefined(userID: number): Promise<UserRow | undefined> {
+  const user = await knex("Users").first().where("id", userID);
+  
+  if (!user) return undefined
+
+  return user;
+}
+
+/**
  * Fetch a user by their username
  * @param ritUsername the unique username of a user
  * @returns the user object
