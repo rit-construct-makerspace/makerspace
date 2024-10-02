@@ -368,9 +368,10 @@ async function startServer() {
         zone: req.body.Zone
       });
       if (reader == undefined) {
-        if (API_DEBUG_LOGGING) createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+        if (API_DEBUG_LOGGING) await createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
         return res.status(400).json({error: "Reader does not exist"}).send();
       }
+      else if (API_NORMAL_LOGGING) await createLog(`New Access Device {access_device} registered.`, {id: reader?.id, label: reader?.name});
     }
 
     await updateReaderStatus({
@@ -386,6 +387,11 @@ async function startServer() {
       scheduledStatusFreq: req.body.Frequency,
       helpRequested: req.body.Help == null ? reader.helpRequested : (req.body.Help === "1")
     });
+
+    //If state change
+    if (API_NORMAL_LOGGING && reader.state != req.body.State) {
+      await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, {id: reader?.id, label: reader?.name});
+    }
 
     //If in a user session or just finished a user session
     if (req.body.UID != null || reader.currentUID != null) {
