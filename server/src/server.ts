@@ -240,7 +240,7 @@ async function startServer() {
         "Allowed": 0,
         "Error": "User does not exist"
       }).send();
-    } 
+    }
 
     var machine;
     try {
@@ -283,7 +283,7 @@ async function startServer() {
 
 
     //If needs welcome, check that room swipe has occured in the zone today
-    if (req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
+    if (!(process.env.GLOBAL_WELCOME_BYPASS == "TRUE") && req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
       //console.log("Checking welcome status");
       const welcomed = await hasSwipedToday(machine.roomID, user.id);
       if (!welcomed) {
@@ -299,7 +299,7 @@ async function startServer() {
     }
 
     //Check that all required trainings are passed
-    if (!(await hasAccessByID(user.id, machine.id))) {
+    if (!(process.env.GLOBAL_TRAINING_BYPASS == "TRUE") && !(await hasAccessByID(user.id, machine.id))) {
       if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "Incomplete trainings"});
       return res.status(401).json({
         "Type": "Authorization",
@@ -311,7 +311,7 @@ async function startServer() {
     }
 
     //Check that equipment access check is completed
-    if (!(await isApproved(user.id, machine.id))) {
+    if (!(process.env.GLOBAL_ACCESS_CHECK_BYPASS == "TRUE") && !(await isApproved(user.id, machine.id))) {
       if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "Missing Staff Approval"});
       return res.status(401).json({
         "Type": "Authorization",
