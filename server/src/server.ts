@@ -570,9 +570,14 @@ async function startServer() {
     setDataPointValue(1,0);
   });
 
-  const testDailyJob = schedule.scheduleJob("0 0 15 * * *", async function() {
-    console.log('TEST: According to the server, it is now 15:05');
-    if (API_DEBUG_LOGGING) await createLog('TEST: According to the server, it is now 15:05 - ' + new Date().getTime())
+  const testDailyJob = schedule.scheduleJob("0 15 11 * * *", async function() {
+    console.log('TEST: According to the server, it is now 11:15');
+    if (API_DEBUG_LOGGING) await createLog('TEST: According to the server, it is now 11:15 - ' + new Date().getTime())
+  });
+
+  const test2DailyJob = schedule.scheduleJob("0 15 15 * * *", async function() {
+    console.log('TEST: According to the server, it is now 15:15');
+    if (API_DEBUG_LOGGING) await createLog('TEST: According to the server, it is now 15:15 - ' + new Date().getTime())
   });
 
 
