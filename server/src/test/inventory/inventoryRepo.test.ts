@@ -50,6 +50,7 @@ describe("InventoryRepository test set", () => {
       pricePerUnit: 5.5,
       unit: "foot",
       threshold: 0,
+      notes: ""
     };
     await InventoryRepo.addItem(item);
     let items = await InventoryRepo.getItems();
@@ -74,6 +75,7 @@ describe("InventoryRepository test set", () => {
       pricePerUnit: 5.5,
       unit: "foot",
       threshold: 0,
+      notes: ""
     };
     await InventoryRepo.addItem(item);
     await InventoryRepo.addItem(item);
@@ -97,6 +99,7 @@ describe("InventoryRepository test set", () => {
       pricePerUnit: 5.5,
       unit: "foot",
       threshold: 0,
+      notes: ""
     };
     let itemOutput = await InventoryRepo.addItem(item);
     if (itemOutput !== null) {
@@ -122,6 +125,7 @@ describe("InventoryRepository test set", () => {
       pricePerUnit: 5.5,
       unit: "foot",
       threshold: 0,
+      notes: ""
     };
     let item2: InventoryItemInput = {
       count: 11,
@@ -132,6 +136,7 @@ describe("InventoryRepository test set", () => {
       pricePerUnit: 5.52,
       unit: "foot2",
       threshold: 0,
+      notes: ""
     };
     let item1Output = await InventoryRepo.addItem(item1);
     let item2Output = await InventoryRepo.addItem(item2);
@@ -157,6 +162,7 @@ describe("InventoryRepository test set", () => {
       pricePerUnit: 5.5,
       unit: "foot",
       threshold: 0,
+      notes: ""
     };
     let item1Output = await InventoryRepo.addItem(item1);
     if (item1Output !== null) {
@@ -183,6 +189,7 @@ describe("InventoryRepository test set", () => {
       pricePerUnit: 5.5,
       unit: "foot",
       threshold: 0,
+      notes: ""
     };
     let item1Output = await InventoryRepo.addItem(item1);
     if (item1Output !== null) {
