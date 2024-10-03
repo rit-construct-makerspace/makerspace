@@ -145,7 +145,7 @@ export async function getNumUsersRegisteredToday(): Promise<number | undefined> 
     endOfDay.setDate(endOfDay.getDate()+1);
     //Length is Best option right now because for some reason knex does not do count correctly
     //This one wont work if you explicitly state the timezone or timestamp type. I have no idea why. I give up.
-    return (await knex("Users").whereRaw(`("registrationDate" at time zone '${process.env.STAT_TIMEZONE}') BETWEEN '${startOfDay.toISOString().replace("T", " ").replace("Z", "")}' AND '${endOfDay.toISOString().replace("T", " ").replace("Z", "")}'`)).length;
+    return (await knex("Users").whereRaw(`("registrationDate") BETWEEN '${startOfDay.toISOString().split("T")[0]}' AND '${endOfDay.toISOString().split("T")[0]}'`)).length;
 }
 
 export async function getNumRoomSwipesToday(): Promise<number | undefined> {
