@@ -135,7 +135,7 @@ export default function Ledger() {
           {matchingItems && matchingItems.map((item: InventoryLedger) => (
             <TableRow>
               <TableCell>{format(new Date(Number(item.timestamp)), "M/d/yy h:mmaaa")}</TableCell>
-              <TableCell><AuditLogEntity entityCode={`user:${item.initiator}:Eva Stoddard`} /></TableCell>
+              <TableCell><AuditLogEntity entityCode={`user:${item.initiator.id}:${item.initiator.firstName} ${item.initiator.lastName}`} /></TableCell>
               <TableCell>{item.category}</TableCell>
               <TableCell>$ {item.totalCost.toFixed(2)}</TableCell>
               <TableCell>{item.notes}</TableCell>
