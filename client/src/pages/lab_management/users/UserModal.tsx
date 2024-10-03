@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PrettyModal from "../../../common/PrettyModal";
-import { Avatar, Button, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, Stack, Typography } from "@mui/material";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoBlob from "./InfoBlob";
@@ -13,7 +13,7 @@ import PrivilegeControl from "./PrivilegeControl";
 import { useNavigate } from "react-router-dom";
 import HoldCard from "./HoldCard";
 import Privilege from "../../../types/Privilege";
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import { PassedModule, useCurrentUser } from "../../../common/CurrentUserProvider";
 import CloseButton from "../../../common/CloseButton";
 import CardTagSettings from "./CardTagSettings";
 import AccessCheckCard from "./AccessCheckCard";
@@ -78,6 +78,11 @@ export const GET_USER = gql`
         equipmentID
         approved
       }
+      passedModules {
+        moduleID
+        moduleName
+        submissionDate
+      }
     }
   }
 `;
@@ -138,8 +143,8 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
     );
     if (result) {
       deleteUser({
-        variables: {userID: getUserResult.data.user.id},
-        refetchQueries: [{query: GET_USER, variables: {id: selectedUserID}}],
+        variables: { userID: getUserResult.data.user.id },
+        refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }],
       });
     };
   }
@@ -150,7 +155,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
         result={getUserResult}
         render={({ user }) => (
           <Stack>
-            <CloseButton onClick={() => navigate("/admin/people")}/>
+            <CloseButton onClick={() => navigate("/admin/people")} />
             <Stack direction="row" alignItems="center" spacing={2} mb={4}>
               <Avatar
                 alt=""
@@ -212,7 +217,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             <Typography variant="h6" component="div" mt={6} mb={1}>
               Access Checks
             </Typography>
-            
+
             {user.accessChecks == null || user.accessChecks.length === 0 && (
               <Stack direction="row" spacing={1} sx={{ opacity: 0.8 }}>
                 <CheckCircleIcon color="success" fontSize="small" />
@@ -228,21 +233,49 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               ))}
             </Stack>
 
+
+            <Typography variant="h6" component="div" mt={6} mb={1}>
+              Passed Trainings
+            </Typography>
+
+            {user.passedModules == null || user.passedModules.length === 0 && (
+              <Stack direction="row" spacing={1} sx={{ opacity: 0.8 }}>
+                <CheckCircleIcon color="error" fontSize="small" />
+                <Typography variant="body1" fontStyle="italic">
+                  No trainings.
+                </Typography>
+              </Stack>
+            )}
+
+            <Box sx={{ maxHeight: "300px", overflowY: "scroll" }}>
+              <Stack spacing={0.5}>
+                {user.passedModules != null && user.passedModules.map((module: { moduleID: number, moduleName: string, submissionDate: string }) => (
+                  <Card sx={{ p: "0.25em", backgroundColor: "grey.100", border: `1px solid grey` }}>
+                    <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
+                      <Typography>{module.moduleName}</Typography>
+                      <Typography>{format(new Date(module.submissionDate), "M/d/yy h:mmaaa")}</Typography>
+                    </Stack>
+                  </Card>
+                ))}
+              </Stack>
+            </Box>
+
+
             <Typography variant="h6" component="div" mt={6} mb={1}>
               Actions
             </Typography>
 
             <Stack direction="row" spacing={2}>
               {currentUser.privilege === Privilege.STAFF &&
-                  <Button
-                      variant="outlined"
-                      color="error"
-                      startIcon={<DeleteIcon />}
-                      onClick={() => handleDeleteUserClicked
-                      }
-                  >
-                      Delete account
-                  </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  startIcon={<DeleteIcon />}
+                  onClick={() => handleDeleteUserClicked
+                  }
+                >
+                  Delete account
+                </Button>
               }
               <Button
                 startIcon={<HistoryIcon />}
