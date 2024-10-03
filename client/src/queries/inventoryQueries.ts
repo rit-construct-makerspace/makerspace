@@ -81,6 +81,12 @@ export const DELETE_INVENTORY_ITEM = gql`
   }
 `;
 
+export const DELETE_INVENTORY_LEDGER = gql`
+  mutation DeleteInventorLedger($id: ID!) {
+    deleteLedger(id: $id)
+  }
+`;
+
 export const CREATE_INVENTORY_ITEM = gql`
   mutation CreateInventoryItem($item: InventoryItemInput) {
     createInventoryItem(item: $item) {
