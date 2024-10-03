@@ -103,7 +103,7 @@ async function startServer() {
 
   //verifies user logged in under all front-end urls and if not send to login
   app.all("/app/*", (req, res, next) => {
-    if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE" || req.user) {
+    if (req.user) {
       return next();
     }
     console.log("LOGIN REDIRECT");
@@ -564,25 +564,15 @@ async function startServer() {
     --REMEMBER HEROKU SERVER RUNS IN UTC (EST+4)--
    */
 
-  const dailyRule = new schedule.RecurrenceRule();
-  dailyRule.dayOfWeek = new schedule.Range(0,6);
-  dailyRule.hour = 0;
-  dailyRule.minute = 0;
-
-  const dailyJob = schedule.scheduleJob(dailyRule, async function() {
+  const dailyJob = schedule.scheduleJob("* * * 0 0 0", async function() {
     console.log('Wiping daily records...');
     if (API_DEBUG_LOGGING) await createLog('Daily Temp Records have been wiped.')
     setDataPointValue(1,0);
   });
 
-  const testDailyRule = new schedule.RecurrenceRule();
-  dailyRule.dayOfWeek = new schedule.Range(0,6);
-  dailyRule.hour = 15;
-  dailyRule.minute = 0;
-
-  const testDailyJob = schedule.scheduleJob(testDailyRule, async function() {
+  const testDailyJob = schedule.scheduleJob("* * * 15 0 0", async function() {
     console.log('TEST: According to the server, it is now 15:00');
-    if (API_DEBUG_LOGGING) await createLog('TEST: According to the server, it is now 15:00')
+    if (API_DEBUG_LOGGING) await createLog('TEST: According to the server, it is now 15:00 - ' + new Date().getTime())
   });
 
 
