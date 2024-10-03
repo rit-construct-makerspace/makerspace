@@ -40,6 +40,7 @@ export interface InventoryItemRow {
   archived: boolean;
   staffOnly: boolean;
   storefrontVisible: boolean;
+  notes: string;
 }
 
 export interface InventoryLedgerRow {

@@ -11,6 +11,7 @@ export interface InventoryItem {
   threshold: number;
   staffOnly: boolean;
   storefrontVisible: boolean;
+  notes: string;
 }
 
 export interface InventoryItemInput {
@@ -22,6 +23,7 @@ export interface InventoryItemInput {
   count: number;
   pricePerUnit: number;
   threshold: number;
+  notes: string;
 }
 
 export const StoreFrontTypeDefs = gql`
@@ -39,6 +41,7 @@ export const StoreFrontTypeDefs = gql`
     threshold: Int
     staffOnly: Boolean
     storefrontVisible: Boolean
+    notes: String
   }
 
   input InventoryItemInput {
@@ -52,6 +55,7 @@ export const StoreFrontTypeDefs = gql`
     threshold: Int
     staffOnly: Boolean
     storefrontVisible: Boolean
+    notes: String
   }
 
   type InventoryLedger {

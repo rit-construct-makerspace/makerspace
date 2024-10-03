@@ -12,6 +12,7 @@ export const GET_INVENTORY_ITEMS = gql`
       threshold
       staffOnly
       storefrontVisible
+      notes
     }
   }
 `;
@@ -27,6 +28,7 @@ export const GET_INVENTORY_ITEM = gql`
       threshold
       staffOnly
       storefrontVisible
+      notes
     }
   }
 `;

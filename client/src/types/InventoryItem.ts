@@ -10,6 +10,7 @@ export default interface InventoryItem {
   threshold: number;
   staffOnly: boolean;
   storefrontVisible: boolean;
+  notes: string;
 }
 
 export interface InventoryLedger {

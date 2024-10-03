@@ -66,6 +66,7 @@ export async function updateItemById(
     count: item.count,
     pricePerUnit: item.pricePerUnit,
     threshold: item.threshold,
+    notes: item.notes
   });
 
   await setLabels(itemId, item.labels);
@@ -85,6 +86,7 @@ export async function addItem(
         count: item.count,
         pricePerUnit: item.pricePerUnit,
         threshold: item.threshold,
+        notes: item.notes
       },
       "id"
     )

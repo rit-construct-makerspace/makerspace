@@ -3,6 +3,7 @@ import {
   Button,
   InputAdornment,
   Stack,
+  TextareaAutosize,
   TextField,
   Typography,
 } from "@mui/material";
@@ -40,6 +41,7 @@ export interface InventoryItemInput {
   count: number;
   pricePerUnit: number;
   threshold: number;
+  notes: string;
 }
 
 interface MaterialPageProps {
@@ -88,6 +90,10 @@ export default function MaterialModalContents({
       const positive = Math.max(parsed, 0);
       const rounded = Math.round(positive * 100) / 100;
       setItemDraft({ ...itemDraft, [property]: rounded });
+    };
+
+    const handleNotesChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setItemDraft({...itemDraft, notes: String(event.target.value)})
     };
 
   const handleSaveClick = async () => {
@@ -184,6 +190,13 @@ export default function MaterialModalContents({
           </Stack>
         </Stack>
       </Stack>
+      <TextareaAutosize 
+        style={{background: "none", fontFamily: "Roboto", fontSize: "1em", lineHeight: "2em", marginTop: "2em", marginBottom: "2em"}}
+        aria-label="Notes" 
+        defaultValue={itemDraft.notes ?? ""} 
+        placeholder="Notes" 
+        value={itemDraft.notes} 
+        onChange={handleNotesChanged}></TextareaAutosize>
 
       <Stack direction="row" justifyContent="space-between" mt={4}>
         {!isNewItem && (

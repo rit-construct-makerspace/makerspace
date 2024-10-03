@@ -90,7 +90,6 @@ export default function EquipmentEditor({
   };
 
   const handleNotesChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    console.log(event.target.value)
     setEquipment({
       ...equipment,
       notes: String(event.target.value),
