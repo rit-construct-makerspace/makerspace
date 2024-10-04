@@ -305,25 +305,28 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
             <CardTagSettings userID={user.id} hasCardTag={(user.cardTagID != null && user.cardTagID != "")} />
 
-            <Typography variant="h6" component="div" mt={6} mb={1}>
-              Notes
-            </Typography>
+            {currentUser.privilege == Privilege.STAFF &&
+              <>
+                <Typography variant="h6" component="div" mt={6} mb={1}>
+                  Notes
+                </Typography>
 
-            <TextareaAutosize
-              style={{ background: "none", fontFamily: "Roboto", fontSize: "1em", lineHeight: "2em", marginTop: "2em", marginBottom: "2em" }}
-              aria-label="Notes"
-              defaultValue={user.notes ?? ""}
-              placeholder="Notes"
-              value={notes}
-              onChange={handleNotesChanged}
-              onSubmit={(e) => setNotesMutation({ variables: { userID: selectedUserID, notes: notes } })}></TextareaAutosize>
-            <Button
-              variant="contained"
-              onClick={() => setNotesMutation({variables: {userID: selectedUserID, notes: notes}})}
-              sx={{ mt: 8, alignSelf: "flex-end" }}
-            >
-              Update Notes
-            </Button>
+                <TextareaAutosize
+                  style={{ background: "none", fontFamily: "Roboto", fontSize: "1em", lineHeight: "2em", marginTop: "2em", marginBottom: "2em" }}
+                  aria-label="Notes"
+                  defaultValue={user.notes ?? ""}
+                  placeholder="Notes"
+                  value={notes}
+                  onChange={handleNotesChanged}
+                  onSubmit={(e) => setNotesMutation({ variables: { userID: selectedUserID, notes: notes } })}></TextareaAutosize>
+                <Button
+                  variant="contained"
+                  onClick={() => setNotesMutation({ variables: { userID: selectedUserID, notes: notes } })}
+                  sx={{ mt: 8, alignSelf: "flex-end" }}
+                >
+                  Update Notes
+                </Button>
+              </>}
           </Stack>
         )}
       />
