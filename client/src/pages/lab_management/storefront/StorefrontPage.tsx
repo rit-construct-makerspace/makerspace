@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Page from "../../Page";
-import { Button, Divider, Stack, Typography } from "@mui/material";
+import { Button, Divider, FormGroup, Stack, Switch, Typography } from "@mui/material";
 import InventoryRow from "../../../common/InventoryRow";
 import SearchBar from "../../../common/SearchBar";
 import InventoryItem from "../../../types/InventoryItem";
@@ -13,6 +13,8 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
 import AdminPage from "../../AdminPage";
+import Privilege from "../../../types/Privilege";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
 
 const REMOVE_INVENTORY_ITEM_AMOUNT = gql`
   mutation RemoveInventoryItemAmount($itemID: ID!, $amountToRemove: Int!) {
@@ -33,6 +35,8 @@ function updateLocalStorage(cart: ShoppingCartEntry[] | null) {
 }
 
 export default function StorefrontPage() {
+  const currentUser = useCurrentUser();
+
   const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
 
   const [removeItemAmount] = useMutation(REMOVE_INVENTORY_ITEM_AMOUNT, {
@@ -44,6 +48,17 @@ export default function StorefrontPage() {
   const [activeItem, setActiveItem] = useState<InventoryItem | undefined>();
   const [addToCartCount, setAddToCartCount] = useState(0);
   const [shoppingCart, setShoppingCart] = useImmer<ShoppingCartEntry[]>([]);
+
+  const [showInternalItems, setShowInternalItems] = useState(false);
+  const [showStaffItems, setShowStaffItems] = useState(false);
+
+  function handleShowInternalChange(e: any) {
+    setShowInternalItems(!showInternalItems)
+  }
+
+  function handleShowStaffChange(e: any) {
+    setShowStaffItems(!showStaffItems)
+  }
 
   const getCartFromStorage = useCallback(() => {
     const storedCart = localStorage.getItem("cart");
@@ -129,9 +144,19 @@ export default function StorefrontPage() {
           emptyCart={handleCheckout}
         />
 
-        <Typography variant="h5" component="div" sx={{ mb: 2, mt: 8 }}>
-          Inventory
-        </Typography>
+        <Stack direction={"row"} sx={{ mb: 2, mt: 8, justifyContent: "space-between" }}>
+          <Typography variant="h5" component="div">
+            Inventory
+          </Typography>
+          <Stack direction={"row"} spacing={2}>
+            <Stack direction={"row"} alignItems={"center"}>
+              <Switch onChange={handleShowInternalChange}></Switch><span> Show Internal Items</span>
+            </Stack>
+            <Stack direction={"row"} alignItems={"center"}>
+            <Switch onChange={handleShowStaffChange} disabled={currentUser.privilege != Privilege.STAFF}></Switch><span> Show Staff Only Items</span>
+            </Stack>
+          </Stack>
+        </Stack>
 
         <SearchBar
           placeholder="Search inventory"
@@ -144,6 +169,8 @@ export default function StorefrontPage() {
         <Stack divider={<Divider flexItem />}>
           {data?.InventoryItems?.filter((item: InventoryItem) =>
             item.name.toLowerCase().includes(searchText.toLowerCase())
+            && (!showInternalItems ? item.storefrontVisible : true)
+            && ((currentUser.privilege != Privilege.STAFF && showStaffItems) ? !item.staffOnly : true)
           ).map((item: InventoryItem) => (
             <InventoryRow
               item={item}

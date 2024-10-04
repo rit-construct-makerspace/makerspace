@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
 import { Avatar, Box, Button, Card, Stack, TextareaAutosize, Typography } from "@mui/material";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
@@ -120,10 +120,13 @@ interface UserModalProps {
 export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
+
+  const [notes, setNotes] = useState<string>();
+
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
   const [createHold] = useMutation(CREATE_HOLD);
   const [deleteUser] = useMutation(ARCHIVE_USER);
-  const [setNotes] = useMutation(SET_NOTES);
+  const [setNotesMutation] = useMutation(SET_NOTES);
 
   useEffect(() => {
     if (selectedUserID) getUser({ variables: { id: selectedUserID } });
@@ -160,7 +163,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   }
 
   const handleNotesChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNotes({variables: {userID: selectedUserID, notes: event.target.value}});
+    setNotes(event.target.value)
   };
 
   return (
@@ -311,8 +314,16 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               aria-label="Notes"
               defaultValue={user.notes ?? ""}
               placeholder="Notes"
-              value={user.notes}
-              onChange={handleNotesChanged}></TextareaAutosize>
+              value={notes}
+              onChange={handleNotesChanged}
+              onSubmit={(e) => setNotesMutation({ variables: { userID: selectedUserID, notes: notes } })}></TextareaAutosize>
+            <Button
+              variant="contained"
+              onClick={() => setNotesMutation({variables: {userID: selectedUserID, notes: notes}})}
+              sx={{ mt: 8, alignSelf: "flex-end" }}
+            >
+              Update Notes
+            </Button>
           </Stack>
         )}
       />

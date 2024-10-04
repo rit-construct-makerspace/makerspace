@@ -32,10 +32,14 @@ export function hashUniversityID(universityID: string) {
 
 /**
  * Fetch all users in the table
+ * @param searchText text to narrow by user name
  * @returns {UserRow[]} users
  */
-export async function getUsers(): Promise<UserRow[]> {
-  return knex("Users").select();
+export async function getUsers(searchText: string): Promise<UserRow[]> {
+  return knex("Users").select()
+  .whereRaw(searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
+  .orderBy("ritUsername", "ASC")
+  .limit(100);
 }
 
 /**
@@ -193,4 +197,9 @@ export async function setNotes(
 export async function archiveUser(userID: number): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ archived: true });
   return await getUserByID(userID);
+}
+
+
+export async function getNumUsers(): Promise<string> {
+  return (await knex("Users").count("*"))[0];
 }

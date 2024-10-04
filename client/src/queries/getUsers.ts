@@ -11,13 +11,21 @@ export interface PartialUser {
 }
 
 const GET_USERS = gql`
-  query GetUsers {
-    users {
+  query GetUsers($searchText: String) {
+    users(searchText: $searchText) {
       id
       ritUsername
       firstName
       lastName
       privilege
+    }
+  }
+`;
+
+export const GET_NUM_USERS = gql`
+  query NumUsers {
+    numUsers {
+      count
     }
   }
 `;

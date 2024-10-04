@@ -99,10 +99,15 @@ export const UsersTypeDefs = gql`
     lastName: String!
   }
 
+  input Count {
+    count: Int
+  }
+
   extend type Query {
-    users: [User]
+    users(searchText: String): [User]
     user(id: ID!): User
     currentUser: User
+    numUsers: Count
   }
 
   extend type Mutation {

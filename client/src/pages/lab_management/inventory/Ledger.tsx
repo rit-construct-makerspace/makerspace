@@ -18,8 +18,6 @@ export default function Ledger() {
   const { search } = useLocation();
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState<string>("");
-  const [startDateTime, setStartDateTime] = useState();
-  const [stopDateTime, setStopDateTime] = useState();
 
   const [query, queryResult] = useLazyQuery(GET_LEDGERS);
 
