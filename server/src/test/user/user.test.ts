@@ -225,7 +225,7 @@ describe("User tests", () => {
     expect(userResponseData.firstName).toBe(userRequestData.firstName);
     expect(userResponseData.lastName).toBe(userRequestData.lastName);
 
-    const users = await UserRepo.getUsers();
+    const users = await UserRepo.getUsers("");
     expect(users.length).toBe(2); // a user was added
   });
 

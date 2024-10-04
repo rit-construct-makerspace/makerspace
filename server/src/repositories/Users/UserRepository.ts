@@ -35,9 +35,9 @@ export function hashUniversityID(universityID: string) {
  * @param searchText text to narrow by user name
  * @returns {UserRow[]} users
  */
-export async function getUsers(searchText: string): Promise<UserRow[]> {
+export async function getUsers(searchText?: string): Promise<UserRow[]> {
   return knex("Users").select()
-  .whereRaw(searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
+  .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
   .orderBy("ritUsername", "ASC")
   .limit(100);
 }
