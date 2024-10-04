@@ -565,21 +565,12 @@ async function startServer() {
    */
 
   const dailyJob = schedule.scheduleJob("0 0 0 * * *", async function() {
+    //schedule operates in both UTC and EDT. for some reason...
+    //JS Date maintains only EDT, so use that to confirm
+    if (new Date().getHours() != 0) return;
     console.log('Wiping daily records...');
     if (API_DEBUG_LOGGING) await createLog('Daily Temp Records have been wiped.')
     setDataPointValue(1,0);
-  });
-
-  const testDailyJob = schedule.scheduleJob("0 40 11 * * *", async function() {
-    if (new Date().getHours() != 11) return;
-    console.log('TEST: According to the server, it is now 11:40');
-    if (API_DEBUG_LOGGING) await createLog('TEST: According to the server, it is now 11:40 - ' + new Date().getTime())
-  });
-
-  const test2DailyJob = schedule.scheduleJob("0 15 15 * * *", async function() {
-    if (new Date().getHours() != 15) return;
-    console.log('TEST: According to the server, it is now 15:40');
-    if (API_DEBUG_LOGGING) await createLog('TEST: According to the server, it is now 15:40 - ' + new Date().getTime())
   });
 
 
