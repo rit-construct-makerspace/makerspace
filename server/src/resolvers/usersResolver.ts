@@ -100,6 +100,20 @@ const UsersResolvers = {
         );
       }),
 
+      setNotes: async (
+        _parent: any,
+        args: { userID: string, notes: string },
+        { ifAllowed }: ApolloContext
+      ) =>
+        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser: any) => {
+          const userSubject = await UserRepo.setNotes(Number(args.userID), args.notes);
+  
+          await createLog(
+            `{user} updated {user}'s Notes.`,
+            { id: executingUser.id, label: getUsersFullName(executingUser) },
+            { id: userSubject.id, label: getUsersFullName(userSubject) }
+          );
+        }),
 
     setPrivilege: async (
       _parent: any,

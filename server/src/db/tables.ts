@@ -152,6 +152,7 @@ export interface UserRow {
   archived: boolean;
   balance: string;
   cardTagID: string;
+  notes: string;
 }
 
 export interface ReaderRow {

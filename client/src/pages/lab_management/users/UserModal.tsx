@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { ChangeEvent, useEffect } from "react";
 import PrettyModal from "../../../common/PrettyModal";
-import { Avatar, Box, Button, Card, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, Stack, TextareaAutosize, Typography } from "@mui/material";
 import { gql, useLazyQuery, useMutation } from "@apollo/client";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoBlob from "./InfoBlob";
@@ -59,6 +59,7 @@ export const GET_USER = gql`
       privilege
       ritUsername
       cardTagID
+      notes
       holds {
         id
         creator {
@@ -95,6 +96,14 @@ export const CREATE_HOLD = gql`
   }
 `;
 
+export const SET_NOTES = gql`
+  mutation SetNotes($userID: ID!, $notes: String!) {
+    setNotes(userID: $userID, notes: $notes) {
+      id
+    }
+  }
+`;
+
 export const ARCHIVE_USER = gql`
   mutation ArchiveUser($userID: ID!) {
     archiveUser(userID: $userID) {
@@ -114,6 +123,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
   const [createHold] = useMutation(CREATE_HOLD);
   const [deleteUser] = useMutation(ARCHIVE_USER);
+  const [setNotes] = useMutation(SET_NOTES);
 
   useEffect(() => {
     if (selectedUserID) getUser({ variables: { id: selectedUserID } });
@@ -148,6 +158,10 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
       });
     };
   }
+
+  const handleNotesChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setNotes({variables: {userID: selectedUserID, notes: event.target.value}});
+  };
 
   return (
     <PrettyModal open={!!selectedUserID} onClose={onClose} width={600}>
@@ -288,6 +302,17 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
             <CardTagSettings userID={user.id} hasCardTag={(user.cardTagID != null && user.cardTagID != "")} />
 
+            <Typography variant="h6" component="div" mt={6} mb={1}>
+              Notes
+            </Typography>
+
+            <TextareaAutosize
+              style={{ background: "none", fontFamily: "Roboto", fontSize: "1em", lineHeight: "2em", marginTop: "2em", marginBottom: "2em" }}
+              aria-label="Notes"
+              defaultValue={user.notes ?? ""}
+              placeholder="Notes"
+              value={user.notes}
+              onChange={handleNotesChanged}></TextareaAutosize>
           </Stack>
         )}
       />

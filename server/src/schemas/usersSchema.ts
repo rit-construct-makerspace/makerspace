@@ -57,6 +57,7 @@ export const UsersTypeDefs = gql`
     cardTagID: String
     room: Room
     roomMonitoring: Room
+    notes: String
 
     """
     The number-letter combination that is attached to your RIT email
@@ -127,6 +128,11 @@ export const UsersTypeDefs = gql`
     setCardTagID(
       userID: ID!
       cardTagID: String
+    ): User
+
+    setNotes(
+      userID: ID!
+      notes: String!
     ): User
   }
 `;
