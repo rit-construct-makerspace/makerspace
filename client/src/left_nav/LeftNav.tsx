@@ -110,11 +110,13 @@ export default function LeftNav() {
           to="https://cloud.3dprinteros.com/ssosaml/rit/auth"
           primary="3DPrinterOS"
           icon={<PrinterOsIcon />}
+          newTab={true}
         />
         <NavLink
           to="https://rit.enterprise.slack.com/archives/C0440KNF916"
           primary="Slack"
           icon={<SlackIcon />}
+          newTab={true}
         />
       </List>
 
