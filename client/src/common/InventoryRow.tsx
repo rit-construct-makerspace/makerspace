@@ -20,7 +20,7 @@ export default function InventoryRow({ item, onClick }: InventoryRowProps) {
       >
         <InvItemNamePic item={item} />
         <Stack direction={"row"} spacing={0.1}>
-          {!item.storefrontVisible && <Chip variant="outlined" color="primary" label="Internal" />}
+          {!item.storefrontVisible && <Chip variant="outlined" color="warning" label="Internal" />}
           {item.staffOnly && <Chip variant="outlined" color="secondary" label="Staff Only" />}
         </Stack>
 

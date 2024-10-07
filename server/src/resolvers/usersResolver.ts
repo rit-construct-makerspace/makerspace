@@ -42,6 +42,15 @@ const UsersResolvers = {
         return await UserRepo.getUsers(searchText);
       }),
 
+    usersLimit: async (
+      _parent: any,
+      args: { searchText: string },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        const searchText = args.searchText ?? "";
+        return await UserRepo.getUsersLimit(searchText);
+      }),
+
     user: async (
       _parent: any,
       args: { id: string },

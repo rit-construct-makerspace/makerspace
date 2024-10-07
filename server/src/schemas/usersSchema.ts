@@ -105,6 +105,7 @@ export const UsersTypeDefs = gql`
 
   extend type Query {
     users(searchText: String): [User]
+    usersLimit(searchText: String): [User]
     user(id: ID!): User
     currentUser: User
     numUsers: Count

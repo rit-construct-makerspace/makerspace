@@ -4,7 +4,7 @@ import SearchBar from "../../../common/SearchBar";
 import { Button, Stack } from "@mui/material";
 import UserCard from "./UserCard";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import GET_USERS, { GET_NUM_USERS, PartialUser } from "../../../queries/getUsers";
+import GET_USERS, { GET_NUM_USERS, GET_USERS_LIMIT, PartialUser } from "../../../queries/getUsers";
 import RequestWrapper from "../../../common/RequestWrapper";
 import UserModal from "./UserModal";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -15,12 +15,10 @@ export default function UsersPage() {
   const { id } = useParams<{ id: string }>();
   const { search } = useLocation();
   const navigate = useNavigate();
-  const [query, queryResult] = useLazyQuery(GET_USERS);
+  const [query, queryResult] = useLazyQuery(GET_USERS_LIMIT);
   const numUsersResult = useQuery(GET_NUM_USERS);
 
   const [searchText, setSearchText] = useState("");
-
-  const safeData = queryResult.data?.Ledgers ?? [];
 
   const setUrlParam = (paramName: string, paramValue: string) => {
     const params = new URLSearchParams(search);
@@ -65,7 +63,7 @@ export default function UsersPage() {
           <Button onClick={(e) => setUrlParam("q", searchText)} variant="contained" color="primary">Search</Button>
         </Stack>
         <Stack direction="row" flexWrap="wrap">
-          {queryResult.data?.users
+          {queryResult.data?.usersLimit
             // .filter((m: { id: number; ritUsername: String; firstName: string; lastName: string }) =>
             //   (m.firstName + " " + m.lastName + " " + m.ritUsername)
             //     .toLocaleLowerCase()

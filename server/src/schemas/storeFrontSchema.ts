@@ -58,6 +58,11 @@ export const StoreFrontTypeDefs = gql`
     notes: String
   }
 
+  input CartItem {
+    id: ID!
+    count: Int!
+  }
+
   type InventoryLedger {
     id: ID!
     timestamp: String!
@@ -96,6 +101,7 @@ export const StoreFrontTypeDefs = gql`
     createLabel(label: String): String
     archiveLabel(label: String): String
     deleteInventoryItem(id: ID!): Boolean
+    checkoutItems(items: [CartItem], notes: String, recievingUserID: ID): Boolean
     setStaffOnly(id: ID!, staffOnly: Boolean!): InventoryItem
     setStorefrontVisible(id: ID!, storefrontVisible: Boolean!): InventoryItem
     deleteLedger(id: ID!): Boolean

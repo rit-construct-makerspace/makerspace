@@ -155,7 +155,7 @@ export default function Ledger() {
               <TableCell><AuditLogEntity entityCode={`user:${item.initiator.id}:${item.initiator.firstName} ${item.initiator.lastName}`} /></TableCell>
               <TableCell>{item.category}</TableCell>
               <TableCell sx={{backgroundColor: incomeColor(item.totalCost)}}>$ {item.totalCost.toFixed(2)}</TableCell>
-              <TableCell>{item.notes}</TableCell>
+              <TableCell>{item.purchaser && <div><b>Purchased By: <AuditLogEntity entityCode={`user:${item.purchaser.id}:${item.purchaser.firstName} ${item.purchaser.lastName}`} /></b></div>}{item.notes}</TableCell>
               <TableCell>
                 <Table>
                   {item.items.map((subItem: {quantity: number, name: string}) => (

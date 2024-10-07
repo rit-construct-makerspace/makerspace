@@ -38,8 +38,18 @@ export function hashUniversityID(universityID: string) {
 export async function getUsers(searchText?: string): Promise<UserRow[]> {
   return knex("Users").select()
   .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
-  .orderBy("ritUsername", "ASC")
-  .limit(100);
+  .orderBy("ritUsername", "ASC");
+}
+
+/**
+ * Fetch all users in the table
+ * @param searchText text to narrow by user name
+ * @returns {UserRow[]} users
+ */
+export async function getUsersLimit(searchText?: string): Promise<UserRow[]> {
+  return knex("Users").select()
+  .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
+  .orderBy("ritUsername", "ASC");
 }
 
 /**

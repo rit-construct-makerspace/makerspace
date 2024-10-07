@@ -24,6 +24,12 @@ const REMOVE_INVENTORY_ITEM_AMOUNT = gql`
   }
 `;
 
+const CHECKOUT_ITEMS = gql`
+  mutation CheckoutItems($items: [CartItem], $notes: String, $recievingUserID: ID) {
+    checkoutItems(items: $items, notes: $notes, recievingUserID: $recievingUserID)
+  }
+`;
+
 export interface ShoppingCartEntry {
   id: string;
   item: InventoryItem;
@@ -39,7 +45,7 @@ export default function StorefrontPage() {
 
   const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
 
-  const [removeItemAmount] = useMutation(REMOVE_INVENTORY_ITEM_AMOUNT, {
+  const [checkoutItems] = useMutation(CHECKOUT_ITEMS, {
     refetchQueries: [{ query: GET_INVENTORY_ITEMS }],
   });
 
@@ -104,18 +110,16 @@ export default function StorefrontPage() {
       updateLocalStorage(draft);
     });
 
-  const handleCheckout = async () => {
-    // Calling a mutation for each item in the cart
-    // Probably better to just create a mutation that
-    // can handle multiple item count adjustments at once
-    for (let i = 0; i < shoppingCart.length; i++) {
-      await removeItemAmount({
-        variables: {
-          itemID: shoppingCart[i].item.id,
-          amountToRemove: shoppingCart[i].count,
-        },
-      });
-    }
+  const handleCheckout = async (checkoutNotes: string, recievingUserID: number | undefined) => {
+    const items: {id: number, count: number}[] = shoppingCart.map((cartItem) => ({id: cartItem.item.id, count: cartItem.count}));
+
+    await checkoutItems({
+      variables: {
+        items,
+        notes: checkoutNotes,
+        recievingUserID
+      },
+    });
 
     setShoppingCart(() => []);
     updateLocalStorage([]);
@@ -126,22 +130,13 @@ export default function StorefrontPage() {
       <AdminPage
         title="Storefront"
         maxWidth="1250px"
-        topRightAddons={
-          <Button
-            variant="outlined"
-            startIcon={<OpenInNewIcon />}
-            href="/admin/storefront/preview"
-            target="_blank"
-          >
-            Customer view
-          </Button>
-        }
       >
         <ShoppingCart
           entries={shoppingCart}
           removeEntry={removeFromShoppingCart}
           setEntryCount={setEntryCount}
           emptyCart={handleCheckout}
+          internal={showInternalItems || showStaffItems}
         />
 
         <Stack direction={"row"} sx={{ mb: 2, mt: 8, justifyContent: "space-between" }}>
@@ -150,10 +145,10 @@ export default function StorefrontPage() {
           </Typography>
           <Stack direction={"row"} spacing={2}>
             <Stack direction={"row"} alignItems={"center"}>
-              <Switch onChange={handleShowInternalChange}></Switch><span> Show Internal Items</span>
+              <Switch color="warning" onChange={handleShowInternalChange}></Switch><span> Show Internal Items</span>
             </Stack>
             <Stack direction={"row"} alignItems={"center"}>
-            <Switch onChange={handleShowStaffChange} disabled={currentUser.privilege != Privilege.STAFF}></Switch><span> Show Staff Only Items</span>
+            <Switch color="warning" onChange={handleShowStaffChange} disabled={currentUser.privilege != Privilege.STAFF}></Switch><span> Show Staff Only Items</span>
             </Stack>
           </Stack>
         </Stack>
