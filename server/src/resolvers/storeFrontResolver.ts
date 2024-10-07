@@ -1,7 +1,7 @@
 import { ApolloContext, ifAllowed } from "../context.js";
 import * as InventoryRepo from "../repositories/Store/InventoryRepository.js";
 import * as LabelRepo from "../repositories/Store/LabelRepository.js";
-import { InventoryItemInput } from "../schemas/storeFrontSchema.js";
+import { InventoryItem, InventoryItemInput } from "../schemas/storeFrontSchema.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { deleteInventoryItem } from "../repositories/Store/InventoryRepository.js";
 import { createLedger, deleteLedger, getLedgers } from "../repositories/Store/InventoryLedgerRepository.js";
@@ -191,6 +191,37 @@ const StorefrontResolvers = {
         return await deleteInventoryItem(args.id);
       }
       )
+    },
+
+    checkoutItems: async (
+      _parent: any,
+      args: {items: {id: number, count: number}[], notes: string | null, recievingUserID: number | null},
+      { ifAllowed }: ApolloContext) => {
+        return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+          const allItems = await InventoryRepo.getItems();
+          for (var i = 0; i < args.items.length; i++) {
+            if (allItems.find((item) => item.id = args.items[i].id)?.staffOnly && user.privilege != Privilege.STAFF) {
+              //Fail if user is trying to checkout a staff item
+              throw new GraphQLError("Unauthorized")
+            }
+          }
+
+          var totalCost = 0;
+          var ledgerItems: {name: string, quantity: number}[] = []
+
+          for (var i = 0; i < args.items.length; i++) {
+            //Deduct count from each respective item. Fail if item does not exist
+            const item = await InventoryRepo.addItemAmount(args.items[i].id, args.items[i].count * -1)
+            if (!item) {
+              throw new GraphQLError("Item does not exist")
+            }
+            ledgerItems.push({name: item.name, quantity: args.items[i].count*-1});
+            totalCost -= args.items[i].count * item.pricePerUnit
+          }
+
+          await createLedger(user.id, (args.recievingUserID ? "Purchase" : "Internal Use"), totalCost, (args.recievingUserID ?? undefined), args.notes ?? "", ledgerItems);
+          return true;
+        });
     },
 
     setStorefrontVisible: async (

@@ -32,10 +32,24 @@ export function hashUniversityID(universityID: string) {
 
 /**
  * Fetch all users in the table
+ * @param searchText text to narrow by user name
  * @returns {UserRow[]} users
  */
-export async function getUsers(): Promise<UserRow[]> {
-  return knex("Users").select();
+export async function getUsers(searchText?: string): Promise<UserRow[]> {
+  return knex("Users").select()
+  .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
+  .orderBy("ritUsername", "ASC");
+}
+
+/**
+ * Fetch all users in the table
+ * @param searchText text to narrow by user name
+ * @returns {UserRow[]} users
+ */
+export async function getUsersLimit(searchText?: string): Promise<UserRow[]> {
+  return knex("Users").select()
+  .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
+  .orderBy("ritUsername", "ASC");
 }
 
 /**
@@ -175,7 +189,27 @@ export async function setCardTagID(
   return await getUserByID(userID);
 }
 
+
+/**
+ * Update the Notes of a user
+ * @param userID the ID of the user to update
+ * @param notes the notes string to set
+ * @returns updated user
+ */
+export async function setNotes(
+  userID: number,
+  notes: string
+): Promise<UserRow> {
+  await knex("Users").where({ id: userID }).update("notes", notes);
+  return await getUserByID(userID);
+}
+
 export async function archiveUser(userID: number): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ archived: true });
   return await getUserByID(userID);
+}
+
+
+export async function getNumUsers(): Promise<string> {
+  return (await knex("Users").count("*"))[0];
 }

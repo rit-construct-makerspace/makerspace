@@ -5,12 +5,14 @@ import { Button, Divider, Stack, Typography } from "@mui/material";
 import ShoppingCartRow from "./ShoppingCartRow";
 import CheckoutModal from "./CheckoutModal";
 import EmptyPageSection from "../../../common/EmptyPageSection";
+import UseModal from "./InternalUseModal";
 
 interface ShoppingCartProps {
   entries: ShoppingCartEntry[];
   removeEntry: (id: string) => void;
   setEntryCount: (id: string, newCount: number) => void;
-  emptyCart: () => void;
+  emptyCart: (checkoutNotes: string, recievingUserID: number | undefined) => void;
+  internal: boolean;
 }
 
 export default function ShoppingCart({
@@ -18,6 +20,7 @@ export default function ShoppingCart({
   removeEntry,
   setEntryCount,
   emptyCart,
+  internal,
 }: ShoppingCartProps) {
   const [showCheckoutModal, setShowCheckoutModal] = useState(false);
 
@@ -28,13 +31,13 @@ export default function ShoppingCart({
   return (
     <>
       <Typography variant="h5" component="div" sx={{ mb: 2 }}>
-        Shopping cart
+        Cart
       </Typography>
 
       {entries.length === 0 && (
         <EmptyPageSection
           icon={<ShoppingCartIcon />}
-          label="Shopping cart empty."
+          label="Cart empty."
         />
       )}
 
@@ -61,21 +64,32 @@ export default function ShoppingCart({
           </Typography>
           <Button
             variant="contained"
+            color={internal ? "warning" : "primary"}
             onClick={() => setShowCheckoutModal(true)}
+            sx={{minWidth: "150px"}}
           >
-            Checkout
+            {internal ? "Use" : "Checkout"}
           </Button>
         </Stack>
       )}
 
-      <CheckoutModal
+      {internal
+      ? <UseModal
         open={showCheckoutModal}
         onClose={() => setShowCheckoutModal(false)}
-        onFinalize={() => {
+        onFinalize={(checkoutNotes: string, recievingUserID: number | undefined) => {
           setShowCheckoutModal(false);
-          emptyCart();
+          emptyCart(checkoutNotes, recievingUserID);
         }}
       />
+      : <CheckoutModal
+        open={showCheckoutModal}
+        onClose={() => setShowCheckoutModal(false)}
+        onFinalize={(checkoutNotes: string, recievingUserID: number | undefined) => {
+          setShowCheckoutModal(false);
+          emptyCart(checkoutNotes, recievingUserID);
+        }}
+      />}
     </>
   );
 }

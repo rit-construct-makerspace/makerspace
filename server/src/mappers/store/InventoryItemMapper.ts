@@ -23,6 +23,7 @@ export function singleInventoryItemToDomain(raw: any): InventoryItem | null {
     pricePerUnit: raw.pricePerUnit,
     threshold: raw.threshold,
     staffOnly: raw.staffOnly,
-    storefrontVisible: raw.storefrontVisible
+    storefrontVisible: raw.storefrontVisible,
+    notes: raw.notes
   };
 }

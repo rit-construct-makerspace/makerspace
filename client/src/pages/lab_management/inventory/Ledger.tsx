@@ -1,16 +1,16 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Button, Divider, IconButton, Stack, Table, TableCell, TableHead, TableRow, TextField } from "@mui/material";
+import { Box, Button, Divider, IconButton, Stack, styled, Table, TableCell, TableHead, TableRow, TextField } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
 import PageSectionHeader from "../../../common/PageSectionHeader";
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_LEDGERS } from "../../../queries/inventoryQueries";
+import { DELETE_INVENTORY_LEDGER, GET_LEDGERS } from "../../../queries/inventoryQueries";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
-import DeleteIcon from '@mui/icons-material/Delete';
 import { InventoryLedger } from "../../../types/InventoryItem";
 import { endOfDay, format, parse, startOfDay } from "date-fns";
 import { query } from "express";
 import { useLocation, useNavigate } from "react-router-dom";
+import LedgerDeleteButton from "./LedgerDeleteButton";
 
 
 
@@ -18,8 +18,6 @@ export default function Ledger() {
   const { search } = useLocation();
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState<string>("");
-  const [startDateTime, setStartDateTime] = useState();
-  const [stopDateTime, setStopDateTime] = useState();
 
   const [query, queryResult] = useLazyQuery(GET_LEDGERS);
 
@@ -53,6 +51,8 @@ export default function Ledger() {
     });
   }, [search, query]);
 
+  const [deleteLedger] = useMutation(DELETE_INVENTORY_LEDGER, {refetchQueries: [{query: GET_LEDGERS}]});
+
   const setUrlParam = (paramName: string, paramValue: string) => {
     const params = new URLSearchParams(search);
     params.set(paramName, paramValue);
@@ -81,6 +81,23 @@ export default function Ledger() {
 
   const showClearButton =
     startDateString || stopDateString || search.includes("q=");
+
+    const StyledTableRow = styled(TableRow)(({ theme }) => ({
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+      },
+    }));
+
+  function handleLedgerDelete(event: any): void {
+    console.log(event.target.value)
+    deleteLedger({variables: {id: event.target.value}});
+  }
+
+  function incomeColor(totalCost: number): string | undefined {
+    if (totalCost > 0) return "#cdffb955";
+    if (totalCost < 0) return "#ffb9b955";
+    return "#00000000";
+  }
 
   return (
     <RequestWrapper loading={queryResult.loading} error={queryResult.error}>
@@ -124,35 +141,36 @@ export default function Ledger() {
 
         <Table sx={{ 'td': { p: 0 } }}>
           <TableHead>
-            <TableCell>Timestamp</TableCell>
-            <TableCell>Initiator</TableCell>
-            <TableCell>Category</TableCell>
-            <TableCell>Total Cost</TableCell>
-            <TableCell>Notes</TableCell>
-            <TableCell>Items</TableCell>
-            <TableCell>Actions</TableCell>
+            <TableCell sx={{width: "90px"}}>Timestamp</TableCell>
+            <TableCell sx={{width: "100px"}}>Initiator</TableCell>
+            <TableCell sx={{width: "80px"}}>Category</TableCell>
+            <TableCell sx={{maxWidth: "100px"}}>Total Cost</TableCell>
+            <TableCell sx={{minWidth: "180px"}}>Notes</TableCell>
+            <TableCell sx={{width: "300px"}}>Items</TableCell>
+            <TableCell sx={{width: "70px"}}>Actions</TableCell>
           </TableHead>
           {matchingItems && matchingItems.map((item: InventoryLedger) => (
-            <TableRow>
+            <StyledTableRow>
               <TableCell>{format(new Date(Number(item.timestamp)), "M/d/yy h:mmaaa")}</TableCell>
-              <TableCell><AuditLogEntity entityCode={`user:${item.initiator}:Eva Stoddard`} /></TableCell>
+              <TableCell><AuditLogEntity entityCode={`user:${item.initiator.id}:${item.initiator.firstName} ${item.initiator.lastName}`} /></TableCell>
               <TableCell>{item.category}</TableCell>
-              <TableCell>$ {item.totalCost.toFixed(2)}</TableCell>
-              <TableCell>{item.notes}</TableCell>
+              <TableCell sx={{backgroundColor: incomeColor(item.totalCost)}}>$ {item.totalCost.toFixed(2)}</TableCell>
+              <TableCell>{item.purchaser && <div><b>Purchased By: <AuditLogEntity entityCode={`user:${item.purchaser.id}:${item.purchaser.firstName} ${item.purchaser.lastName}`} /></b></div>}{item.notes}</TableCell>
               <TableCell>
                 <Table>
                   {item.items.map((subItem: {quantity: number, name: string}) => (
                     <TableRow>
-                      <TableCell>{subItem.quantity}x</TableCell>
-                      <TableCell>{subItem.name}</TableCell>
+                      <TableCell sx={{width: "5em", pr: "1em"}}>{subItem.quantity}x</TableCell>
+                      <TableCell sx={{textAlign: "left", ml: "2em"}}>{subItem.name}</TableCell>
                     </TableRow>
                   ))}
                 </Table>
               </TableCell>
-              <TableCell><IconButton color="error"><DeleteIcon /></IconButton></TableCell>
-            </TableRow>
+              <TableCell><LedgerDeleteButton itemID={item.id} /></TableCell>
+            </StyledTableRow>
           ))}
         </Table>
+        <p>Ledger is limited to 100 logs at once. Consider narrowing your search.</p>
       </Box>
     </RequestWrapper>
   );

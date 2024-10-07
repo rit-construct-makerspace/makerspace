@@ -40,6 +40,7 @@ export interface InventoryItemRow {
   archived: boolean;
   staffOnly: boolean;
   storefrontVisible: boolean;
+  notes: string;
 }
 
 export interface InventoryLedgerRow {
@@ -151,6 +152,7 @@ export interface UserRow {
   archived: boolean;
   balance: string;
   cardTagID: string;
+  notes: string;
 }
 
 export interface ReaderRow {

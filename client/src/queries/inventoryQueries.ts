@@ -12,6 +12,7 @@ export const GET_INVENTORY_ITEMS = gql`
       threshold
       staffOnly
       storefrontVisible
+      notes
     }
   }
 `;
@@ -27,6 +28,7 @@ export const GET_INVENTORY_ITEM = gql`
       threshold
       staffOnly
       storefrontVisible
+      notes
     }
   }
 `;
@@ -76,6 +78,12 @@ export const UPDATE_INVENTORY_ITEM = gql`
 export const DELETE_INVENTORY_ITEM = gql`
   mutation DeleteInventorItem($id: ID!) {
     deleteInventoryItem(id: $id)
+  }
+`;
+
+export const DELETE_INVENTORY_LEDGER = gql`
+  mutation DeleteInventorLedger($id: ID!) {
+    deleteLedger(id: $id)
   }
 `;
 

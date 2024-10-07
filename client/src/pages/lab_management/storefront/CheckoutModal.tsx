@@ -1,8 +1,21 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
-import { Button, Divider, Stack, Typography } from "@mui/material";
+import { Button, Divider, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import InventoryIcon from "@mui/icons-material/Inventory";
+import { gql, useQuery } from "@apollo/client";
+
+const GET_USERS_ID_AND_NAME = gql`
+  query GetUsers {
+    users {
+      id
+      ritUsername
+      firstName
+      lastName
+    }
+  }
+`;
+
 
 function StepNumber({ children }: { children: ReactNode }) {
   return (
@@ -23,7 +36,7 @@ function StepNumber({ children }: { children: ReactNode }) {
 interface CheckoutModalProps {
   open: boolean;
   onClose: () => void;
-  onFinalize: () => void;
+  onFinalize: (checkoutNotes: string, recievingUserID: number | undefined) => void;
 }
 
 export default function CheckoutModal({
@@ -31,13 +44,28 @@ export default function CheckoutModal({
   onClose,
   onFinalize,
 }: CheckoutModalProps) {
+  const [notes, setNotes] = useState<string>("")
+  const [recievingUserID, setRecievingUserID] = useState<number>()
+
+  function handleNotesChanged(e: any) {
+    setNotes(e.target.value);
+  }
+  
+  function handleRecievingUserIDChanged(e: any) {
+    setRecievingUserID(e.target.value);
+  }
+
+  const users = useQuery(GET_USERS_ID_AND_NAME);
+
+
+
   return (
     <PrettyModal open={open} onClose={onClose} width={430}>
       <Stack spacing={2} px={2}>
         <Stack direction="row" spacing={4} alignItems="center">
           <StepNumber>1</StepNumber>
           <Stack spacing={1}>
-            <Typography variant="body1">
+            <Typography variant="body1" fontWeight={"bold"}>
               Complete transaction on
               <br />
               Tiger Bucks Transaction Portal.
@@ -45,7 +73,7 @@ export default function CheckoutModal({
             <Button
               variant="outlined"
               startIcon={<OpenInNewIcon />}
-              href="https://www.google.com"
+              href="https://awrrit.atriumcampus.com/v2/shed"
               target="_blank"
             >
               Open portal
@@ -58,11 +86,32 @@ export default function CheckoutModal({
         <Stack direction="row" spacing={4} alignItems="center">
           <StepNumber>2</StepNumber>
           <Stack spacing={1}>
-            <Typography variant="body1">Update Construct inventory.</Typography>
+            <Typography variant="body1" fontWeight={"bold"}>Update Construct inventory.</Typography>
+            <Stack spacing={1}>
+              <Typography variant="body1">Please select the user the selected items are being sold to below.</Typography>
+
+              <Select
+                value={recievingUserID}
+                size="small"
+                onChange={handleRecievingUserIDChanged}
+              >
+                {users.data?.users.map((user: {id: number, ritUsername: string, firstName: string, lastName: string}) => (
+                  <MenuItem value={user.id}>{user.firstName} {user.lastName} ({user.ritUsername})</MenuItem>
+                ))}
+              </Select>
+
+              <TextareaAutosize
+                style={{ background: "none", fontFamily: "Roboto", fontSize: "1em", lineHeight: "2em", marginTop: "2em", marginBottom: "2em" }}
+                aria-label="Notes"
+                defaultValue={notes ?? ""}
+                placeholder="Usage Notes"
+                value={notes}
+                onChange={handleNotesChanged} />
+            </Stack>
             <Button
               variant="outlined"
               startIcon={<InventoryIcon />}
-              onClick={onFinalize}
+              onClick={() => onFinalize(notes, recievingUserID)}
             >
               Update inventory
             </Button>

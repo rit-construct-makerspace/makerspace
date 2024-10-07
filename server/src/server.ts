@@ -240,7 +240,7 @@ async function startServer() {
         "Allowed": 0,
         "Error": "User does not exist"
       }).send();
-    } 
+    }
 
     var machine;
     try {
@@ -283,7 +283,7 @@ async function startServer() {
 
 
     //If needs welcome, check that room swipe has occured in the zone today
-    if (req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
+    if (!(process.env.GLOBAL_WELCOME_BYPASS == "TRUE") && req.query.needswelcome != undefined && req.query.needswelcome.toString() === "1") {
       //console.log("Checking welcome status");
       const welcomed = await hasSwipedToday(machine.roomID, user.id);
       if (!welcomed) {
@@ -299,7 +299,7 @@ async function startServer() {
     }
 
     //Check that all required trainings are passed
-    if (!(await hasAccessByID(user.id, machine.id))) {
+    if (!(process.env.GLOBAL_TRAINING_BYPASS == "TRUE") && !(await hasAccessByID(user.id, machine.id))) {
       if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "Incomplete trainings"});
       return res.status(401).json({
         "Type": "Authorization",
@@ -311,7 +311,7 @@ async function startServer() {
     }
 
     //Check that equipment access check is completed
-    if (!(await isApproved(user.id, machine.id))) {
+    if (!(process.env.GLOBAL_ACCESS_CHECK_BYPASS == "TRUE") && !(await isApproved(user.id, machine.id))) {
       if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "Missing Staff Approval"});
       return res.status(401).json({
         "Type": "Authorization",
@@ -368,9 +368,10 @@ async function startServer() {
         zone: req.body.Zone
       });
       if (reader == undefined) {
-        if (API_DEBUG_LOGGING) createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
+        if (API_DEBUG_LOGGING) await createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
         return res.status(400).json({error: "Reader does not exist"}).send();
       }
+      else if (API_NORMAL_LOGGING) await createLog(`New Access Device {access_device} registered.`, {id: reader?.id, label: reader?.name});
     }
 
     await updateReaderStatus({
@@ -386,6 +387,11 @@ async function startServer() {
       scheduledStatusFreq: req.body.Frequency,
       helpRequested: req.body.Help == null ? reader.helpRequested : (req.body.Help === "1")
     });
+
+    //If state change
+    if (API_NORMAL_LOGGING && reader.state != req.body.State) {
+      await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, {id: reader?.id, label: reader?.name});
+    }
 
     //If in a user session or just finished a user session
     if (req.body.UID != null || reader.currentUID != null) {
@@ -558,16 +564,14 @@ async function startServer() {
     --REMEMBER HEROKU SERVER RUNS IN UTC (EST+4)--
    */
 
-  const dailyRule = new schedule.RecurrenceRule();
-  dailyRule.dayOfWeek = new schedule.Range(0,6);
-  dailyRule.hour = 4;
-  dailyRule.minute = 0;
-
-  const dailyJob = schedule.scheduleJob(dailyRule, function(){
+  const dailyJob = schedule.scheduleJob("0 0 4 * * *", async function() {
+    //schedule operates in both UTC and EDT. for some reason...
+    //JS Date maintains only EDT, so use that to confirm
+    if (new Date().getHours() != 4) return;
     console.log('Wiping daily records...');
+    if (API_DEBUG_LOGGING) await createLog('Daily Temp Records have been wiped.')
     setDataPointValue(1,0);
   });
-
 
 
 

@@ -14,6 +14,7 @@ interface NavLinkProps {
   primary: string;
   to: string;
   notificationCount?: number;
+  newTab?: boolean
 }
 
 export default function NavLink({
@@ -21,6 +22,7 @@ export default function NavLink({
   primary,
   to,
   notificationCount,
+  newTab
 }: NavLinkProps) {
   const url = useLocation();
 
@@ -28,7 +30,7 @@ export default function NavLink({
     () =>
       forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, "to">>(
         (itemProps, ref) => (
-          <RouterLink to={to} ref={ref} {...itemProps} role={undefined} />
+          <RouterLink to={to} ref={ref} {...itemProps} role={undefined} target={newTab ? "_blank" : ""} rel={newTab ? "noopener noreferrer" : ""}/>
         )
       ),
     [to]

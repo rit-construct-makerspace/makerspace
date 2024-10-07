@@ -35,10 +35,20 @@ const UsersResolvers = {
   Query: {
     users: async (
       _parent: any,
-      _args: any,
+      args: { searchText: string },
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await UserRepo.getUsers();
+        const searchText = args.searchText ?? "";
+        return await UserRepo.getUsers(searchText);
+      }),
+
+    usersLimit: async (
+      _parent: any,
+      args: { searchText: string },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        const searchText = args.searchText ?? "";
+        return await UserRepo.getUsersLimit(searchText);
       }),
 
     user: async (
@@ -55,6 +65,14 @@ const UsersResolvers = {
       { user, ifAuthenticated }: ApolloContext) =>
       ifAuthenticated(async () => {
         return user;
+      }),
+
+    numUsers: async (
+      _parent: any,
+      _args: any,
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await UserRepo.getNumUsers();
       }),
   },
 
@@ -100,6 +118,15 @@ const UsersResolvers = {
         );
       }),
 
+    setNotes: async (
+      _parent: any,
+      args: { userID: string, notes: string },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser: any) => {
+        console.log("test")
+        const userSubject = await UserRepo.setNotes(Number(args.userID), args.notes);
+      }),
 
     setPrivilege: async (
       _parent: any,

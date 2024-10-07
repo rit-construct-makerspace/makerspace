@@ -66,7 +66,7 @@ export async function getLogs(
 ): Promise<AuditLog[]> {
   const knexResult = await knex("AuditLogs")
     .select()
-    .whereRaw(`("dateTime" at time zone 'EST5EDT') BETWEEN TIMESTAMP '${startDate}' AND TIMESTAMP '${stopDate}'`)
+    .whereRaw(`("dateTime" at time zone 'UTC') BETWEEN TIMESTAMP '${new Date(startDate).toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${new Date(stopDate).toISOString().replace("T", " ").replace("Z", "")}'`)
     .where("message", "ilike", `%${searchText}%`)
     .orderBy("dateTime", "DESC")
     .limit(100);

@@ -57,6 +57,7 @@ export const UsersTypeDefs = gql`
     cardTagID: String
     room: Room
     roomMonitoring: Room
+    notes: String
 
     """
     The number-letter combination that is attached to your RIT email
@@ -98,10 +99,16 @@ export const UsersTypeDefs = gql`
     lastName: String!
   }
 
+  input Count {
+    count: Int
+  }
+
   extend type Query {
-    users: [User]
+    users(searchText: String): [User]
+    usersLimit(searchText: String): [User]
     user(id: ID!): User
     currentUser: User
+    numUsers: Count
   }
 
   extend type Mutation {
@@ -127,6 +134,11 @@ export const UsersTypeDefs = gql`
     setCardTagID(
       userID: ID!
       cardTagID: String
+    ): User
+
+    setNotes(
+      userID: ID!
+      notes: String!
     ): User
   }
 `;

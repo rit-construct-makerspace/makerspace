@@ -11,6 +11,7 @@ export interface InventoryItem {
   threshold: number;
   staffOnly: boolean;
   storefrontVisible: boolean;
+  notes: string;
 }
 
 export interface InventoryItemInput {
@@ -22,6 +23,7 @@ export interface InventoryItemInput {
   count: number;
   pricePerUnit: number;
   threshold: number;
+  notes: string;
 }
 
 export const StoreFrontTypeDefs = gql`
@@ -39,6 +41,7 @@ export const StoreFrontTypeDefs = gql`
     threshold: Int
     staffOnly: Boolean
     storefrontVisible: Boolean
+    notes: String
   }
 
   input InventoryItemInput {
@@ -52,6 +55,12 @@ export const StoreFrontTypeDefs = gql`
     threshold: Int
     staffOnly: Boolean
     storefrontVisible: Boolean
+    notes: String
+  }
+
+  input CartItem {
+    id: ID!
+    count: Int!
   }
 
   type InventoryLedger {
@@ -92,6 +101,7 @@ export const StoreFrontTypeDefs = gql`
     createLabel(label: String): String
     archiveLabel(label: String): String
     deleteInventoryItem(id: ID!): Boolean
+    checkoutItems(items: [CartItem], notes: String, recievingUserID: ID): Boolean
     setStaffOnly(id: ID!, staffOnly: Boolean!): InventoryItem
     setStorefrontVisible(id: ID!, storefrontVisible: Boolean!): InventoryItem
     deleteLedger(id: ID!): Boolean
