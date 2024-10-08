@@ -212,6 +212,11 @@ export interface EquipmentSessionRow {
   readerSlug: string;
 }
 
+export interface TextFieldRow {
+  id: number;
+  value: string;
+}
+
 declare module "knex/types/tables.js" {
   interface Tables {
     AuditLogs: AuditLogRow;
