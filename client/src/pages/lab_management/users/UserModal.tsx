@@ -148,19 +148,19 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
     });
   };
 
-  const handleDeleteUserClicked = () => {
-    const fName = getUserResult.data.user.firstName;
-    const lName = getUserResult.data.user.lastName;
-    const result = window.confirm(
-      `Are you sure you wish to delete ${fName} ${lName}'s account? This cannot be undone.`
-    );
-    if (result) {
-      deleteUser({
-        variables: { userID: getUserResult.data.user.id },
-        refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }],
-      });
-    };
-  }
+  // const handleDeleteUserClicked = () => {
+  //   const fName = getUserResult.data.user.firstName;
+  //   const lName = getUserResult.data.user.lastName;
+  //   const result = window.confirm(
+  //     `Are you sure you wish to delete ${fName} ${lName}'s account? This cannot be undone.`
+  //   );
+  //   if (result) {
+  //     deleteUser({
+  //       variables: { userID: getUserResult.data.user.id },
+  //       refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }],
+  //     });
+  //   };
+  // }
 
   const handleNotesChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNotes(event.target.value)
@@ -283,7 +283,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             </Typography>
 
             <Stack direction="row" spacing={2}>
-              {currentUser.privilege === Privilege.STAFF &&
+              {/* currentUser.privilege === Privilege.STAFF &&
                 <Button
                   variant="outlined"
                   color="error"
@@ -293,7 +293,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
                 >
                   Delete account
                 </Button>
-              }
+              */}
               <Button
                 startIcon={<HistoryIcon />}
                 variant="outlined"

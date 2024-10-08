@@ -49,7 +49,8 @@ export async function getUsers(searchText?: string): Promise<UserRow[]> {
 export async function getUsersLimit(searchText?: string): Promise<UserRow[]> {
   return knex("Users").select()
   .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
-  .orderBy("ritUsername", "ASC");
+  .orderBy("ritUsername", "ASC")
+  .limit(100);
 }
 
 /**
