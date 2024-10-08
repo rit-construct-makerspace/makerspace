@@ -28,6 +28,8 @@ import NewAnnouncementPage from "./pages/lab_management/announcements/NewAnnounc
 import EditAnnouncement from "./pages/lab_management/announcements/EditAnnouncement";
 import ReadersPage from "./pages/lab_management/readers/ReadersPage";
 import StatisticsPage from "./pages/lab_management/statistics/StatisticsPage";
+import EditTermsPage from "./pages/lab_management/policy/EditTermsPage";
+import TermsPage from "./pages/both/policy/TermsPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -56,6 +58,8 @@ export default function AppRoutes() {
           <Route path="/maker/training/:id/results" element={<QuizResults />} />
 
           <Route path="/maker/materials" element={<InventoryPreviewPage />} />
+
+          <Route path="/terms" element={<TermsPage />} />
 
           <Route path="/admin/equipment" element={<ManageEquipmentPage />} />
           <Route path="/admin/equipment/:id" element={<EditEquipmentPage archived={false} />} />
@@ -86,6 +90,8 @@ export default function AppRoutes() {
           <Route path="/admin/readers" element={<ReadersPage />} />
 
           <Route path="/admin/statistics" element={<StatisticsPage />} />
+
+          <Route path="/admin/terms" element={<EditTermsPage />} />
 
           <Route path="/logoutprompt" element={<LogoutPromptPage />} />
 
