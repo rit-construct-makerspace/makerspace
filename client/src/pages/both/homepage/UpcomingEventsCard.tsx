@@ -46,7 +46,7 @@ export default function UpcomingEventsCard() {
   const getEvents = useQuery(GET_EVENTS);
 
   return (
-    <Card sx={{ minWidth: 250, maxWidth: 500, height: 500, py: 2, px: '10px', border: 1, borderColor: "lightgrey", overflowY: 'scroll' }} >
+    <Card sx={{ minWidth: 250, maxWidth: 500, height: 500, p: "1em", px: '10px', border: 1, borderColor: "lightgrey", overflowY: 'scroll', borderRadius: 0 }} >
       <CardHeader title="Upcoming Events" subheader={(<Link to={process.env.REACT_APP_EVENTBRITE_PAGE_LINK ?? "#"}>View All</Link>)} sx={{ py: 0, fontWeight: 'bold' }}></CardHeader>
       <CardContent sx={{ px: '5px' }}>
         <RequestWrapper loading={getEvents.loading} error={getEvents.error}>
