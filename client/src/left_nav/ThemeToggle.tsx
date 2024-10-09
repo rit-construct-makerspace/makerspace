@@ -17,7 +17,11 @@ export default function ThemeToggle() {
   const [mode, setMode] = useState(localStorage.getItem("themeMode") == "dark")
 
   return (
-    <ListItemButton>
+    <ListItemButton sx={{height: "4em"}} onClick={(e) => {
+      setMode(!mode);
+      localStorage.setItem("themeMode", mode ? "light" : "dark");
+      window.location.reload();
+    }}>
     <ListItemIcon><DarkModeIcon /></ListItemIcon>
       <Stack direction={"row"}>
         <Typography>

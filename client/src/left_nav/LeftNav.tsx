@@ -191,8 +191,8 @@ export default function LeftNav() {
       </List>
 
 
-      <List component={"nav"}>
-        <ThemeToggle />
+      <List component={"nav"} sx={{height: "100%", display: "flex", alignItems: "flex-end"}}>
+        <ThemeToggle/>
       </List>
     </>
   );
