@@ -27,7 +27,7 @@ import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repos
 import { incrementDataPointValue, setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 const require = createRequire(import.meta.url);
 
-const allowed_origins =  [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
+const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
 
 const __dirname = import.meta.dirname;
 
@@ -76,7 +76,7 @@ async function startServer() {
     app.set('view engine', 'ejs');
 
     setupDevAuth(app);
-  } 
+  }
   /**
    * mode: STAGING
    * Use the SAML configuration, but use insecure dev cookie handling
@@ -84,7 +84,7 @@ async function startServer() {
   else if (process.env.NODE_ENV === "staging") {
     console.log("staging active");
     setupStagingAuth(app);
-  } 
+  }
   /**
    * mode: PRODUCTION
    * Use production SAML settings. Full security
@@ -115,13 +115,13 @@ async function startServer() {
 
   //it might seem like you should be able to redirect straight to /app/ from / but for some reason it infitely refreshes
   // and this solves the issue
-  app.get("/app/home", function(req, res) {
+  app.get("/app/home", function (req, res) {
     res.redirect("/app/")
   })
 
 
   //redirects first landing make.rit.edu/ -> make.rit.edu/home
-  app.get("/", function(req , res) {
+  app.get("/", function (req, res) {
     res.redirect("/app/home");
   });
 
@@ -162,11 +162,11 @@ async function startServer() {
    * HTTP 406: User/Zone not exists
    * HTTP 403: Key mismatch
    */
-  app.put("/api/welcome", async function(req, res) {
+  app.put("/api/welcome", async function (req, res) {
     //If API Keys dont match, fail
     if (req.body.Key != process.env.API_KEY) {
-      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to swipe into a room with error '{error}'", {id: 0, label: req.body.ID}, {id: 403, label: "Invalid Key"});
-      return res.status(403).json({error: "Invalid Key"}).send();
+      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to swipe into a room with error '{error}'", { id: 0, label: req.body.ID }, { id: 403, label: "Invalid Key" });
+      return res.status(403).json({ error: "Invalid Key" }).send();
     }
 
     const uid = req.body.ID;
@@ -184,30 +184,43 @@ async function startServer() {
       rooms.push(await getRoomByID(parseInt(idString)));
     }
 
-    //If user is not found, fail
-    if (user == undefined) {
-      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to swipe into a room with error '{error}'", {id: 0, label: req.body.ID}, {id: 406, label: "User does not exist"});
-      return res.status(406).json({error: "User does not exist"}).send();
-    } 
     //If room is not found, fail
-    else if (rooms.some(function(room) {
+    if (rooms.some(function (room) {
       return room == null;
     })) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a room with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Room does not exist"});
-      return res.status(406).json({error: "Room does not exist"}).send();
+      if (API_DEBUG_LOGGING) {
+        if (!user) createLog("UID {conceal} failed to swipe into a room with error '{error}'", { id: 0, label: req.body.ID }, { id: 406, label: "Room does not exist" });
+        else createLog("{user} failed to swipe into a room with error '{error}'", { id: user.id, label: getUsersFullName(user) }, { id: 406, label: "Room does not exist" });
+      }
+      return res.status(406).json({ error: "Room does not exist" }).send();
+    }
+    //If user is not found, fail
+    else if (user == undefined) {
+      var attemptRoomNamesArray = [{ id: 0, label: req.body.ID }];
+      var attemptMessageString = "";
+      rooms.forEach(function (room) {
+        if (room != null) {
+          attemptRoomNamesArray.push({ id: room.id, label: room.name });
+          attemptMessageString += "{room}, ";
+        }
+      });
+      attemptRoomNamesArray.push({ id: 406, label: "User does not exist" });
+
+      if (API_DEBUG_LOGGING) createLogWithArray(`UID {conceal} failed to swipe into ${attemptMessageString.substring(0, attemptMessageString.length - 2)} with error '{error}'`, attemptRoomNamesArray);
+      return res.status(406).json({ error: "User does not exist" }).send();
     }
     //Success. Log and return.
     else {
-      var roomNamesArray = [{id: user.id, label: getUsersFullName(user)}];
+      var roomNamesArray = [{ id: user.id, label: getUsersFullName(user) }];
       var messageString = "{user} has signed into ";
-      rooms.forEach(function(room) {
+      rooms.forEach(function (room) {
         if (room != null) {
-          roomNamesArray.push({id: room.id, label: room.name});
+          roomNamesArray.push({ id: room.id, label: room.name });
           messageString += "{room}, ";
           swipeIntoRoom(room.id, user.id);
         }
       });
-      if (API_NORMAL_LOGGING) createLogWithArray(messageString.substring(0,messageString.length-2), roomNamesArray);
+      if (API_NORMAL_LOGGING) createLogWithArray(messageString.substring(0, messageString.length - 2), roomNamesArray);
       return res.status(202).send();
     }
   });
@@ -222,17 +235,17 @@ async function startServer() {
    * - needswelcome: If true, check if user has signed into the room within the day
    * - id: user uid
    */
-  app.get("/api/auth", async function(req, res) {
+  app.get("/api/auth", async function (req, res) {
     if (req.query.id == undefined || req.query.needswelcome == undefined || req.query.type == undefined) {
-      if (API_DEBUG_LOGGING) createLog("Request failed to gain equipent access with error '{error}'", {id: 400, label: "Missing paramaters"});
-      return res.status(400).json({error: "Missing paramaters"}).send();
+      if (API_DEBUG_LOGGING) createLog("Request failed to gain equipent access with error '{error}'", { id: 400, label: "Missing paramaters" });
+      return res.status(400).json({ error: "Missing paramaters" }).send();
     }
 
     const user = await getUserByCardTagID(req.query.id.toString());
 
     //If user is not found, fail
     if (user == undefined) {
-      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to activate a machine with error '{error}'", {id: 0, label: req.query.id?.toString() ?? "undefined_uid"}, {id: 406, label: "User does not exist"});
+      if (API_DEBUG_LOGGING) createLog("UID {conceal} failed to activate a machine with error '{error}'", { id: 0, label: req.query.id?.toString() ?? "undefined_uid" }, { id: 406, label: "User does not exist" });
       return res.status(406).json({
         "Type": "Authorization",
         "Machine": req.query.machine,
@@ -246,7 +259,7 @@ async function startServer() {
     try {
       machine = await getEquipmentByID(parseInt(req.query.type.toString()));
     } catch (EntityNotFound) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.type.toString() + " does not exist"});
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", { id: user.id, label: getUsersFullName(user) }, { id: 406, label: "Machine " + req.query.type.toString() + " does not exist" });
       return res.status(406).json({
         "Type": "Authorization",
         "Machine": req.query.type,
@@ -258,7 +271,7 @@ async function startServer() {
 
     //If machine is not found, fail
     if (machine == null) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: 406, label: "Machine " + req.query.type.toString() + " does not exist"});
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into a machine with error '{error}'", { id: user.id, label: getUsersFullName(user) }, { id: 406, label: "Machine " + req.query.type.toString() + " does not exist" });
       return res.status(406).json({
         "Type": "Authorization",
         "Machine": req.query.type,
@@ -271,7 +284,7 @@ async function startServer() {
 
     //Staff bypass. Skip Welcome and training check.
     if (user.privilege == Privilege.STAFF) {
-      if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} with STAFF access", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name});
+      if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} with STAFF access", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name });
       createEquipmentSession(machine.id, user.id);
       return res.status(202).json({
         "Type": "Authorization",
@@ -287,7 +300,7 @@ async function startServer() {
       //console.log("Checking welcome status");
       const welcomed = await hasSwipedToday(machine.roomID, user.id);
       if (!welcomed) {
-        if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "User requires Welcome"});
+        if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name }, { id: 401, label: "User requires Welcome" });
         return res.status(401).json({
           "Type": "Authorization",
           "Machine": machine.id,
@@ -300,7 +313,7 @@ async function startServer() {
 
     //Check that all required trainings are passed
     if (!(process.env.GLOBAL_TRAINING_BYPASS == "TRUE") && !(await hasAccessByID(user.id, machine.id))) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "Incomplete trainings"});
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name }, { id: 401, label: "Incomplete trainings" });
       return res.status(401).json({
         "Type": "Authorization",
         "Machine": machine.id,
@@ -312,7 +325,7 @@ async function startServer() {
 
     //Check that equipment access check is completed
     if (!(process.env.GLOBAL_ACCESS_CHECK_BYPASS == "TRUE") && !(await isApproved(user.id, machine.id))) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name}, {id: 401, label: "Missing Staff Approval"});
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name }, { id: 401, label: "Missing Staff Approval" });
       return res.status(401).json({
         "Type": "Authorization",
         "Machine": machine.id,
@@ -323,7 +336,7 @@ async function startServer() {
     }
 
     //Success
-    if (API_NORMAL_LOGGING) createLog("{user} has activated {machine}", {id: user.id, label: getUsersFullName(user)}, {id: machine.id, label: machine.name});
+    if (API_NORMAL_LOGGING) createLog("{user} has activated {machine}", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name });
     createEquipmentSession(machine.id, user.id);
     return res.status(202).json({
       "Type": "Authorization",
@@ -350,11 +363,11 @@ async function startServer() {
    * - Frequency: How often scheduled status messages will be sent
    * - Key: API key for authorization
    */
-  app.put("/api/status", async function(req, res) {
+  app.put("/api/status", async function (req, res) {
     //If API Keys dont match, fail
     if (req.body.Key != process.env.API_KEY) {
-      if (API_DEBUG_LOGGING) createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 403, label: "Invalid Key"});
-      return res.status(403).json({error: "Invalid Key"}).send();
+      if (API_DEBUG_LOGGING) createLog("Access Device Status Update failed. Error '{error}'", { id: req.body.ID, label: req.body.ID }, { id: 403, label: "Invalid Key" });
+      return res.status(403).json({ error: "Invalid Key" }).send();
     }
 
     //console.log(req.body.Machine);
@@ -368,10 +381,10 @@ async function startServer() {
         zone: req.body.Zone
       });
       if (reader == undefined) {
-        if (API_DEBUG_LOGGING) await createLog("Access Device Status Update failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
-        return res.status(400).json({error: "Reader does not exist"}).send();
+        if (API_DEBUG_LOGGING) await createLog("Access Device Status Update failed. Error '{error}'", { id: req.body.ID, label: req.body.ID }, { id: 400, label: "Reader does not exist" });
+        return res.status(400).json({ error: "Reader does not exist" }).send();
       }
-      else if (API_NORMAL_LOGGING) await createLog(`New Access Device {access_device} registered.`, {id: reader?.id, label: reader?.name});
+      else if (API_NORMAL_LOGGING) await createLog(`New Access Device {access_device} registered.`, { id: reader?.id, label: reader?.name });
     }
 
     await updateReaderStatus({
@@ -390,7 +403,7 @@ async function startServer() {
 
     //If state change
     if (API_NORMAL_LOGGING && reader.state != req.body.State) {
-      await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, {id: reader?.id, label: reader?.name});
+      await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, { id: reader?.id, label: reader?.name });
     }
 
     //If in a user session or just finished a user session
@@ -403,7 +416,7 @@ async function startServer() {
       const user = await getUserByCardTagID(reader.currentUID)
       const equipment = await getEquipmentByID(parseInt(reader.machineType));
       if (user != undefined) {
-        await createLog(`{user} signed out of {equipment} (Session: ${req.body.Time} sec)`, {id: user.id, label: getUsersFullName(user)}, {id: equipment.id, label: equipment.name});
+        await createLog(`{user} signed out of {equipment} (Session: ${req.body.Time} sec)`, { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
       }
     }
 
@@ -420,23 +433,23 @@ async function startServer() {
    * - Zone: the room ID according to the database
    * - Key: API key for authorization
    */
-  app.put("/api/help", async function(req, res) {
+  app.put("/api/help", async function (req, res) {
     //If API Keys dont match, fail
     //console.log("HELP: " + JSON.stringify(req.body, null, 4));
     if (req.body.Key != process.env.API_KEY) {
-      if (API_DEBUG_LOGGING) createLog("Access Device Help request failed with error '{error}'", {id: 403, label: "Invalid Key"});
-      return res.status(403).json({error: "Invalid Key"}).send();
+      if (API_DEBUG_LOGGING) createLog("Access Device Help request failed with error '{error}'", { id: 403, label: "Invalid Key" });
+      return res.status(403).json({ error: "Invalid Key" }).send();
     }
 
     const reader = await getReaderByName(req.body.Machine);
     if (reader == undefined) {
-      if (API_DEBUG_LOGGING) createLog("Access Device Help request failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
-      return res.status(400).json({error: "Reader does not exist"}).send();
+      if (API_DEBUG_LOGGING) createLog("Access Device Help request failed. Error '{error}'", { id: req.body.ID, label: req.body.ID }, { id: 400, label: "Reader does not exist" });
+      return res.status(400).json({ error: "Reader does not exist" }).send();
     }
     await toggleHelpRequested(reader?.id);
     if (API_NORMAL_LOGGING) {
-      if (!reader.helpRequested) createLog("Help requested at {access_device}!", {id: reader.id, label: reader.name}); //Prev was false, new is true
-      else createLog("Help dismissed at {access_device}", {id: reader.id, label: reader.name}); //Prev was true, new is false
+      if (!reader.helpRequested) createLog("Help requested at {access_device}!", { id: reader.id, label: reader.name }); //Prev was false, new is true
+      else createLog("Help dismissed at {access_device}", { id: reader.id, label: reader.name }); //Prev was true, new is false
     }
     return res.status(200).send();
   });
@@ -448,11 +461,11 @@ async function startServer() {
    * Request (header):
    * - message: The audit log message
    */
-  app.get("/api/message/:MachineID", async function(req, res) {
+  app.get("/api/message/:MachineID", async function (req, res) {
     const machine = await getReaderByName(req.params.MachineID);
 
     if (req.query.message != undefined && machine != undefined) {
-      createLog("{access_device} message: " + req.query.message.toString(), {id: machine.id, label: machine.name});
+      createLog("{access_device} message: " + req.query.message.toString(), { id: machine.id, label: machine.name });
       return res.status(200).send();
     }
     return res.status(400).send();
@@ -462,7 +475,7 @@ async function startServer() {
    * CHECK----
    * Return 200
    */
-  app.get("/api/check/:MachineID", function(req, res) {
+  app.get("/api/check/:MachineID", function (req, res) {
     return res.status(200).send();
   });
 
@@ -471,12 +484,12 @@ async function startServer() {
    * STATE----
    * Check a machine's last returned State
    */
-  app.get("/api/state/:MachineID", async function(req, res) {
-    const reader =  await getReaderByName(req.params.MachineID);
+  app.get("/api/state/:MachineID", async function (req, res) {
+    const reader = await getReaderByName(req.params.MachineID);
 
     if (reader == undefined) {
-      if (API_DEBUG_LOGGING) createLog("Access Device State fetch failed. Error '{error}'", {id: req.body.ID, label: req.body.ID}, {id: 400, label: "Reader does not exist"});
-      return res.status(400).json({error: "Reader does not exist"}).send();
+      if (API_DEBUG_LOGGING) createLog("Access Device State fetch failed. Error '{error}'", { id: req.body.ID, label: req.body.ID }, { id: 400, label: "Reader does not exist" });
+      return res.status(400).json({ error: "Reader does not exist" }).send();
     }
 
     return res.status(200).json({
@@ -491,11 +504,11 @@ async function startServer() {
    * HOURS--
    * Fetch the hours associated with a zone string
    */
-  app.get("/api/hours/:zone", async function(req, res) {
+  app.get("/api/hours/:zone", async function (req, res) {
     const hourRows = await getHoursByZone(Number(req.params.zone));
 
     var hoursString = "";
-    hourRows.forEach(function(hourRow) {
+    hourRows.forEach(function (hourRow) {
       /**
        * Format:
        * Monday Open: 09:00
@@ -505,29 +518,29 @@ async function startServer() {
        */
 
       switch (hourRow.dayOfTheWeek) {
-        case WeekDays.SUNDAY: 
-          hoursString += "Sunday "; 
+        case WeekDays.SUNDAY:
+          hoursString += "Sunday ";
           break;
-        case WeekDays.MONDAY: 
-          hoursString += "Monday "; 
+        case WeekDays.MONDAY:
+          hoursString += "Monday ";
           break;
-        case WeekDays.MONDAY: 
-          hoursString += "Tuesday "; 
+        case WeekDays.MONDAY:
+          hoursString += "Tuesday ";
           break;
-        case WeekDays.MONDAY: 
-          hoursString += "Wednesday "; 
+        case WeekDays.MONDAY:
+          hoursString += "Wednesday ";
           break;
-        case WeekDays.MONDAY: 
-          hoursString += "Thursday "; 
+        case WeekDays.MONDAY:
+          hoursString += "Thursday ";
           break;
-        case WeekDays.MONDAY: 
-          hoursString += "Friday "; 
+        case WeekDays.MONDAY:
+          hoursString += "Friday ";
           break;
-        case WeekDays.MONDAY: 
-          hoursString += "Saturday "; 
+        case WeekDays.MONDAY:
+          hoursString += "Saturday ";
           break;
         default:
-          hoursString += "Undefined "; 
+          hoursString += "Undefined ";
           break;
       };
 
@@ -564,13 +577,13 @@ async function startServer() {
     --REMEMBER HEROKU SERVER RUNS IN UTC (EST+4)--
    */
 
-  const dailyJob = schedule.scheduleJob("0 0 4 * * *", async function() {
+  const dailyJob = schedule.scheduleJob("0 0 4 * * *", async function () {
     //schedule operates in both UTC and EDT. for some reason...
     //JS Date maintains only EDT, so use that to confirm
     if (new Date().getHours() != 4) return;
     console.log('Wiping daily records...');
     if (API_DEBUG_LOGGING) await createLog('Daily Temp Records have been wiped.')
-    setDataPointValue(1,0);
+    setDataPointValue(1, 0);
   });
 
 
