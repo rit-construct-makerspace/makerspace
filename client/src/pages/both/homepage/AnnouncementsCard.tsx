@@ -31,7 +31,7 @@ export default function AnnouncementsCard() {
             loading={getAnnouncementsResult.loading}
             error={getAnnouncementsResult.error}
         >
-            <Card elevation={2} sx={{ minWidth: 250, maxWidth: 400, height: 500, padding: 2, justifyContent: "space-between", border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll"  }}>
+            <Card elevation={2} sx={{ minWidth: 250, maxWidth: 400, height: 500, padding: "1em", justifyContent: "space-between", border: 1, borderColor: "lightgrey", flexGrow: 1, overflowY: "scroll", borderRadius: 0  }}>
                 <Stack direction={"column"} spacing={1}>
                     <CardHeader title="Announcements" sx={{pt: 0, fontWeight: 'bold'}} />
                     <Stack spacing={1}>
