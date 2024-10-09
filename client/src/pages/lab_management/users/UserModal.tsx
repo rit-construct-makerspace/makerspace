@@ -267,7 +267,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             <Box sx={{ maxHeight: "300px", overflowY: "scroll" }}>
               <Stack spacing={0.5}>
                 {user.passedModules != null && user.passedModules.map((module: { moduleID: number, moduleName: string, submissionDate: string }) => (
-                  <Card sx={{ p: "0.25em", backgroundColor: "grey.100", border: `1px solid grey` }}>
+                  <Card sx={{ p: "0.25em", backgroundColor: (localStorage.getItem("themeMode") == "dark" ? "grey.900" : "grey.100"), border: `1px solid grey` }}>
                     <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
                       <Typography>{module.moduleName}</Typography>
                       <Typography>{format(new Date(module.submissionDate), "M/d/yy h:mmaaa")}</Typography>

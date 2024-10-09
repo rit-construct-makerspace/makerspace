@@ -32,7 +32,7 @@ export default function TrainingModuleRow({
 
         <Typography
           variant="body2"
-          sx={{ color: "text.secondary", width: 80, lineHeight: 1 }}
+          sx={{ width: 80, lineHeight: 1 }}
         >
           {moduleStatus.status}
         </Typography>
@@ -42,11 +42,9 @@ export default function TrainingModuleRow({
         {moduleStatus.status === "Expiring Soon"  && (
           <Stack sx={{ ml: "auto !important" }} >
             <Typography variant="body2"
-            color="text.secondary"
             sx={{ ml: "auto !important" }}>Exp Date:</Typography>
             <Typography
             variant="body2"
-            color="text.secondary"
             sx={{ ml: "auto !important" }}
             >
               {format(parseISO(moduleStatus.expirationDate), "MM/dd/yyyy")}
@@ -57,7 +55,6 @@ export default function TrainingModuleRow({
         {moduleStatus.status === "Passed" && (
           <Typography
             variant="body2"
-            color="text.secondary"
             sx={{ ml: "auto !important" }}
           >
             {format(parseISO(moduleStatus.submissionDate), "MM/dd/yyyy")}

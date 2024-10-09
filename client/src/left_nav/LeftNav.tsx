@@ -14,6 +14,7 @@ import AdfScannerIcon from '@mui/icons-material/AdfScanner';
 import Typography from "@mui/material/Typography";
 import NavLink from "./NavLink";
 import LogoSvg from "../assets/acronym_logo.svg";
+import LogoSvgW from "../assets/acronym_logo_w.svg";
 import styled from "styled-components";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
@@ -30,6 +31,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import RequestWrapper from "../common/RequestWrapper";
 import { gql, useQuery } from "@apollo/client";
 import BarChartIcon from '@mui/icons-material/BarChart';
+import ThemeToggle from "./ThemeToggle";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -75,7 +77,7 @@ export default function LeftNav() {
 
   const drawerContent = (
     <>
-      <StyledLogo src={LogoSvg} alt="SHED logo" onClick={() => navigate(`/`)} />
+      <StyledLogo src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => navigate(`/`)} />
 
       <Stack direction="row" alignItems="center" spacing={2} padding={2}>
         <Avatar
@@ -186,6 +188,11 @@ export default function LeftNav() {
             primary="Logout"
             icon={<HandymanIcon />}
         />
+      </List>
+
+
+      <List component={"nav"}>
+        <ThemeToggle />
       </List>
     </>
   );
