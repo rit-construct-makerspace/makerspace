@@ -90,7 +90,7 @@ const StorefrontResolvers = {
       const orig = await InventoryRepo.getItemById(Number(args.itemId))
       //If item is STAFF ONLY, only allow edits by staff
       if (!(orig)?.staffOnly) {
-        return ifAllowed([Privilege.STAFF], async (user) => {
+        return ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemId + " does not exist");
           const result = await InventoryRepo.updateItemById(Number(args.itemId), args.item);
           const costChange = (Number(args.item.pricePerUnit) * Number(args.item.count)) - (Number(orig.pricePerUnit) * Number(orig.count));
@@ -98,7 +98,7 @@ const StorefrontResolvers = {
           return result;
         })
       }
-      return ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (user) => {
+      return ifAllowed([Privilege.STAFF], async (user) => {
         const result = await InventoryRepo.updateItemById(Number(args.itemId), args.item);
         const costChange = (Number(args.item.pricePerUnit) * Number(args.item.count)) - (Number(orig.pricePerUnit) * Number(orig.count));
         await createLedger(user.id, "Modify", costChange, undefined, "", [{ name: args.item.name, quantity: Number(args.item.count) - Number(orig.count) }]);
