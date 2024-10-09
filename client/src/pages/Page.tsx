@@ -29,7 +29,7 @@ export default function Page({
       >
         <Stack direction="row" alignItems="center" mb={4}>
           {title != "" &&
-          <Typography variant="h3" flexGrow={1}>
+          <Typography variant="h3" flexGrow={1} color={'text.primary'}>
           {title}
           </Typography>}
           {topRightAddons}

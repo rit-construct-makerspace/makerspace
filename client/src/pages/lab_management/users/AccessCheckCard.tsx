@@ -50,7 +50,7 @@ export default function AccessCheckCard({ accessCheck, userID }: AccessCheckCard
     >
       <Card
         sx={{
-          backgroundColor: !approved ? "grey.100" : "#fafff8",
+          backgroundColor: !approved ? (localStorage.getItem("themeMode") == "dark" ? "grey.900" : "grey.100") : (localStorage.getItem("themeMode") == "dark" ? "lightGreen.800" : "lightGreen.100"),
           border: `1px solid ${!approved ? "grey" : "lime"}`,
           display: 'flex',
           flexDirection: 'row',

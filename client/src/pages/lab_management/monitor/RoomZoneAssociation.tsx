@@ -69,6 +69,7 @@ export default function RoomZoneAssociation({
         <Select
           value={updatedZoneID}
           label="Zone"
+          placeholder="Zone"
           onChange={(e) => setUpdatedZoneID(Number(e.target.value))}
         >
           {getZonesResult.data != null && getZonesResult.data.zones.map((zone: {id: number, name: string}) => (
