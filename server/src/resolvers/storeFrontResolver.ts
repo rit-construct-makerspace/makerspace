@@ -112,14 +112,14 @@ const StorefrontResolvers = {
       { ifAllowed }: ApolloContext) => {
       const orig = await InventoryRepo.getItemById(Number(args.itemId));
       if (!(orig)?.staffOnly) {
-        return ifAllowed([Privilege.STAFF], async (user) => {
+        return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemId + " does not exist");
           const result = await InventoryRepo.addItemAmount(Number(args.itemId), args.count);
           await createLedger(user.id, "Modify", orig.pricePerUnit*args.count, undefined, "", [{ name: orig.name, quantity: Number(args.count) }]);
           return result;
         })
       }
-      return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      return ifAllowed([Privilege.STAFF], async (user) => {
         if (!orig) throw new GraphQLError("Item at" + args.itemId + " does not exist");
         const result = await InventoryRepo.addItemAmount(Number(args.itemId), args.count);
         await createLedger(user.id, "Modify", orig.pricePerUnit*args.count, undefined, "", [{ name: orig.name, quantity: Number(args.count) }]);
@@ -133,14 +133,14 @@ const StorefrontResolvers = {
       { ifAllowed }: ApolloContext) => {
       const orig = await InventoryRepo.getItemById(Number(args.itemID));
       if (!(orig)?.staffOnly) {
-        return ifAllowed([Privilege.STAFF], async (user) => {
+        return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemID + " does not exist");
           const result = await InventoryRepo.addItemAmount(Number(args.itemID), args.count);
           await createLedger(user.id, "Modify", orig.pricePerUnit*args.count, undefined, "", [{ name: orig.name, quantity: Number(args.count)*-1 }]);
           return result;
         })
       }
-      return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      return ifAllowed([Privilege.STAFF], async (user) => {
         if (!orig) throw new GraphQLError("Item at" + args.itemID + " does not exist");
         const result = await InventoryRepo.addItemAmount(Number(args.itemID), args.count);
         await createLedger(user.id, "Modify", orig.pricePerUnit*args.count, undefined, "", [{ name: orig.name, quantity: Number(args.count)*-1 }]);
@@ -180,14 +180,14 @@ const StorefrontResolvers = {
       { ifAllowed }: ApolloContext) => {
       const orig = await InventoryRepo.getItemById(Number(args.id));
       if (!(orig)?.staffOnly) {
-        return ifAllowed([Privilege.STAFF], async (user) => {
+        return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemID + " does not exist");
           const result = await InventoryRepo.deleteInventoryItem(Number(args.id));
           await createLedger(user.id, "Delete", -orig.pricePerUnit*Number(orig.count), undefined, "", [{ name: orig.name, quantity: Number(orig.count)*-1 }]);
           return result;
         })
       }
-      return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      return ifAllowed([Privilege.STAFF], async () => {
         return await deleteInventoryItem(args.id);
       }
       )
