@@ -113,6 +113,7 @@ const UsersResolvers = {
 
         await createLog(
           `{user} updated {user}'s Card Tag ID.`,
+          "admin",
           { id: executingUser.id, label: getUsersFullName(executingUser) },
           { id: userSubject.id, label: getUsersFullName(userSubject) }
         );
@@ -138,6 +139,7 @@ const UsersResolvers = {
 
         await createLog(
           `{user} set {user}'s access level to ${args.privilege}.`,
+          "admin",
           { id: executingUser.id, label: getUsersFullName(executingUser) },
           { id: userSubject.id, label: getUsersFullName(userSubject) }
         );
@@ -156,6 +158,7 @@ const UsersResolvers = {
 
           await createLog(
             `{user} archived {user}'s profile.`,
+            "admin",
             { id: user.id, label: getUsersFullName(user) },
             { id: args.userID, label: getUsersFullName(userSubject) }
           );
