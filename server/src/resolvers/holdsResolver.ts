@@ -39,6 +39,7 @@ const HoldsResolvers = {
 
         await createLog(
           "{user} placed a hold on {user}'s account.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: Number(args.userID), label: getUsersFullName(userWithHold) }
         );
@@ -57,6 +58,7 @@ const HoldsResolvers = {
 
         await createLog(
           "{user} removed a hold on {user}'s account.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: userWithHold.id, label: getUsersFullName(userWithHold) }
         );

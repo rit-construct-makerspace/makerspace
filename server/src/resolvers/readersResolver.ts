@@ -57,6 +57,7 @@ const ReadersResolver = {
 
         await createLog(
           `{user} set {reader}'s name to ${args.name}.`,
+          "admin",
           { id: executingUser.id, label: getUsersFullName(executingUser) },
           { id: readerSubject.id, label: readerSubject.name }
         );

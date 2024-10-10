@@ -1,10 +1,18 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Page from "../../Page";
 import {
+  Button,
+  Card,
+  Checkbox,
+  Collapse,
   Divider,
+  FormControlLabel,
+  FormGroup,
   IconButton,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
@@ -15,24 +23,43 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { endOfDay, parse, startOfDay } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
 import AdminPage from "../../AdminPage";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMore from "@mui/icons-material/ExpandMore";
 
 const GET_LOGS = gql`
   query GetLogs(
     $startDate: DateTime
     $stopDate: DateTime
     $searchText: String
+    $filters: Filters
   ) {
     auditLogs(
       startDate: $startDate
       stopDate: $stopDate
       searchText: $searchText
+      filters: $filters
     ) {
       id
       dateTime
       message
+      category
     }
   }
 `;
+
+interface Filters {
+  errors: string
+  welcome: boolean
+  auth: boolean
+  status: boolean
+  state: boolean
+  help: boolean
+  message: boolean
+  server: boolean
+  training: boolean
+  admin: boolean
+  uncategorized: boolean
+}
 
 function parseDateForQuery(
   dateString: string,
@@ -43,10 +70,54 @@ function parseDateForQuery(
 }
 
 export default function LogPage() {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
+  }, []);
+  const isMobile = width <= 1100;
+
   const { search } = useLocation();
   const navigate = useNavigate();
-  const [query, queryResult] = useLazyQuery(GET_LOGS, {pollInterval: 2000});
+  const [query, queryResult] = useLazyQuery(GET_LOGS, { pollInterval: 2000 });
   const [searchText, setSearchText] = useState("");
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
+  const [filters, setFilters] = useState<Filters>({
+    errors: localStorage.getItem("errors") ?? "both",
+    welcome: localStorage.getItem("welcome") == "1",
+    auth: localStorage.getItem("auth") == "1",
+    status: localStorage.getItem("status") == "1",
+    state: localStorage.getItem("state") == "1",
+    help: localStorage.getItem("help") == "1",
+    message: localStorage.getItem("message") == "1",
+    server: localStorage.getItem("server") == "1",
+    training: localStorage.getItem("training") == "1",
+    admin: localStorage.getItem("admin") == "1",
+    uncategorized: localStorage.getItem("uncategorized") == "1"
+  });
+
+  function handleAdvSearchChange(e: any, property: string) {
+    console.log(e.target.value)
+    setFilters({ ...filters, [property]: !(filters[property as keyof typeof filters]) });
+    localStorage.setItem(property, (!(filters[property as keyof typeof filters]) ? "1" : "0"));
+    setUrlParam(property, (!(filters[property as keyof typeof filters]) ? "1" : "0"));
+  }
+
+  function handleErrorSwitchChange(e: any) {
+    setFilters({ ...filters, errors: e.target.value });
+    localStorage.setItem("errors", e.target.value);
+    setUrlParam("errors", e.target.value);
+  }
 
   const [startDateString, setStartDateString] = useState("");
   const [stopDateString, setStopDateString] = useState("");
@@ -66,6 +137,7 @@ export default function LogPage() {
         startDate: parseDateForQuery(startDate, startOfDay),
         stopDate: parseDateForQuery(stopDate, endOfDay),
         searchText: queryString,
+        filters: filters
       },
     });
   }, [search, query]);
@@ -78,10 +150,10 @@ export default function LogPage() {
 
   const handleDateChange =
     (paramName: string, setter: (s: string) => void) =>
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setter(e.target.value);
-      setUrlParam(paramName, e.target.value);
-    };
+      (e: ChangeEvent<HTMLInputElement>) => {
+        setter(e.target.value);
+        setUrlParam(paramName, e.target.value);
+      };
 
   const handleClear = () => {
     setSearchText("");
@@ -93,7 +165,7 @@ export default function LogPage() {
 
   return (
     <AdminPage title="History" maxWidth="1250px">
-      <Stack direction="row" spacing={2}>
+      <Stack direction={isMobile ? "column" : "row"} spacing={2}>
         <TextField
           label="Start"
           type="date"
@@ -118,12 +190,89 @@ export default function LogPage() {
           onChange={(e) => setSearchText(e.target.value)}
           onSubmit={() => setUrlParam("q", searchText)}
         />
+
         {showClearButton && (
           <IconButton onClick={handleClear} sx={{ ml: "8px !important" }}>
             <CloseIcon />
           </IconButton>
         )}
+        <Button onClick={(e) => setUrlParam("q", searchText)} variant="contained" color="primary">Search</Button>
       </Stack>
+      <Card sx={{ p: "1em", background: 'none', border: 'none' }}>
+        <Stack direction={"row"} onClick={handleExpandClick}>
+          <ExpandMore
+            aria-expanded={expanded}
+            aria-label="Advanced Options"
+          ></ExpandMore>
+          <Typography>
+            Advanced Options
+          </Typography>
+        </Stack>
+        <Collapse in={expanded} timeout="auto" unmountOnExit>
+          <Stack direction={"column"}>
+            <FormGroup>
+              <Typography>
+                Type
+              </Typography>
+              <Stack direction={"column"} flexWrap={"wrap"} height={"12.5em"}>
+                <FormControlLabel
+                  label="Sign-In Attempts"
+                  control={<Checkbox checked={filters.welcome} onChange={(e) => handleAdvSearchChange(e, "welcome")} />}
+                />
+                <FormControlLabel
+                  label="Equipment Activation Attempts"
+                  control={<Checkbox checked={filters.auth} onChange={(e) => handleAdvSearchChange(e, "auth")} />}
+                />
+                <FormControlLabel
+                  label="ACS Status Reports"
+                  control={<Checkbox checked={filters.state} onChange={(e) => handleAdvSearchChange(e, "state")} />}
+                />
+                <FormControlLabel
+                  label="ACS State Changes"
+                  control={<Checkbox checked={filters.state} onChange={(e) => handleAdvSearchChange(e, "state")} />}
+                />
+                <FormControlLabel
+                  label="Help Requests"
+                  control={<Checkbox checked={filters.help} onChange={(e) => handleAdvSearchChange(e, "help")} />}
+                />
+                <FormControlLabel
+                  label="ACS Messages"
+                  control={<Checkbox checked={filters.message} onChange={(e) => handleAdvSearchChange(e, "message")} />}
+                />
+                <FormControlLabel
+                  label="Server Messages"
+                  control={<Checkbox checked={filters.server} onChange={(e) => handleAdvSearchChange(e, "server")} />}
+                />
+                <FormControlLabel
+                  label="Admin Actions"
+                  control={<Checkbox checked={filters.admin} onChange={(e) => handleAdvSearchChange(e, "admin")} />}
+                />
+                <FormControlLabel
+                  label="Training Submissions"
+                  control={<Checkbox checked={filters.training} onChange={(e) => handleAdvSearchChange(e, "training")} />}
+                />
+                <FormControlLabel
+                  label="Uncategorized"
+                  control={<Checkbox checked={filters.uncategorized} onChange={(e) => handleAdvSearchChange(e, "uncategorized")} />}
+                />
+              </Stack>
+            </FormGroup>
+            <FormGroup>
+              <ToggleButtonGroup value={filters.errors} onChange={handleErrorSwitchChange} exclusive={true} size="small" aria-label="Small sizes" orientation={isMobile ? "vertical" : "horizontal"}>
+                <ToggleButton value="no-errors" key="no-errors">
+                  No Errors
+                </ToggleButton>
+                <ToggleButton value="both" key="both">
+                  Both
+                </ToggleButton>
+                <ToggleButton value="only-errors" key="only-errors">
+                  Only Errors
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </FormGroup>
+          </Stack>
+        </Collapse>
+      </Card>
       <RequestWrapper2
         result={queryResult}
         render={(data) => {
@@ -149,6 +298,7 @@ export default function LogPage() {
                   key={log.id}
                   dateTime={log.dateTime}
                   message={log.message}
+                  category={log.category}
                 />
               ))}
               <Typography variant="body2">This page is limitted to 100 logs. Consider narrowing your search criteria.</Typography>

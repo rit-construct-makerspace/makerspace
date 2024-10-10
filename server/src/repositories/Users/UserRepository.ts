@@ -146,9 +146,11 @@ export async function updateStudentProfile(args: {
   //user.universityID = hashUniversityID(user.universityID);
 
   if (!user.setupComplete) {
-    await createLog("{user} has joined The SHED!", {
-      id: args.userID,
-      label: getUsersFullName(user),
+    await createLog("{user} has joined The SHED!", 
+      "server",
+      {
+        id: args.userID,
+        label: getUsersFullName(user),
     });
   }
 

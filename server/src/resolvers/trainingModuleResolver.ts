@@ -155,6 +155,7 @@ const TrainingModuleResolvers = {
 
         await createLog(
           "{user} created the {module} module.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
@@ -177,6 +178,7 @@ const TrainingModuleResolvers = {
 
         await createLog(
           "{user} updated the {module} module.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
@@ -192,6 +194,7 @@ const TrainingModuleResolvers = {
 
         await createLog(
           "{user} archived the {module} module.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
@@ -209,6 +212,7 @@ const TrainingModuleResolvers = {
 
         await createLog(
           "{user} unarchived the {module} module.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: module.id, label: module.name }
         );
@@ -276,6 +280,7 @@ const TrainingModuleResolvers = {
           ).then(async (id) => {
             await createLog(
               `{user} submitted attempt of {module} with a grade of ${grade}.`,
+              "training",
               { id: user.id, label: getUsersFullName(user) },
               { id: args.moduleID, label: module.name }
             );
@@ -288,11 +293,13 @@ const TrainingModuleResolvers = {
                   if (result) {
                     await createLog(
                       `{user} has been automatically added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_WORKGROUP}.`,
+                      "server",
                       { id: user.id, label: getUsersFullName(user) }
                     );
                   } else {
                     await createLog(
                       `{user} has failed to be added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_WORKGROUP}. Check server logs.`,
+                      "server",
                       { id: user.id, label: getUsersFullName(user) }
                     );
                   }
@@ -304,11 +311,13 @@ const TrainingModuleResolvers = {
                   if (result) {
                     await createLog(
                       `{user} has been automatically added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_FS_WORKGROUP}.`,
+                      "server",
                       { id: user.id, label: getUsersFullName(user) }
                     );
                   } else {
                     await createLog(
                       `{user} has failed to be added to 3DPrinterOS Workgroup ${process.env.CLOUDPRINT_API_FS_WORKGROUP}. Check server logs.`,
+                      "server",
                       { id: user.id, label: getUsersFullName(user) }
                     );
                   }
