@@ -51,6 +51,7 @@ const RoomResolvers = {
 
         await createLog(
           "{user} created the {room} room.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: newRoom.id, label: newRoom.name }
         );
@@ -86,6 +87,7 @@ const RoomResolvers = {
 
       await createLog(
         "{user} swiped into the {room}.",
+        "welcome",
         { id: user.id, label: getUsersFullName(user) },
         { id: room.id, label: room.name }
       );

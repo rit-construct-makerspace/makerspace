@@ -34,6 +34,7 @@ const ReservationResolvers = {
 
         await createLog(
           "{user} created the {reservation} reservation.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: reservation.id, label: reservation.id.toString() }
         );

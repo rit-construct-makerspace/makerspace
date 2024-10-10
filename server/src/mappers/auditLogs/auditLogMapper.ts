@@ -17,5 +17,6 @@ export function singleLogToDomain(raw: any): AuditLog | null {
     id: raw.id,
     dateTime: raw.dateTime,
     message: raw.message,
+    category: raw.category
   };
 }

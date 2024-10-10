@@ -6,7 +6,7 @@ const AuditLogResolvers = {
   Query: {
     auditLogs: async (
       parent: any,
-      args: { startDate: string; stopDate: string; searchText: string },
+      args: { startDate: string; stopDate: string; searchText: string, filters?: AuditLogRepo.Filters },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
@@ -14,7 +14,7 @@ const AuditLogResolvers = {
         const stopDate = args.stopDate ?? "2200-01-01";
         const searchText = args.searchText ?? "";
 
-        return await AuditLogRepo.getLogs(startDate, stopDate, searchText);
+        return await AuditLogRepo.getLogs(startDate, stopDate, searchText, args.filters);
       }),
   },
 };

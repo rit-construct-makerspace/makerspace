@@ -69,6 +69,7 @@ const EquipmentResolvers = {
 
         await createLog(
           "{user} created the {equipment} equipment.",
+          "admin",
           { id: user.id, label: getUsersFullName(user) },
           { id: equipment.id, label: equipment.name }
         );

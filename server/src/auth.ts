@@ -314,6 +314,7 @@ export function setupStagingAuth(app: express.Application) {
     if (req.user && 'id' in req.user && 'firstName' in req.user && 'lastName' in req.user) {
       await createLog(
         `{user} logged in.`,
+        "server",
         { id: req.user.id, label: `${req.user.firstName} ${req.user.lastName}` }
       );
     }

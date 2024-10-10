@@ -6,6 +6,20 @@ import { knex } from "../../db/index.js";
 import { logsToDomain } from "../../mappers/auditLogs/auditLogMapper.js";
 import { AuditLog } from "../../schemas/auditLogsSchema.js";
 
+export interface Filters {
+  errors: string
+  welcome: boolean
+  auth: boolean
+  status: boolean
+  state: boolean
+  help: boolean
+  message: boolean
+  server: boolean
+  training: boolean
+  admin: boolean
+  uncategorized: boolean
+}
+
 /**
  * Create an AuditLog and append it to the table
  * @param message String verb description of the Log entry (i.e. reserved, deleted)
@@ -13,6 +27,7 @@ import { AuditLog } from "../../schemas/auditLogsSchema.js";
  */
 export async function createLog(
   message: string,
+  category: string | undefined,
   ...entities: { id: any; label: string }[]
 ) {
   let formattedMessage = message;
@@ -26,7 +41,7 @@ export async function createLog(
     );
   });
 
-  await knex("AuditLogs").insert({ message: formattedMessage });
+  await knex("AuditLogs").insert({ message: formattedMessage, category });
 }
 
 /**
@@ -36,6 +51,7 @@ export async function createLog(
  */
 export async function createLogWithArray(
   message: string,
+  category: string | undefined,
   entities: { id: any; label: string }[]
 ) {
   let formattedMessage = message;
@@ -49,7 +65,7 @@ export async function createLogWithArray(
     );
   });
 
-  await knex("AuditLogs").insert({ message: formattedMessage });
+  await knex("AuditLogs").insert({ message: formattedMessage, category });
 }
 
 /**
@@ -62,14 +78,39 @@ export async function createLogWithArray(
 export async function getLogs(
   startDate: string,
   stopDate: string,
-  searchText: string
+  searchText: string,
+  filters?: Filters
 ): Promise<AuditLog[]> {
-  const knexResult = await knex("AuditLogs")
-    .select()
-    .whereRaw(`("dateTime" at time zone 'UTC') BETWEEN TIMESTAMP '${new Date(startDate).toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${new Date(stopDate).toISOString().replace("T", " ").replace("Z", "")}'`)
-    .where("message", "ilike", `%${searchText}%`)
-    .orderBy("dateTime", "DESC")
-    .limit(100);
+  const filterString = ((filters?.welcome ? "'welcome', " : "")
+    + (filters?.auth ? "'auth', " : "")
+    + (filters?.help ? "'help', " : "")
+    + (filters?.state ? "'state', " : "")
+    + (filters?.status ? "'status', " : "")
+    + (filters?.help ? "'help', " : "")
+    + (filters?.message ? "'message', " : "")
+    + (filters?.training ? "'training', " : "")
+    + (filters?.admin ? "'admin', " : "")
+    + (filters?.server ? "'server', " : "")
+  );
+  const filterSQL = `"category" = ALL (ARRAY[${filterString.substring(0, filterString.length-2)}])` + (filters?.uncategorized ? ` OR "category" IS NULL` : "");
+  console.log(filterSQL)
+
+  const knexResult = (filterString && filterString != "")
+  ? await knex("AuditLogs")
+  .select()
+  .whereRaw(`("dateTime" at time zone 'UTC') BETWEEN TIMESTAMP '${new Date(startDate).toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${new Date(stopDate).toISOString().replace("T", " ").replace("Z", "")}'`)
+  .whereRaw(filterSQL)
+  .where("message", "ilike", `%${searchText}%`)
+  .whereRaw((filters?.errors != "both" ? `message ${filters?.errors == "no-errors" ? "NOT " : ""} ilike '%<error:%'` : "TRUE"))
+  .orderBy("dateTime", "DESC")
+  .limit(100)
+  : await knex("AuditLogs")
+  .select()
+  .whereRaw(`("dateTime" at time zone 'UTC') BETWEEN TIMESTAMP '${new Date(startDate).toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${new Date(stopDate).toISOString().replace("T", " ").replace("Z", "")}'`)
+  .where("message", "ilike", `%${searchText}%`)
+  .whereRaw((filters?.errors != "both" ? `message ${filters?.errors == "no-errors" ? "NOT " : ""} ilike '%<error:%'` : "TRUE"))
+  .orderBy("dateTime", "DESC")
+  .limit(100)
 
   return logsToDomain(knexResult);
 }

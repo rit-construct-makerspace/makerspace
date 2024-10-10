@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Stack } from "@mui/material";
+import { Alert, Box, Stack } from "@mui/material";
 import Page from "../../Page";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
@@ -53,23 +53,35 @@ const Homepage: React.FC = () => {
             </Alert>
             }
             <Typography variant="h5">Dashboard</Typography>
-            <Stack className="flexo" direction={isMobile ? "column" : "row"}>
+            {isMobile
+             ? <Stack className="flexo" direction={"column"}>
                 {/* <AccountBalanceCard /> */}
                 <Stack direction={"column"}>
                     <ResourcesCard />
                     <AnnouncementsCard />
                 </Stack>
 
-                {!isMobile && <Stack direction={"column"}>
+                {/* {!isMobile && <Stack direction={"column"}>
                     <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")} />
                     <ExpiringSoonCard />
-                </Stack>}
+                </Stack>} */}
 
                 <Stack direction={"column"}>
                     <OperationHoursCard />
                     <UpcomingEventsCard />
                 </Stack>
             </Stack>
+             : <Box>
+                <Stack direction={"row"}>
+                    <Box width={"65%"}>
+                        <ResourcesCard />
+                        <AnnouncementsCard />
+                    </Box>
+                    <OperationHoursCard />
+                </Stack>
+                
+             </Box>
+            }
         </Page>
     );
 };
