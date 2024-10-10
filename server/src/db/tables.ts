@@ -4,6 +4,7 @@ export interface AuditLogRow {
   id: number;
   dateTime: Date;
   message: string;
+  category: string;
 }
 
 export interface EquipmentRow {
