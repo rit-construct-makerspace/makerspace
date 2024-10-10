@@ -292,7 +292,7 @@ export default function LogPage() {
             );
           }
           return (
-            <Stack divider={<Divider flexItem />} mt={4} spacing={2}>
+            <Stack divider={<Divider flexItem />} mt={4} spacing={0.75}>
               {data.auditLogs.map((log: any) => (
                 <AuditLogRow
                   key={log.id}
