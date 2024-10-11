@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Avatar,
@@ -41,9 +41,21 @@ export default function AddToCartModal({
     onClose();
   };
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
   return (
-    <PrettyModal open={open} onClose={onClose}>
-      <Stack>
+    <PrettyModal open={open} onClose={onClose} width={isMobile ? 250 : 400}>
+      <Stack direction={"column"}>
         <Typography variant="h5" component="div" sx={{ mb: 2 }}>
           Add to shopping cart
         </Typography>

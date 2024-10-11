@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Button,
   InputAdornment,
@@ -113,6 +113,18 @@ export default function MaterialModalContents({
     onSave();
   };
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
 
   const title = `${isNewItem ? "New" : "Edit"} Material`;
 
@@ -122,10 +134,6 @@ export default function MaterialModalContents({
         {title}
       </Typography>
       <Stack direction="row" spacing={2}>
-        <StyledMaterialImage
-          alt="Material image"
-          src="https://thediyplan.com/wp-content/uploads/2020/03/IMG_2897.jpg"
-        />
         <Stack spacing={2} flexGrow={1}>
           <TextField
             label="Name"
@@ -133,7 +141,7 @@ export default function MaterialModalContents({
             error={inputErrors.name}
             onChange={handleStringChange("name")}
           />
-          <Stack direction="row" spacing={2}>
+          <Stack direction={isMobile ? "column" : "row"} spacing={2}>
             <TextField
               label="Single unit"
               value={itemDraft.unit ?? ""}
@@ -159,7 +167,7 @@ export default function MaterialModalContents({
               onChange={handleMoneyChange("pricePerUnit")}
             />
           </Stack>
-          <Stack direction="row" spacing={2}>
+          <Stack direction={isMobile ? "column" : "row"} spacing={2}>
             <TextField
               label="Count"
               sx={{ flex: 1 }}
@@ -198,7 +206,7 @@ export default function MaterialModalContents({
         value={itemDraft.notes} 
         onChange={handleNotesChanged}></TextareaAutosize>
 
-      <Stack direction="row" justifyContent="space-between" mt={4}>
+      <Stack direction={isMobile ? "column" : "row"} justifyContent="space-between" mt={4}>
         {!isNewItem && (
           <Stack direction="row" spacing={2}>
             <DeleteMaterialButton

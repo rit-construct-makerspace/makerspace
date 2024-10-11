@@ -162,12 +162,24 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   //   };
   // }
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
   const handleNotesChanged = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNotes(event.target.value)
   };
 
   return (
-    <PrettyModal open={!!selectedUserID} onClose={onClose} width={600}>
+    <PrettyModal open={!!selectedUserID} onClose={onClose} width={isMobile ? 250 : 600}>
       <RequestWrapper2
         result={getUserResult}
         render={({ user }) => (

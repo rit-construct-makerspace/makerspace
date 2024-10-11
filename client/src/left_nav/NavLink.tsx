@@ -15,6 +15,7 @@ interface NavLinkProps {
   to: string;
   notificationCount?: number;
   newTab?: boolean
+  toggleDrawer?: () => void;
 }
 
 export default function NavLink({
@@ -22,7 +23,8 @@ export default function NavLink({
   primary,
   to,
   notificationCount,
-  newTab
+  newTab,
+  toggleDrawer
 }: NavLinkProps) {
   const url = useLocation();
 
@@ -40,6 +42,10 @@ export default function NavLink({
     <ListItemButton
       selected={url.pathname.includes(to)}
       component={renderLink}
+      onClick={() => {
+        console.log(toggleDrawer);
+        if (toggleDrawer) toggleDrawer();
+      }}
     >
       {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
       <ListItemText primary={primary} />

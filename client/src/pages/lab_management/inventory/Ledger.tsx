@@ -139,38 +139,40 @@ export default function Ledger() {
           </Button> */}
         </Stack>
 
-        <Table sx={{ 'td': { p: 0 } }}>
-          <TableHead>
-            <TableCell sx={{width: "90px"}}>Timestamp</TableCell>
-            <TableCell sx={{width: "100px"}}>Initiator</TableCell>
-            <TableCell sx={{width: "80px"}}>Category</TableCell>
-            <TableCell sx={{maxWidth: "100px"}}>Total Cost</TableCell>
-            <TableCell sx={{minWidth: "180px"}}>Notes</TableCell>
-            <TableCell sx={{width: "300px"}}>Items</TableCell>
-            <TableCell sx={{width: "70px"}}>Actions</TableCell>
-          </TableHead>
-          {matchingItems && matchingItems.map((item: InventoryLedger) => (
-            <StyledTableRow>
-              <TableCell>{format(new Date(Number(item.timestamp)), "M/d/yy h:mmaaa")}</TableCell>
-              <TableCell><AuditLogEntity entityCode={`user:${item.initiator.id}:${item.initiator.firstName} ${item.initiator.lastName}`} /></TableCell>
-              <TableCell>{item.category}</TableCell>
-              <TableCell sx={{backgroundColor: incomeColor(item.totalCost)}}>$ {item.totalCost.toFixed(2)}</TableCell>
-              <TableCell>{item.purchaser && <div><b>Purchased By: <AuditLogEntity entityCode={`user:${item.purchaser.id}:${item.purchaser.firstName} ${item.purchaser.lastName}`} /></b></div>}{item.notes}</TableCell>
-              <TableCell>
-                <Table>
-                  {item.items.map((subItem: {quantity: number, name: string}) => (
-                    <TableRow>
-                      <TableCell sx={{width: "5em", pr: "1em"}}>{subItem.quantity}x</TableCell>
-                      <TableCell sx={{textAlign: "left", ml: "2em"}}>{subItem.name}</TableCell>
-                    </TableRow>
-                  ))}
-                </Table>
-              </TableCell>
-              <TableCell><LedgerDeleteButton itemID={item.id} /></TableCell>
-            </StyledTableRow>
-          ))}
-        </Table>
-        <p>Ledger is limited to 100 logs at once. Consider narrowing your search.</p>
+        <Box sx={{width: "100%", overflowX: "scroll"}}>
+          <Table sx={{ 'td': { p: 0 } }}>
+            <TableHead>
+              <TableCell sx={{width: "90px"}}>Timestamp</TableCell>
+              <TableCell sx={{width: "100px"}}>Initiator</TableCell>
+              <TableCell sx={{width: "80px"}}>Category</TableCell>
+              <TableCell sx={{maxWidth: "100px"}}>Total Cost</TableCell>
+              <TableCell sx={{minWidth: "180px"}}>Notes</TableCell>
+              <TableCell sx={{width: "300px"}}>Items</TableCell>
+              <TableCell sx={{width: "70px"}}>Actions</TableCell>
+            </TableHead>
+            {matchingItems && matchingItems.map((item: InventoryLedger) => (
+              <StyledTableRow>
+                <TableCell>{format(new Date(Number(item.timestamp)), "M/d/yy h:mmaaa")}</TableCell>
+                <TableCell><AuditLogEntity entityCode={`user:${item.initiator.id}:${item.initiator.firstName} ${item.initiator.lastName}`} /></TableCell>
+                <TableCell>{item.category}</TableCell>
+                <TableCell sx={{backgroundColor: incomeColor(item.totalCost)}}>$ {item.totalCost.toFixed(2)}</TableCell>
+                <TableCell>{item.purchaser && <div><b>Purchased By: <AuditLogEntity entityCode={`user:${item.purchaser.id}:${item.purchaser.firstName} ${item.purchaser.lastName}`} /></b></div>}{item.notes}</TableCell>
+                <TableCell>
+                  <Table>
+                    {item.items.map((subItem: {quantity: number, name: string}) => (
+                      <TableRow>
+                        <TableCell sx={{width: "5em", pr: "1em"}}>{subItem.quantity}x</TableCell>
+                        <TableCell sx={{textAlign: "left", ml: "2em"}}>{subItem.name}</TableCell>
+                      </TableRow>
+                    ))}
+                  </Table>
+                </TableCell>
+                <TableCell><LedgerDeleteButton itemID={item.id} /></TableCell>
+              </StyledTableRow>
+            ))}
+          </Table>
+          <p>Ledger is limited to 100 logs at once. Consider narrowing your search.</p>
+        </Box>
       </Box>
     </RequestWrapper>
   );

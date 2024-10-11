@@ -45,7 +45,7 @@ const Homepage: React.FC = () => {
 
 
     return (
-        <Page title="" maxWidth={"1250px"}>
+        <Page title="" maxWidth={"1250px"} noPadding={isMobile}>
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
             {( currentUser.cardTagID == null || currentUser.cardTagID == "" ) &&
             <Alert variant="standard" color="error">
