@@ -578,20 +578,13 @@ async function startServer() {
     --REMEMBER HEROKU SERVER RUNS IN UTC (EST+4)--
    */
 
-  const dailyJob = schedule.scheduleJob("0 0 4 * * *", async function () {
+  const dailyJob = schedule.scheduleJob("0 0 0 * * *", async function () {
     //schedule operates in both UTC and EDT. for some reason...
     //JS Date maintains only EDT, so use that to confirm
     if (new Date().getHours() != 4) return;
     console.log('Wiping daily records...');
     if (API_DEBUG_LOGGING) await createLog('It is now ' + new Date().getHours() + ':' + new Date().getMinutes() + 'Daily Temp Records have been wiped.', "server")
     setDataPointValue(1, 0);
-  });
-
-  const dailyTestJob = schedule.scheduleJob("0 15 10 * * *", async function () {
-    //schedule operates in both UTC and EDT. for some reason...
-    //JS Date maintains only EDT, so use that to confirm
-    console.log('This message is supposed to appear at 10:15am. According to the server, it is' + new Date().getHours() + ':' + new Date().getMinutes());
-    if (API_DEBUG_LOGGING) await createLog('This message is supposed to appear at 10:15am. According to the server, it is' + new Date().getHours() + ':' + new Date().getMinutes(), "server")
   });
 
 
