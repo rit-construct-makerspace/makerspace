@@ -14,12 +14,25 @@ import {
 import CloseButton from "../../../common/CloseButton";
 import ReservationAttachment from "../../lab_management/reservations/ReservationAttachment";
 import Markdown from "react-markdown";
+import { useState, useEffect } from "react";
 
 interface EquipmentModalProps {
   equipmentID: string;
 }
 
 export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
   const navigate = useNavigate();
   const { passedModules } = useCurrentUser();
 
@@ -29,6 +42,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
     <PrettyModal
       open={!!equipmentID}
       onClose={() => navigate("/maker/equipment")}
+      width={isMobile ? 250 : 400}
     >
       <RequestWrapper2
         result={result}
@@ -43,7 +57,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Avatar
                   sx={{ width: 80, height: 80 }}
-                  src={(equipment.imageUrl == undefined || equipment.imageUrl == null ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : process.env.PUBLIC_URL + "/" + equipment.imageUrl)}
+                  src={(equipment.imageUrl == undefined || equipment.imageUrl == null ? "" + process.env.REACT_APP_CDN_URL + "shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + equipment.imageUrl)}
                 />
                 <Stack>
                   <Typography variant="h4">{equipment.name}</Typography>
