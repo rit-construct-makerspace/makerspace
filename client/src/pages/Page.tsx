@@ -33,7 +33,7 @@ export default function Page({
   return (
     <Stack
       alignItems="center"
-      sx={{ width: "100%", height: "100vh", overflowY: "auto" }}
+      sx={{ width: "100%", height: "100vh", overflowY: "auto", overflowX: "hidden" }}
     >
       <Stack
         sx={{
