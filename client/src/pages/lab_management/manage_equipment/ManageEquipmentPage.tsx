@@ -10,9 +10,11 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import EditableEquipmentCard from "./EditableEquipmentCard";
 import Equipment from "../../../types/Equipment";
 import AdminPage from "../../AdminPage";
+import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
+import MaintenanceLogModal from "./MaintenanceLog";
 
-export default function ManageEquipmentPage() {
-  const { id } = useParams<{ id: string }>();
+export default function ManageEquipmentPage({showLogs}: {showLogs?: boolean}) {
+  const { id, logid } = useParams<{ id: string, logid: string }>();
   const navigate = useNavigate();
 
   const getEquipmentsResult = useQuery(GET_EQUIPMENTS);
@@ -86,6 +88,7 @@ export default function ManageEquipmentPage() {
                 </Grid>
             </RequestWrapper>
         </Stack>
+        { showLogs && logid && <MaintenanceLogModal equipmentID={logid} />}
     </AdminPage>
   );
 }

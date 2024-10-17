@@ -64,6 +64,7 @@ export default function AppRoutes() {
           <Route path="/admin/equipment" element={<ManageEquipmentPage />} />
           <Route path="/admin/equipment/:id" element={<EditEquipmentPage archived={false} />} />
           <Route path="/admin/equipment/archived/:id" element={<EditEquipmentPage archived={true} />} />
+          <Route path="/admin/equipment/logs/:logid" element={<ManageEquipmentPage showLogs={true}/>} />
 
           <Route path="/admin/training" element={<TrainingModulesPage />} />
           <Route path="/admin/training/new" element={<EditNewModulePage />} />

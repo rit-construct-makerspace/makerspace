@@ -46,6 +46,8 @@ import { EventsTypeDefs } from "./schemas/eventsSchema.js";
 import { EventsResolver } from "./resolvers/eventsResolver.js";
 import { TermsTypeDefs } from "./schemas/TermsSchema.js";
 import TermsResolver from "./resolvers/termsResolver.js";
+import { MaintenanceLogsTypeDefs } from "./schemas/maintenanceLogSchema.js";
+import MaintenanceLogsResolver from "./resolvers/maintenanceLogsResolver.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -76,7 +78,8 @@ export const schema = makeExecutableSchema({
     StatisticQueryTypeDefs,
     EquipmentSessionTypeDefs,
     EventsTypeDefs,
-    TermsTypeDefs
+    TermsTypeDefs,
+    MaintenanceLogsTypeDefs
   ],
   resolvers: [ 
     resolveFunctions,
@@ -99,6 +102,7 @@ export const schema = makeExecutableSchema({
     StatisticQueryResolver,
     EquipmentSessionsResolver,
     EventsResolver,
-    TermsResolver
+    TermsResolver,
+    MaintenanceLogsResolver
   ]
 });

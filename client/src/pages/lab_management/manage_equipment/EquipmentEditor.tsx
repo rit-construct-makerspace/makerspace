@@ -15,6 +15,8 @@ import ArchiveEquipmentButton from "./ArchiveEquipmentButton";
 import PublishEquipmentButton from "./PublishEquipmentButton";
 import { ObjectSummary } from "../../../types/Common";
 import AdminPage from "../../AdminPage";
+import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
+import { useNavigate } from "react-router-dom";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -35,6 +37,8 @@ export default function EquipmentEditor({
   setEquipment,
   onSave,
 }: EquipmentEditorProps) {
+  const navigate = useNavigate();
+
   const getRoomsResult = useQuery(GET_ROOMS);
   const getModulesResult = useQuery(GET_TRAINING_MODULES);
 
@@ -117,6 +121,9 @@ export default function EquipmentEditor({
                   : <ArchiveEquipmentButton equipmentID={equipment.id} appearance="medium" />
                 : null
             }
+            {equipment.id && <Button variant="outlined" color="secondary" startIcon={<SpeakerNotesIcon />} onClick={() => {navigate("/admin/equipment/logs/" + equipment.id);}}>
+              View Maintenance Logs
+            </Button>}
           </Stack>
         )}
 
