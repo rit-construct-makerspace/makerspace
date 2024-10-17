@@ -2,19 +2,22 @@ import { gql } from "graphql-tag";
 
 export const ReaderTypeDefs = gql`
   type Reader {
-    id: ID!,
-    machineID: String,
-    machineType: String,
-    name: String,
-    zone: String,
-    temp: String,
-    state: String,
+    id: ID!
+    machineID: String
+    machineType: String
+    name: String
+    zone: String
+    temp: String
+    state: String
     user: User
-    recentSessionLength: String,
-    lastStatusReason: String,
-    scheduledStatusFreq: String,
-    lastStatusTime: DateTime,
+    recentSessionLength: String
+    lastStatusReason: String
+    scheduledStatusFreq: String
+    lastStatusTime: DateTime
     helpRequested: Boolean
+    BEVer: String
+    FEVer: String
+    HWVer: String
   }
 
   extend type Query {
@@ -24,23 +27,23 @@ export const ReaderTypeDefs = gql`
 
   extend type Mutation {
     createReader(
-      machineID: ID!,
-      machineType: String,
-      name: String,
+      machineID: ID!
+      machineType: String
+      name: String
       zone: String
     ): Reader
 
     updateReader(
-      id: ID!,
-      machineID: String,
-      machineType: String,
-      zone: String,
-      temp: String,
-      state: String,
-      currentUID: String,
-      recentSessionLength: String,
-      lastStatusReason: String,
-      scheduledStatusFreq: String,
+      id: ID!
+      machineID: String
+      machineType: String
+      zone: String
+      temp: String
+      state: String
+      currentUID: String
+      recentSessionLength: String
+      lastStatusReason: String
+      scheduledStatusFreq: String
     ): Reader
 
     setName(id: ID!, name: String): Reader

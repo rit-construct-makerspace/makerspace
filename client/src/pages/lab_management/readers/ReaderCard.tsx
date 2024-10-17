@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import {
+  Box,
   Card,
   CardContent,
   CardHeader,
   IconButton,
+  Stack,
   Typography,
 } from "@mui/material";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -30,7 +32,10 @@ interface ReaderCardProps {
     lastStatusReason: string,
     scheduledStatusFreq: number,
     lastStatusTime: string,
-    helpRequested: boolean
+    helpRequested: boolean,
+    BEVer?: string,
+    FEVer?: string,
+    HWVer?: string
 }
 
 const useStyles = makeStyles({
@@ -46,7 +51,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested }: ReaderCardProps) {
+export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
     <p>Current User: <AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity><br></br>Session Length: {recentSessionLength} sec</p>
   ) : (
@@ -169,6 +174,13 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
           >
               {stateContent}
           </Typography>
+          <Box>
+            <Stack direction={"column"} spacing={0.5} color={"secondary"} mt={1}>
+              <Typography variant="body2"><b>BEVer:</b> {BEVer ?? "NULL"}</Typography>
+              <Typography variant="body2"><b>FEVer:</b> {FEVer ?? "NULL"}</Typography>
+              <Typography variant="body2"><b>HWVer:</b> {HWVer ?? "NULL"}</Typography>
+            </Stack>
+          </Box>
         </CardContent>
       </Card>
     </RequestWrapper>
