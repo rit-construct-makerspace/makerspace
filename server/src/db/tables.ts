@@ -19,6 +19,14 @@ export interface EquipmentRow {
   notes: string;
 }
 
+export interface MaintenanceLogRow {
+  id: number;
+  authorID: number;
+  equipmentID: number;
+  timestamp: Date;
+  content: string;
+}
+
 export interface HoldRow {
   id: number;
   creatorID: number;
@@ -240,5 +248,6 @@ declare module "knex/types/tables.js" {
     DataPoints: DataPointsRow;
     EquipmentSessions: EquipmentSessionRow;
     InventoryLedger: InventoryLedgerRow;
+    MaintenanceLogs: MaintenanceLogRow;
   }
 }
