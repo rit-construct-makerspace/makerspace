@@ -67,7 +67,10 @@ export async function updateReaderStatus(reader: {
     recentSessionLength: number,
     lastStatusReason: string,
     scheduledStatusFreq: number,
-    helpRequested: boolean
+    helpRequested: boolean,
+    BEVer?: string,
+    FEVer?: string,
+    HWVer?: string
 }): Promise<ReaderRow | undefined> {
     await knex("Readers").where({ id: reader.id }).update({
         machineID: reader.machineID,
@@ -80,7 +83,10 @@ export async function updateReaderStatus(reader: {
         lastStatusReason: reader.lastStatusReason,
         scheduledStatusFreq: reader.scheduledStatusFreq,
         lastStatusTime: knex.fn.now(),
-        helpRequested: reader.helpRequested
+        helpRequested: reader.helpRequested,
+        BEVer: reader.BEVer,
+        FEVer: reader.FEVer,
+        HWVer: reader.HWVer,
     })
 
     return getReaderByID(reader.id);

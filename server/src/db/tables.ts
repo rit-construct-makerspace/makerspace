@@ -178,6 +178,9 @@ export interface ReaderRow {
   scheduledStatusFreq: number;
   lastStatusTime: Date;
   helpRequested: boolean;
+  BEVer: string;
+  FEVer: string;
+  HWVer: string;
 }
 
 export interface AnnouncementRow {

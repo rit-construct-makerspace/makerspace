@@ -399,7 +399,10 @@ async function startServer() {
       recentSessionLength: req.body.Time,
       lastStatusReason: req.body.Source,
       scheduledStatusFreq: req.body.Frequency,
-      helpRequested: req.body.Help == null ? reader.helpRequested : (req.body.Help === "1")
+      helpRequested: req.body.Help == null ? reader.helpRequested : (req.body.Help === "1"),
+      BEVer: req.body.BEVer ?? null,
+      FEVer: req.body.FEVer ?? null,
+      HWVer: req.body.HWVer ?? null,
     });
 
     //If state change
@@ -483,7 +486,7 @@ async function startServer() {
 
   /**
    * STATE----
-   * Check a machine's last returned State
+   * Check a machine's last returned State or Help if Help status is active
    */
   app.get("/api/state/:MachineID", async function (req, res) {
     const reader = await getReaderByName(req.params.MachineID);
@@ -496,7 +499,7 @@ async function startServer() {
     return res.status(200).json({
       Type: "State",
       MachineID: reader?.name,
-      State: reader?.state
+      State: reader?.helpRequested ? "Help" : reader?.state
     })
   });
 

@@ -14,7 +14,10 @@ export interface Reader {
   recentSessionLength: number,
   lastStatusReason: string,
   scheduledStatusFreq: number,
-  lastStatusTime: string
+  lastStatusTime: string,
+  BEVer: string,
+  FEVer: string,
+  HWVer: string
 }
 
 export const GET_READERS = gql`
@@ -37,6 +40,9 @@ export const GET_READERS = gql`
       scheduledStatusFreq
       lastStatusTime
       helpRequested
+      BEVer
+      FEVer
+      HWVer
     }
   }
 `
