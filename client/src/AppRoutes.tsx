@@ -30,6 +30,7 @@ import ReadersPage from "./pages/lab_management/readers/ReadersPage";
 import StatisticsPage from "./pages/lab_management/statistics/StatisticsPage";
 import EditTermsPage from "./pages/lab_management/policy/EditTermsPage";
 import TermsPage from "./pages/both/policy/TermsPage";
+import MaintenanceLogPage from "./pages/lab_management/manage_equipment/MaintenanceLog";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -64,7 +65,7 @@ export default function AppRoutes() {
           <Route path="/admin/equipment" element={<ManageEquipmentPage />} />
           <Route path="/admin/equipment/:id" element={<EditEquipmentPage archived={false} />} />
           <Route path="/admin/equipment/archived/:id" element={<EditEquipmentPage archived={true} />} />
-          <Route path="/admin/equipment/logs/:logid" element={<ManageEquipmentPage showLogs={true}/>} />
+          <Route path="/admin/equipment/logs/:logid" element={<MaintenanceLogPage />} />
 
           <Route path="/admin/training" element={<TrainingModulesPage />} />
           <Route path="/admin/training/new" element={<EditNewModulePage />} />

@@ -3,17 +3,19 @@ import { CircularProgress, IconButton, Tooltip } from "@mui/material";
 
 interface ActionButtonProps {
   iconSize: number;
-  buttonText: string;
+  buttonText?: string;
   tooltipText?: string;
   color: "error" | "inherit" | "primary" | "secondary" | "info" | "success" | "warning";
   appearance: "icon-only" | "small" | "medium" | "large";
   handleClick: () => Promise<void>;
   loading: boolean;
   disabled?: boolean
+  variant?: "text" | "outlined" | "filled"
 }
 
 export default function ActionButton(props: React.PropsWithChildren<ActionButtonProps>) {
   let size: "small" | "medium" | "large";
+  props.variant = props.variant ?? "text";
   switch(props.appearance) {
     case "large":
       size = "large"

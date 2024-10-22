@@ -13,8 +13,8 @@ import AdminPage from "../../AdminPage";
 import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
 import MaintenanceLogModal from "./MaintenanceLog";
 
-export default function ManageEquipmentPage({showLogs}: {showLogs?: boolean}) {
-  const { id, logid } = useParams<{ id: string, logid: string }>();
+export default function ManageEquipmentPage() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
   const getEquipmentsResult = useQuery(GET_EQUIPMENTS);
@@ -88,7 +88,6 @@ export default function ManageEquipmentPage({showLogs}: {showLogs?: boolean}) {
                 </Grid>
             </RequestWrapper>
         </Stack>
-        { showLogs && logid && <MaintenanceLogModal equipmentID={logid} />}
     </AdminPage>
   );
 }
