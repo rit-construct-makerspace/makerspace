@@ -25,6 +25,26 @@ export interface MaintenanceLogRow {
   equipmentID: number;
   timestamp: Date;
   content: string;
+  tagID1: number;
+  tagID2: number;
+  tagID3: number;
+}
+
+export interface ResolutionLogRow {
+  id: number;
+  authorID: number;
+  equipmentID: number;
+  timestamp: Date;
+  content: string;
+  tagID1: number;
+  tagID2: number;
+  tagID3: number;
+}
+
+export interface MaintenanceTagRow {
+  id: number;
+  label: string;
+  color: string;
 }
 
 export interface HoldRow {
@@ -252,5 +272,7 @@ declare module "knex/types/tables.js" {
     EquipmentSessions: EquipmentSessionRow;
     InventoryLedger: InventoryLedgerRow;
     MaintenanceLogs: MaintenanceLogRow;
+    ResolutionLogs: ResolutionLogRow;
+    MaintenanceTags: MaintenanceTagRow;
   }
 }
