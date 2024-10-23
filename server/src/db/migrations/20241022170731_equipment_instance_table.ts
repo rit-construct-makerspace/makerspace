@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
 
   return knex.schema.createTable("EquipmentInstances", (t) => {
     t.increments("id").primary();
-    t.integer("equipmentID").references("id").inTable("equipment").notNullable();;
+    t.integer("equipmentID").references("id").inTable("Equipment").notNullable();;
     t.string("name");
     t.string("status").defaultTo("UNDEPLOYED");
   });
