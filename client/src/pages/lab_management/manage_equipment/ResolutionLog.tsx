@@ -144,7 +144,7 @@ export default function ResolutionLogPage() {
         </Box>
       </RequestWrapper>
 
-      <MaintenanceTagsModal maintenanceTags={maintenanceTagsResult.data?.getMaintenanceTags ?? []} tagModalOpen={tagModalOpen} setTagModalOpen={setTagModalOpen} equipmentID={Number(equipmentID)} />
+      <MaintenanceTagsModal tagModalOpen={tagModalOpen} setTagModalOpen={setTagModalOpen} equipmentID={Number(equipmentID)} />
     </AdminPage>
   );
 }
