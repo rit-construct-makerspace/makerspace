@@ -18,6 +18,7 @@ import AdminPage from "../../AdminPage";
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import { useNavigate } from "react-router-dom";
 import EquipmentInstancesModal from "./EquipmentInstancesModal";
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -127,7 +128,7 @@ export default function EquipmentEditor({
             {equipment.id && <Button variant="outlined" color="secondary" startIcon={<SpeakerNotesIcon />} onClick={() => {navigate("/admin/equipment/logs/" + equipment.id);}}>
               View Maintenance Logs
             </Button>}
-            {equipment.id && <Button variant="outlined" color="info" startIcon={<SpeakerNotesIcon />} onClick={() => {setInstancesModalOpen(true)}}>
+            {equipment.id && <Button variant="outlined" color="info" startIcon={<AutoAwesomeMotionIcon />} onClick={() => {setInstancesModalOpen(true)}}>
               Manage Instances
             </Button>}
           </Stack>
