@@ -6,6 +6,10 @@ export interface MaintenanceLogItem {
     equipment: {
       id: number
     }
+    instance: {
+      id: number,
+      name: string
+    }
     author: {
         id: number,
         firstName: string,
@@ -19,6 +23,10 @@ export interface MaintenanceLogItem {
 
 export interface MaintenanceTag {
   id: number,
+  equipment: {
+    id: number,
+    name: string
+  },
   label: string,
   color: string,
 }
@@ -32,6 +40,10 @@ export const GET_MAINTENANCE_LOGS = gql`
         timestamp
         equipment {
           id
+        }
+        instance {
+          id
+          name
         }
         author {
           id
@@ -65,6 +77,10 @@ export const GET_RESOLUTION_LOGS = gql`
         timestamp
         equipment {
           id
+        }
+        instance {
+          id
+          name
         }
         author {
           id
@@ -104,16 +120,16 @@ export const DELETE_RESOLUTION_LOG = gql`
 `;
 
 export const CREATE_MAINTENANCE_LOG = gql`
-  mutation CreateMaintenanceLog($equipmentID: ID!, $content: String!) {
-    createMaintenanceLog(equipmentID: $equipmentID, content: $content) {
+  mutation CreateMaintenanceLog($equipmentID: ID!, $instanceID: ID, $content: String!) {
+    createMaintenanceLog(equipmentID: $equipmentID, instanceID: $instanceID, content: $content) {
       id
     }
   }
 `;
 
 export const CREATE_RESOLUTION_LOG = gql`
-  mutation CreateResolutionLog($equipmentID: ID!, $content: String!) {
-    createResolutionLog(equipmentID: $equipmentID, content: $content) {
+  mutation CreateResolutionLog($equipmentID: ID!, $instanceID: ID, $content: String!) {
+    createResolutionLog(equipmentID: $equipmentID, instanceID: $instanceID, content: $content) {
       id
     }
   }
@@ -136,9 +152,13 @@ export const REMOVE_TAG_FROM_LOG = gql`
 `;
 
 export const GET_MAINTENANCE_TAGS = gql`
-    query GetMaintenanceTags {
-      getMaintenanceTags {
+    query GetMaintenanceTags($equipmentID: ID) {
+      getMaintenanceTags(equipmentID: $equipmentID) {
         id
+        equipment {
+          id
+          name
+        }
         label
         color
       }
@@ -152,8 +172,8 @@ export const DELETE_MAINTENANCE_TAG = gql`
 `;
 
 export const CREATE_MAINTENANCE_TAG = gql`
-  mutation CreateMaintenanceTag($label: String!, $color: String) {
-    createMaintenanceTag(label: $label, color: $color) {
+  mutation CreateMaintenanceTag($equipmentID: ID, $label: String!, $color: String) {
+    createMaintenanceTag(equipmentID: $equipmentID, label: $label, color: $color) {
       id
     }
   }

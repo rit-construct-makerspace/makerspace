@@ -12,18 +12,19 @@ import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Privilege from "../../../types/Privilege";
 import { useState } from "react";
 import ActionButton from "../../../common/ActionButton";
+import AuditLogEntity from "../audit_logs/AuditLogEntity";
 
 const CHIP_COLORS: ("default" | "primary" | "secondary" | "warning" | "info" | "error" | "success")[] = ["primary", "secondary", "warning", "info", "error", "success"];
 
-export default function MaintenanceTagRow(props: { id: number, label: string, color: string }) {
+export default function MaintenanceTagRow(props: { id: number, equipment: {id: number, name: string}, label: string, color: string, openedEquipmentID: number }) {
   const [allowEdits, setAllowEdits] = useState(false);
   //State-controlled attributes to detect changes and update accordingly
   const [label, setLabel] = useState(props.label);
   const [color, setColor] = useState<"default" | "primary" | "secondary" | "warning" | "info" | "error" | "success">(props.color as ("default" | "primary" | "secondary" | "warning" | "info" | "error" | "success"));
 
-  const [deleteTag] = useMutation(DELETE_MAINTENANCE_TAG, { variables: {id: props.id}, refetchQueries: [{ query: GET_MAINTENANCE_TAGS }] });
+  const [deleteTag] = useMutation(DELETE_MAINTENANCE_TAG, { variables: {id: props.id}, refetchQueries: [{ query: GET_MAINTENANCE_TAGS, variables: {equipmentID: props.openedEquipmentID} }] });
 
-  const [updateTag] = useMutation(UPDATE_MAINTENANCE_TAG, { refetchQueries: [{ query: GET_MAINTENANCE_TAGS }] });
+  const [updateTag] = useMutation(UPDATE_MAINTENANCE_TAG, { refetchQueries: [{ query: GET_MAINTENANCE_TAGS, variables: {equipmentID: props.openedEquipmentID} }] });
 
   async function handleUpdateCancel() {
     //Reset attributes to original states
@@ -64,6 +65,9 @@ export default function MaintenanceTagRow(props: { id: number, label: string, co
             <ActionButton color="success" handleClick={handleUpdateSubmit} iconSize={35} buttonText="" tooltipText={"Submit"} appearance={"icon-only"} loading={false}><CheckIcon /></ActionButton>
           </Stack>
       }
+      </TableCell>
+      <TableCell>
+        {props.equipment ? <AuditLogEntity entityCode={`equipment:${props.equipment.id}:${props.equipment.name}`} /> : <i>GLOBAL</i>}
       </TableCell>
       <TableCell>
       {allowEdits
