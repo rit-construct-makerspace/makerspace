@@ -160,7 +160,7 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
         </Box>
       </RequestWrapper>
 
-      <MaintenanceTagsModal maintenanceTags={maintenanceTagsResult.data?.getMaintenanceTags ?? []} tagModalOpen={tagModalOpen} setTagModalOpen={setTagModalOpen} equipmentID={Number(equipmentID)} />
+      <MaintenanceTagsModal tagModalOpen={tagModalOpen} setTagModalOpen={setTagModalOpen} equipmentID={Number(equipmentID)} />
     </PrettyModal>
   );
 }

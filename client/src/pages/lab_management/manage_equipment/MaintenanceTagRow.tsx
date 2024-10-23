@@ -22,9 +22,9 @@ export default function MaintenanceTagRow(props: { id: number, equipment: {id: n
   const [label, setLabel] = useState(props.label);
   const [color, setColor] = useState<"default" | "primary" | "secondary" | "warning" | "info" | "error" | "success">(props.color as ("default" | "primary" | "secondary" | "warning" | "info" | "error" | "success"));
 
-  const [deleteTag] = useMutation(DELETE_MAINTENANCE_TAG, { variables: {id: props.id}, refetchQueries: [{ query: GET_MAINTENANCE_TAGS, variables: {equipmentID: props.openedEquipmentID} }] });
+  const [deleteTag] = useMutation(DELETE_MAINTENANCE_TAG, { variables: {id: props.id}, refetchQueries: [{ query: GET_MAINTENANCE_TAGS, variables: {equipmentID: props.openedEquipmentID} }], awaitRefetchQueries: true });
 
-  const [updateTag] = useMutation(UPDATE_MAINTENANCE_TAG, { refetchQueries: [{ query: GET_MAINTENANCE_TAGS, variables: {equipmentID: props.openedEquipmentID} }] });
+  const [updateTag] = useMutation(UPDATE_MAINTENANCE_TAG, { refetchQueries: [{ query: GET_MAINTENANCE_TAGS, variables: {equipmentID: props.openedEquipmentID} }], awaitRefetchQueries: true });
 
   async function handleUpdateCancel() {
     //Reset attributes to original states

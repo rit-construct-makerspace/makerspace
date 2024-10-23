@@ -18,14 +18,19 @@ import { CREATE_MAINTENANCE_TAG, GET_MAINTENANCE_TAGS, MaintenanceTag } from "..
 import MaintenanceTagRow from "./MaintenanceTagRow";
 import { useState } from "react";
 import CheckIcon from '@mui/icons-material/Check';
+import RequestWrapper from "../../../common/RequestWrapper";
 
 
 const CHIP_COLORS: ("default" | "primary" | "secondary" | "warning" | "info" | "error" | "success")[] = ["primary", "secondary", "warning", "info", "error", "success"];
 
-export default function MaintenanceTagsModal({ maintenanceTags, tagModalOpen, setTagModalOpen, equipmentID }: { maintenanceTags: MaintenanceTag[], tagModalOpen: boolean, setTagModalOpen: React.Dispatch<React.SetStateAction<boolean>>, equipmentID: number }) {
+export default function MaintenanceTagsModal({ tagModalOpen, setTagModalOpen, equipmentID }: { tagModalOpen: boolean, setTagModalOpen: React.Dispatch<React.SetStateAction<boolean>>, equipmentID: number }) {
   const navigate = useNavigate();
 
-  const [createTag] = useMutation(CREATE_MAINTENANCE_TAG, { refetchQueries: [{ query: GET_MAINTENANCE_TAGS, variables: {equipmentID} }] });
+  const maintenanceTagsResult = useQuery(GET_MAINTENANCE_TAGS, { variables: { equipmentID } });
+
+  const maintenanceTags = maintenanceTagsResult.data?.getMaintenanceTags ?? [];
+
+  const [createTag] = useMutation(CREATE_MAINTENANCE_TAG, { refetchQueries: [{ query: GET_MAINTENANCE_TAGS, variables: { equipmentID } }], awaitRefetchQueries: true });
 
   const [newLabel, setNewLabel] = useState<string>("");
   const [newColor, setNewColor] = useState<"default" | "primary" | "secondary" | "warning" | "info" | "error" | "success">("primary");
@@ -57,12 +62,14 @@ export default function MaintenanceTagsModal({ maintenanceTags, tagModalOpen, se
             <TableCell>Color</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {maintenanceTags.map((tag: MaintenanceTag) => (
-            <MaintenanceTagRow id={tag.id} label={tag.label} color={tag.color} equipment={tag.equipment} openedEquipmentID={equipmentID} />
-          ))}
-          {maintenanceTags.length == 0 && <Typography variant="h6">No tags.</Typography>}
-        </TableBody>
+        <RequestWrapper loading={maintenanceTagsResult.loading} error={maintenanceTagsResult.error}>
+          <TableBody>
+            {maintenanceTags.map((tag: MaintenanceTag) => (
+              <MaintenanceTagRow id={tag.id} label={tag.label} color={tag.color} equipment={tag.equipment} openedEquipmentID={equipmentID} />
+            ))}
+            {maintenanceTags.length == 0 && <Typography variant="h6">No tags.</Typography>}
+          </TableBody>
+        </RequestWrapper>
       </Table>
       <Stack direction={"column"} mt={3} width={"50%"}>
         <Typography>Create New Tag</Typography>
