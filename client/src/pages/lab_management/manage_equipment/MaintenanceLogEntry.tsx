@@ -69,6 +69,9 @@ export default function MaintenanceLogEntry({ logItem, allTags, isResolution = f
         <IconButton hidden={currentUser.privilege != Privilege.STAFF} color="error" onClick={handleDeleteClick}><DeleteIcon /></IconButton>
       </TableCell>
       <TableCell>
+        {logItem.instance?.name ?? <i>None</i>}
+      </TableCell>
+      <TableCell>
         <Stack direction={isMobile ? "row" : "column"}>
           <Typography color={localStorage.getItem("themeMode") == "dark" ? "grey.300" : "grey.700"} sx={{ width: 70 }} variant="body2">
             {date}

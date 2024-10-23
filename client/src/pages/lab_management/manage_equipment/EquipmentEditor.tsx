@@ -1,4 +1,4 @@
-import { ChangeEvent, ChangeEventHandler, SyntheticEvent } from "react";
+import { ChangeEvent, ChangeEventHandler, SetStateAction, SyntheticEvent, useState } from "react";
 import Page from "../../Page";
 import { Autocomplete, Button, Divider, Stack, TextareaAutosize, TextField } from "@mui/material";
 import EngineeringIcon from "@mui/icons-material/Engineering";
@@ -17,6 +17,7 @@ import { ObjectSummary } from "../../../types/Common";
 import AdminPage from "../../AdminPage";
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import { useNavigate } from "react-router-dom";
+import EquipmentInstancesModal from "./EquipmentInstancesModal";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -100,6 +101,8 @@ export default function EquipmentEditor({
     });
   };
 
+  const [instancesModalOpen, setInstancesModalOpen] = useState<boolean>(false);
+
   return (
     <RequestWrapper
       loading={getRoomsResult.loading || getModulesResult.loading}
@@ -123,6 +126,9 @@ export default function EquipmentEditor({
             }
             {equipment.id && <Button variant="outlined" color="secondary" startIcon={<SpeakerNotesIcon />} onClick={() => {navigate("/admin/equipment/logs/" + equipment.id);}}>
               View Maintenance Logs
+            </Button>}
+            {equipment.id && <Button variant="outlined" color="info" startIcon={<SpeakerNotesIcon />} onClick={() => {setInstancesModalOpen(true)}}>
+              Manage Instances
             </Button>}
           </Stack>
         )}
@@ -216,6 +222,8 @@ export default function EquipmentEditor({
         >
           Save
         </Button>
+
+        {equipment.id && <EquipmentInstancesModal equipmentID={equipment.id} equipmentName={equipment.name} isOpen={instancesModalOpen} setIsOpen={setInstancesModalOpen} />}
       </AdminPage>
     </RequestWrapper>
   );

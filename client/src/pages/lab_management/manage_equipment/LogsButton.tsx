@@ -12,7 +12,7 @@ export default function LogsButton(props: logsButtonProps) {
   const navigate = useNavigate();
 
   const handleClick = async () => {
-    navigate("/admin/equipment/logs/" + props.id);
+    navigate("/admin/equipment/issues/" + props.id);
   };
 
   return (

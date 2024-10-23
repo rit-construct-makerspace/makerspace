@@ -4,10 +4,11 @@ import * as HoldsRepo from "../repositories/Holds/HoldsRepository.js";
 import * as UsersRepo from "../repositories/Users/UserRepository.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUsersFullName } from "../repositories/Users/UserRepository.js";
-import { HoldRow, MaintenanceLogRow } from "../db/tables.js";
+import { HoldRow, MaintenanceLogRow, MaintenanceTagRow } from "../db/tables.js";
 import { getEquipmentByID } from "../repositories/Equipment/EquipmentRepository.js";
-import { createMaintenanceLog, createMaintenanceTag, createResolutionLog, deleteMaintenanceLog, deleteMaintenanceTag, deleteResolutionLog, getMaintenanceLogByID, getMaintenanceLogsByEquipment, getMaintenanceTagByID, getMaintenanceTags, getResolutionLogByID, getResolutionLogsByEquipment, updateMaintenanceLog, updateMaintenanceTag, updateResolutionLog } from "../repositories/Equipment/MaintenanceLogRepository.js";
+import { createMaintenanceLog, createMaintenanceTag, createResolutionLog, deleteMaintenanceLog, deleteMaintenanceTag, deleteResolutionLog, getMaintenanceLogByID, getMaintenanceLogsByEquipment, getMaintenanceTagByID, getMaintenanceTags, getMaintenanceTagsByEquipmentOrGlobal, getResolutionLogByID, getResolutionLogsByEquipment, updateMaintenanceLog, updateMaintenanceTag, updateResolutionLog } from "../repositories/Equipment/MaintenanceLogRepository.js";
 import { GraphQLError } from "graphql";
+import { getInstanceByID } from "../repositories/Equipment/EquipmentInstancesRepository.js";
 
 const MaintenanceLogsResolver = {
   MaintenanceLog: {
@@ -29,6 +30,17 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async () => parent.equipmentID && getEquipmentByID(parent.equipmentID)
       ),
+
+    instance: async (
+      parent: MaintenanceLogRow,
+      _args: any,
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed(
+        [Privilege.MENTOR, Privilege.STAFF],
+        async () => parent.instanceID && getInstanceByID(parent.instanceID)
+      ),
+
     tag1: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -77,6 +89,17 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async () => parent.equipmentID && getEquipmentByID(parent.equipmentID)
       ),
+
+    instance: async (
+      parent: MaintenanceLogRow,
+      _args: any,
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed(
+        [Privilege.MENTOR, Privilege.STAFF],
+        async () => parent.instanceID && getInstanceByID(parent.instanceID)
+      ),
+
     tag1: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -106,6 +129,18 @@ const MaintenanceLogsResolver = {
       ),
   },
 
+  MaintenanceTag: {
+    equipment: async (
+      parent: MaintenanceTagRow,
+      _args: any,
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed(
+        [Privilege.MENTOR, Privilege.STAFF],
+        async () => parent.equipmentID && getEquipmentByID(parent.equipmentID)
+      ),
+  },
+
   Query: {
     getMaintenanceLogsByEquipment: async (
       _parent: any,
@@ -127,12 +162,14 @@ const MaintenanceLogsResolver = {
       ),
     getMaintenanceTags: async (
       _parent: any,
-      _args: any,
+      args: {equipmentID?: number},
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
-        async () => getMaintenanceTags()
+        async () => {
+          return !args.equipmentID ? getMaintenanceTags() : getMaintenanceTagsByEquipmentOrGlobal(args.equipmentID)
+        }
       ),
     getMaintenanceTagByID: async (
       _parent: any,
@@ -148,26 +185,26 @@ const MaintenanceLogsResolver = {
   Mutation: {
     createMaintenanceLog: async (
       _parent: any,
-      args: { equipmentID: number, content: string },
+      args: { equipmentID: number, instanceID: number, content: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           await createLog(`{user} created a maintenance log for {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: args.equipmentID, label: (await getEquipmentByID(args.equipmentID)).name });
-          return createMaintenanceLog(user.id, args.equipmentID, args.content);
+          return createMaintenanceLog(user.id, args.equipmentID, args.instanceID, args.content);
         }
       ),
     createResolutionLog: async (
       _parent: any,
-      args: { equipmentID: number, content: string },
+      args: { equipmentID: number, instanceID: number, content: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           await createLog(`{user} created a resolution log for {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: args.equipmentID, label: (await getEquipmentByID(args.equipmentID)).name });
-          return createResolutionLog(user.id, args.equipmentID, args.content);
+          return createResolutionLog(user.id, args.equipmentID, args.instanceID, args.content);
         }
       ),
     deleteMaintenanceLog: async (
@@ -200,14 +237,14 @@ const MaintenanceLogsResolver = {
       ),
     createMaintenanceTag: async (
       _parent: any,
-      args: { label: string, color: string },
+      args: { equipmentID?: number, label: string, color: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           await createLog(`{user} created a maintenance tag "${args.label}"`, "admin", { id: user.id, label: getUsersFullName(user) });
-          return createMaintenanceTag(args.label, args.color);
+          return createMaintenanceTag(args.equipmentID ?? null, args.label, args.color);
         }
       ),
     deleteMaintenanceTag: async (

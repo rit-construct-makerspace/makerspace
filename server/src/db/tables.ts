@@ -19,6 +19,13 @@ export interface EquipmentRow {
   notes: string;
 }
 
+export interface EquipmentInstancesRow {
+  id: number;
+  equipmentID: number;
+  name: string;
+  status: string;
+}
+
 export interface MaintenanceLogRow {
   id: number;
   authorID: number;
@@ -28,6 +35,7 @@ export interface MaintenanceLogRow {
   tagID1: number;
   tagID2: number;
   tagID3: number;
+  instanceID: number;
 }
 
 export interface ResolutionLogRow {
@@ -39,10 +47,12 @@ export interface ResolutionLogRow {
   tagID1: number;
   tagID2: number;
   tagID3: number;
+  instanceID: number;
 }
 
 export interface MaintenanceTagRow {
   id: number;
+  equipmentID: number;
   label: string;
   color: string;
 }
@@ -253,6 +263,7 @@ declare module "knex/types/tables.js" {
   interface Tables {
     AuditLogs: AuditLogRow;
     Equipment: EquipmentRow;
+    EquipmentInstances: EquipmentInstancesRow;
     Holds: HoldRow;
     InventoryItem: InventoryItemRow;
     ModuleSubmissions: ModuleSubmissionRow;
