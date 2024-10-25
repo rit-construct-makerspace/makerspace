@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Page from "../../Page";
-import { Button, Divider, Stack, Table, TableCell, TableHead, TableRow } from "@mui/material";
+import { Box, Button, Divider, Stack, Table, TableCell, TableHead, TableRow } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useNavigate } from "react-router-dom";
@@ -37,23 +37,25 @@ export default function InventoryPage() {
       <AdminPage title="Inventory" maxWidth="1250px">
         <PageSectionHeader top>Running Low</PageSectionHeader>
 
-        <Table>
-          <TableHead>
-            <TableCell>Item</TableCell>
-            <TableCell>Units Available</TableCell>
-            <TableCell>Price/Unit</TableCell>
-            <TableCell>Staff Only</TableCell>
-            <TableCell>Available on Storefront</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableHead>
-          {lowItems.map((item: InventoryItem) => (
-            <AdminInventoryRow
-              item={item}
-              key={item.id}
-              onClick={() => setModalItemId(item.id + "")}
-            />
-          ))}
-        </Table>
+        <Box sx={{width: "100%", overflowX: "scroll"}}>
+          <Table>
+            <TableHead>
+              <TableCell>Item</TableCell>
+              <TableCell>Units Available</TableCell>
+              <TableCell>Price/Unit</TableCell>
+              <TableCell>Staff Only</TableCell>
+              <TableCell>Available on Storefront</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableHead>
+            {lowItems.map((item: InventoryItem) => (
+              <AdminInventoryRow
+                item={item}
+                key={item.id}
+                onClick={() => setModalItemId(item.id + "")}
+              />
+            ))}
+          </Table>
+        </Box>
 
         <PageSectionHeader>All Materials</PageSectionHeader>
 
@@ -74,23 +76,25 @@ export default function InventoryPage() {
           </Button>
         </Stack>
 
-        <Table>
-          <TableHead>
-            <TableCell>Item</TableCell>
-            <TableCell>Units Available</TableCell>
-            <TableCell>Price/Unit</TableCell>
-            <TableCell>Staff Only</TableCell>
-            <TableCell>Available on Storefront</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableHead>
-          {matchingItems.map((item: InventoryItem) => (
-            <AdminInventoryRow
-              item={item}
-              key={item.id}
-              onClick={() => setModalItemId(item.id + "")}
-            />
-          ))}
-        </Table>
+        <Box sx={{width: "100%", overflowX: "scroll"}}>
+          <Table>
+            <TableHead>
+              <TableCell>Item</TableCell>
+              <TableCell>Units Available</TableCell>
+              <TableCell>Price/Unit</TableCell>
+              <TableCell>Staff Only</TableCell>
+              <TableCell>Available on Storefront</TableCell>
+              <TableCell>Actions</TableCell>
+            </TableHead>
+            {matchingItems.map((item: InventoryItem) => (
+              <AdminInventoryRow
+                item={item}
+                key={item.id}
+                onClick={() => setModalItemId(item.id + "")}
+              />
+            ))}
+          </Table>
+        </Box>
 
         <Ledger></Ledger>
 

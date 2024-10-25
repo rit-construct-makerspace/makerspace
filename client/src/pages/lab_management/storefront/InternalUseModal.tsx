@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
 import { Button, Divider, Stack, Typography } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -38,9 +38,21 @@ export default function UseModal({
     setNotes(e.target.value);
   }
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
 
   return (
-    <PrettyModal open={open} onClose={onClose} width={430}>
+    <PrettyModal open={open} onClose={onClose} width={isMobile ? 250 : 430}>
       <Stack spacing={2} px={2}>
         <Stack spacing={1}>
           <Typography variant="body1" fontWeight={"bold"}>

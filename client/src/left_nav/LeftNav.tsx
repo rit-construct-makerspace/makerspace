@@ -77,7 +77,10 @@ export default function LeftNav() {
 
   const drawerContent = (
     <>
-      <StyledLogo src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => navigate(`/`)} />
+      <StyledLogo src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => {
+        setOpen(false);
+        navigate(`/`);
+        }} />
 
       <Stack direction="row" alignItems="center" spacing={2} padding={2}>
         <Avatar
@@ -97,11 +100,13 @@ export default function LeftNav() {
           to="/maker/equipment"
           primary="Equipment"
           icon={<HandymanIcon />}
+          toggleDrawer={toggleDrawer(false)}
         />
         <NavLink
           to="/maker/training"
           primary="Training"
           icon={<SchoolIcon />}
+          toggleDrawer={toggleDrawer(false)}
         />
         {/*<NavLink
           to="/maker/materials"
@@ -112,12 +117,14 @@ export default function LeftNav() {
           to="https://cloud.3dprinteros.com/ssosaml/rit/auth"
           primary="3DPrinterOS"
           icon={<PrinterOsIcon />}
+          toggleDrawer={toggleDrawer(false)}
           newTab={true}
         />
         <NavLink
           to="https://rit.enterprise.slack.com/archives/C0440KNF916"
           primary="Slack"
           icon={<SlackIcon />}
+          toggleDrawer={toggleDrawer(false)}
           newTab={true}
         />
       </List>
@@ -130,51 +137,61 @@ export default function LeftNav() {
                 to="/admin/equipment"
                 primary="Equipment"
                 icon={<HandymanIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/training"
                 primary="Training"
                 icon={<SchoolIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/inventory"
                 primary="Materials"
                 icon={<InventoryIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/storefront"
                 primary="Storefront"
                 icon={<StorefrontIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/rooms"
                 primary="Rooms"
                 icon={<MeetingRoomIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/announcements"
                 primary="Announcements"
                 icon={<AnnouncementIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/people"
                 primary="People"
                 icon={<PeopleIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/history"
                 primary="History"
                 icon={<HistoryIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/readers"
                 primary="Access Devices"
                 icon={<AdfScannerIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/statistics"
                 primary="Statistics"
                 icon={<BarChartIcon />}
+                toggleDrawer={toggleDrawer(false)}
               />
             </List>
           </RequestWrapper>
@@ -187,6 +204,7 @@ export default function LeftNav() {
             to="/logoutprompt"
             primary="Logout"
             icon={<HandymanIcon />}
+            toggleDrawer={toggleDrawer(false)}
         />
       </List>
 
@@ -211,7 +229,9 @@ export default function LeftNav() {
         pauseOnHover
         theme="colored"
         />
-      <IconButton onClick={toggleDrawer(true)} sx={{position: "static", height: 20, width: 20, p: 3, background:"none"}}><MenuIcon /></IconButton>
+      <Box sx={{position: "fixed", zIndex: 90, background: `#${localStorage.getItem('themeMode') == "dark" ? "000000" : "fafafa"} !important`}}>
+        <IconButton onClick={toggleDrawer(true)} sx={{height: 20, width: 20, p: 3, borderRadius: 1}}><MenuIcon /></IconButton>
+      </Box>
       <Drawer
         sx={{
           width: drawerWidth,

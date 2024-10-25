@@ -45,7 +45,7 @@ const Homepage: React.FC = () => {
 
 
     return (
-        <Page title="" maxWidth={"1250px"}>
+        <Page title="" maxWidth={"1250px"} noPadding={isMobile}>
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
             {( currentUser.cardTagID == null || currentUser.cardTagID == "" ) &&
             <Alert variant="standard" color="error">
@@ -53,35 +53,23 @@ const Homepage: React.FC = () => {
             </Alert>
             }
             <Typography variant="h5">Dashboard</Typography>
-            {isMobile
-             ? <Stack className="flexo" direction={"column"}>
+            <Stack className="flexo" direction={isMobile ? "column" : "row"}>
                 {/* <AccountBalanceCard /> */}
                 <Stack direction={"column"}>
                     <ResourcesCard />
                     <AnnouncementsCard />
                 </Stack>
 
-                {/* {!isMobile && <Stack direction={"column"}>
+                {!isMobile && <Stack direction={"column"}>
                     <IncompleteTrainingsCard onClick={() => navigate("/maker/training/")} />
                     <ExpiringSoonCard />
-                </Stack>} */}
+                </Stack>}
 
                 <Stack direction={"column"}>
                     <OperationHoursCard />
                     <UpcomingEventsCard />
                 </Stack>
             </Stack>
-             : <Box>
-                <Stack direction={"row"}>
-                    <Box width={"65%"}>
-                        <ResourcesCard />
-                        <AnnouncementsCard />
-                    </Box>
-                    <OperationHoursCard />
-                </Stack>
-                
-             </Box>
-            }
         </Page>
     );
 };

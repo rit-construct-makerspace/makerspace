@@ -105,7 +105,7 @@ async function startServer() {
   //verifies user logged in under all front-end urls and if not send to login
   app.all("/app/*", (req, res, next) => {
     //process.env.USE_TEST_DEV_USER_DANGER=="TRUE" || 
-    if (req.user) {
+    if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE" || req.user) {
       return next();
     }
     console.log("LOGIN REDIRECT");
@@ -615,12 +615,9 @@ async function startServer() {
     --REMEMBER HEROKU SERVER RUNS IN UTC (EST+4)--
    */
 
-  const dailyJob = schedule.scheduleJob("0 0 4 * * *", async function () {
-    //schedule operates in both UTC and EDT. for some reason...
-    //JS Date maintains only EDT, so use that to confirm
-    if (new Date().getHours() != 4) return;
+  const dailyJob = schedule.scheduleJob("0 0 0 * * *", async function () {
     console.log('Wiping daily records...');
-    if (API_DEBUG_LOGGING) await createLog('Daily Temp Records have been wiped.', "server")
+    if (API_DEBUG_LOGGING) await createLog('It is now ' + new Date().getHours() + ':' + new Date().getMinutes() + 'Daily Temp Records have been wiped.', "server")
     setDataPointValue(1, 0);
   });
 

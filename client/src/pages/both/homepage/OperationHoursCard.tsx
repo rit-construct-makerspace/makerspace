@@ -108,7 +108,7 @@ export default function OperationHoursCard() {
         loading={getZonesResult.loading}
         error={getZonesResult.error}
         >
-            <Card sx={{ minWidth: 250, padding: "1em", border: 1, borderColor: "lightgrey", flexGrow: 1, fontWeight: 'bold', borderRadius: 0  }} >
+            <Card sx={{ minWidth: 250, padding: "1em", border: 1, borderColor: "lightgrey", flexGrow: 1, fontWeight: 'bold', borderRadius: 0, overflow: "hidden"  }} >
             <CardHeader title="Lab Hours" sx={{pt: 0}} />
 
                 <Tabs value={currentTab} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile >
