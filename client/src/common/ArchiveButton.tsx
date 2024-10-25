@@ -13,7 +13,7 @@ export default function ArchiveButton(props: ArchiveButtonProps) {
     <ActionButton
       iconSize={25}
       tooltipText={props.tooltipText}
-      buttonText="Archive"
+      buttonText="Hide"
       appearance={props.appearance}
       color="error"
       handleClick={props.handleClick}

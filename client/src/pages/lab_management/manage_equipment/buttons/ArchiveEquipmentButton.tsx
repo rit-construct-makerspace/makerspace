@@ -30,7 +30,7 @@ export default function ArchiveEquipmentButton(props: ArchiveEquipmentButtonProp
       appearance={props.appearance}
       handleClick={handleClick}
       loading={loading}
-      tooltipText="Archive Equipment"
+      tooltipText="Hide Equipment"
     />
   );
 }

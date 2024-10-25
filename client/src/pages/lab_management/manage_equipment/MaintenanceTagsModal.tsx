@@ -34,7 +34,7 @@ export default function MaintenanceTagsModal({ tagModalOpen, setTagModalOpen, eq
 
   const [newLabel, setNewLabel] = useState<string>("");
   const [newColor, setNewColor] = useState<"default" | "primary" | "secondary" | "warning" | "info" | "error" | "success">("primary");
-  const [equipmentRestrict, setEquipmentRestrict] = useState<boolean>(false);
+  const [equipmentRestrict, setEquipmentRestrict] = useState<boolean>(true);
 
   function handleCreateSubmit() {
     createTag({
@@ -44,6 +44,9 @@ export default function MaintenanceTagsModal({ tagModalOpen, setTagModalOpen, eq
         equipmentID: !equipmentRestrict ? null : equipmentID
       }
     });
+
+    setNewLabel("");
+    setNewColor("primary");
   }
 
   return (

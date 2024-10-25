@@ -2,7 +2,7 @@ import { knex } from "../../db/index.js";
 import { EquipmentInstancesRow } from "../../db/tables.js";
 
 export async function getInstancesByEquipment(equipmentID: number): Promise<EquipmentInstancesRow[]> {
-    return await knex("EquipmentInstances").select().where({equipmentID});
+    return await knex("EquipmentInstances").select().where({equipmentID}).orderBy("name", "asc");
 }
 
 export async function getInstanceByID(id: number): Promise<EquipmentInstancesRow | undefined> {
