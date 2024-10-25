@@ -185,9 +185,8 @@ export async function hasAccessByID(
 export async function getEquipmentForModule(
   moduleID: number
 ): Promise<EquipmentRow[]> {
-  return knex("ModulesForEquipment")
-    .join("Equipment", "Equipment.id", "ModulesForEquipment.equipmentID")
-    .select("Equipment.*")
+  return knex("Equipment").select("*")
+    .join("ModulesForEquipment", "Equipment.id", '=', "ModulesForEquipment.equipmentID")
     .where("ModulesForEquipment.moduleID", moduleID);
 }
 

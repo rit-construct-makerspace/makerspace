@@ -1,9 +1,17 @@
 import { gql } from "graphql-tag";
+import { EquipmentRow, TrainingModuleRow } from "../db/tables.js";
 
 export interface TrainingModule { //dead
   id: number;
   name: string;
   quiz: object;
+}
+
+export interface AccessProgress {
+  equipment: EquipmentRow;
+  passedModules: TrainingModuleRow[];
+  availableModules: TrainingModuleRow[];
+  accessCheckDone: boolean;
 }
 
 export interface AnswerInput {
@@ -23,6 +31,13 @@ export const TrainingModuleTypeDefs = gql`
     equipment: [Equipment]
   }
 
+  type AccessProgress {
+    equipment: Equipment!
+    passedModules: [TrainingModule]
+    availableModules: [TrainingModule]
+    accessCheckDone: Boolean!
+  }
+
   input AnswerInput {
     itemID: ID!
     optionIDs: [ID]!
@@ -33,6 +48,7 @@ export const TrainingModuleTypeDefs = gql`
     module(id: ID!): TrainingModule
     archivedModules: [TrainingModule]
     archivedModule(id: ID!): TrainingModule
+    relatedAccessProgress(sourceTrainingModuleID: ID!): [AccessProgress]
   }
 
   extend type Mutation {

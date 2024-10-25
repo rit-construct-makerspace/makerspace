@@ -25,6 +25,7 @@ import { createRequire } from "module";
 import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursRepository.js";
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 import { incrementDataPointValue, setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
+import { ReaderRow } from "./db/tables.js";
 const require = createRequire(import.meta.url);
 
 const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -503,6 +504,39 @@ async function startServer() {
     })
   });
 
+  /**
+   * BATCH----
+   * Check multiple machine's last returned State or Help if Help status is active
+   */
+  app.get("/api/batch", async function (req, res) {
+    var machineIDs = [];
+    var i = 1;
+    while (req.header.arguments[`machine${i}`]) {
+      machineIDs.push(req.header.arguments[`machine${i++}`]);
+    }
+
+    if (machineIDs.length == 0) {
+      if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 401, label: "Missing arguments" });
+      return res.status(401).json({ error: "Missing arguments" }).send();
+    }
+
+    var machines: ReaderRow[] = [];
+    for (var x = 0; x < machineIDs.length; x++) {
+      const machine = await getReaderByID(machineIDs[x]);
+      if (!machine) {
+        if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 400, label: `Reader ${x+1} does not exist` });
+        return res.status(400).json({ error: `Reader ${x+1} does not exist` }).send();
+      }
+    }
+
+    var jsonBody: any = {Type: "Batch"};
+
+    for (var x = 0; x < machines.length; x++) {
+      jsonBody["MachineID"] = machines[x].helpRequested ? "Help" : machines[x].state;
+    }
+
+    return res.status(200).json(jsonBody)
+  });
 
   /**
    * HOURS--

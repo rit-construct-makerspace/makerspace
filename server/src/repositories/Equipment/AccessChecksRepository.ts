@@ -23,6 +23,10 @@ export async function accessCheckExists(userID: number, equipmentID: number): Pr
     return (await knex("AccessChecks").select("*").first().where({userID: userID, equipmentID: equipmentID})) != undefined;
 }
 
+export async function hasApprovedAccessCheck(userID: number, equipmentID: number): Promise<boolean | undefined> {
+    return (await knex("AccessChecks").select("*").first().where({userID: userID, equipmentID: equipmentID}))?.approved
+}
+
 export async function getAccessChecksByApproved(approved: boolean): Promise<AccessCheckRow[]> {
     return await knex("AccessChecks").select("*").where({approved: approved});
 }

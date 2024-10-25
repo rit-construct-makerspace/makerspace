@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Grid } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { useImmer } from "use-immer";
 import RequestWrapper from "../../../common/RequestWrapper";
@@ -9,6 +9,8 @@ import { Module } from "../../../types/Quiz";
 import Page from "../../Page";
 import SubmissionCard from "./SubmissionCard";
 import ResultsCard from "./ResultsCard";
+import EquipmentProgressCard from "./EquipmentProgessCard";
+import { useState, useEffect } from "react";
 
 export default function QuizResults() {
   const { id } = useParams<{ id: string }>();
@@ -26,6 +28,18 @@ export default function QuizResults() {
     }
   );
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 768;
+
   return (
     <RequestWrapper
       loading={ submissionResult.loading || submissionResult.data === undefined }
@@ -35,14 +49,15 @@ export default function QuizResults() {
           loading={ moduleResult.loading || moduleResult.data === undefined }
           error={ moduleResult.error }
         >
-        <Page title="Quiz Results" maxWidth="800px">
-          <Grid container rowSpacing={3}>
-            <Grid item xs={12}>
+        <Page title="Quiz Results">
+          <Stack direction={"row"} justifyContent={"flex-start"} width={"100%"}>
+            <Stack direction="column" width={isMobile ? "100%" : "50%"}>
               <SubmissionCard module={moduleResult.data?.module!} submission={submissionResult.data?.latestSubmission}/>
-            </Grid>
-          </Grid>
-          <br />
-          <ResultsCard summary={submissionResult.data?.latestSubmission.summary}></ResultsCard>
+              {isMobile && moduleResult.data && <EquipmentProgressCard moduleID={moduleResult.data?.module.id} />}
+              <ResultsCard summary={submissionResult.data?.latestSubmission.summary}></ResultsCard>
+            </Stack>
+            {!isMobile && moduleResult.data && <EquipmentProgressCard moduleID={moduleResult.data?.module.id} />}
+          </Stack>
         </Page>
       </RequestWrapper>
     </RequestWrapper>

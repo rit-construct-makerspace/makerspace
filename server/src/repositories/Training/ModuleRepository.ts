@@ -3,7 +3,7 @@
  */
 
 import { knex } from "../../db/index.js";
-import { TrainingModuleRow, TrainingModuleItem, ModulesForEquipmentRow } from "../../db/tables.js";
+import { TrainingModuleRow, TrainingModuleItem, ModulesForEquipmentRow, EquipmentRow } from "../../db/tables.js";
 import { EntityNotFound } from "../../EntityNotFound.js";
 import { PassedModule } from "../../schemas/usersSchema.js";
 
@@ -189,6 +189,17 @@ export async function getEquipmentIDsByModuleID(
 }
 
 /**
+ * Get all equipments associated with a specified module
+ * @param moduleID the module ID
+ * @returns all Equipment rows associated with the module
+ */
+export async function getEquipmentsByModuleID(
+  moduleID: number
+): Promise<EquipmentRow[]> {
+  return await knex("Equipment").innerJoin('ModulesForEquipment', 'ModulesForEquipment.equipmentID', '=', 'Equipment.id').select("Equipment.*").where("ModulesForEquipment.moduleID", "=", moduleID);
+}
+
+/**
  * Get all module ids associated with an equipment
  * @param equipmentID the equipment ID
  * @returns all ModulesForEquipment rows associated with the equipment
@@ -197,6 +208,17 @@ export async function getModulesIDsByEquipmentID(
   equipmentID: number
 ): Promise<ModulesForEquipmentRow[]> {
   return await knex("ModulesForEquipment").select("*").where({equipmentID: equipmentID});
+}
+
+/**
+ * Get all modules associated with an equipment
+ * @param equipmentID the equipment ID
+ * @returns all TrainingModule rows associated with the equipment
+ */
+export async function getModulesByEquipmentID(
+  equipmentID: number
+): Promise<TrainingModuleRow[]> {
+  return await knex("TrainingModule").innerJoin('ModulesForEquipment', 'TrainingModule.id', '=', 'ModulesForEquipment.moduleID').select("TrainingModule.*").where("equipmentID", "=", equipmentID);
 }
 
 /**
