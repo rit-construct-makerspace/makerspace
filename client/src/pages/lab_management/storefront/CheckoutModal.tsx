@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
 import { Button, Divider, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -57,13 +57,25 @@ export default function CheckoutModal({
 
   const users = useQuery(GET_USERS_ID_AND_NAME);
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
 
 
   return (
-    <PrettyModal open={open} onClose={onClose} width={430}>
+    <PrettyModal open={open} onClose={onClose} width={isMobile ? 250 : 430}>
       <Stack spacing={2} px={2}>
         <Stack direction="row" spacing={4} alignItems="center">
-          <StepNumber>1</StepNumber>
+          {!isMobile && <StepNumber>1</StepNumber>}
           <Stack spacing={1}>
             <Typography variant="body1" fontWeight={"bold"}>
               Complete transaction on
@@ -84,7 +96,7 @@ export default function CheckoutModal({
         <Divider flexItem />
 
         <Stack direction="row" spacing={4} alignItems="center">
-          <StepNumber>2</StepNumber>
+        {!isMobile && <StepNumber>2</StepNumber>}
           <Stack spacing={1}>
             <Typography variant="body1" fontWeight={"bold"}>Update Construct inventory.</Typography>
             <Stack spacing={1}>

@@ -214,7 +214,7 @@ export default function LogPage() {
               <Typography>
                 Type
               </Typography>
-              <Stack direction={"column"} flexWrap={"wrap"} height={"12.5em"}>
+              <Stack direction={"column"} flexWrap={isMobile ? "nowrap" : "wrap"} height={isMobile ? "auto" : "12.5em"}>
                 <FormControlLabel
                   label="Sign-In Attempts"
                   control={<Checkbox checked={filters.welcome} onChange={(e) => handleAdvSearchChange(e, "welcome")} />}
@@ -225,7 +225,7 @@ export default function LogPage() {
                 />
                 <FormControlLabel
                   label="ACS Status Reports"
-                  control={<Checkbox checked={filters.state} onChange={(e) => handleAdvSearchChange(e, "state")} />}
+                  control={<Checkbox checked={filters.status} onChange={(e) => handleAdvSearchChange(e, "status")} />}
                 />
                 <FormControlLabel
                   label="ACS State Changes"
@@ -292,7 +292,7 @@ export default function LogPage() {
             );
           }
           return (
-            <Stack divider={<Divider flexItem />} mt={4} spacing={2}>
+            <Stack divider={<Divider flexItem />} mt={4} spacing={0.75}>
               {data.auditLogs.map((log: any) => (
                 <AuditLogRow
                   key={log.id}

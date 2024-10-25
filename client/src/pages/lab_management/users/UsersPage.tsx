@@ -45,12 +45,24 @@ export default function UsersPage() {
     navigate("/admin/people");
   };
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
   return (
     <RequestWrapper
       loading={queryResult.loading}
       error={queryResult.error}
     >
-      <AdminPage title="People" maxWidth="1250px">
+      <AdminPage title="People" maxWidth="1250px" noPadding={isMobile}>
         <Stack direction={"row"} spacing={1} sx={{mb: 2}}>
           <SearchBar 
             placeholder={"Search " + numUsersResult.data?.numUsers.count + " users"}

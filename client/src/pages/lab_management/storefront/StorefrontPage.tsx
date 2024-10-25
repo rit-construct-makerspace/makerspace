@@ -161,7 +161,7 @@ export default function StorefrontPage() {
           onClear={() => setSearchText("")}
         />
 
-        <Stack divider={<Divider flexItem />}>
+        <Stack divider={<Divider flexItem />} sx={{width: "100%"}}>
           {data?.InventoryItems?.filter((item: InventoryItem) =>
             item.name.toLowerCase().includes(searchText.toLowerCase())
             && (!showInternalItems ? item.storefrontVisible : true)

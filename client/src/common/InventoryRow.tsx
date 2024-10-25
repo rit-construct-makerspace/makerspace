@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InventoryItem from "../types/InventoryItem";
 import { CardActionArea, Chip, Stack, Typography } from "@mui/material";
 import InvItemNamePic from "./InvItemNamePic";
@@ -10,13 +10,26 @@ interface InventoryRowProps {
 }
 
 export default function InventoryRow({ item, onClick }: InventoryRowProps) {
+
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
   return (
     <CardActionArea onClick={onClick} sx={{ py: 2 }}>
       <Stack
         sx={{ opacity: item.count === 0 ? 0.5 : 1 }}
-        direction="row"
+        direction={isMobile ? "column" : "row"}
         alignItems="center"
-        spacing={8}
+        spacing={isMobile ? 1 : 8}
       >
         <InvItemNamePic item={item} />
         <Stack direction={"row"} spacing={0.1}>
