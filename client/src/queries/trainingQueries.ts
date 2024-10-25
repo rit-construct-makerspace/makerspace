@@ -76,4 +76,24 @@ export const PUBLISH_MODULE = gql`
   }
 `;
 
+export const GET_ACCESS_PROGRESSES = gql`
+  query RelatedAccessProgress($sourceTrainingModuleID: ID!) {
+    relatedAccessProgress(sourceTrainingModuleID: $sourceTrainingModuleID) {
+      equipment {
+        id
+        name
+      }
+      passedModules {
+        id
+        name
+      }
+      availableModules {
+        id
+        name
+      }
+      accessCheckDone
+    }
+  }
+`;
+
 export default GET_TRAINING_MODULES;

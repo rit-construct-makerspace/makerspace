@@ -1,14 +1,14 @@
 import * as ModuleRepo from "../repositories/Training/ModuleRepository.js";
-import { AnswerInput } from "../schemas/trainingModuleSchema.js";
+import { AccessProgress, AnswerInput } from "../schemas/trainingModuleSchema.js";
 import { ApolloContext } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUsersFullName } from "../repositories/Users/UserRepository.js";
 import * as SubmissionRepo from "../repositories/Training/SubmissionRepository.js";
 import { MODULE_PASSING_THRESHOLD } from "../constants.js";
-import { TrainingModuleItem, TrainingModuleRow } from "../db/tables.js";
+import { EquipmentRow, TrainingModuleItem, TrainingModuleRow } from "../db/tables.js";
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
-import { accessCheckExists, createAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
+import { accessCheckExists, createAccessCheck, hasApprovedAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
 import fetch from "node-fetch";
 
 
@@ -22,7 +22,6 @@ async function add3DPrinterOSUser(username: string, workgroupId: string) {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     method: "POST"
   }
-  console.log(options);
   const addRequestBody = await fetch((process.env.CLOUDPRINT_API_URL + "login"), options).then(async function (res) {
     //Currently the compiler will not allow us to parse res.json() since it is typed as 'unknown'
     //To fix this, we will simply lie to the compiler and say it is 'any'
@@ -30,8 +29,6 @@ async function add3DPrinterOSUser(username: string, workgroupId: string) {
     return await res.json() as any;
   }).then(async function (json) {
     //Add user to workgroups
-    console.log("Session: ");
-    console.log(json.message.session);
     var options = {
       body: "session=" + json.message.session + "&workgroup_id=" + workgroupId + "&email=" + username + "@rit.edu",
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -45,7 +42,6 @@ async function add3DPrinterOSUser(username: string, workgroupId: string) {
         return res;
       });
   });
-  console.log(addRequestBody);
   return addRequestBody.result;
 }
 
@@ -128,6 +124,34 @@ const TrainingModuleResolvers = {
 
         return module;
       }),
+
+    relatedAccessProgress: async (
+      _parent: any,
+      args: { sourceTrainingModuleID: number },
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        var relatedEquipments = await ModuleRepo.getEquipmentsByModuleID(args.sourceTrainingModuleID);
+        var accessProgresses: AccessProgress[] = [];
+
+        //asyncs don't work right in .forEach. Use fori
+        for (var i = 0; i < relatedEquipments.length; i++) {
+          const modules = await ModuleRepo.getModulesByEquipmentID(relatedEquipments[i].id);
+          const passedModules: TrainingModuleRow[] = [];
+          const availableModules: TrainingModuleRow[] = [];
+          for (var x = 0; x < modules.length; x++) {
+            if (await ModuleRepo.hasPassedModule(user.id, modules[x].id)) {
+              passedModules.push(modules[x]);
+            } else {
+              availableModules.push(modules[x]);
+            }
+          }
+          const accessCheckDone = await hasApprovedAccessCheck(user.id, relatedEquipments[i].id);
+          accessProgresses.push({equipment: relatedEquipments[i], passedModules, availableModules, accessCheckDone: accessCheckDone ?? false});
+        }
+        
+        return accessProgresses;
+      })
   },
 
   TrainingModule: {
@@ -137,7 +161,18 @@ const TrainingModuleResolvers = {
       { ifAuthenticated }: ApolloContext
     ) =>
       ifAuthenticated(async (user) => {
-        return EquipmentRepo.getEquipmentForModule(parent.id);
+        return ModuleRepo.getEquipmentsByModuleID(parent.id);
+      })
+  },
+
+  AccessProgress: {
+    equipment: async (
+      parent: AccessProgress,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        return parent.equipment;
       })
   },
 
