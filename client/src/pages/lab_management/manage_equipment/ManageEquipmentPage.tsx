@@ -67,7 +67,7 @@ export default function ManageEquipmentPage({showLogs}: {showLogs?: boolean}) {
             </RequestWrapper>
 
             <Typography variant="h5">
-                Archived Equipment
+                Hidden Equipment
             </Typography>
 
             <RequestWrapper
