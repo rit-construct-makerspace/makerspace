@@ -53,6 +53,12 @@ export default function ResolutionLogPage() {
   const [timestampSort, setTimestampSort] = useState<'asc' | 'desc'>('desc');
   const [authorSort, setAuthorSort] = useState<'asc' | 'desc'>('desc');
 
+  function handleSubmit() {
+    createResolutionLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } });
+    setNewContent("");
+    setNewInstance(undefined);
+  }
+
   return (
     <AdminPage title="Resolution Log" topRightAddons={[<Button startIcon={<KeyboardReturnIcon />} color="secondary" onClick={() => navigate(`/admin/equipment/issues/${equipmentID}`)}>Back to Issues</Button>, <Button startIcon={<LabelIcon />} onClick={() => setTagModalOpen(true)}>Manage Tags</Button>]}>
       <RequestWrapper loading={resolutionLogsQueryResult.loading} error={resolutionLogsQueryResult.error}>
@@ -140,7 +146,7 @@ export default function ResolutionLogPage() {
                   fullWidth
                   sx={{ height: "90%" }}
                   variant="contained"
-                  onClick={() => createResolutionLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } })}
+                  onClick={handleSubmit}
                 >
                   Post
                 </Button>

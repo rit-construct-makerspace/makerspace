@@ -54,6 +54,12 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
   const [authorSort, setAuthorSort] = useState<'asc' | 'desc'>('desc');
   const [instanceSort, setInstanceSort] = useState<'asc' | 'desc'>('desc');
 
+  function handleSubmit() {
+    createLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } });
+    setNewContent("");
+    setNewInstance(undefined);
+  }
+
   return (
     <PrettyModal
       open={!!equipmentID}
@@ -156,7 +162,7 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
                   fullWidth
                   sx={{ height: "90%" }}
                   variant="contained"
-                  onClick={() => createLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } })}
+                  onClick={handleSubmit}
                 >
                   Post
                 </Button>
