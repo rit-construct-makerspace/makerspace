@@ -8,6 +8,10 @@ export const GET_EQUIPMENTS = gql`
       archived
       imageUrl
       sopUrl
+      trainingModules {
+        id
+        name
+      }
     }
   }
 `;

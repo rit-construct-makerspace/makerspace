@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client";
 import RequestWrapper2 from "./RequestWrapper2";
 import { Navigate, useLocation } from "react-router-dom";
 import Privilege from "../types/Privilege";
+import { AccessCheck } from "../pages/lab_management/users/UserModal";
 
 const loginUrl = process.env.REACT_APP_LOGIN_URL ?? "/";
 
@@ -23,6 +24,10 @@ export const GET_CURRENT_USER = gql`
         moduleID
         submissionDate
         expirationDate
+      }
+      accessChecks {
+        equipmentID
+        approved
       }
       cardTagID
     }
@@ -45,6 +50,7 @@ export interface CurrentUser {
   balance: string;
   hasHolds: boolean;
   passedModules: PassedModule[];
+  accessChecks: AccessCheck[];
   cardTagID: string;
 }
 
