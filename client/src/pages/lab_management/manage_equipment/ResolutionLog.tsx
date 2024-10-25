@@ -101,7 +101,7 @@ export default function ResolutionLogPage() {
                     <TableCell
                       align={'left'}
                     >
-                      Content
+                      Description
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -114,31 +114,37 @@ export default function ResolutionLogPage() {
               </Table>
             </Box>
 
-            <Stack direction={"column"} px={2} spacing={2} mt={5}>
-              <>
-                <InputLabel>Content</InputLabel>
-                <TextField
-                  value={newContent}
-                  placeholder="Content *"
-                  onChange={(e: any) => setNewContent(e.target.value)}
-                ></TextField>
-              </>
-              <>
+            <Stack direction={"row"} px={2} spacing={2} mt={5}>
+              <Stack direction={"column"} width={"25%"}>
                 <InputLabel>Instance</InputLabel>
                 <RequestWrapper loading={instancesQueryResult.loading} error={instancesQueryResult.error}>
-                  <Select value={newInstance} placeholder="Instance" onChange={(e) => setNewInstance(Number(e.target.value))}>
+                  <Select value={newInstance} placeholder="Instance" onChange={(e) => setNewInstance(Number(e.target.value))} fullWidth>
                     {instancesQueryResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
                       <MenuItem value={instance.id}>{instance.name}</MenuItem>
                     ))}
                   </Select>
                 </RequestWrapper>
-              </>
-              <Button
-                variant="contained"
-                onClick={() => createResolutionLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } })}
-              >
-                Post
-              </Button>
+              </Stack>
+              <Stack direction={"column"} width={"60%"}>
+                <InputLabel>Description</InputLabel>
+                <TextField
+                  value={newContent}
+                  placeholder="Content *"
+                  fullWidth
+                  onChange={(e: any) => setNewContent(e.target.value)}
+                ></TextField>
+              </Stack>
+              <Stack direction={"column"} width={"25%"} spacing={1}>
+                <InputLabel>&nbsp;</InputLabel>
+                <Button
+                  fullWidth
+                  sx={{ height: "90%" }}
+                  variant="contained"
+                  onClick={() => createResolutionLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } })}
+                >
+                  Post
+                </Button>
+              </Stack>
             </Stack>
           </Box>
         </Box>
