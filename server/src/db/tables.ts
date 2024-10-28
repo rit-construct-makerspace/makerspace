@@ -43,6 +43,7 @@ export interface ResolutionLogRow {
   authorID: number;
   equipmentID: number;
   timestamp: Date;
+  issue: string;
   content: string;
   tagID1: number;
   tagID2: number;
