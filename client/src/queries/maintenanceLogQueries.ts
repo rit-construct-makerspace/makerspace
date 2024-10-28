@@ -21,6 +21,28 @@ export interface MaintenanceLogItem {
     tag3: MaintenanceTag
 };
 
+export interface ResolutionLogItem {
+  id: number,
+  timestamp: string,
+  equipment: {
+    id: number
+  }
+  instance: {
+    id: number,
+    name: string
+  }
+  author: {
+      id: number,
+      firstName: string,
+      lastName: string
+  }
+  issue: string,
+  content: string,
+  tag1: MaintenanceTag,
+  tag2: MaintenanceTag,
+  tag3: MaintenanceTag
+};
+
 export interface MaintenanceTag {
   id: number,
   equipment: {
@@ -87,6 +109,7 @@ export const GET_RESOLUTION_LOGS = gql`
           firstName
           lastName
         }
+        issue
         content
         tag1 {
           id
@@ -128,8 +151,8 @@ export const CREATE_MAINTENANCE_LOG = gql`
 `;
 
 export const CREATE_RESOLUTION_LOG = gql`
-  mutation CreateResolutionLog($equipmentID: ID!, $instanceID: ID, $content: String!) {
-    createResolutionLog(equipmentID: $equipmentID, instanceID: $instanceID, content: $content) {
+  mutation CreateResolutionLog($equipmentID: ID!, $instanceID: ID, $issue: String!, $content: String!) {
+    createResolutionLog(equipmentID: $equipmentID, instanceID: $instanceID, issue: $issue, content: $content) {
       id
     }
   }

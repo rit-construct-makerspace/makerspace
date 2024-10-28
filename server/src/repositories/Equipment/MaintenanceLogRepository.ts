@@ -22,8 +22,8 @@ export async function getMaintenanceLogByID(id: number): Promise<MaintenanceLogR
     return await knex("MaintenanceLogs").select().where({id}).first();
 }
 
-export async function createResolutionLog(authorID: number, equipmentID: number, instanceID: number, content: string): Promise<ResolutionLogRow> {
-    return await knex("ResolutionLogs").insert({authorID, equipmentID, instanceID, content});
+export async function createResolutionLog(authorID: number, equipmentID: number, instanceID: number, issue: string, content: string): Promise<ResolutionLogRow> {
+    return await knex("ResolutionLogs").insert({authorID, equipmentID, instanceID, issue, content});
 }
 
 export async function deleteResolutionLog(id: number): Promise<boolean> {
@@ -39,8 +39,8 @@ export async function getResolutionLogByID(id: number): Promise<ResolutionLogRow
     return await knex("ResolutionLogs").select().where({id}).first();
 }
 
-export async function updateResolutionLog(id: number, content: string, tagID1: number, tagID2: number, tagID3: number): Promise<ResolutionLogRow | undefined> {
-    return (await knex("ResolutionLogs").update({content, tagID1, tagID2, tagID3}).where({id}).returning("*"))[0];
+export async function updateResolutionLog(id: number, issue: string, content: string, tagID1: number, tagID2: number, tagID3: number): Promise<ResolutionLogRow | undefined> {
+    return (await knex("ResolutionLogs").update({issue, content, tagID1, tagID2, tagID3}).where({id}).returning("*"))[0];
 }
 
 

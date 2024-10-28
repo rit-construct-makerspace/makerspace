@@ -21,6 +21,7 @@ export const MaintenanceLogsTypeDefs = gql`
     equipment: Equipment!
     instance: EquipmentInstance
     timestamp: DateTime
+    issue: String
     content: String
     tag1: MaintenanceTag
     tag2: MaintenanceTag
@@ -43,7 +44,7 @@ export const MaintenanceLogsTypeDefs = gql`
 
   extend type Mutation {
     createMaintenanceLog(equipmentID: ID!, instanceID: ID, content: String!): MaintenanceLog
-    createResolutionLog(equipmentID: ID!, instanceID: ID, content: String!): ResolutionLog
+    createResolutionLog(equipmentID: ID!, instanceID: ID, issue: String! content: String!): ResolutionLog
     deleteMaintenanceLog(id: ID!): Boolean
     deleteResolutionLog(id: ID!): Boolean
     createMaintenanceTag(equipmentID: ID, label: String, color: String): MaintenanceTag
