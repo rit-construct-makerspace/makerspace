@@ -7,8 +7,8 @@ import { DELETE_INVENTORY_LEDGER, GET_LEDGERS } from "../../../queries/inventory
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import { InventoryLedger } from "../../../types/InventoryItem";
 import { format } from "date-fns";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { CREATE_MAINTENANCE_LOG, CREATE_RESOLUTION_LOG, DELETE_MAINTENANCE_LOG, GET_MAINTENANCE_LOGS, GET_MAINTENANCE_TAGS, GET_RESOLUTION_LOGS, MaintenanceLogItem } from "../../../queries/maintenanceLogQueries";
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { CREATE_MAINTENANCE_LOG, CREATE_RESOLUTION_LOG, DELETE_MAINTENANCE_LOG, GET_MAINTENANCE_LOGS, GET_MAINTENANCE_TAGS, GET_RESOLUTION_LOGS, MaintenanceLogItem, ResolutionLogItem } from "../../../queries/maintenanceLogQueries";
 import MaintenanceLogEntry from "./MaintenanceLogEntry";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import AdminPage from "../../AdminPage";
@@ -16,6 +16,7 @@ import LabelIcon from '@mui/icons-material/Label';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import MaintenanceTagsModal from "./MaintenanceTagsModal";
 import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equipmentInstanceQueries";
+import ResolutionLogEntry from "./ResolutionLogEntry";
 
 
 
@@ -23,8 +24,12 @@ import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equ
 export default function ResolutionLogPage() {
   const equipmentID = useParams<{ logid: string }>().logid;
 
+  const [issueParams, setIssueParams] = useSearchParams();
+
+
   const [newContent, setNewContent] = useState<string>("");
-  const [newInstance, setNewInstance] = useState<number>();
+  const [newIssue, setNewIssue] = useState<string>(issueParams.get("issue") ?? "");
+  const [newInstance, setNewInstance] = useState<number | undefined>(Number(issueParams.get("instance")) ?? undefined);
 
   const currentUser = useCurrentUser();
 
@@ -54,9 +59,10 @@ export default function ResolutionLogPage() {
   const [authorSort, setAuthorSort] = useState<'asc' | 'desc'>('desc');
 
   function handleSubmit() {
-    createResolutionLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } });
+    createResolutionLog({ variables: { equipmentID, issue: newIssue, content: newContent, instanceID: newInstance } });
     setNewContent("");
     setNewInstance(undefined);
+    setIssueParams(undefined);
   }
 
   return (
@@ -107,13 +113,18 @@ export default function ResolutionLogPage() {
                     <TableCell
                       align={'left'}
                     >
-                      Description
+                      Issue
+                    </TableCell>
+                    <TableCell
+                      align={'left'}
+                    >
+                      Resolution
                     </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {resolutionLogsQueryResult.data && resolutionLogsQueryResult.data.getResolutionLogsByEquipment.map((item: MaintenanceLogItem) => (
-                    <MaintenanceLogEntry logItem={item} isResolution={true} allTags={maintenanceTagsResult.data?.getMaintenanceTags ?? []} />
+                  {resolutionLogsQueryResult.data && resolutionLogsQueryResult.data.getResolutionLogsByEquipment.map((item: ResolutionLogItem) => (
+                    <ResolutionLogEntry logItem={item} allTags={maintenanceTagsResult.data?.getMaintenanceTags ?? []} />
                   ))}
                   {!resolutionLogsQueryResult.data || resolutionLogsQueryResult.data.getResolutionLogsByEquipment.length == 0 && <Typography variant="h6" color={"secondary"} p={3}>No logs.</Typography>}
                 </TableBody>
@@ -121,7 +132,7 @@ export default function ResolutionLogPage() {
             </Box>
 
             <Stack direction={"row"} px={2} spacing={2} mt={5}>
-              <Stack direction={"column"} width={"25%"}>
+              <Stack direction={"column"} width={"15%"}>
                 <InputLabel>Instance</InputLabel>
                 <RequestWrapper loading={instancesQueryResult.loading} error={instancesQueryResult.error}>
                   <Select value={newInstance} placeholder="Instance" onChange={(e) => setNewInstance(Number(e.target.value))} fullWidth>
@@ -131,7 +142,16 @@ export default function ResolutionLogPage() {
                   </Select>
                 </RequestWrapper>
               </Stack>
-              <Stack direction={"column"} width={"60%"}>
+              <Stack direction={"column"} width={"37.5%"}>
+                <InputLabel>Issue</InputLabel>
+                <TextField
+                  value={newIssue}
+                  placeholder="Content *"
+                  fullWidth
+                  onChange={(e: any) => setNewIssue(e.target.value)}
+                ></TextField>
+              </Stack>
+              <Stack direction={"column"} width={"37.5%"}>
                 <InputLabel>Description</InputLabel>
                 <TextField
                   value={newContent}
@@ -140,7 +160,7 @@ export default function ResolutionLogPage() {
                   onChange={(e: any) => setNewContent(e.target.value)}
                 ></TextField>
               </Stack>
-              <Stack direction={"column"} width={"25%"} spacing={1}>
+              <Stack direction={"column"} width={"10%"} spacing={1}>
                 <InputLabel>&nbsp;</InputLabel>
                 <Button
                   fullWidth

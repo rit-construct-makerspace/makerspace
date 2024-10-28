@@ -129,7 +129,7 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
                 </TableHead>
                 <TableBody>
                   {maintenanceLogsQueryResult.data && maintenanceLogsQueryResult.data.getMaintenanceLogsByEquipment.map((item: MaintenanceLogItem) => (
-                    <MaintenanceLogEntry logItem={item} isResolution={false} allTags={maintenanceTagsResult.data?.getMaintenanceTags ?? []} />
+                    <MaintenanceLogEntry logItem={item} allTags={maintenanceTagsResult.data?.getMaintenanceTags ?? []} />
                   ))}
                   {!maintenanceLogsQueryResult.data || maintenanceLogsQueryResult.data.getMaintenanceLogsByEquipment.length == 0 && <Typography variant="h6" color={"secondary"} p={3}>No logs.</Typography>}
                 </TableBody>

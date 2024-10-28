@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Chip, IconButton, MenuItem, Select, Stack, SxProps, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
+import { Chip, IconButton, MenuItem, Select, Stack, SxProps, TableCell, TableRow, Typography } from "@mui/material";
 import { format, parseISO } from "date-fns";
 import reactStringReplace from "react-string-replace";
-import { ADD_TAG_TO_LOG, DELETE_MAINTENANCE_LOG, DELETE_RESOLUTION_LOG, GET_MAINTENANCE_LOGS, GET_RESOLUTION_LOGS, MaintenanceLogItem, MaintenanceTag, REMOVE_TAG_FROM_LOG } from "../../../queries/maintenanceLogQueries";
+import { ADD_TAG_TO_LOG, DELETE_MAINTENANCE_LOG, DELETE_RESOLUTION_LOG, GET_MAINTENANCE_LOGS, GET_RESOLUTION_LOGS, MaintenanceLogItem, MaintenanceTag, REMOVE_TAG_FROM_LOG, ResolutionLogItem } from "../../../queries/maintenanceLogQueries";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import ActionButton from "../../../common/ActionButton";
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -12,16 +12,13 @@ import { useMutation } from "@apollo/client";
 import MaintenanceTagChip from "./MaintenanceTagChip";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import { useNavigate } from "react-router-dom";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 
 function formatDateTime(dateTime: string) {
   return format(parseISO(dateTime), "M/d/yy h:mmaaa").split(" ");
 }
 
-export default function MaintenanceLogEntry({ logItem, allTags }: { logItem: MaintenanceLogItem, allTags: MaintenanceTag[] }) {
-  const navigate = useNavigate();
+export default function ResolutionLogEntry({ logItem, allTags }: { logItem: ResolutionLogItem, allTags: MaintenanceTag[] }) {
   const currentUser = useCurrentUser();
 
   const [width, setWidth] = useState<number>(window.innerWidth);
@@ -42,15 +39,15 @@ export default function MaintenanceLogEntry({ logItem, allTags }: { logItem: Mai
 
   const [date, time] = formatDateTime(logItem.timestamp);
 
-  const [deleteLog] = useMutation(DELETE_MAINTENANCE_LOG, {
+  const [deleteLog] = useMutation(DELETE_RESOLUTION_LOG, {
     variables: {id: logItem.id}, 
-    refetchQueries: [{ query: GET_MAINTENANCE_LOGS, variables: {equipmentID: logItem.equipment?.id} }] });
+    refetchQueries: [{ query: GET_RESOLUTION_LOGS, variables: {equipmentID: logItem.equipment?.id} }] });
 
   const [addTag] = useMutation(ADD_TAG_TO_LOG, {
-    refetchQueries: [{ query: GET_MAINTENANCE_LOGS, variables: {equipmentID: logItem.equipment?.id} }] });
+    refetchQueries: [{ query: GET_RESOLUTION_LOGS, variables: {equipmentID: logItem.equipment?.id} }] });
 
   const [removeTag] = useMutation(REMOVE_TAG_FROM_LOG, {
-    refetchQueries: [{ query: GET_MAINTENANCE_LOGS, variables: {equipmentID: logItem.equipment?.id} }] });
+    refetchQueries: [{ query: GET_RESOLUTION_LOGS, variables: {equipmentID: logItem.equipment?.id} }] });
 
   const handleDeleteClick = () => {
     if (!window.confirm("Are you sure you want to delete this log? This cannot be undone.")) return;
@@ -58,11 +55,11 @@ export default function MaintenanceLogEntry({ logItem, allTags }: { logItem: Mai
   };
 
   const handleRemoveTagClick = (id: number) => {
-    removeTag({variables: {logId: logItem.id, tagId: id, logType: ("maintenance")}});
+    removeTag({variables: {logId: logItem.id, tagId: id, logType: "resolution"}});
   }
 
   const handleAddTagClick = (id: number) => {
-    addTag({variables: {logId: logItem.id, tagId: id, logType: ("maintenance")}});
+    addTag({variables: {logId: logItem.id, tagId: id, logType: ("resolution")}});
     setShowTagsDropdown(false);
   }
 
@@ -104,12 +101,10 @@ export default function MaintenanceLogEntry({ logItem, allTags }: { logItem: Mai
         <AuditLogEntity entityCode={`equipment:${logItem.id}:${logItem.author.firstName} ${logItem.author.lastName}`} />
       </TableCell>
       <TableCell sx={{width: 800}}>
-        {logItem.content}
+        {logItem.issue}
       </TableCell>
-      <TableCell>
-        <Tooltip title={"Forward to Resolutions"}>
-          <IconButton color="primary" onClick={() => navigate(`/admin/equipment/logs/${logItem.equipment.id}?instance=${logItem.instance.id}&issue=${logItem.content}`,)}><ArrowForwardIcon /></IconButton>
-        </Tooltip>
+      <TableCell sx={{width: 800}}>
+        {logItem.content}
       </TableCell>
     </TableRow>
   );

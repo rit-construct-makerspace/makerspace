@@ -197,14 +197,14 @@ const MaintenanceLogsResolver = {
       ),
     createResolutionLog: async (
       _parent: any,
-      args: { equipmentID: number, instanceID: number, content: string },
+      args: { equipmentID: number, instanceID: number, issue: string, content: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           await createLog(`{user} created a resolution log for {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: args.equipmentID, label: (await getEquipmentByID(args.equipmentID)).name });
-          return createResolutionLog(user.id, args.equipmentID, args.instanceID, args.content);
+          return createResolutionLog(user.id, args.equipmentID, args.instanceID, args.issue, args.content);
         }
       ),
     deleteMaintenanceLog: async (
@@ -283,7 +283,7 @@ const MaintenanceLogsResolver = {
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
-          const log = args.logType == "resolution" ? await getResolutionLogByID(args.logId) : await getMaintenanceLogByID(args.logId);
+          const log: any = args.logType == "resolution" ? await getResolutionLogByID(args.logId) : await getMaintenanceLogByID(args.logId);
           if (!log) throw new GraphQLError("Log does not exist");
           const tag = await getMaintenanceTagByID(args.tagId);
           if (!tag) throw new GraphQLError("Tag does not exist");
@@ -301,7 +301,7 @@ const MaintenanceLogsResolver = {
           }
 
           await createLog(`{user} added tag "${tag.label}" to ${args.logType ?? "maintenance"} log (ID ${log.id}) on {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: log.equipmentID, label: equipment.name });
-          return args.logType != "resolution" ? updateMaintenanceLog(log.id, log.content, tag1, tag2, tag3) : updateResolutionLog(log.id, log.content, tag1, tag2, tag3);
+          return args.logType != "resolution" ? updateMaintenanceLog(log.id, log.content, tag1, tag2, tag3) : updateResolutionLog(log.id, log.content, log.issue, tag1, tag2, tag3);
         }
       ),
     removeTagFromLog: async (
@@ -312,7 +312,7 @@ const MaintenanceLogsResolver = {
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
-          const log = args.logType == "resolution" ? await getResolutionLogByID(args.logId) : await getMaintenanceLogByID(args.logId);
+          const log: any = args.logType == "resolution" ? await getResolutionLogByID(args.logId) : await getMaintenanceLogByID(args.logId);
           if (!log) throw new GraphQLError("Log does not exist");
           const tag = await getMaintenanceTagByID(args.tagId);
           if (!tag) throw new GraphQLError("Tag does not exist");
@@ -330,7 +330,7 @@ const MaintenanceLogsResolver = {
           }
 
           await createLog(`{user} removed tag "${tag.label}" from ${args.logType ?? "maintenance"} log (ID ${log.id}) on {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: log.equipmentID, label: equipment.name });
-          return args.logType != "resolution" ? updateMaintenanceLog(log.id, log.content, tag1, tag2, tag3) : updateResolutionLog(log.id, log.content, tag1, tag2, tag3);
+          return args.logType != "resolution" ? updateMaintenanceLog(log.id, log.content, tag1, tag2, tag3) : updateResolutionLog(log.id, log.issue, log.content, tag1, tag2, tag3);
         }
       ),
   },
