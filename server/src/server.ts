@@ -286,7 +286,7 @@ async function startServer() {
 
     //Staff bypass. Skip Welcome and training check.
     if (user.privilege == Privilege.STAFF) {
-      if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name });
+      if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} - {equipment} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name });
       createEquipmentSession(machine.id, user.id);
       return res.status(202).json({
         "Type": "Authorization",
@@ -302,7 +302,7 @@ async function startServer() {
       //console.log("Checking welcome status");
       const welcomed = await hasSwipedToday(machine.roomID, user.id);
       if (!welcomed) {
-        if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name }, { id: 401, label: "User requires Welcome" });
+        if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} ({equipment}) with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name }, { id: 401, label: "User requires Welcome" });
         return res.status(401).json({
           "Type": "Authorization",
           "Machine": machine.id,
@@ -315,7 +315,7 @@ async function startServer() {
 
     //Check that all required trainings are passed
     if (!(process.env.GLOBAL_TRAINING_BYPASS == "TRUE") && !(await hasAccessByID(user.id, machine.id))) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name }, { id: 401, label: "Incomplete trainings" });
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} ({equipment}) with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name }, { id: 401, label: "Incomplete trainings" });
       return res.status(401).json({
         "Type": "Authorization",
         "Machine": machine.id,
@@ -327,7 +327,7 @@ async function startServer() {
 
     //Check that equipment access check is completed
     if (!(process.env.GLOBAL_ACCESS_CHECK_BYPASS == "TRUE") && !(await isApproved(user.id, machine.id))) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name }, { id: 401, label: "Missing Staff Approval" });
+      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} ({equipment}) with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: 401, label: "Missing Staff Approval" });
       return res.status(401).json({
         "Type": "Authorization",
         "Machine": machine.id,
@@ -338,7 +338,7 @@ async function startServer() {
     }
 
     //Success
-    if (API_NORMAL_LOGGING) createLog("{user} has activated {machine}", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: machine.name });
+    if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} - {equipment}", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name });
     createEquipmentSession(machine.id, user.id);
     return res.status(202).json({
       "Type": "Authorization",

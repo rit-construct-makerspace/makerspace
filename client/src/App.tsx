@@ -39,6 +39,8 @@ export default function App() {
       <ThemeProvider theme={localStorage.getItem("themeMode") == "dark" ? darkTheme : theme}>
         <GlobalStyles styles={localStorage.getItem("themeMode") == "dark" && { 
           body: {background: 'black', color: 'white'},
+          '::-webkit-scrollbar': {background: '#00000000', 'width': '5px'},
+          '::-webkit-scrollbar-thumb': {'background': '#FFFFFF50', 'border-radius': '1em'},
           a: {color: '#7D55C7'},
           textarea: {color: '#eaeaea'},
           legend: {color: '#eaeaea'}
