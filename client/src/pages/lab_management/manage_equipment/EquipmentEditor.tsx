@@ -125,8 +125,8 @@ export default function EquipmentEditor({
                   : <ArchiveEquipmentButton equipmentID={equipment.id} appearance="medium" />
                 : null
             }
-            {equipment.id && <Button variant="outlined" color="secondary" startIcon={<SpeakerNotesIcon />} onClick={() => {navigate("/admin/equipment/logs/" + equipment.id);}}>
-              View Maintenance Logs
+            {equipment.id && <Button variant="outlined" color="secondary" startIcon={<SpeakerNotesIcon />} onClick={() => {navigate("/admin/equipment/issues/" + equipment.id);}}>
+              View Issue Logs
             </Button>}
             {equipment.id && <Button variant="outlined" color="info" startIcon={<AutoAwesomeMotionIcon />} onClick={() => {setInstancesModalOpen(true)}}>
               Manage Instances

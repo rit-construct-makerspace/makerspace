@@ -213,7 +213,7 @@ const MaintenanceLogsResolver = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
-        [Privilege.STAFF],
+        [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           const equipment = await getMaintenanceLogByID(args.id);
           if (!equipment) throw new GraphQLError("Equipment does not exist");
@@ -227,7 +227,7 @@ const MaintenanceLogsResolver = {
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
-        [Privilege.STAFF],
+        [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           const equipment = await getResolutionLogByID(args.id);
           if (!equipment) throw new GraphQLError("Equipment does not exist");

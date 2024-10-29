@@ -17,11 +17,11 @@ export default function LogsButton(props: logsButtonProps) {
 
   return (
     <ActionButton 
-      tooltipText="View Maintenance Log"
+      tooltipText="View Issue Log"
       iconSize={22.5}
       color="primary"
       appearance={props.appearance}
-      buttonText="View Maintenance Log"
+      buttonText="View Issue Log"
       handleClick={handleClick}
       loading={false}>
         <SpeakerNotesIcon />
