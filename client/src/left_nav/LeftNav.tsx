@@ -76,7 +76,7 @@ export default function LeftNav() {
   const isMentorOrHigherResult = useQuery(IS_MENTOR_OR_HIGHER);
 
   const drawerContent = (
-    <>
+    <Box sx={{overflowX: "hidden", minHeight: "100%"}}>
       <StyledLogo src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => {
         setOpen(false);
         navigate(`/`);
@@ -209,14 +209,14 @@ export default function LeftNav() {
       </List>
 
 
-      <List component={"nav"} sx={{height: "100%", display: "flex", alignItems: "flex-end"}}>
+      <List component={"nav"} sx={{mt: "auto"}}>
         <ThemeToggle/>
       </List>
-    </>
+    </Box>
   );
 
   return (
-    <Box display={!isMobile ? "flex" : "block"}>
+    <Box display={!isMobile ? "flex" : "block"} sx={{overflowX: "hidden"}}>
       <ToastContainer
         position="bottom-left"
         autoClose={3000}
