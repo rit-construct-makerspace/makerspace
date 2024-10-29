@@ -18,6 +18,9 @@ import MaintenanceTagsModal from "./MaintenanceTagsModal";
 import PrettyModal from "../../../common/PrettyModal";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equipmentInstanceQueries";
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
+import EquipmentInstancesModal from "./EquipmentInstancesModal";
+
 
 
 
@@ -60,6 +63,9 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
     setNewInstance(undefined);
   }
 
+  const [instancesModalOpen, setInstancesModalOpen] = useState<boolean>(false);
+
+
   return (
     <PrettyModal
       open={!!equipmentID}
@@ -70,7 +76,10 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
         <Box width={"100%"}>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <Typography variant="h5">Issue Log</Typography>
-            <Button variant="outlined" startIcon={<CheckCircleOutlineIcon />} color="secondary" onClick={() => navigate(`/admin/equipment/logs/${equipmentID}`)}>Resolution Log</Button>
+            <Stack direction={"row"}>
+              <Button variant="outlined" color="info" startIcon={<AutoAwesomeMotionIcon />} onClick={() => {setInstancesModalOpen(true)}}>Manage Instances</Button>
+              <Button variant="outlined" startIcon={<CheckCircleOutlineIcon />} color="secondary" onClick={() => navigate(`/admin/equipment/logs/${equipmentID}`)}>Resolution Log</Button>
+            </Stack>
           </Stack>
           <Box width={"100%"}>
             <Box>
@@ -173,6 +182,8 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
       </RequestWrapper>
 
       <MaintenanceTagsModal tagModalOpen={tagModalOpen} setTagModalOpen={setTagModalOpen} equipmentID={Number(equipmentID)} />
+
+      <EquipmentInstancesModal equipmentID={Number(equipmentID)} equipmentName={""} isOpen={instancesModalOpen} setIsOpen={setInstancesModalOpen} />
     </PrettyModal>
   );
 }

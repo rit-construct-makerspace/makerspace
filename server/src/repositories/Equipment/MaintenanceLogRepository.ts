@@ -15,7 +15,7 @@ export async function updateMaintenanceLog(id: number, content: string, tagID1: 
 }
 
 export async function getMaintenanceLogsByEquipment(equipmentID: number): Promise<MaintenanceLogRow[]> {
-    return await knex("MaintenanceLogs").select().where({equipmentID});
+    return (await knex("MaintenanceLogs").select().where({equipmentID}).orderBy("timestamp", "asc"));
 }
 
 export async function getMaintenanceLogByID(id: number): Promise<MaintenanceLogRow | undefined> {
@@ -32,7 +32,7 @@ export async function deleteResolutionLog(id: number): Promise<boolean> {
 }
 
 export async function getResolutionLogsByEquipment(equipmentID: number): Promise<ResolutionLogRow[]> {
-    return await knex("ResolutionLogs").select().where({equipmentID});
+    return await knex("ResolutionLogs").select().where({equipmentID}).orderBy("timestamp", "asc");
 }
 
 export async function getResolutionLogByID(id: number): Promise<ResolutionLogRow | undefined> {
@@ -59,11 +59,11 @@ export async function deleteMaintenanceTag(id: number): Promise<boolean> {
 }
 
 export async function getMaintenanceTags(): Promise<MaintenanceTagRow[]> {
-    return await knex("MaintenanceTags").select();
+    return await knex("MaintenanceTags").select().orderBy("id", "asc");
 }
 
 export async function getMaintenanceTagsByEquipmentOrGlobal(equipmentID: number): Promise<MaintenanceTagRow[]> {
-    return await knex("MaintenanceTags").select().where({equipmentID}).orWhereNull("equipmentID");
+    return await knex("MaintenanceTags").select().where({equipmentID}).orWhereNull("equipmentID").orderBy("id", "asc");
 }
 
 export async function getMaintenanceTagByID(id: number): Promise<MaintenanceTagRow | undefined> {

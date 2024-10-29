@@ -17,6 +17,9 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import MaintenanceTagsModal from "./MaintenanceTagsModal";
 import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equipmentInstanceQueries";
 import ResolutionLogEntry from "./ResolutionLogEntry";
+import EquipmentInstancesModal from "./EquipmentInstancesModal";
+import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
+
 
 
 
@@ -65,8 +68,10 @@ export default function ResolutionLogPage() {
     setIssueParams(undefined);
   }
 
+  const [instancesModalOpen, setInstancesModalOpen] = useState<boolean>(false);
+
   return (
-    <AdminPage title="Resolution Log" topRightAddons={[<Button startIcon={<KeyboardReturnIcon />} color="secondary" onClick={() => navigate(`/admin/equipment/issues/${equipmentID}`)}>Back to Issues</Button>, <Button startIcon={<LabelIcon />} onClick={() => setTagModalOpen(true)}>Manage Tags</Button>]}>
+    <AdminPage title="Resolution Log" topRightAddons={[<Button startIcon={<KeyboardReturnIcon />} color="secondary" onClick={() => navigate(`/admin/equipment/issues/${equipmentID}`)}>Back to Issues</Button>, <Button startIcon={<LabelIcon />} onClick={() => setTagModalOpen(true)}>Manage Tags</Button>, <Button color="info" startIcon={<AutoAwesomeMotionIcon />} onClick={() => {setInstancesModalOpen(true)}}>Manage Instances</Button>]}>
       <RequestWrapper loading={resolutionLogsQueryResult.loading} error={resolutionLogsQueryResult.error}>
         <Box width={"100%"}>
           <Box width={"100%"}>
@@ -177,6 +182,7 @@ export default function ResolutionLogPage() {
       </RequestWrapper>
 
       <MaintenanceTagsModal tagModalOpen={tagModalOpen} setTagModalOpen={setTagModalOpen} equipmentID={Number(equipmentID)} />
+      <EquipmentInstancesModal equipmentID={Number(equipmentID)} equipmentName={""} isOpen={instancesModalOpen} setIsOpen={setInstancesModalOpen} />
     </AdminPage>
   );
 }
