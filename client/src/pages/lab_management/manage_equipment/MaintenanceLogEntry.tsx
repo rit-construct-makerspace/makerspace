@@ -108,7 +108,7 @@ export default function MaintenanceLogEntry({ logItem, allTags }: { logItem: Mai
       </TableCell>
       <TableCell>
         <Tooltip title={"Forward to Resolutions"}>
-          <IconButton color="primary" onClick={() => navigate(`/admin/equipment/logs/${logItem.equipment.id}?instance=${logItem.instance.id}&issue=${logItem.content}`,)}><ArrowForwardIcon /></IconButton>
+          <IconButton color="primary" onClick={() => navigate(`/admin/equipment/logs/${logItem.equipment.id}?instance=${logItem.instance.id}&issue=${logItem.content}&id=${logItem.id}`,)}><ArrowForwardIcon /></IconButton>
         </Tooltip>
       </TableCell>
     </TableRow>
