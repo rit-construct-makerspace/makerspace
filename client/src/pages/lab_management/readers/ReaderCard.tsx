@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { makeStyles } from '@material-ui/core/styles';
-import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
+import { GET_ANY_EQUIPMENT_BY_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/getRooms";
@@ -58,7 +58,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     <p>Last User: {userID != null ? (<AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity>) : "NULL"}<br></br>Session Length: {recentSessionLength} sec</p>
   );
 
-  const machineResult = useQuery(GET_EQUIPMENT_BY_ID, {
+  const machineResult = useQuery(GET_ANY_EQUIPMENT_BY_ID, {
     variables: { id: machineID }
   });
 
@@ -100,7 +100,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               })
             }
             <br></br>
-            <b>Machine: </b> <AuditLogEntity entityCode={machineID == undefined || machineResult.data == undefined ? "0:none:none" : "equipment:" + machineResult.data.equipment.id + ":" + machineResult.data.equipment.name}></AuditLogEntity>
+            <b>Machine: </b> <AuditLogEntity entityCode={machineID == undefined || machineResult.data == undefined ? "0:none:none" : "equipment:" + machineResult.data.anyEquipment.id + ":" + machineResult.data.anyEquipment.name}></AuditLogEntity>
 
             <br></br>
           </Typography>
