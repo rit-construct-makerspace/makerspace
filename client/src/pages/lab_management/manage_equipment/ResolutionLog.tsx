@@ -151,16 +151,16 @@ export default function ResolutionLogPage() {
                 <InputLabel>Issue</InputLabel>
                 <TextField
                   value={newIssue}
-                  placeholder="Content *"
+                  placeholder="Brief, without machine name"
                   fullWidth
                   onChange={(e: any) => setNewIssue(e.target.value)}
                 ></TextField>
               </Stack>
               <Stack direction={"column"} width={"37.5%"}>
-                <InputLabel>Description</InputLabel>
+                <InputLabel>Resolution</InputLabel>
                 <TextField
                   value={newContent}
-                  placeholder="Content *"
+                  placeholder="Steps taken to resolve/mitigate"
                   fullWidth
                   onChange={(e: any) => setNewContent(e.target.value)}
                 ></TextField>
