@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Button, Divider, IconButton, InputLabel, MenuItem, Select, Stack, styled, Tab, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tabs, TextareaAutosize, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, FormControlLabel, IconButton, InputLabel, MenuItem, Select, Stack, styled, Switch, Tab, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tabs, TextareaAutosize, TextField, Typography } from "@mui/material";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
@@ -34,6 +34,9 @@ export default function ResolutionLogPage() {
   const [newIssue, setNewIssue] = useState<string>(issueParams.get("issue") ?? "");
   const [newInstance, setNewInstance] = useState<number | undefined>(Number(issueParams.get("instance")) ?? undefined);
 
+  const issueID = issueParams.get("id");
+  const [autoDelete, setAutoDelete] = useState<boolean>(!!issueParams.get("id"));
+
   const currentUser = useCurrentUser();
 
   const [width, setWidth] = useState<number>(window.innerWidth);
@@ -55,6 +58,7 @@ export default function ResolutionLogPage() {
   const instancesQueryResult = useQuery(GET_EQUIPMENT_INSTANCES, { variables: { equipmentID } });
 
   const [createResolutionLog] = useMutation(CREATE_RESOLUTION_LOG, { refetchQueries: [{ query: GET_RESOLUTION_LOGS, variables: { equipmentID } }] });
+  const [deleteIssueLog] = useMutation(DELETE_MAINTENANCE_LOG);
 
   const [tagModalOpen, setTagModalOpen] = useState(false);
 
@@ -63,6 +67,7 @@ export default function ResolutionLogPage() {
 
   function handleSubmit() {
     createResolutionLog({ variables: { equipmentID, issue: newIssue, content: newContent, instanceID: newInstance } });
+    if (issueID && autoDelete) deleteIssueLog({variables: {id: issueID}});
     setNewContent("");
     setNewInstance(undefined);
     setIssueParams(undefined);
@@ -151,16 +156,16 @@ export default function ResolutionLogPage() {
                 <InputLabel>Issue</InputLabel>
                 <TextField
                   value={newIssue}
-                  placeholder="Content *"
+                  placeholder="Brief, without machine name"
                   fullWidth
                   onChange={(e: any) => setNewIssue(e.target.value)}
                 ></TextField>
               </Stack>
               <Stack direction={"column"} width={"37.5%"}>
-                <InputLabel>Description</InputLabel>
+                <InputLabel>Resolution</InputLabel>
                 <TextField
                   value={newContent}
-                  placeholder="Content *"
+                  placeholder="Steps taken to resolve/mitigate"
                   fullWidth
                   onChange={(e: any) => setNewContent(e.target.value)}
                 ></TextField>
@@ -177,6 +182,7 @@ export default function ResolutionLogPage() {
                 </Button>
               </Stack>
             </Stack>
+            {issueID && <FormControlLabel sx={{float: "right"}} control={<Switch checked={autoDelete} onChange={() => setAutoDelete(!autoDelete)} />} label={"Automatically delete forwarded issue?"} />}
           </Box>
         </Box>
       </RequestWrapper>
