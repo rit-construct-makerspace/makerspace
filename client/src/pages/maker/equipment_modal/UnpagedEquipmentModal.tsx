@@ -1,0 +1,111 @@
+import PrettyModal from "../../../common/PrettyModal";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
+import RequestWrapper2 from "../../../common/RequestWrapper2";
+import { Avatar, Box, Button, Card, Divider, Icon, Stack, Typography } from "@mui/material";
+import EventIcon from "@mui/icons-material/Event";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import TrainingModuleRow from "../../../common/TrainingModuleRow";
+import {
+  ModuleStatus,
+  moduleStatusMapper,
+} from "../../../common/TrainingModuleUtils";
+import CloseButton from "../../../common/CloseButton";
+import ReservationAttachment from "../../lab_management/reservations/ReservationAttachment";
+import Markdown from "react-markdown";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CloseIcon from "@mui/icons-material/Close";
+
+import { useState, useEffect } from "react";
+
+interface EquipmentModalProps {
+  equipmentID: number | undefined;
+  setEquipmentID: React.Dispatch<React.SetStateAction<number | undefined>>;
+}
+
+export default function UnpagedEquipmentModal({ equipmentID, setEquipmentID }: EquipmentModalProps) {
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
+  const navigate = useNavigate();
+  const user = useCurrentUser();
+
+  const result = useQuery(GET_EQUIPMENT_BY_ID, { variables: { id: equipmentID } });
+
+  const hasApprovedAccessCheck: boolean = !!user.accessChecks.find((ac) => Number(ac.equipmentID) == equipmentID && ac.approved)
+
+  return (
+    <PrettyModal
+      open={!!equipmentID}
+      onClose={() => setEquipmentID(undefined)}
+      width={isMobile ? 250 : 400}
+    >
+      <RequestWrapper2
+        result={result}
+        render={({ equipment }) => {
+          const moduleStatuses = equipment.trainingModules.map(
+            moduleStatusMapper(user.passedModules)
+          );
+
+          return (
+            <Stack>
+              <CloseButton onClick={() => navigate("/maker/equipment")} />
+              <Stack direction="row" alignItems="center" spacing={2}>
+                <Avatar
+                  sx={{ width: 80, height: 80 }}
+                  src={(equipment.imageUrl == undefined || equipment.imageUrl == null ? "" + process.env.REACT_APP_CDN_URL + "shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + equipment.imageUrl)}
+                />
+                <Stack>
+                  <Typography variant="h4">{equipment.name}</Typography>
+                  <Typography>{equipment.room.name}</Typography>
+                  {equipment.sopUrl
+                    && <ReservationAttachment name={"Standard Operating Procedure"} url={equipment.sopUrl} />}
+                </Stack>
+              </Stack>
+
+              <Typography variant="h6" sx={{ mt: 6 }} hidden={moduleStatuses.length == 0 ? true : undefined}>
+                Required training
+              </Typography>
+
+              <Stack divider={<Divider flexItem />} mb={6} hidden={moduleStatuses.length == 0 ? true : undefined}>
+                {moduleStatuses.map((ms: ModuleStatus) => (
+                  <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
+                ))}
+              </Stack>
+
+              <Typography variant="h6" sx={{ mt: 6 }}>
+                Required Mentor Training Approval
+              </Typography>
+              <Typography variant="body2">
+                Speak to a Maker Mentor {moduleStatuses.length != 0 && "once all trainings are complete "}to have this done.
+              </Typography>
+              <Box>
+                <Stack direction={"row"} spacing={1} width={"75%"} p={2}>
+                  {hasApprovedAccessCheck
+                    ? <CheckCircleIcon color="success" />
+                    : <CloseIcon color="error" />}
+                  <Typography variant="body2" fontWeight={"bold"} fontSize={"1.1em"}>{hasApprovedAccessCheck ? "Complete" : "Incomplete"}</Typography>
+                </Stack>
+              </Box>
+
+              <Card sx={{ px: 2 }}>
+                <Markdown>{equipment.notes}</Markdown>
+              </Card>
+
+            </Stack>
+          );
+        }}
+      />
+    </PrettyModal>
+  );
+}
