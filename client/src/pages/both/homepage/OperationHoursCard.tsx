@@ -111,7 +111,7 @@ export default function OperationHoursCard() {
             <Card sx={{ minWidth: 250, padding: "1em", border: 1, borderColor: "lightgrey", flexGrow: 1, fontWeight: 'bold', borderRadius: 0, overflow: "hidden"  }} >
             <CardHeader title="Lab Hours" sx={{pt: 0}} />
 
-                <Tabs value={currentTab} onChange={handleChange} aria-label="basic tabs example" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile >
+                <Tabs value={currentTab} onChange={handleChange} aria-label="Operation Hours By Area" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile >
                     {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
                         <Tab label={zone.name} id={"simple-tab-" + zone.id} aria-controls={"simple-tab-panel-" + zone.id} />
                     ))}

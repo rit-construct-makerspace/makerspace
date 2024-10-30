@@ -31,6 +31,7 @@ import StatisticsPage from "./pages/lab_management/statistics/StatisticsPage";
 import EditTermsPage from "./pages/lab_management/policy/EditTermsPage";
 import TermsPage from "./pages/both/policy/TermsPage";
 import ResolutionLogPage from "./pages/lab_management/manage_equipment/ResolutionLog";
+import { Dashboard } from "./pages/both/homepage/Dashboard";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -50,6 +51,7 @@ export default function AppRoutes() {
         <Route path={"/"} element={<LeftNav />}>
 
           <Route path="/" element={<Homepage />} />
+          <Route path="/test/dash" element={<Dashboard />} />
 
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
