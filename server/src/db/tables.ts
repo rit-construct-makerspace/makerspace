@@ -260,6 +260,28 @@ export interface TextFieldRow {
   value: string;
 }
 
+export interface ToolItemTypesRow {
+  id: number;
+  name: string;
+  defaultLocationRoomID: number;
+  defaultLocationDescription: string;
+  description: string;
+  checkoutNote: string;
+  checkinNote: string;
+  allowCheckout: boolean;
+}
+
+export interface ToolItemInstancesRow {
+  id: number;
+  typeID: number;
+  uniqueIdentifier: string;
+  locationRoomID: number;
+  locationDescription: string;
+  condition: string;
+  status: string;
+  notes: string;
+}
+
 declare module "knex/types/tables.js" {
   interface Tables {
     AuditLogs: AuditLogRow;
@@ -286,5 +308,7 @@ declare module "knex/types/tables.js" {
     MaintenanceLogs: MaintenanceLogRow;
     ResolutionLogs: ResolutionLogRow;
     MaintenanceTags: MaintenanceTagRow;
+    ToolItemTypes: ToolItemTypesRow;
+    ToolItemInstances: ToolItemInstancesRow;
   }
 }
