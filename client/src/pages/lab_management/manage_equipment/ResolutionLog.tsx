@@ -145,9 +145,9 @@ export default function ResolutionLogPage() {
               <Stack direction={"column"} width={"15%"}>
                 <InputLabel>Instance</InputLabel>
                 <RequestWrapper loading={instancesQueryResult.loading} error={instancesQueryResult.error}>
-                  <Select value={newInstance} placeholder="Instance" onChange={(e) => setNewInstance(Number(e.target.value))} fullWidth>
+                  <Select value={newInstance} placeholder="Instance" onChange={(e) => setNewInstance(Number(e.target.value))} fullWidth defaultValue={instancesQueryResult.data?.equipmentInstances.length == 1 ? instancesQueryResult.data?.equipmentInstances[0].id: null}>
                     {instancesQueryResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
-                      <MenuItem value={instance.id}>{instance.name}</MenuItem>
+                      <MenuItem value={instance.id} defaultChecked={instancesQueryResult.data?.equipmentInstances.length == 1}>{instance.name}</MenuItem>
                     ))}
                   </Select>
                 </RequestWrapper>
