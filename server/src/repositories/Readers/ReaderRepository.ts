@@ -39,6 +39,26 @@ export async function getReaders(): Promise<ReaderRow[]> {
 }
 
 /**
+ * Get number of idle ACS readers
+ * @param machineID the equipment ID to find readers for
+ * @returns number of reader rows where status="Idle"
+ */
+export async function getNumIdleReadersByEquipment(machineID: number): Promise<number> {
+    return (await knex("Readers").select("*").where({machineID}).andWhere({state: "Idle"})
+        .whereRaw(`"lastStatusTime" > now() - interval '5 min'`)).length;
+}
+
+/**
+ * Get number of active ACS readers
+ * @param machineID the equipment ID to find readers for
+ * @returns number of reader rows where status != "Idle"
+ */
+export async function getNumUnavailableReadersByEquipment(machineID: number): Promise<number> {
+    return (await knex("Readers").select("*").where({machineID}).andWhere("state", "!=", "Idle")
+        .orWhereRaw(`"machineID" = ${machineID} AND "lastStatusTime" < now() - interval '5 min'`)).length;
+}
+
+/**
  * Create a card reader using the non-status attributes
  * @param reader the static attributes of the card reader
  */

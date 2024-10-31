@@ -16,6 +16,8 @@ import ReservationAttachment from "../../lab_management/reservations/Reservation
 import Markdown from "react-markdown";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
 
 import { useState, useEffect } from "react";
 
@@ -26,13 +28,13 @@ interface EquipmentModalProps {
 export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
   const [width, setWidth] = useState<number>(window.innerWidth);
   function handleWindowSizeChange() {
-      setWidth(window.innerWidth);
+    setWidth(window.innerWidth);
   }
   useEffect(() => {
-      window.addEventListener('resize', handleWindowSizeChange);
-      return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
-      }
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
   }, []);
   const isMobile = width <= 1100;
 
@@ -95,6 +97,18 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
                     : <CloseIcon color="error" />}
                   <Typography variant="body2" fontWeight={"bold"} fontSize={"1.1em"}>{hasApprovedAccessCheck ? "Complete" : "Incomplete"}</Typography>
                 </Stack>
+              </Box>
+
+              <Box sx={{ mt: 6 }}>
+                {(equipment.numAvailable + equipment.numInUse) > 0 && <Stack direction={"row"} alignItems={"center"}>
+                  {equipment.numAvailable > 0
+                    ? <LockOpenIcon color="success" />
+                    : <LockIcon color="error" />}
+
+                  <Typography variant="h6">
+                    <b>{equipment.numAvailable}/{equipment.numInUse + equipment.numAvailable}</b> Machines available for use now
+                  </Typography>
+                </Stack>}
               </Box>
 
               <Card sx={{ px: 2 }}>

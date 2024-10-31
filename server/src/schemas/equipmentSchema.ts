@@ -22,6 +22,8 @@ export const EquipmentTypeDefs = gql`
     imageUrl: String
     sopUrl: String
     notes: String
+    numAvailable: Int
+    numInUse: Int
   }
 
   input EquipmentInput {

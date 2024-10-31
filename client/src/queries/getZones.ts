@@ -40,6 +40,8 @@ export interface FullZone {
         id: number;
         name: string;
       }[];
+      numAvailable: number;
+      numInUse: number;
     }[];
   }[]
 }
@@ -80,6 +82,8 @@ export const GET_FULL_ZONES = gql`
             id
             name
           }
+          numAvailable
+          numInUse
         }
       }
     }

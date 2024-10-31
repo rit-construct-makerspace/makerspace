@@ -7,6 +7,7 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { EquipmentRow } from "../db/tables.js";
 import { EquipmentInput } from "../schemas/equipmentSchema.js";
+import { getNumUnavailableReadersByEquipment, getNumIdleReadersByEquipment } from "../repositories/Readers/ReaderRepository.js";
 
 const reservationRepo = new ReservationRepository();
 
@@ -55,6 +56,14 @@ const EquipmentResolvers = {
 
     trainingModules: async (parent: EquipmentRow) => {
       return await EquipmentRepo.getModulesByEquipment(parent.id);
+    },
+
+    numAvailable: async (parent: EquipmentRow) => {
+      return await getNumIdleReadersByEquipment(parent.id)
+    },
+
+    numInUse: async (parent: EquipmentRow) => {
+      return await getNumUnavailableReadersByEquipment(parent.id)
     },
   },
 

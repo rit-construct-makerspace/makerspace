@@ -61,7 +61,7 @@ export function Dashboard() {
 
             <RequestWrapper loading={getZonesResult.loading} error={getZonesResult.error}>
                 <Box width={"100%"}>
-                    <Tabs sx={{'.MuiTab-root': {fontSize: "1.3em"}, width: "100%"}} value={currentTab} onChange={((e, x) => setCurrentTab(x))} aria-label="Area Dashboards" variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile >
+                    <Tabs sx={{'.MuiTab-root': {fontSize: isMobile ? "0.8em" : "1.3em"}, width: "100%"}} value={currentTab} onChange={((e, x) => setCurrentTab(x))} aria-label="Area Dashboards" variant={isMobile ? "fullWidth" : "scrollable"} scrollButtons="auto" allowScrollButtonsMobile >
                         <Tab label={"Home"} id={"simple-tab-0"} aria-controls={"simple-tab-panel-0"} value={0} />
                         {getZonesResult.data?.zones.map((zone: FullZone) => (
                             <Tab label={zone.name} id={"simple-tab-" + zone.id} aria-controls={"simple-tab-panel-" + zone.id} value={zone.id} />

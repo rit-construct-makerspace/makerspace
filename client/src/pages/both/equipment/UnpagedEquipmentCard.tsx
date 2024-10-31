@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -26,9 +27,11 @@ interface EquipmentCardProps {
   imageUrl: string;
   sopUrl: string;
   trainingModules: any;
+  numAvailable?: number;
+  numUnavailable?: number;
 }
 
-export default function UnpagedEquipmentCard({ id, name, setID, imageUrl, sopUrl, trainingModules }: EquipmentCardProps) {
+export default function UnpagedEquipmentCard({ id, name, setID, imageUrl, sopUrl, trainingModules, numAvailable, numUnavailable }: EquipmentCardProps) {
   const navigate = useNavigate();
   const user = useCurrentUser();
 
@@ -42,7 +45,7 @@ export default function UnpagedEquipmentCard({ id, name, setID, imageUrl, sopUrl
   const hasApprovedAccessCheck: boolean = !!user.accessChecks.find((ac) => Number(ac.equipmentID) == id && ac.approved)
 
   return (
-    <Card sx={{ width: 250, height: 300, backgroundColor: (numNotPassed != 0 || !hasApprovedAccessCheck) ? ((localStorage.getItem("themeMode") == "dark") ? null : "grey.200") : ((localStorage.getItem("themeMode") == "dark") ? "grey.800" : null) }} onClick={() => setID(id)}>
+    <Card sx={{ width: 250, height: 325, backgroundColor: (numNotPassed != 0 || !hasApprovedAccessCheck) ? ((localStorage.getItem("themeMode") == "dark") ? null : "grey.200") : ((localStorage.getItem("themeMode") == "dark") ? "grey.800" : null) }} onClick={() => setID(id)}>
       <CardActionArea>
         <CardMedia
           component="img"
@@ -50,14 +53,20 @@ export default function UnpagedEquipmentCard({ id, name, setID, imageUrl, sopUrl
           image={imageUrl}
         />
         <CardContent>
-          <Typography
-            variant="h6"
-            component="div"
-            minHeight="120"
-            sx={{ lineHeight: 1, mb: 1 }}
-          >
-            {name}
+          <Box minHeight={80}>
+            <Typography
+              variant="h6"
+              component="div"
+              minHeight="150"
+              sx={{ lineHeight: 1, mb: 1 }}
+            >
+              {name}
+            </Typography>
+          </Box>
+          {(numUnavailable != null && numAvailable != null && numUnavailable + numAvailable > 0) ? <Typography variant="body2" color={numAvailable > 0 ? "green" : "error"}>
+            {numAvailable} Available
           </Typography>
+            : <br></br>}
         </CardContent>
         <CardActions
           sx={{

@@ -50,8 +50,7 @@ export default function AppRoutes() {
 
         <Route path={"/"} element={<LeftNav />}>
 
-          <Route path="/" element={<Homepage />} />
-          <Route path="/test/dash" element={<Dashboard />} />
+          <Route path="/" element={<Dashboard />} />
 
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
