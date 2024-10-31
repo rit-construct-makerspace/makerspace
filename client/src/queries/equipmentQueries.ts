@@ -12,6 +12,8 @@ export const GET_EQUIPMENTS = gql`
         id
         name
       }
+      numAvailable
+      numInUse
     }
   }
 `;
@@ -33,6 +35,8 @@ export const GET_EQUIPMENT_BY_ID = gql`
         name
       }
       notes
+      numAvailable
+      numInUse
     }
   }
 `;
@@ -54,6 +58,8 @@ export const GET_ANY_EQUIPMENT_BY_ID = gql`
         name
       }
       notes
+      numAvailable
+      numInUse
     }
   }
 `;

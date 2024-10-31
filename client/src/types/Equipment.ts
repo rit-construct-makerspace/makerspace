@@ -4,4 +4,7 @@ export default interface Equipment {
   imageUrl?: string;
   sopUrl: string;
   trainingModules: any;
+  numAvailable: number;
+  numInUse: number;
+  
 }

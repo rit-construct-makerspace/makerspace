@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
+  Box,
   Button,
   Card,
   CardActionArea,
@@ -26,9 +27,11 @@ interface EquipmentCardProps {
   imageUrl: string;
   sopUrl: string;
   trainingModules: any;
+  numAvailable?: number;
+  numUnavailable?: number;
 }
 
-export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, trainingModules }: EquipmentCardProps) {
+export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, trainingModules, numAvailable, numUnavailable }: EquipmentCardProps) {
   const navigate = useNavigate();
   const user = useCurrentUser();
 
@@ -42,7 +45,7 @@ export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, training
   const hasApprovedAccessCheck: boolean = !!user.accessChecks.find((ac) => Number(ac.equipmentID) == id && ac.approved)
 
   return (
-    <Card sx={{ width: 250, height: 300, backgroundColor: (numNotPassed != 0 || !hasApprovedAccessCheck) ? ((localStorage.getItem("themeMode") == "dark") ? null : "grey.200") : ((localStorage.getItem("themeMode") == "dark") ? "grey.800" : null) }} onClick={() => navigate(to)}>
+    <Card sx={{ width: 250, height: 325, backgroundColor: (numNotPassed != 0 || !hasApprovedAccessCheck) ? ((localStorage.getItem("themeMode") == "dark") ? null : "grey.200") : ((localStorage.getItem("themeMode") == "dark") ? "grey.800" : null) }} onClick={() => navigate(to)}>
       <CardActionArea>
         <CardMedia
           component="img"
@@ -50,14 +53,20 @@ export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, training
           image={imageUrl}
         />
         <CardContent>
-          <Typography
-            variant="h6"
-            component="div"
-            minHeight="120"
-            sx={{ lineHeight: 1, mb: 1 }}
-          >
-            {name}
+          <Box minHeight={80}>
+            <Typography
+              variant="h6"
+              component="div"
+              minHeight="150"
+              sx={{ lineHeight: 1, mb: 1 }}
+            >
+              {name}
+            </Typography>
+          </Box>
+          {(numUnavailable != null && numAvailable != null && numUnavailable + numAvailable > 0) ? <Typography variant="body2" color={numAvailable > 0 ? "green" : "error"}>
+            {numAvailable} Available
           </Typography>
+            : <br></br>}
         </CardContent>
         <CardActions
           sx={{
@@ -67,10 +76,10 @@ export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, training
             mt: 0,
             padding: 0.25
           }}>
-            <Stack direction={"row"} spacing={2} mr={2}>
-              <IconStatusBadge icon={<SchoolIcon />} badgeContent={numNotPassed > 0 ? numNotPassed : <span>&#x2713;</span>} badgeColor={numNotPassed > 0 ? "error" : "success"} tooltipText={`${numNotPassed} Incomplete trainings`} />
-              <IconStatusBadge icon={<AssignmentIndIcon />} badgeContent={hasApprovedAccessCheck ? <span>&#x2713;</span> : <span>&#66327;</span>} badgeColor={hasApprovedAccessCheck ? "success" : "error"} tooltipText={hasApprovedAccessCheck ? "In-Person Check Complete." : "In-Person Check Incomplete. Speak to a Maker Mentor."} />
-            </Stack>
+          <Stack direction={"row"} spacing={2} mr={2}>
+            <IconStatusBadge icon={<SchoolIcon />} badgeContent={numNotPassed > 0 ? numNotPassed : <span>&#x2713;</span>} badgeColor={numNotPassed > 0 ? "error" : "success"} tooltipText={`${numNotPassed} Incomplete trainings`} />
+            <IconStatusBadge icon={<AssignmentIndIcon />} badgeContent={hasApprovedAccessCheck ? <span>&#x2713;</span> : <span>&#66327;</span>} badgeColor={hasApprovedAccessCheck ? "success" : "error"} tooltipText={hasApprovedAccessCheck ? "In-Person Check Complete." : "In-Person Check Incomplete. Speak to a Maker Mentor."} />
+          </Stack>
           {
             sopUrl && sopUrl != ""
               ? <SopButton appearance="icon-only" url={sopUrl} disabled={false} toolTipText="View SOP" buttonText="View SOP"></SopButton>
