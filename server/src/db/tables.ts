@@ -17,6 +17,7 @@ export interface EquipmentRow {
   imageUrl: string;
   sopUrl: string;
   notes: string;
+  byReservationOnly: boolean;
 }
 
 export interface EquipmentInstancesRow {
