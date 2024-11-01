@@ -7,6 +7,7 @@ export interface EquipmentInput {
   moduleIDs: number[];
   imageUrl: string | null;
   sopUrl: string | null
+  byReservationOnly: boolean;
 }
 
 export const EquipmentTypeDefs = gql`
@@ -24,6 +25,7 @@ export const EquipmentTypeDefs = gql`
     notes: String
     numAvailable: Int
     numInUse: Int
+    byReservationOnly: Boolean
   }
 
   input EquipmentInput {
@@ -33,6 +35,7 @@ export const EquipmentTypeDefs = gql`
     imageUrl: String!
     sopUrl: String!
     notes: String!
+    byReservationOnly: Boolean!
   }
 
   extend type Query {

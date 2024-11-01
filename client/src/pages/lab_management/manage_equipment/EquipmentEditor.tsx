@@ -1,6 +1,6 @@
 import { ChangeEvent, ChangeEventHandler, SetStateAction, SyntheticEvent, useState } from "react";
 import Page from "../../Page";
-import { Autocomplete, Button, Divider, Stack, TextareaAutosize, TextField } from "@mui/material";
+import { Autocomplete, Button, Divider, FormControlLabel, Stack, Switch, TextareaAutosize, TextField } from "@mui/material";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import HistoryIcon from "@mui/icons-material/History";
 import PageSectionHeader from "../../../common/PageSectionHeader";
@@ -102,6 +102,13 @@ export default function EquipmentEditor({
     });
   };
 
+  const handleByReservationOnlySwitchChanged = () => {
+    setEquipment({
+      ...equipment,
+      byReservationOnly: !equipment.byReservationOnly
+    });
+  };
+
   const [instancesModalOpen, setInstancesModalOpen] = useState<boolean>(false);
 
   return (
@@ -184,6 +191,7 @@ export default function EquipmentEditor({
               placeholder="Notes (Markdown Compatible)" 
               value={equipment.notes} 
               onChange={handleNotesChanged}></TextareaAutosize>
+            <FormControlLabel control={<Switch checked={equipment.byReservationOnly} onChange={handleByReservationOnlySwitchChanged} />} label={"Available by reservation only? (Hides ACS availability from users)"} />
           </Stack>
         </Stack>
 

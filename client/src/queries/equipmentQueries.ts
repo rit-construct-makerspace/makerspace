@@ -14,6 +14,7 @@ export const GET_EQUIPMENTS = gql`
       }
       numAvailable
       numInUse
+      byReservationOnly
     }
   }
 `;
@@ -37,6 +38,7 @@ export const GET_EQUIPMENT_BY_ID = gql`
       notes
       numAvailable
       numInUse
+      byReservationOnly
     }
   }
 `;
@@ -60,6 +62,7 @@ export const GET_ANY_EQUIPMENT_BY_ID = gql`
       notes
       numAvailable
       numInUse
+      byReservationOnly
     }
   }
 `;
@@ -93,6 +96,7 @@ export const GET_ARCHIVED_EQUIPMENT_BY_ID = gql`
         name
       }
       notes
+      byReservationOnly
     }
   }
 `;
@@ -118,10 +122,11 @@ export const UPDATE_EQUIPMENT = gql`
     $imageUrl: String!
     $sopUrl: String!
     $notes: String!
+    $byReservationOnly: Boolean!
   ) {
     updateEquipment(
       id: $id
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes, byReservationOnly: $byReservationOnly }
     ) {
       id
     }
@@ -152,9 +157,10 @@ export const CREATE_EQUIPMENT = gql`
     $imageUrl: String!
     $sopUrl: String!
     $notes: String!
+    $byReservationOnly: Boolean!
     ) {
     addEquipment(
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes, byReservationOnly: $byReservationOnly }
     ) {
       id
     }

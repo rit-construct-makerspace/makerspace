@@ -16,6 +16,7 @@ export interface Equipment {
   trainingModules: ObjectSummary[];
   archived: boolean;
   notes: string;
+  byReservationOnly: boolean;
 }
 
 interface EditEquipmentPageProps {
@@ -34,7 +35,8 @@ export default function EditEquipmentPage(props: EditEquipmentPageProps) {
     archived: props.archived,
     imageUrl: null,
     sopUrl: "",
-    notes: ""
+    notes: "",
+    byReservationOnly: false
   });
 
   const newEquipment = id === "new";
