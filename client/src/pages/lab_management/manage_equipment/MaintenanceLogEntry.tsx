@@ -66,6 +66,14 @@ export default function MaintenanceLogEntry({ logItem, allTags }: { logItem: Mai
     setShowTagsDropdown(false);
   }
 
+  function handleForward() {
+    var url = new URL( `https://www.example.com/admin/equipment/logs/${logItem.equipment.id}`);
+    if (logItem.instance?.id) url.searchParams.append('instance', logItem.instance.id.toString());
+    url.searchParams.append('issue', logItem.content);
+    url.searchParams.append('id', logItem.id.toString());
+    navigate(`/admin/equipment/logs/${logItem.equipment.id}?${url.searchParams.toString()}`)
+  }
+
   return (
     <TableRow>
       <TableCell>
@@ -108,7 +116,7 @@ export default function MaintenanceLogEntry({ logItem, allTags }: { logItem: Mai
       </TableCell>
       <TableCell>
         <Tooltip title={"Forward to Resolutions"}>
-          <IconButton color="primary" onClick={() => navigate(`/admin/equipment/logs/${logItem.equipment.id}${logItem.instance?.id ? `?instance=${logItem.instance.id}` : `?`}issue=${logItem.content}&id=${logItem.id}`,)}><ArrowForwardIcon /></IconButton>
+          <IconButton color="primary" onClick={handleForward}><ArrowForwardIcon /></IconButton>
         </Tooltip>
       </TableCell>
     </TableRow>
