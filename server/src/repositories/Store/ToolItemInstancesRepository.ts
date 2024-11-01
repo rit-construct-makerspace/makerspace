@@ -9,6 +9,10 @@ export async function getToolItemInstancesByType(typeID: number): Promise<ToolIt
     return await knex("ToolItemInstances").select().where({typeID});
 }
 
+export async function getToolItemInstanceByID(id: number): Promise<ToolItemInstancesRow[]> {
+    return await knex("ToolItemInstances").select().where({id});
+}
+
 export async function getToolItemTypeByID(id: number): Promise<ToolItemInstancesRow | undefined> {
     return await knex("ToolItemInstances").select().where({id}).first();
 }
@@ -23,5 +27,15 @@ export async function updateToolItemInstance(id: number, typeID: number, uniqueI
 
 export async function deleteToolItemInstance(id: number): Promise<boolean> {
     await knex("ToolItemInstances").delete().where({id});
+    return true;
+}
+
+export async function borrowItem(borrowerUserID: number, id: number): Promise<boolean> {
+    await knex("ToolItemInstances").update({borrowerUserID, status: "OUT"}).where({id});
+    return true;
+}
+
+export async function returnItem(id: number): Promise<boolean> {
+    await knex("ToolItemInstances").update({borrowerUserID: undefined, status: "AVAILABLE"}).where({id});
     return true;
 }
