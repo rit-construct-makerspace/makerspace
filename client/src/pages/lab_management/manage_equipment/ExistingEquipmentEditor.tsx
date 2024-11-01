@@ -55,7 +55,8 @@ export default function ExistingEquipmentEditor({
             moduleIDs: equipment.trainingModules.map((m: ObjectSummary) => m.id),
             imageUrl: equipment.imageUrl ?? "",
             sopUrl: equipment.sopUrl ?? "",
-            notes: equipment.notes ?? ""
+            notes: equipment.notes ?? "",
+            byReservationOnly: equipment.byReservationOnly
           })
         }
       />

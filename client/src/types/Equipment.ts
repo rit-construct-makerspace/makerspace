@@ -6,5 +6,5 @@ export default interface Equipment {
   trainingModules: any;
   numAvailable: number;
   numInUse: number;
-  
+  byReservationOnly: boolean;
 }

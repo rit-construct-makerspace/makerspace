@@ -42,8 +42,13 @@ export default function NavLink({
     <ListItemButton
       selected={url.pathname.includes(to)}
       component={renderLink}
-      onClick={() => {
-        console.log(toggleDrawer);
+      onClick={(e) => {
+        if (url.pathname.includes("/maker/training/") && !url.pathname.includes("results") && !window.confirm(
+          `Are you sure you want to leave this quiz? Progress will not be saved.`
+        )) {
+          e.preventDefault();
+          return ''
+        }
         if (toggleDrawer) toggleDrawer();
       }}
     >

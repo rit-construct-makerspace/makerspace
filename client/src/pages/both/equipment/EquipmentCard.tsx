@@ -29,9 +29,10 @@ interface EquipmentCardProps {
   trainingModules: any;
   numAvailable?: number;
   numUnavailable?: number;
+  byReservationOnly: boolean;
 }
 
-export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, trainingModules, numAvailable, numUnavailable }: EquipmentCardProps) {
+export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, trainingModules, numAvailable, numUnavailable, byReservationOnly }: EquipmentCardProps) {
   const navigate = useNavigate();
   const user = useCurrentUser();
 
@@ -45,7 +46,7 @@ export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, training
   const hasApprovedAccessCheck: boolean = !!user.accessChecks.find((ac) => Number(ac.equipmentID) == id && ac.approved)
 
   return (
-    <Card sx={{ width: 250, height: 325, backgroundColor: (numNotPassed != 0 || !hasApprovedAccessCheck) ? ((localStorage.getItem("themeMode") == "dark") ? null : "grey.200") : ((localStorage.getItem("themeMode") == "dark") ? "grey.800" : null) }} onClick={() => navigate(to)}>
+    <Card sx={{ width: 250, height: 345, backgroundColor: (numNotPassed != 0 || !hasApprovedAccessCheck) ? ((localStorage.getItem("themeMode") == "dark") ? null : "grey.200") : ((localStorage.getItem("themeMode") == "dark") ? "grey.800" : null) }} onClick={() => navigate(to)}>
       <CardActionArea>
         <CardMedia
           component="img"
@@ -53,7 +54,7 @@ export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, training
           image={imageUrl}
         />
         <CardContent>
-          <Box minHeight={80}>
+          <Box minHeight={70}>
             <Typography
               variant="h6"
               component="div"
@@ -63,10 +64,13 @@ export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, training
               {name}
             </Typography>
           </Box>
-          {(numUnavailable != null && numAvailable != null && numUnavailable + numAvailable > 0) ? <Typography variant="body2" color={numAvailable > 0 ? "green" : "error"}>
+          {!byReservationOnly && ((numUnavailable != null && numAvailable != null && numUnavailable + numAvailable > 0) ? <Typography variant="body2" color={numAvailable > 0 ? (localStorage.getItem("themeMode") == "dark" ? '#6fe473' : '#00bd06') : "error"}>
             {numAvailable} Available
           </Typography>
-            : <br></br>}
+            : <br></br>)}
+          {byReservationOnly && <Typography variant="body2" color={localStorage.getItem("themeMode") == "dark" ? '#ffde71' : '#d3a200'}>
+            Email make@rit.edu to schedule an appointment
+          </Typography>}
         </CardContent>
         <CardActions
           sx={{

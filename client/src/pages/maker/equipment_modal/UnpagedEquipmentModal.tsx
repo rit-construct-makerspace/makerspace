@@ -1,5 +1,5 @@
 import PrettyModal from "../../../common/PrettyModal";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
@@ -18,6 +18,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import LockIcon from '@mui/icons-material/Lock';
+import LockClockIcon from '@mui/icons-material/LockClock';
 
 import { useState, useEffect } from "react";
 
@@ -101,13 +102,20 @@ export default function UnpagedEquipmentModal({ equipmentID, setEquipmentID }: E
               </Box>
 
               <Box sx={{ mt: 6 }}>
-                {(equipment.numAvailable + equipment.numInUse) > 0 && <Stack direction={"row"} alignItems={"center"}>
+                {!equipment.byReservationOnly && ((equipment.numAvailable + equipment.numInUse) > 0 && <Stack direction={"row"} alignItems={"center"}>
                   {equipment.numAvailable > 0
                     ? <LockOpenIcon color="success" />
                     : <LockIcon color="error" />}
 
-                  <Typography variant="h6">
+                  <Typography variant="h6" ml={1}>
                     <b>{equipment.numAvailable}/{equipment.numInUse + equipment.numAvailable}</b> Machines available for use now
+                  </Typography>
+                </Stack>)}
+                {equipment.byReservationOnly && <Stack direction={"row"} alignItems={"center"}>
+                  <LockClockIcon color="warning" />
+
+                  <Typography variant="h6" ml={1}>
+                    Available by reservation only. Email <Link to={"mailto:make@rit.edu"} target={"_blank"}>make@rit.edu</Link> to schedule.
                   </Typography>
                 </Stack>}
               </Box>

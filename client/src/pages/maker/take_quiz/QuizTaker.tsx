@@ -65,19 +65,21 @@ interface QuizTakerProps {
 
 export default function QuizTaker({ module }: QuizTakerProps) {
 
+  const [quizProgressed, setQuizProgressed] = useState<boolean>(false);
+
   const [width, setWidth] = useState<number>(window.innerWidth);
   function handleWindowSizeChange() {
-      setWidth(window.innerWidth);
+    setWidth(window.innerWidth);
   }
   useEffect(() => {
-      window.addEventListener('resize', handleWindowSizeChange);
-      return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
-      }
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
   }, []);
   const isMobile = width <= 950;
 
-  
+
   const initialAnswerSheet = module.quiz
     .filter(
       (item) =>
@@ -92,17 +94,19 @@ export default function QuizTaker({ module }: QuizTakerProps) {
   const [submitModule, result] = useMutation(SUBMIT_MODULE, {
     variables: { moduleID: module.id, answerSheet },
     refetchQueries: [
-      {query: GET_CURRENT_USER}
+      { query: GET_CURRENT_USER }
     ]
   });
 
-  const selectMultipleChoiceOption = (itemID: string, optionID: string) =>
+  const selectMultipleChoiceOption = (itemID: string, optionID: string) => {
     setAnswerSheet((draft) => {
       const index = draft.findIndex((i) => i.itemID === itemID);
       draft[index].optionIDs = [optionID];
     });
+    setQuizProgressed(true);
+  };
 
-  const toggleCheckboxOption = (itemID: string, optionID: string) =>
+  const toggleCheckboxOption = (itemID: string, optionID: string) => {
     setAnswerSheet((draft) => {
       const itemIndex = draft.findIndex((i) => i.itemID === itemID);
 
@@ -113,33 +117,35 @@ export default function QuizTaker({ module }: QuizTakerProps) {
       optionIndex === -1
         ? draft[itemIndex].optionIDs.push(optionID)
         : draft[itemIndex].optionIDs.splice(optionIndex, 1);
+    })
+    setQuizProgressed(true);
+  };
+
+  const trainingSubmissionAnimation = () => {
+    toast.success('Training Module Submitted', {
+      position: "bottom-left",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
     });
+  }
 
-    const trainingSubmissionAnimation = () => {
-      toast.success('Training Module Submitted', {
-        position: "bottom-left",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-        });
-    }
-
-    const trainingCancelAnimation = () => {
-      toast.error('Training Not Saved', {
-        position: "bottom-left",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "light",
-        });
-    }
+  const trainingCancelAnimation = () => {
+    toast.error('Training Not Saved', {
+      position: "bottom-left",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
 
   const navigate = useNavigate();
 
@@ -158,6 +164,13 @@ export default function QuizTaker({ module }: QuizTakerProps) {
   };
 
   const classes = useStyles();
+
+  window.addEventListener('beforeunload', function (e) {
+    if (quizProgressed) {
+      e.preventDefault();
+      return ''
+    }
+  });
 
   return (
     <Stack spacing={4} className={classes.strongerBolds}>
@@ -192,7 +205,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
             );
           case QuizItemType.ImageEmbed:
             return (
-              <StyledImageEmbed key={quizItem.id} alt="" src={quizItem.text} style={isMobile ? {width: "80vw"} : {}}/>
+              <StyledImageEmbed key={quizItem.id} alt="" src={quizItem.text} style={isMobile ? { width: "80vw" } : {}} />
             );
           case QuizItemType.YoutubeEmbed:
             return (

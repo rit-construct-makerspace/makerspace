@@ -1,7 +1,7 @@
 import { knex } from "../../db/index.js";
 import { MaintenanceLogRow, MaintenanceTagRow, ResolutionLogRow } from "../../db/tables.js";
 
-export async function createMaintenanceLog(authorID: number, equipmentID: number, instanceID: number, content: string): Promise<MaintenanceLogRow> {
+export async function createMaintenanceLog(authorID: number, equipmentID: number, instanceID: number | undefined, content: string): Promise<MaintenanceLogRow> {
     return await knex("MaintenanceLogs").insert({authorID, equipmentID, instanceID, content});
 }
 
@@ -22,7 +22,8 @@ export async function getMaintenanceLogByID(id: number): Promise<MaintenanceLogR
     return await knex("MaintenanceLogs").select().where({id}).first();
 }
 
-export async function createResolutionLog(authorID: number, equipmentID: number, instanceID: number, issue: string, content: string): Promise<ResolutionLogRow> {
+export async function createResolutionLog(authorID: number, equipmentID: number, instanceID: number | undefined, issue: string, content: string): Promise<ResolutionLogRow> {
+    console.log(instanceID)
     return await knex("ResolutionLogs").insert({authorID, equipmentID, instanceID, issue, content});
 }
 

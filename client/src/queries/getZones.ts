@@ -42,6 +42,7 @@ export interface FullZone {
       }[];
       numAvailable: number;
       numInUse: number;
+      byReservationOnly: boolean;
     }[];
   }[]
 }
@@ -84,6 +85,7 @@ export const GET_FULL_ZONES = gql`
           }
           numAvailable
           numInUse
+          byReservationOnly
         }
       }
     }

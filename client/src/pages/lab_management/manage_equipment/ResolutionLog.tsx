@@ -66,11 +66,12 @@ export default function ResolutionLogPage() {
   const [authorSort, setAuthorSort] = useState<'asc' | 'desc'>('desc');
 
   function handleSubmit() {
-    createResolutionLog({ variables: { equipmentID, issue: newIssue, content: newContent, instanceID: newInstance } });
-    if (issueID && autoDelete) deleteIssueLog({variables: {id: issueID}});
-    setNewContent("");
-    setNewInstance(undefined);
-    setIssueParams(undefined);
+    createResolutionLog({ variables: { equipmentID, issue: newIssue, content: newContent, instanceID: newInstance == 0 ? newInstance : undefined } }).then((result) => {
+      if (issueID && autoDelete) deleteIssueLog({variables: {id: issueID}, refetchQueries: [{query: GET_MAINTENANCE_LOGS, variables: {equipmentID}}]});
+      setNewContent("");
+      setNewInstance(undefined);
+      setIssueParams(undefined);
+    });
   }
 
   const [instancesModalOpen, setInstancesModalOpen] = useState<boolean>(false);
