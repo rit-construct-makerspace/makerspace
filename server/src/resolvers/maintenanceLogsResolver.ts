@@ -185,26 +185,26 @@ const MaintenanceLogsResolver = {
   Mutation: {
     createMaintenanceLog: async (
       _parent: any,
-      args: { equipmentID: number, instanceID: number, content: string },
+      args: { equipmentID: number, instanceID?: number, content: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           await createLog(`{user} created a maintenance log for {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: args.equipmentID, label: (await getEquipmentByID(args.equipmentID)).name });
-          return createMaintenanceLog(user.id, args.equipmentID, args.instanceID, args.content);
+          return createMaintenanceLog(user.id, args.equipmentID, args.instanceID == 0 ? undefined : args.instanceID, args.content);
         }
       ),
     createResolutionLog: async (
       _parent: any,
-      args: { equipmentID: number, instanceID: number, issue: string, content: string },
+      args: { equipmentID: number, instanceID?: number, issue: string, content: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed(
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           await createLog(`{user} created a resolution log for {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: args.equipmentID, label: (await getEquipmentByID(args.equipmentID)).name });
-          return createResolutionLog(user.id, args.equipmentID, args.instanceID, args.issue, args.content);
+          return createResolutionLog(user.id, args.equipmentID, args.instanceID == 0 ? undefined : args.instanceID, args.issue, args.content);
         }
       ),
     deleteMaintenanceLog: async (
