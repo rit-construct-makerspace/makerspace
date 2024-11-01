@@ -74,6 +74,10 @@ export default function ResolutionLogPage() {
     });
   }
 
+  console.log(issueParams)
+  console.log(newInstance)
+  console.log(newIssue)
+
   const [instancesModalOpen, setInstancesModalOpen] = useState<boolean>(false);
 
   return (
