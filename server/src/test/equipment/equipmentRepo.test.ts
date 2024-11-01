@@ -64,7 +64,8 @@ describe("EquipmentRepository tests", () => {
       moduleIDs: <number[]>[],
       imageUrl: null,
       sopUrl: null,
-      notes: null
+      notes: null,
+      byReservationOnly: false
     });
 
     // Expect one equipment
@@ -88,7 +89,8 @@ describe("EquipmentRepository tests", () => {
       moduleIDs: <number[]>[],
       imageUrl: null,
       sopUrl: null,
-      notes: null
+      notes: null,
+      byReservationOnly: false
     })).id;
 
     // Get by ID
@@ -111,7 +113,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     // Check added
@@ -124,7 +127,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     });
 
     // Check name updated
@@ -146,7 +150,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     // Check added
@@ -181,7 +186,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     const exampleQuiz: TrainingModuleItem[] = [{
@@ -222,7 +228,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     const moduleOneID = (await ModuleRepo.addModule("Test Module I", exampleQuiz)).id;
@@ -261,7 +268,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     // Create user
@@ -302,7 +310,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     // Check added
@@ -354,7 +363,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     // Check added
@@ -413,7 +423,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     // Check added
@@ -464,7 +475,8 @@ describe("EquipmentRepository tests", () => {
         moduleIDs: <number[]>[],
         imageUrl: null,
         sopUrl: null,
-        notes: null
+        notes: null,
+        byReservationOnly: false
     })).id;
 
     // Check added
