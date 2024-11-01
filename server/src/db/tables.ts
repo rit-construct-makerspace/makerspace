@@ -281,6 +281,7 @@ export interface ToolItemInstancesRow {
   condition: string;
   status: string;
   notes: string;
+  borrowerUserID: number;
 }
 
 declare module "knex/types/tables.js" {
