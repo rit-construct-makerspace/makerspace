@@ -13,14 +13,22 @@ import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 
 export default function ThemeToggle() {
-  const navigate = useNavigate();
+  const url = useLocation();
   const [mode, setMode] = useState(localStorage.getItem("themeMode") == "dark")
 
   return (
     <ListItemButton sx={{height: "4em"}} onClick={(e) => {
-      setMode(!mode);
-      localStorage.setItem("themeMode", mode ? "light" : "dark");
-      window.location.reload();
+      if (url.pathname.includes("/maker/training/") && !url.pathname.includes("results") && !window.confirm(
+        `Are you sure you want to leave this quiz? Progress will not be saved.`
+      )) {
+        e.preventDefault();
+        return ''
+      }
+      else {
+        setMode(!mode);
+        localStorage.setItem("themeMode", mode ? "light" : "dark");
+        window.location.reload();
+      }
     }}>
     <ListItemIcon><DarkModeIcon /></ListItemIcon>
       <Stack direction={"row"}>
@@ -29,9 +37,17 @@ export default function ThemeToggle() {
         </Typography>
         <br />
         <Switch id="theme-toggle" aria-label="Dark Mode (Experimental)" checked={mode} onChange={(e) => {
-          setMode(!mode);
-          localStorage.setItem("themeMode", mode ? "light" : "dark");
-          window.location.reload();
+          if (url.pathname.includes("/maker/training/") && !url.pathname.includes("results") && !window.confirm(
+            `Are you sure you want to leave this quiz? Progress will not be saved.`
+          )) {
+            e.preventDefault();
+            return ''
+          }
+          else {
+            setMode(!mode);
+            localStorage.setItem("themeMode", mode ? "light" : "dark");
+            window.location.reload();
+          }
         }}/>
       </Stack>
     </ListItemButton>
