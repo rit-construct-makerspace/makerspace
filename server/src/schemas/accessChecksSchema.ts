@@ -19,5 +19,7 @@ export const AccessCheckTypeDefs = gql`
     extend type Mutation {
         approveAccessCheck(id: ID!): AccessCheck
         unapproveAccessCheck(id: ID!): AccessCheck
+        createAccessCheck(userID: ID!, equipmentID: ID!): Boolean
+        refreshAccessChecks(userID: ID!): Boolean
     }
 `;

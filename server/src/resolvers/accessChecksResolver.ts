@@ -1,7 +1,7 @@
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
-import { getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository.js";
+import { accessCheckExists, createAccessCheck, getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, purgeUnapprovedAccessChecks, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUserByID, getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { GraphQLError } from "graphql";
@@ -16,7 +16,7 @@ const AccessChecksResolver = {
         return await getAccessChecks();
       }),
 
-      accessCheck: async (
+    accessCheck: async (
       _parent: any,
       args: { id: number },
       { ifAllowed }: ApolloContext) =>
@@ -24,7 +24,7 @@ const AccessChecksResolver = {
         return await getAccessCheckByID(args.id)
       }),
 
-      approvedAccessChecks: async (
+    approvedAccessChecks: async (
       _parent: any,
       _args: any,
       { ifAllowed }: ApolloContext) =>
@@ -32,7 +32,7 @@ const AccessChecksResolver = {
         return await getAccessChecksByApproved(true)
       }),
 
-      unapprovedAccessChecks: async (
+    unapprovedAccessChecks: async (
       _parent: any,
       _args: any,
       { ifAllowed }: ApolloContext) =>
@@ -53,8 +53,8 @@ const AccessChecksResolver = {
         if (!equipment) throw new GraphQLError("Equipment does not exist");
         const affectedUser = await getUserByID(check.userID);
         if (!affectedUser) throw new GraphQLError("User does not exist");
-        await createLog(`{user} approved the {equipment} access check for {user}`, `admin`, 
-          {id: user.id, label: getUsersFullName(user)}, {id: equipment.id, label: equipment.name}, {id: affectedUser.id, label: getUsersFullName(affectedUser)});
+        await createLog(`{user} approved the {equipment} access check for {user}`, `admin`,
+          { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name }, { id: affectedUser.id, label: getUsersFullName(affectedUser) });
         return await setAccessCheckApproval(args.id, true);
       }),
 
@@ -69,10 +69,36 @@ const AccessChecksResolver = {
         if (!equipment) throw new GraphQLError("Equipment does not exist");
         const affectedUser = await getUserByID(check.userID);
         if (!affectedUser) throw new GraphQLError("User does not exist");
-        await createLog(`{user} unapproved the {equipment} access check for {user}`, `admin`, 
-          {id: user.id, label: getUsersFullName(user)}, {id: equipment.id, label: equipment.name}, {id: affectedUser.id, label: getUsersFullName(affectedUser)});
+        await createLog(`{user} unapproved the {equipment} access check for {user}`, `admin`,
+          { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name }, { id: affectedUser.id, label: getUsersFullName(affectedUser) });
         return await setAccessCheckApproval(args.id, false);
       }),
+
+    createAccessCheck: async (
+      _parent: any,
+      args: { userID: number, equipmentID: number },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.STAFF], async () => {
+        const result = await createAccessCheck(args.userID, args.equipmentID);
+        return true;
+      }
+      ),
+
+    refreshAccessChecks: async (
+      _parent: any,
+      args: { userID: number },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        const equipmentToCheck = await EquipmentRepo.getEquipment();
+        equipmentToCheck.forEach(async (equipment) => {
+          await purgeUnapprovedAccessChecks(args.userID);
+          if (!equipment.archived && !(await accessCheckExists(args.userID, equipment.id)) && (await EquipmentRepo.UserIdHasTrainingModules(args.userID, equipment.id))) {
+            await createAccessCheck(user.id, equipment.id);
+          }
+        });
+      }
+    ),
+
   }
 };
 

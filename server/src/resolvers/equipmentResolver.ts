@@ -43,6 +43,10 @@ const EquipmentResolvers = {
       return await EquipmentRepo.getEquipmentByID(Number(args.id));
     },
 
+    allEquipment: async (_parent: any, _args: any, _context: any) => {
+      return await EquipmentRepo.getEquipment();
+    },
+
   },
 
   Equipment: {
