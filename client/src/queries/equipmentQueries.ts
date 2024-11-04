@@ -19,6 +19,16 @@ export const GET_EQUIPMENTS = gql`
   }
 `;
 
+export const GET_ALL_EQUIPMENTS = gql`
+  query GetAllEquipment {
+    allEquipment {
+      id
+      name
+      archived
+    }
+  }
+`;
+
 export const GET_EQUIPMENT_BY_ID = gql`
   query GetEquipment($id: ID!) {
     equipment(id: $id) {

@@ -44,6 +44,7 @@ export const EquipmentTypeDefs = gql`
     archivedEquipments: [Equipment]
     archivedEquipment(id: ID!): Equipment
     anyEquipment(id: ID!): Equipment
+    allEquipment: [Equipment]
   }
 
   extend type Mutation {

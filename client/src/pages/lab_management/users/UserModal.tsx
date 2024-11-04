@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
-import { Avatar, Box, Button, Card, Stack, TextareaAutosize, Typography } from "@mui/material";
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { Avatar, Box, Button, Card, Chip, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
+import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoBlob from "./InfoBlob";
 import { format, parseISO } from "date-fns";
@@ -17,6 +17,9 @@ import { PassedModule, useCurrentUser } from "../../../common/CurrentUserProvide
 import CloseButton from "../../../common/CloseButton";
 import CardTagSettings from "./CardTagSettings";
 import AccessCheckCard from "./AccessCheckCard";
+import ActionButton from "../../../common/ActionButton";
+import GET_EQUIPMENTS, { GET_ALL_EQUIPMENTS } from "../../../queries/equipmentQueries";
+import RequestWrapper from "../../../common/RequestWrapper";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -112,6 +115,19 @@ export const ARCHIVE_USER = gql`
   }
 `;
 
+const REFRESH_CHECKS = gql`
+  mutation RefreshAccessChecks($userID: ID!) {
+    refreshAccessChecks(userID: $userID)
+  }
+`;
+
+const CREATE_CHECK = gql`
+  mutation CreateAccessCheck($userID: ID!, $equipmentID: ID!) {
+    createAccessCheck(userID: $userID, equipmentID: $equipmentID)
+  }
+`;
+
+
 interface UserModalProps {
   selectedUserID: string;
   onClose: () => void;
@@ -122,11 +138,16 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const currentUser = useCurrentUser();
 
   const [notes, setNotes] = useState<string>();
+  const [openCreateCheckDialouge, setOpenCreateCheckDialouge] = useState<boolean>();
+  const [newCheckEquipmentID, setNewCheckEquipmentID] = useState<string>();
 
   const [getUser, getUserResult] = useLazyQuery(GET_USER);
+  const getEquipment = useQuery(GET_ALL_EQUIPMENTS)
   const [createHold] = useMutation(CREATE_HOLD);
   const [deleteUser] = useMutation(ARCHIVE_USER);
   const [setNotesMutation] = useMutation(SET_NOTES);
+  const [refreshCheck, refreshCheckResult] = useMutation(REFRESH_CHECKS, {variables: {userID: selectedUserID}, refetchQueries: [{query: GET_USER, variables: { id: selectedUserID } }]});
+  const [createCheck] = useMutation(CREATE_CHECK, {refetchQueries: [{query: GET_USER, variables: { id: selectedUserID } }]})
 
   useEffect(() => {
     if (selectedUserID) getUser({ variables: { id: selectedUserID } });
@@ -161,6 +182,12 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   //     });
   //   };
   // }
+
+  function handleCheckCreate() {
+    if (!newCheckEquipmentID) return;
+    createCheck({variables: {userID: selectedUserID, equipmentID: newCheckEquipmentID}});
+    setOpenCreateCheckDialouge(false);
+  }
 
   const [width, setWidth] = useState<number>(window.innerWidth);
   function handleWindowSizeChange() {
@@ -256,7 +283,22 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               </Stack>
             )}
 
-            <Stack spacing={2}>
+            <Stack direction={"row"} spacing={1}>
+              <ActionButton iconSize={5} color="info" appearance={"small"} variant="outlined" handleClick={async () => {refreshCheck()}} loading={refreshCheckResult.loading} buttonText="Refresh Checks" tooltipText="Purge all unapproved checks and repopulate based on currently passed modules." />
+              {currentUser.privilege == Privilege.STAFF && <ActionButton iconSize={5} color="primary" appearance={"small"} variant="outlined" handleClick={async () => {setOpenCreateCheckDialouge(!openCreateCheckDialouge)}} loading={false} buttonText="Create Check" />}
+            </Stack>
+            {openCreateCheckDialouge && <Stack direction={"row"} mt={1}>
+              <RequestWrapper loading={getEquipment.loading} error={getEquipment.error}>
+                <Select value={newCheckEquipmentID} onChange={(e) => setNewCheckEquipmentID(e.target.value)} sx={{width: "50%"}}>
+                  {getEquipment.data?.allEquipment.map((equipment: {id: number, name: string, archived: boolean}) => (
+                    <MenuItem value={equipment.id}>{equipment.name} {equipment.archived && <Chip variant="outlined" color="warning" size="small" label="hidden" sx={{ml: "1em"}}/>}</MenuItem>
+                  ))}
+                </Select>
+              </RequestWrapper>
+              <Button variant="outlined" color="success" onClick={handleCheckCreate}>Create</Button>
+            </Stack>}
+
+            <Stack spacing={2} mt={2}>
               {user.accessChecks != null && user.accessChecks.map((accessCheck: AccessCheck) => (
                 <AccessCheckCard key={accessCheck.id} accessCheck={accessCheck} userID={user.id} />
               ))}

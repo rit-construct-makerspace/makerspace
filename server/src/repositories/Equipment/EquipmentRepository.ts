@@ -145,6 +145,32 @@ export async function hasTrainingModules(
 }
 
 /**
+ * Check if User has completed all trainings needed for Equipment
+ * @param user User info to check trainings of
+ * @param equipmentID equipment ID to check trainings needed
+ * @returns true if all trainings needed are passed
+ */
+export async function UserIdHasTrainingModules(
+  userID: number,
+  equipmentID: number
+): Promise<boolean> {
+  let modules = await getModulesByEquipment(equipmentID);
+  let hasTraining = true;
+  console.log(modules.toString());
+  // get last submission from maker for every module
+  for(let i = 0; i < modules.length; i++) {
+    if (await ModuleRepo.hasPassedModule(userID, modules[i].id)) {
+      continue;
+    }
+    else {
+      hasTraining = false;
+      break;
+    }
+  }
+  return hasTraining;
+}
+
+/**
  * Check if User is authorized to use Equipment
  * @param uid University ID of user to check
  * @param equipmentID Equipment ID to check
