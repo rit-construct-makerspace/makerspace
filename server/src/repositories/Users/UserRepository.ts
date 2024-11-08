@@ -47,10 +47,20 @@ export async function getUsers(searchText?: string): Promise<UserRow[]> {
  * @returns {UserRow[]} users
  */
 export async function getUsersLimit(searchText?: string): Promise<UserRow[]> {
-  return knex("Users").select()
+  var withHolds = (await knex("Users").select()
+  .leftJoin(knex.raw(`(select "id" as "hid", "userID", "removerID" from "Holds") as h on h."userID" = "Users"."id"`))
   .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
-  .orderBy("ritUsername", "ASC")
-  .limit(100);
+  .whereRaw(`h."hid" IS NOT NULL`).andWhereRaw(`h."removerID" IS NULL`)
+  .orderBy("Users.ritUsername", "ASC")
+  .limit(100));
+  var withoutHolds = (await knex("Users").select()
+  .leftJoin(knex.raw(`(select "id" as "hid", "userID", "removerID" from "Holds") as h on h."userID" = "Users"."id"`))
+  .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
+  .whereRaw(`h."hid" IS NULL`)
+  .orderBy("Users.ritUsername", "ASC")
+  .limit(100));
+
+  return withHolds.concat(withoutHolds);
 }
 
 /**
