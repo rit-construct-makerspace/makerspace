@@ -57,12 +57,6 @@ export default function UsersPage() {
   }, []);
   const isMobile = width <= 1100;
 
-  function sortByHolds(a: PartialUser, b: PartialUser): number {
-    if ((a.holds && a.holds.length > 0) && (!b.holds || b.holds.length == 0)) return -1;
-    if ((b.holds && b.holds.length > 0) && (!a.holds || a.holds.length == 0)) return 1;
-    return 0;
-  }
-
   const safeUsers = queryResult.data?.usersLimit.slice() ?? [];
 
   return (
@@ -89,7 +83,6 @@ export default function UsersPage() {
             //     .toLocaleLowerCase()
             //     .includes(searchText.toLocaleLowerCase())
             // )
-            ?.sort(sortByHolds)
             ?.map((user: PartialUser) => (
             <UserCard
               user={user}

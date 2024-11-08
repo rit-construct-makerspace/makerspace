@@ -47,20 +47,9 @@ export async function getUsers(searchText?: string): Promise<UserRow[]> {
  * @returns {UserRow[]} users
  */
 export async function getUsersLimit(searchText?: string): Promise<UserRow[]> {
-  var withHolds = (await knex("Users").select()
-  .leftJoin(knex.raw(`(select "id" as "hid", "userID", "removerID" from "Holds") as h on h."userID" = "Users"."id"`))
-  .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
-  .whereRaw(`h."hid" IS NOT NULL`).andWhereRaw(`h."removerID" IS NULL`)
-  .orderBy("Users.ritUsername", "ASC")
-  .limit(100));
-  var withoutHolds = (await knex("Users").select()
-  .leftJoin(knex.raw(`(select "id" as "hid", "userID", "removerID" from "Holds") as h on h."userID" = "Users"."id"`))
-  .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
-  .whereRaw(`h."hid" IS NULL`)
-  .orderBy("Users.ritUsername", "ASC")
-  .limit(100));
-
-  return withHolds.concat(withoutHolds);
+  return knex("Users").select()
+    .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
+    .orderBy("activeHold", "DESC").orderBy("ritUsername", "ASC").limit(100);
 }
 
 /**
@@ -199,6 +188,14 @@ export async function setCardTagID(
   cardTagID: string
 ): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update("cardTagID", cardTagID);
+  return await getUserByID(userID);
+}
+
+export async function setActiveHold(
+  userID: number,
+  activeHold: boolean
+): Promise<UserRow> {
+  await knex("Users").where({ id: userID }).update({activeHold});
   return await getUserByID(userID);
 }
 

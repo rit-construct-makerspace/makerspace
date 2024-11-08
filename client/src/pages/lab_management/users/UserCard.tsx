@@ -12,12 +12,12 @@ export default function UserCard({ user, onClick }: UserCardProps) {
   const theme = useTheme();
 
   const CARD_COLOR = ((
-    user.holds && user.holds.length > 0
+    user.activeHold
   ) ? ((localStorage.getItem("themeMode") == "dark") ? "#382a29" : "#f1d1ce")
     : null);
 
     const BORDER = ((
-      user.holds && user.holds.length > 0
+      user.activeHold
     ) ? `2px solid ${theme.palette.error.main}`
       : "inherit");
 

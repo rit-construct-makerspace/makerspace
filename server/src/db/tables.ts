@@ -194,6 +194,7 @@ export interface UserRow {
   balance: string;
   cardTagID: string;
   notes: string;
+  activeHold: boolean;
 }
 
 export interface ReaderRow {
@@ -270,6 +271,7 @@ export interface ToolItemTypesRow {
   checkoutNote: string;
   checkinNote: string;
   allowCheckout: boolean;
+  imageUrl: string;
 }
 
 export interface ToolItemInstancesRow {
@@ -282,6 +284,7 @@ export interface ToolItemInstancesRow {
   status: string;
   notes: string;
   borrowerUserID: number;
+  borrowedAt: Date;
 }
 
 declare module "knex/types/tables.js" {

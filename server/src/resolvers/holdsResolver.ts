@@ -44,6 +44,7 @@ const HoldsResolvers = {
           { id: Number(args.userID), label: getUsersFullName(userWithHold) }
         );
 
+        await UsersRepo.setActiveHold(Number(args.userID), true)
         return HoldsRepo.createHold(user.id, Number(args.userID), args.description);
       }),
 
@@ -63,6 +64,7 @@ const HoldsResolvers = {
           { id: userWithHold.id, label: getUsersFullName(userWithHold) }
         );
 
+        await UsersRepo.setActiveHold(Number(userWithHold.id), false)
         return HoldsRepo.removeHold(Number(args.holdID), user.id);
       }),
   },
