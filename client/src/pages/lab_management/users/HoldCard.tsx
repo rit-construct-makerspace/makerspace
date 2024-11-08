@@ -4,6 +4,8 @@ import { GET_USER, Hold } from "./UserModal";
 import { format, parseISO } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import Privilege from "../../../types/Privilege";
 
 const REMOVE_HOLD = gql`
   mutation RemoveHold($holdID: ID!) {
@@ -19,6 +21,8 @@ interface HoldCardProps {
 }
 
 export default function HoldCard({ hold, userID }: HoldCardProps) {
+  const currentUser = useCurrentUser();
+
   const [removeHold, result] = useMutation(REMOVE_HOLD, {
     variables: { holdID: hold.id },
     refetchQueries: [{ query: GET_USER, variables: { id: userID } }],
@@ -57,6 +61,7 @@ export default function HoldCard({ hold, userID }: HoldCardProps) {
             color="error"
             loading={result.loading}
             onClick={() => removeHold()}
+            disabled={currentUser.privilege != Privilege.STAFF}
           >
             Remove hold
           </LoadingButton>

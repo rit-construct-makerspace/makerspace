@@ -52,7 +52,7 @@ const HoldsResolvers = {
       args: { holdID: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
+      ifAllowed([Privilege.STAFF], async (user: any) => {
         const hold = await HoldsRepo.getHold(Number(args.holdID));
         const userWithHold = await UsersRepo.getUserByID(hold.userID);
 
