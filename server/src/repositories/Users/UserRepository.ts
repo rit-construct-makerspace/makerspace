@@ -48,9 +48,8 @@ export async function getUsers(searchText?: string): Promise<UserRow[]> {
  */
 export async function getUsersLimit(searchText?: string): Promise<UserRow[]> {
   return knex("Users").select()
-  .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
-  .orderBy("ritUsername", "ASC")
-  .limit(100);
+    .whereRaw(searchText && searchText != "" ? `("ritUsername" || "firstName" || ' ' || "lastName") ilike '%${searchText}%'` : ``)
+    .orderBy("activeHold", "DESC").orderBy("ritUsername", "ASC").limit(100);
 }
 
 /**
@@ -189,6 +188,14 @@ export async function setCardTagID(
   cardTagID: string
 ): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update("cardTagID", cardTagID);
+  return await getUserByID(userID);
+}
+
+export async function setActiveHold(
+  userID: number,
+  activeHold: boolean
+): Promise<UserRow> {
+  await knex("Users").where({ id: userID }).update({activeHold});
   return await getUserByID(userID);
 }
 

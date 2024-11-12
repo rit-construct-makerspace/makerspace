@@ -35,7 +35,7 @@ export const EquipmentTypeDefs = gql`
     imageUrl: String!
     sopUrl: String!
     notes: String!
-    byReservationOnly: Boolean!
+    byReservationOnly: Boolean
   }
 
   extend type Query {

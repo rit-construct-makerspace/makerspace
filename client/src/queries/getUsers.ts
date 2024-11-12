@@ -8,6 +8,7 @@ export interface PartialUser {
   lastName: string;
   privilege: Privilege;
   setupComplete?: boolean;
+  activeHold: boolean;
 }
 
 const GET_USERS = gql`
@@ -30,6 +31,7 @@ export const GET_USERS_LIMIT = gql`
       firstName
       lastName
       privilege
+      activeHold
     }
   }
 `;

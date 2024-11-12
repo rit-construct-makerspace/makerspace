@@ -6,6 +6,7 @@ export async function up(knex: Knex): Promise<void> {
         if (!exists) return;
         return knex.schema.alterTable("Users", function (t) {
             t.text("notes");
+            t.boolean("activeHold").defaultTo(false);
         });
     });
 }
@@ -16,6 +17,7 @@ export async function down(knex: Knex): Promise<void> {
         if (!exists) return;
         return knex.schema.alterTable("Users", function (t) {
             t.dropColumn("notes");
+            t.dropColumn("activeHold")
         });
     });
 }

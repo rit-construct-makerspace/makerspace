@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Card, CardActionArea, Chip, Stack, Typography } from "@mui/material";
+import { Avatar, Card, CardActionArea, Chip, Stack, Typography, useTheme } from "@mui/material";
 import { PartialUser } from "../../../queries/getUsers";
 import PrivilegeChip from "./PrivilegeChip";
 
@@ -9,8 +9,20 @@ interface UserCardProps {
 }
 
 export default function UserCard({ user, onClick }: UserCardProps) {
+  const theme = useTheme();
+
+  const CARD_COLOR = ((
+    user.activeHold
+  ) ? ((localStorage.getItem("themeMode") == "dark") ? "#382a29" : "#f1d1ce")
+    : null);
+
+    const BORDER = ((
+      user.activeHold
+    ) ? `2px solid ${theme.palette.error.main}`
+      : "inherit");
+
   return (
-    <Card elevation={2} sx={{ mr: 2, mb: 2 }}>
+    <Card elevation={2} sx={{ mr: 2, mb: 2, background: CARD_COLOR, border: BORDER }}>
       <CardActionArea sx={{ p: 2, height: "100%" }} onClick={onClick}>
         <Stack alignItems="center" spacing={1.5} height="100%">
           <Avatar

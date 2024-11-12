@@ -57,6 +57,8 @@ export default function UsersPage() {
   }, []);
   const isMobile = width <= 1100;
 
+  const safeUsers = queryResult.data?.usersLimit.slice() ?? [];
+
   return (
     <RequestWrapper
       loading={queryResult.loading}
@@ -75,7 +77,7 @@ export default function UsersPage() {
           <Button onClick={(e) => setUrlParam("q", searchText)} variant="contained" color="primary">Search</Button>
         </Stack>
         <Stack direction="row" flexWrap="wrap">
-          {queryResult.data?.usersLimit
+          {safeUsers
             // .filter((m: { id: number; ritUsername: String; firstName: string; lastName: string }) =>
             //   (m.firstName + " " + m.lastName + " " + m.ritUsername)
             //     .toLocaleLowerCase()
