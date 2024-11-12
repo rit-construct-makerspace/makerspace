@@ -132,7 +132,7 @@ export const UPDATE_EQUIPMENT = gql`
     $imageUrl: String!
     $sopUrl: String!
     $notes: String!
-    $byReservationOnly: Boolean!
+    $byReservationOnly: Boolean
   ) {
     updateEquipment(
       id: $id
@@ -167,7 +167,7 @@ export const CREATE_EQUIPMENT = gql`
     $imageUrl: String!
     $sopUrl: String!
     $notes: String!
-    $byReservationOnly: Boolean!
+    $byReservationOnly: Boolean
     ) {
     addEquipment(
       equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes, byReservationOnly: $byReservationOnly }
