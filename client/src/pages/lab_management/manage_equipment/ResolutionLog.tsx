@@ -66,9 +66,10 @@ export default function ResolutionLogPage() {
   const [authorSort, setAuthorSort] = useState<'asc' | 'desc'>('desc');
 
   function handleSubmit() {
-    createResolutionLog({ variables: { equipmentID, issue: newIssue, content: newContent, instanceID: newInstance == 0 ? newInstance : undefined } }).then((result) => {
+    createResolutionLog({ variables: { equipmentID, issue: newIssue, content: newContent, instanceID: (newInstance) } }).then((result) => {
       if (issueID && autoDelete) deleteIssueLog({variables: {id: issueID}, refetchQueries: [{query: GET_MAINTENANCE_LOGS, variables: {equipmentID}}]});
       setNewContent("");
+      setNewIssue("");
       setNewInstance(undefined);
       setIssueParams(undefined);
     });
@@ -150,7 +151,7 @@ export default function ResolutionLogPage() {
               <Stack direction={"column"} width={"15%"}>
                 <InputLabel>Instance</InputLabel>
                 <RequestWrapper loading={instancesQueryResult.loading} error={instancesQueryResult.error}>
-                  <Select value={newInstance} placeholder="Instance" onChange={(e) => setNewInstance(Number(e.target.value))} fullWidth defaultValue={instancesQueryResult.data?.equipmentInstances.length == 1 ? instancesQueryResult.data?.equipmentInstances[0].id: null}>
+                  <Select value={newInstance} placeholder="Instance" onChange={(e) => setNewInstance(Number(e.target.value))} fullWidth defaultValue={instancesQueryResult.data?.equipmentInstances.length == 1 ? instancesQueryResult.data?.equipmentInstances[0].id: (Number(issueParams.get("instance")) ?? null)}>
                     {instancesQueryResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
                       <MenuItem value={instance.id} defaultChecked={instancesQueryResult.data?.equipmentInstances.length == 1}>{instance.name}</MenuItem>
                     ))}
