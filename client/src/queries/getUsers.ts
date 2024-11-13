@@ -44,4 +44,16 @@ export const GET_NUM_USERS = gql`
   }
 `;
 
+export const GET_USER_BY_USERNAME_OR_UID = gql`
+  query GetUserByUsernameOrUID($value: String) {
+    userByUsernameorUID(value: $value) {
+      id
+      firstName
+      lastName
+      privilege
+      activeHold
+    }
+  }
+`;
+
 export default GET_USERS;

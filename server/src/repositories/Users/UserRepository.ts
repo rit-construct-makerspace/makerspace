@@ -113,6 +113,11 @@ export async function getUserByCardTagID(
   return knex("Users").first().where("cardTagID", cardTagID);
 }
 
+
+export async function getUserByUsernameOrUID(value: string): Promise<UserRow | undefined> {
+  return await knex("Users").select().where({ritUsername: value}).orWhere({cardTagID: value}).first();
+}
+
 /**
  * Create a USer and append it to the table
  * @param user the user object

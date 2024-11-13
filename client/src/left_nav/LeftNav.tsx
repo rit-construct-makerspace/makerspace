@@ -32,6 +32,7 @@ import RequestWrapper from "../common/RequestWrapper";
 import { gql, useQuery } from "@apollo/client";
 import BarChartIcon from '@mui/icons-material/BarChart';
 import ThemeToggle from "./ThemeToggle";
+import ArchitectureIcon from '@mui/icons-material/Architecture';
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -147,8 +148,14 @@ export default function LeftNav() {
               />
               <NavLink
                 to="/admin/inventory"
-                primary="Materials"
+                primary="Material Inventory"
                 icon={<InventoryIcon />}
+                toggleDrawer={toggleDrawer(false)}
+              />
+              <NavLink
+                to="/admin/tools"
+                primary="Tool Inventory"
+                icon={<ArchitectureIcon />}
                 toggleDrawer={toggleDrawer(false)}
               />
               <NavLink

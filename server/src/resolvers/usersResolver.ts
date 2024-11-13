@@ -74,6 +74,14 @@ const UsersResolvers = {
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await UserRepo.getNumUsers();
       }),
+
+    userByUsernameorUID: async (
+      _parent: any,
+      args: { value: string },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await UserRepo.getUserByUsernameOrUID(args.value);
+      }),
   },
 
   Mutation: {

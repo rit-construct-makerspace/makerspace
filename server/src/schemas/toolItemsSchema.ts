@@ -20,29 +20,31 @@ export interface ToolItemInstanceInput {
   notes: string;
 }
 
-export const TermsTypeDefs = gql`
+export const ToolItemTypeDefs = gql`
   type ToolItemType {
-    id: ID!
+    id: ID
     name: String!
-    defaultLocationRoomID: ID
+    defaultLocationRoom: Room
     defaultLocationDescription: String
     description: String
     checkoutNote: String
     checkinNote: String
     allowCheckout: Boolean!
     instances: [ToolItemInstance]
+    imageUrl: String
   }
 
   type ToolItemInstance {
-    id: ID!
+    id: ID
     type: ToolItemType!
-    uniqueIdentifier: String!
-    locationRoomID: Int
+    uniqueIdentifier: String
+    locationRoom: Room
     locationDescription: String
     condition: String!
     status: String!
     notes: String
     borrower: User
+    borrowedAt: String
   }
 
   input ToolItemTypeInput {
@@ -53,12 +55,13 @@ export const TermsTypeDefs = gql`
     checkoutNote: String
     checkinNote: String
     allowCheckout: Boolean!
+    imageUrl: String
   }
 
   input ToolItemInstanceInput {
     typeID: ID!
     uniqueIdentifier: String!
-    locationRoomID: Int
+    locationRoomID: ID
     locationDescription: String
     condition: String!
     status: String!
@@ -70,7 +73,9 @@ export const TermsTypeDefs = gql`
     toolItemTypesAllowCheckout: [ToolItemType]
     toolItemType(id: ID!): ToolItemType
     toolItemInstances: [ToolItemInstance]
-    toolItemInstance(id: ID!) ToolItemInstance
+    toolItemInstancesByType(id: ID!): [ToolItemInstance]
+    toolItemInstance(id: ID!): ToolItemInstance
+    toolItemInstancesByBorrower(id: ID!): [ToolItemInstance]
   }
 
   extend type Mutation {
@@ -80,5 +85,8 @@ export const TermsTypeDefs = gql`
     updateToolItemInstance(id: ID!, toolItemInstance: ToolItemInstanceInput): ToolItemInstance
     borrowInstance(userID: ID!, instanceID: ID!): Boolean
     returnInstance(instanceID: ID!): Boolean
+    deleteToolItemType(id: ID!): Boolean
+    returnToolItemInstance(id: ID!): Boolean
+    deleteToolItemInstance(id: ID!): Boolean
   }
 `;
