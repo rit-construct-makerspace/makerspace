@@ -32,6 +32,7 @@ import EditTermsPage from "./pages/lab_management/policy/EditTermsPage";
 import TermsPage from "./pages/both/policy/TermsPage";
 import ResolutionLogPage from "./pages/lab_management/manage_equipment/ResolutionLog";
 import { Dashboard } from "./pages/both/homepage/Dashboard";
+import { ToolItemPage } from "./pages/lab_management/inventory/ToolItemPage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -75,6 +76,11 @@ export default function AppRoutes() {
           <Route path="/admin/training/archived/:id" element={<EditArchivedModulePage />} />
 
           <Route path="/admin/inventory" element={<InventoryPage />} />
+          <Route path="/admin/tools" element={<ToolItemPage />} />
+          <Route path="/admin/tools/type/:typeid" element={<ToolItemPage />} />
+          <Route path="/admin/tools/type" element={<ToolItemPage />} />
+          <Route path="/admin/tools/instance/:instanceid" element={<ToolItemPage />} />
+          <Route path="/admin/tools/instance" element={<ToolItemPage />} />
 
           <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
           <Route path="/admin/rooms" element={<SelectRoomPage />} />

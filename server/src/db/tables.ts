@@ -283,8 +283,8 @@ export interface ToolItemInstancesRow {
   condition: string;
   status: string;
   notes: string;
-  borrowerUserID: number;
-  borrowedAt: Date;
+  borrowerUserID: number | null;
+  borrowedAt: Date | null;
 }
 
 declare module "knex/types/tables.js" {

@@ -8,6 +8,7 @@ export async function up(knex: Knex): Promise<void> {
             if (c) return;
             return knex.schema.alterTable("ToolItemInstances", function (t) {
                     t.integer("borrowerUserID").references("id").inTable("Users");
+                    t.timestamp("borrowedAt");
                 });
             });
         })

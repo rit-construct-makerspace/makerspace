@@ -110,6 +110,7 @@ export const UsersTypeDefs = gql`
     user(id: ID!): User
     currentUser: User
     numUsers: Count
+    userByUsernameorUID(value: String): User
   }
 
   extend type Mutation {

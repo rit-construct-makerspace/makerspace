@@ -13,6 +13,7 @@ export async function up(knex: Knex): Promise<void> {
     t.text("checkoutNote");
     t.text("checkinNote");
     t.boolean("allowCheckout").notNullable().defaultTo("false")
+    t.string("imageUrl");
   });
 }
 
