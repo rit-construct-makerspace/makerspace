@@ -9,6 +9,7 @@ import { getEquipmentByID } from "../repositories/Equipment/EquipmentRepository.
 import { createMaintenanceLog, createMaintenanceTag, createResolutionLog, deleteMaintenanceLog, deleteMaintenanceTag, deleteResolutionLog, getMaintenanceLogByID, getMaintenanceLogsByEquipment, getMaintenanceTagByID, getMaintenanceTags, getMaintenanceTagsByEquipmentOrGlobal, getResolutionLogByID, getResolutionLogsByEquipment, updateMaintenanceLog, updateMaintenanceTag, updateResolutionLog } from "../repositories/Equipment/MaintenanceLogRepository.js";
 import { GraphQLError } from "graphql";
 import { getInstanceByID } from "../repositories/Equipment/EquipmentInstancesRepository.js";
+import { notifyMachineIssueCreated } from "../slack/slack.js";
 
 const MaintenanceLogsResolver = {
   MaintenanceLog: {
@@ -192,7 +193,10 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async (user) => {
           await createLog(`{user} created a maintenance log for {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: args.equipmentID, label: (await getEquipmentByID(args.equipmentID)).name });
-          return createMaintenanceLog(user.id, args.equipmentID, args.instanceID == 0 ? undefined : args.instanceID, args.content);
+          const result = await createMaintenanceLog(user.id, args.equipmentID, args.instanceID == 0 ? undefined : args.instanceID, args.content);
+          console.log(args)
+          await notifyMachineIssueCreated(args.equipmentID, args.instanceID, args.content)
+          return result;
         }
       ),
     createResolutionLog: async (

@@ -31,6 +31,7 @@
     "@graphql-tools/schema": "^8.2.0",
     "@mui/x-charts": "^7.15.0",
     "@node-saml/passport-saml": "~4.0.2",
+    "@slack/web-api": "^7.7.0",
     "body-parser": "^1.19.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
