@@ -101,7 +101,7 @@ export async function notifyInventoryItemBelowThreshold(itemName: string, count:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": `Inventory Item <${process.env.REACT_APP_URL}/admin/tools/inventory|${itemName}> is running low (${count})`
+                    "text": `Inventory Item <${process.env.REACT_APP_URL}/admin/inventory|${itemName}> is running low (${count})`
                 }
             }
         ],
