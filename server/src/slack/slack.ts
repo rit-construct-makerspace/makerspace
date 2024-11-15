@@ -92,3 +92,19 @@ export async function notifyToolItemMarked(uniqueIdentifier: string, instanceID:
         channel: conversationId,
     });
 }
+
+export async function notifyInventoryItemBelowThreshold(itemName: string, count: number) {
+    return await web.chat.postMessage({
+        text: `Inventory Item <${process.env.REACT_APP_URL}/admin/tools/inventory|${itemName}> is running low (${count})`,
+        blocks: [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `Inventory Item <${process.env.REACT_APP_URL}/admin/tools/inventory|${itemName}> is running low (${count})`
+                }
+            }
+        ],
+        channel: conversationId,
+    });
+}

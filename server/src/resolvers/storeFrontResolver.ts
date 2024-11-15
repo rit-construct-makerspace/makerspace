@@ -7,6 +7,7 @@ import { deleteInventoryItem } from "../repositories/Store/InventoryRepository.j
 import { createLedger, deleteLedger, getLedgers } from "../repositories/Store/InventoryLedgerRepository.js";
 import { GraphQLError } from "graphql";
 import { getUserByID, getUserByIDOrUndefined } from "../repositories/Users/UserRepository.js";
+import { notifyInventoryItemBelowThreshold } from "../slack/slack.js";
 
 const StorefrontResolvers = {
   Query: {
@@ -92,14 +93,22 @@ const StorefrontResolvers = {
       if (!(orig)?.staffOnly) {
         return ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemId + " does not exist");
-          const result = await InventoryRepo.updateItemById(Number(args.itemId), args.item);
+          const result = await InventoryRepo.updateItemById(Number(args.itemId), args.item).then(async (item) => {
+            if (item && (item.count < item.threshold) && (orig.count >= item.threshold) ) {
+              await notifyInventoryItemBelowThreshold(item.name, item.count)
+            }
+          });;
           const costChange = (Number(args.item.pricePerUnit) * Number(args.item.count)) - (Number(orig.pricePerUnit) * Number(orig.count));
           await createLedger(user.id, "Modify", costChange, undefined, "", [{ name: args.item.name, quantity: Number(args.item.count) - Number(orig.count) }]);
           return result;
         })
       }
       return ifAllowed([Privilege.STAFF], async (user) => {
-        const result = await InventoryRepo.updateItemById(Number(args.itemId), args.item);
+        const result = await InventoryRepo.updateItemById(Number(args.itemId), args.item).then(async (item) => {
+          if (item && (item.count < item.threshold) && (orig.count >= item.threshold) ) {
+            await notifyInventoryItemBelowThreshold(item.name, item.count)
+          }
+        });
         const costChange = (Number(args.item.pricePerUnit) * Number(args.item.count)) - (Number(orig.pricePerUnit) * Number(orig.count));
         await createLedger(user.id, "Modify", costChange, undefined, "", [{ name: args.item.name, quantity: Number(args.item.count) - Number(orig.count) }]);
         return result;
@@ -135,7 +144,11 @@ const StorefrontResolvers = {
       if (!(orig)?.staffOnly) {
         return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemID + " does not exist");
-          const result = await InventoryRepo.addItemAmount(Number(args.itemID), args.count);
+          const result = await InventoryRepo.addItemAmount(Number(args.itemID), args.count).then(async (item) => {
+            if (item && (item.count < item.threshold) && (orig.count >= item.threshold) ) {
+              await notifyInventoryItemBelowThreshold(item.name, item.count)
+            }
+          });
           await createLedger(user.id, "Modify", orig.pricePerUnit*args.count, undefined, "", [{ name: orig.name, quantity: Number(args.count)*-1 }]);
           return result;
         })
