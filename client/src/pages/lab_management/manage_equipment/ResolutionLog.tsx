@@ -15,7 +15,7 @@ import AdminPage from "../../AdminPage";
 import LabelIcon from '@mui/icons-material/Label';
 import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import MaintenanceTagsModal from "./MaintenanceTagsModal";
-import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equipmentInstanceQueries";
+import { EquipmentInstance, GET_EQUIPMENT_INSTANCES, SET_INSTANCE_STATUS } from "../../../queries/equipmentInstanceQueries";
 import ResolutionLogEntry from "./ResolutionLogEntry";
 import EquipmentInstancesModal from "./EquipmentInstancesModal";
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
@@ -33,6 +33,7 @@ export default function ResolutionLogPage() {
   const [newContent, setNewContent] = useState<string>("");
   const [newIssue, setNewIssue] = useState<string>(issueParams.get("issue") ?? "");
   const [newInstance, setNewInstance] = useState<number | undefined>(Number(issueParams.get("instance")) ?? undefined);
+  const [markInstanceActive, setMarkInstanceActive] = useState<boolean>(true);
 
   const issueID = issueParams.get("id");
   const [autoDelete, setAutoDelete] = useState<boolean>(!!issueParams.get("id"));
@@ -59,6 +60,7 @@ export default function ResolutionLogPage() {
 
   const [createResolutionLog] = useMutation(CREATE_RESOLUTION_LOG, { refetchQueries: [{ query: GET_RESOLUTION_LOGS, variables: { equipmentID } }] });
   const [deleteIssueLog] = useMutation(DELETE_MAINTENANCE_LOG);
+  const [setInstanceNeedsRepairs] = useMutation(SET_INSTANCE_STATUS, {variables: {id: newInstance, status: "ACTIVE"}, refetchQueries: [{query: GET_EQUIPMENT_INSTANCES, variables: { equipmentID } }]}) 
 
   const [tagModalOpen, setTagModalOpen] = useState(false);
 
@@ -68,6 +70,10 @@ export default function ResolutionLogPage() {
   function handleSubmit() {
     createResolutionLog({ variables: { equipmentID, issue: newIssue, content: newContent, instanceID: (newInstance) } }).then((result) => {
       if (issueID && autoDelete) deleteIssueLog({variables: {id: issueID}, refetchQueries: [{query: GET_MAINTENANCE_LOGS, variables: {equipmentID}}]});
+      if (newInstance && markInstanceActive) {
+        setInstanceNeedsRepairs();
+      }
+
       setNewContent("");
       setNewIssue("");
       setNewInstance(undefined);
@@ -188,7 +194,10 @@ export default function ResolutionLogPage() {
                 </Button>
               </Stack>
             </Stack>
-            {issueID && <FormControlLabel sx={{float: "right"}} control={<Switch checked={autoDelete} onChange={() => setAutoDelete(!autoDelete)} />} label={"Automatically delete forwarded issue?"} />}
+            <Stack direction={"row"} justifyContent={"space-between"}>
+              {newInstance && <FormControlLabel control={<Switch value={markInstanceActive} defaultChecked onChange={() => setMarkInstanceActive(!markInstanceActive)} />} label={`Mark instance as "ACTIVE"?`} />}
+              {issueID && <FormControlLabel sx={{alignSelf: "flex-end"}} control={<Switch checked={autoDelete} onChange={() => setAutoDelete(!autoDelete)} />} label={"Automatically delete forwarded issue?"} />}
+            </Stack>
           </Box>
         </Box>
       </RequestWrapper>

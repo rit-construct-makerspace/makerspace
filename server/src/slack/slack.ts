@@ -1,5 +1,5 @@
 import { WebClient } from "@slack/web-api";
-import { EquipmentInstancesRow, MaintenanceLogRow } from "../db/tables.js";
+import { EquipmentInstancesRow, MaintenanceLogRow, ToolItemInstancesRow } from "../db/tables.js";
 import { getEquipmentByID } from "../repositories/Equipment/EquipmentRepository.js";
 import { getInstanceByID } from "../repositories/Equipment/EquipmentInstancesRepository.js";
 
@@ -34,13 +34,13 @@ export async function notifyMachineIssueCreated(equipmentID: number, instanceID:
     const result = await getEquipmentByID(equipmentID).then((equipment) => {
         return conditionalInstanceFetch(instanceID).then(async (instance) => {
             return await web.chat.postMessage({
-                text: `An issue has been reported for${instance ? ` instance *${instance?.name}* of` : ""} <https://make.rit.edu/app/admin/equipment/${equipment.archived && "archived/"}${equipment.id}|${equipment.name}>`,
+                text: `An issue has been reported for${instance ? ` instance *${instance?.name}* of` : ""} <${process.env.REACT_APP_URL}/admin/equipment/${equipment.archived && "archived/"}${equipment.id}|${equipment.name}>`,
                 blocks: [
                     {
                         "type": "section",
                         "text": {
                             "type": "mrkdwn",
-                            "text": `An issue has been reported for${instance ? ` instance *${instance?.name}* of` : ""} <https://make.rit.edu/app/admin/equipment/${equipment.archived && "archived/"}${equipment.id}|${equipment.name}>`
+                            "text": `An issue has been reported for${instance ? ` instance *${instance?.name}* of` : ""} <${process.env.REACT_APP_URL}/admin/equipment/${equipment.archived && "archived/"}${equipment.id}|${equipment.name}>`
                         }
                     },
                     {
@@ -70,12 +70,25 @@ export async function notifyMachineIssueCreated(equipmentID: number, instanceID:
                 channel: conversationId,
             });
         });
-
-
-
     });
 
 
     // The result contains an identifier for the message, `ts`.
     console.log(`Successfully sent message ${result.ts} in conversation ${conversationId}`);
+}
+
+export async function notifyToolItemMarked(uniqueIdentifier: string, instanceID: number, typeID: number, newStatusOrCondition: string) {
+    return await web.chat.postMessage({
+        text: `Tool Item <${process.env.REACT_APP_URL}/admin/tools/instance/${instanceID}?type=${typeID}|${uniqueIdentifier}> has been marked as *${newStatusOrCondition}*`,
+        blocks: [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `Tool Item <${process.env.REACT_APP_URL}/admin/tools/instance/${instanceID}?type=${typeID}|${uniqueIdentifier}> has been marked as *${newStatusOrCondition}*`
+                }
+            }
+        ],
+        channel: conversationId,
+    });
 }
