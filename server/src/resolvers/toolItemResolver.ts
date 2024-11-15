@@ -10,6 +10,7 @@ import { ToolItemInstanceInput, ToolItemTypeInput } from "../schemas/toolItemsSc
 import { getRoomByID } from "../repositories/Rooms/RoomRepository.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { GraphQLError } from "graphql";
+import { notifyToolItemMarked } from "../slack/slack.js";
 
 const ToolItemResolver = {
   ToolItemType: {
@@ -181,6 +182,18 @@ const ToolItemResolver = {
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
         const orig = await getToolItemInstanceByID(args.id);
         if (!orig) throw new GraphQLError("Instance does not exist");
+        if (!(args.toolItemInstance.status == orig.status)
+          && (args.toolItemInstance.status == "MISSING"
+          || args.toolItemInstance.status == "DO NOT USE")
+        ) {
+          await notifyToolItemMarked(args.toolItemInstance.uniqueIdentifier, orig.id, orig.typeID, args.toolItemInstance.status);
+        }
+        else if (!(args.toolItemInstance.condition == orig.condition)
+          && (args.toolItemInstance.condition == "DAMAGED"
+          || args.toolItemInstance.condition == "MISSING PARTS")
+        ) {
+          await notifyToolItemMarked(args.toolItemInstance.uniqueIdentifier, orig.id, orig.typeID, args.toolItemInstance.condition);
+        }
         await createLog(`{user} updated tool item instance '${orig.uniqueIdentifier}'`, 'admin', {id: user.id, label: getUsersFullName(user)});
         return updateToolItemInstance(args.id, args.toolItemInstance.typeID, args.toolItemInstance.uniqueIdentifier, 
           args.toolItemInstance.locationRoomID, args.toolItemInstance.locationDescription, args.toolItemInstance.condition, 
