@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Button, Divider, IconButton, InputLabel, MenuItem, Select, Stack, styled, Tab, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tabs, TextareaAutosize, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, FormControlLabel, IconButton, InputLabel, MenuItem, Select, Stack, styled, Switch, Tab, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tabs, TextareaAutosize, TextField, Typography } from "@mui/material";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
@@ -17,7 +17,7 @@ import KeyboardReturnIcon from '@mui/icons-material/KeyboardReturn';
 import MaintenanceTagsModal from "./MaintenanceTagsModal";
 import PrettyModal from "../../../common/PrettyModal";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equipmentInstanceQueries";
+import { EquipmentInstance, GET_EQUIPMENT_INSTANCES, SET_INSTANCE_STATUS } from "../../../queries/equipmentInstanceQueries";
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import EquipmentInstancesModal from "./EquipmentInstancesModal";
 
@@ -28,6 +28,7 @@ import EquipmentInstancesModal from "./EquipmentInstancesModal";
 export default function IssueLogModal({ equipmentID }: { equipmentID: string }) {
   const [newContent, setNewContent] = useState<string>("");
   const [newInstance, setNewInstance] = useState<number>();
+  const [markInstanceNeedsRepairs, setMarkInstanceNeedsRepairs] = useState<boolean>(true);
 
   const currentUser = useCurrentUser();
 
@@ -50,6 +51,7 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
   const instancesQueryResult = useQuery(GET_EQUIPMENT_INSTANCES, { variables: { equipmentID } });
 
   const [createLog] = useMutation(CREATE_MAINTENANCE_LOG, { refetchQueries: [{ query: GET_MAINTENANCE_LOGS, variables: { equipmentID } }] });
+  const [setInstanceNeedsRepairs] = useMutation(SET_INSTANCE_STATUS, {variables: {id: newInstance, status: "NEEDS REPAIRS"}, refetchQueries: [{query: GET_EQUIPMENT_INSTANCES, variables: { equipmentID } }]}) 
 
   const [tagModalOpen, setTagModalOpen] = useState(false);
 
@@ -59,6 +61,10 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
 
   function handleSubmit() {
     createLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } });
+    if (newInstance && markInstanceNeedsRepairs) {
+      setInstanceNeedsRepairs();
+    }
+
     setNewContent("");
     setNewInstance(undefined);
   }
@@ -177,6 +183,7 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
                 </Button>
               </Stack>
             </Stack>
+            {newInstance && <FormControlLabel sx={{width: "80%"}} control={<Switch value={markInstanceNeedsRepairs} defaultChecked onChange={() => setMarkInstanceNeedsRepairs(!markInstanceNeedsRepairs)} />} label={`Mark instance as "NEEDS REPAIRS"?`} />}
           </Box>
         </Box>
       </RequestWrapper>
