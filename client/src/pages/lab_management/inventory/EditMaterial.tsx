@@ -45,7 +45,7 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
 
   // Close the modal upon successful mutation
   useEffect(() => {
-    if (mutation.data?.updateInventoryItem.id) onClose();
+    if (mutation.data != undefined) onClose();
   }, [mutation.data, onClose]);
 
   return (
