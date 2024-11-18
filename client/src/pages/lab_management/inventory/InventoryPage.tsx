@@ -85,6 +85,7 @@ export default function InventoryPage() {
           <Table>
             <TableHead>
               <TableCell>Item</TableCell>
+              <TableCell>Tags</TableCell>
               <TableCell>Units Available</TableCell>
               <TableCell>Price/Unit</TableCell>
               <TableCell>Staff Only</TableCell>
