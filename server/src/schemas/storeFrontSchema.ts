@@ -12,6 +12,9 @@ export interface InventoryItem {
   staffOnly: boolean;
   storefrontVisible: boolean;
   notes: string;
+  tagID1: number | null;
+  tagID2: number | null;
+  tagID3: number | null;
 }
 
 export interface InventoryItemInput {
@@ -42,6 +45,13 @@ export const StoreFrontTypeDefs = gql`
     staffOnly: Boolean
     storefrontVisible: Boolean
     notes: String
+    tags: [InventoryTag]
+  }
+
+  type InventoryTag {
+    id: ID!
+    label: String!
+    color: String
   }
 
   input InventoryItemInput {
@@ -90,6 +100,7 @@ export const StoreFrontTypeDefs = gql`
     InventoryItem(id: ID!): InventoryItem
     Labels: [String]
     Ledgers(startDate: DateTime, stopDate: DateTime, searchText: String): [InventoryLedger]
+    inventoryTags: [InventoryTag]
   }
 
   extend type Mutation {
@@ -104,6 +115,11 @@ export const StoreFrontTypeDefs = gql`
     checkoutItems(items: [CartItem], notes: String, recievingUserID: ID): Boolean
     setStaffOnly(id: ID!, staffOnly: Boolean!): InventoryItem
     setStorefrontVisible(id: ID!, storefrontVisible: Boolean!): InventoryItem
+    addTagToItem(itemID: ID!, tagID: ID!): Boolean
+    removeTagFromItem(itemID: ID!, tagID: ID!): Boolean
     deleteLedger(id: ID!): Boolean
+    createTag(label: String!, color: String!): Boolean
+    updateTag(id: ID!, label: String!, color: String!): Boolean
+    deleteTag(id: ID!): Boolean
   }
 `;

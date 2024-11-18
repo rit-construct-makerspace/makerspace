@@ -13,6 +13,11 @@ export const GET_INVENTORY_ITEMS = gql`
       staffOnly
       storefrontVisible
       notes
+      tags {
+        id
+        label
+        color
+      }
     }
   }
 `;
@@ -29,6 +34,11 @@ export const GET_INVENTORY_ITEM = gql`
       staffOnly
       storefrontVisible
       notes
+      tags {
+        id
+        label
+        color
+      }
     }
   }
 `;
@@ -108,5 +118,45 @@ export const SET_STOREFRONT_VISIBLE = gql`
     setStorefrontVisible(id: $id, storefrontVisible: $storefrontVisible) {
       id
     }
+  }
+`;
+
+export const ADD_TAG_TO_ITEM = gql`
+  mutation AddTagToItem($itemID: ID!, $tagID: ID!) {
+    addTagToItem(itemID: $itemID, tagID: $tagID)
+  }
+`;
+
+export const REMOVE_TAG_FROM_ITEM = gql`
+  mutation RemoveTagFromItem($itemID: ID!, $tagID: ID!) {
+    removeTagFromItem(itemID: $itemID, tagID: $tagID)
+  }
+`;
+
+export const GET_INVENTORY_TAGS = gql`
+  query InventoryTags {
+    inventoryTags {
+      id
+      label
+      color
+    }
+  }
+`;
+
+export const DELETE_INVENTORY_TAG = gql`
+  mutation DeleteInventoryTag($id: ID!) {
+    deleteTag(id: $id)
+  }
+`;
+
+export const CREATE_INVENTORY_TAG = gql`
+  mutation CreateInventoryTag($label: String!, $color: String!) {
+    createTag(label: $label, color: $color)
+  }
+`;
+
+export const UPDATE_INVENTORY_TAG = gql`
+  mutation UpdateTag($id: ID!, $label: String!, $color: String!) {
+    updateTag(id: $id, label: $label, color: $color)
   }
 `;

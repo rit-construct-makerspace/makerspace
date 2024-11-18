@@ -82,6 +82,15 @@ export interface InventoryItemRow {
   staffOnly: boolean;
   storefrontVisible: boolean;
   notes: string;
+  tagID1: number | null;
+  tagID2: number | null;
+  tagID3: number | null;
+}
+
+export interface InventoryTagRow {
+  id: number;
+  label: string;
+  color: string;
 }
 
 export interface InventoryLedgerRow {
@@ -294,6 +303,7 @@ declare module "knex/types/tables.js" {
     EquipmentInstances: EquipmentInstancesRow;
     Holds: HoldRow;
     InventoryItem: InventoryItemRow;
+    InventoryTags: InventoryTagRow;
     ModuleSubmissions: ModuleSubmissionRow;
     ModulesForEquipment: ModulesForEquipmentRow;
     ReservationEvents: ReservationEventRow;

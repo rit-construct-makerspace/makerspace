@@ -10,10 +10,11 @@ import { useQuery } from "@apollo/client";
 import InventoryItem from "../../../types/InventoryItem";
 import RequestWrapper from "../../../common/RequestWrapper";
 import MaterialModal from "./MaterialModal";
-import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
+import { GET_INVENTORY_ITEMS, GET_INVENTORY_TAGS } from "../../../queries/inventoryQueries";
 import AdminPage from "../../AdminPage";
 import AdminInventoryRow from "./AdminInventoryRow";
 import Ledger from "./Ledger";
+import InventoryTagsModal from "./InventoryTagsModal";
 
 function sortItemsByName(items: InventoryItem[]): InventoryItem[] {
   return [...items].sort((a, b) => (a.name > b.name ? 1 : -1)) ?? [];
@@ -24,6 +25,9 @@ export default function InventoryPage() {
 
   const [searchText, setSearchText] = useState<string>("");
   const [modalItemId, setModalItemId] = useState<string>("");
+  const [tagsModalOpen, setTagsModalOpen] = useState<boolean>(false);
+
+  const inventoryTagsResult = useQuery(GET_INVENTORY_TAGS);
 
   const { loading, error, data } = useQuery(GET_INVENTORY_ITEMS);
 
@@ -34,13 +38,14 @@ export default function InventoryPage() {
 
   return (
     <RequestWrapper loading={loading} error={error}>
-      <AdminPage title="Inventory" maxWidth="1250px">
+      <AdminPage title="Inventory" maxWidth="1250px" topRightAddons={(<Button variant="outlined" onClick={() => setTagsModalOpen(true)}>Manage Tags</Button>)}>
         <PageSectionHeader top>Running Low</PageSectionHeader>
 
         <Box sx={{width: "100%", overflowX: "scroll"}}>
           <Table>
             <TableHead>
               <TableCell>Item</TableCell>
+              <TableCell>Tags</TableCell>
               <TableCell>Units Available</TableCell>
               <TableCell>Price/Unit</TableCell>
               <TableCell>Staff Only</TableCell>
@@ -52,7 +57,7 @@ export default function InventoryPage() {
                 item={item}
                 key={item.id}
                 onClick={() => setModalItemId(item.id + "")}
-              />
+                allTags={inventoryTagsResult.data?.inventoryTags ?? []}              />
             ))}
           </Table>
         </Box>
@@ -91,6 +96,7 @@ export default function InventoryPage() {
                 item={item}
                 key={item.id}
                 onClick={() => setModalItemId(item.id + "")}
+                allTags={inventoryTagsResult.data?.inventoryTags ?? []}
               />
             ))}
           </Table>
@@ -102,6 +108,8 @@ export default function InventoryPage() {
           itemId={modalItemId}
           onClose={() => setModalItemId("")}
         />
+
+        <InventoryTagsModal tagModalOpen={tagsModalOpen} setTagModalOpen={setTagsModalOpen} />
       </AdminPage>
     </RequestWrapper>
   );
