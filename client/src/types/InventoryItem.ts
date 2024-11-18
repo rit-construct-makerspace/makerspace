@@ -11,6 +11,10 @@ export default interface InventoryItem {
   staffOnly: boolean;
   storefrontVisible: boolean;
   notes: string;
+  tags: InventoryTag[];
+  tagID1: number | null;
+  tagID2: number | null;
+  tagID3: number | null;
 }
 
 export interface InventoryLedger {
@@ -33,4 +37,10 @@ export interface InventoryLedger {
     quantity: number;
     name: string
   }[];
+}
+
+export interface InventoryTag {
+  id: number;
+  label: string;
+  color: string;
 }

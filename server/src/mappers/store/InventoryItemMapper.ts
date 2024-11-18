@@ -24,6 +24,9 @@ export function singleInventoryItemToDomain(raw: any): InventoryItem | null {
     threshold: raw.threshold,
     staffOnly: raw.staffOnly,
     storefrontVisible: raw.storefrontVisible,
-    notes: raw.notes
+    notes: raw.notes,
+    tagID1: raw.tagID1,
+    tagID2: raw.tagID2,
+    tagID3: raw.tagID3
   };
 }

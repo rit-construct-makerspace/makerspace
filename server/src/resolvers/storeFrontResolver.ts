@@ -1,6 +1,5 @@
 import { ApolloContext, ifAllowed } from "../context.js";
 import * as InventoryRepo from "../repositories/Store/InventoryRepository.js";
-import * as LabelRepo from "../repositories/Store/LabelRepository.js";
 import { InventoryItem, InventoryItemInput } from "../schemas/storeFrontSchema.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { deleteInventoryItem } from "../repositories/Store/InventoryRepository.js";
@@ -8,6 +7,7 @@ import { createLedger, deleteLedger, getLedgers } from "../repositories/Store/In
 import { GraphQLError } from "graphql";
 import { getUserByID, getUserByIDOrUndefined } from "../repositories/Users/UserRepository.js";
 import { notifyInventoryItemBelowThreshold } from "../slack/slack.js";
+import { InventoryItemRow } from "../db/tables.js";
 
 const StorefrontResolvers = {
   Query: {
@@ -29,20 +29,12 @@ const StorefrontResolvers = {
       args: { id: string },
       { ifAllowed }: ApolloContext) => {
       const item = await InventoryRepo.getItemById(Number(args.id));
-      console.log("InventoryItem")
-      console.log(item)
       if (!item?.storefrontVisible) return ifAllowed([Privilege.MENTOR, Privilege.STAFF], () => {
-        console.log("Not Visible")
         return item;
       })
       else {
-        console.log("Visible")
         return item;
       }
-    },
-
-    Labels: async () => {
-      return await LabelRepo.getAllLabels();
     },
 
     Ledgers: async (
@@ -56,11 +48,25 @@ const StorefrontResolvers = {
         return getLedgers(startDate, stopDate, searchText);
       });
     },
+
+    inventoryTags: async (
+      _: any,
+      _args: any,
+      { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF, Privilege.MENTOR], async () => {
+        return await InventoryRepo.getTags();
+      })
+    },
   },
 
   InventoryItem: {
-    labels: (parent: any) => {
-      return InventoryRepo.getLabels(parent.id);
+    tags: async (parent: InventoryItemRow) => {
+      var tags = [];
+      if (parent.id == 104) console.log(parent)
+      if (parent.tagID1) tags.push(await InventoryRepo.getTagByID(parent.tagID1));
+      if (parent.tagID2) tags.push(await InventoryRepo.getTagByID(parent.tagID2));
+      if (parent.tagID3) tags.push(await InventoryRepo.getTagByID(parent.tagID3));
+      return tags;
     },
   },
 
@@ -175,18 +181,6 @@ const StorefrontResolvers = {
       })
     },
 
-    createLabel: async (_: any, args: { label: string }, context: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        await LabelRepo.addLabel(args.label);
-      }),
-
-    archiveLabel: async (_: any, args: { label: string }, context: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        await LabelRepo.archiveLabel(args.label);
-      }),
-
     deleteInventoryItem: async (
       _parent: any,
       args: any,
@@ -269,6 +263,41 @@ const StorefrontResolvers = {
       args: { id: string },
       { ifAllowed }: ApolloContext) => {
       return ifAllowed([Privilege.STAFF], () => deleteLedger(Number(args.id)));
+    },
+
+    createTag: async (
+      _parent: any,
+      args: { label: string, color: string },
+      { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF], () => InventoryRepo.createTag(args.label, args.color));
+    },
+
+    updateTag: async (
+      _parent: any,
+      args: { id: number, label: string, color: string },
+      { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF], () => InventoryRepo.updateTag(args.id, args.label, args.color));
+    },
+
+    deleteTag: async (
+      _parent: any,
+      args: { id: number },
+      { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF], () => InventoryRepo.deleteTag(args.id));
+    },
+
+    addTagToItem: async (
+      _parent: any,
+      args: { itemID: number, tagID: number },
+      { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF], () => InventoryRepo.addTagToItem(args.itemID, args.tagID));
+    },
+
+    removeTagFromItem: async (
+      _parent: any,
+      args: { itemID: number, tagID: number },
+      { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF], () => InventoryRepo.removeTagFromItem(args.itemID, args.tagID));
     },
   }
 };

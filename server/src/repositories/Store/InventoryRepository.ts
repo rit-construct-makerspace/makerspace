@@ -3,7 +3,7 @@
  */
 
 import { knex } from "../../db/index.js";
-import { InventoryItemRow } from "../../db/tables.js";
+import { InventoryItemRow, InventoryTagRow } from "../../db/tables.js";
 import { EntityNotFound } from "../../EntityNotFound.js";
 import {
   inventoryItemsToDomain,
@@ -13,15 +13,6 @@ import {
   InventoryItem,
   InventoryItemInput,
 } from "../../schemas/storeFrontSchema.js";
-export async function getLabels(itemId: number): Promise<string[] | null> {
-  const knexResult = await knex("InventoryItemLabel")
-    .leftJoin("Label", "Label.id", "=", "InventoryItemLabel.label")
-    .select("Label.label")
-    .where("InventoryItemLabel.item", itemId);
-  const result = knexResult.map((i: any) => i.label);
-  if (result.length === 1 && result[0] === null) return null;
-  return result;
-}
 
 export async function getItems(): Promise<InventoryItem[]> {
   const knexResult = await knex("InventoryItem").select().where('archived', false);
@@ -69,7 +60,6 @@ export async function updateItemById(
     notes: item.notes
   });
 
-  await setLabels(itemId, item.labels);
   return await getItemById(itemId);
 }
 
@@ -91,8 +81,6 @@ export async function addItem(
       "id"
     )
   )[0];
-  if (item.labels && item.labels.length > 0)
-    await addLabels(newId.id, item.labels);
   return await getItemById(newId.id);
 }
 
@@ -124,40 +112,6 @@ export async function archiveItem(
   return updatedInventoryItems[0];
 }
 
-export async function addLabels(
-  itemId: number,
-  labels: string[]
-): Promise<void> {
-  await knex
-    .into(knex.raw("?? (??, ??)", ["InventoryItemLabel", "item", "label"]))
-    .insert(
-      knex
-        .from("Label")
-        .whereIn("Label.label", labels)
-        .select(knex.raw("? AS ??", [itemId, "item"]), "Label.id AS label")
-    );
-}
-
-export async function setLabels(
-  itemId: number,
-  labels: string[]
-): Promise<void> {
-  await knex("InventoryItemLabel").del().where({ item: itemId });
-  if (labels && labels.length > 0) await addLabels(itemId, labels);
-}
-
-export async function removeLabels(
-  itemId: number,
-  labels: string[]
-): Promise<void> {
-  const subquery = knex.select("id").from("Label").whereIn("label", labels);
-
-  await knex("InventoryItemLabel")
-    .where("item", "=", itemId)
-    .whereIn("label", subquery)
-    .del();
-}
-
 export async function deleteInventoryItem(
     itemId: number
 ): Promise<boolean> {
@@ -172,5 +126,45 @@ export async function setStorefrontVisible(id: number, storefrontVisible: boolea
 
 export async function setStaffOnly(id: number, staffOnly: boolean): Promise<boolean> {
   await knex("InventoryItem").update({staffOnly}).where({id});
+  return true;
+}
+
+export async function getTags(): Promise<InventoryTagRow[]> {
+  return await knex("InventoryTags").select();
+}
+
+export async function getTagByID(id: number): Promise<InventoryTagRow | undefined> {
+  return await knex("InventoryTags").select().where({id}).first();
+}
+
+export async function addTagToItem(itemID: number, tagID: number): Promise<boolean> {
+  const item = await knex("InventoryItem").select().where({id: itemID}).first();
+  if (!item?.tagID1) await knex("InventoryItem").update({tagID1: tagID}).where({id: itemID});
+  else if (!item?.tagID2) await knex("InventoryItem").update({tagID2: tagID}).where({id: itemID});
+  else if (!item?.tagID3) await knex("InventoryItem").update({tagID3: tagID}).where({id: itemID});
+  else return false;
+  return true;
+}
+
+export async function removeTagFromItem(itemID: number, tagID: number): Promise<boolean> {
+  const item = await knex("InventoryItem").select().where({id: itemID}).first();
+  if (item?.tagID1 == tagID) await knex("InventoryItem").update({tagID1: null});
+  else if (item?.tagID2 == tagID) await knex("InventoryItem").update({tagID2: null});
+  else if (item?.tagID3 == tagID) await knex("InventoryItem").update({tagID3: null});
+  return true;
+}
+
+export async function createTag(label: string, color: string): Promise<boolean> {
+  await knex("InventoryTags").insert({label, color});
+  return true;
+}
+
+export async function updateTag(id: number, label: string, color: string): Promise<boolean> {
+  await knex("InventoryTags").update({label, color}).where({id});
+  return true
+}
+
+export async function deleteTag(id: number): Promise<boolean> {
+  await knex("InventoryTags").delete().where({id});
   return true;
 }
