@@ -6,7 +6,7 @@ export async function up(knex: Knex): Promise<void> {
         if (!exists) return;
         knex.schema.hasColumn("InventoryItem", "tagID1").then(function(c) {
             if (c) return;
-            return knex.schema.alterTable("MaintenanceLogs", function (t) {
+            return knex.schema.alterTable("InventoryItem", function (t) {
                     t.integer("tagID1").references("id").inTable("InventoryTags");
                     t.integer("tagID2").references("id").inTable("InventoryTags");
                     t.integer("tagID3").references("id").inTable("InventoryTags");
