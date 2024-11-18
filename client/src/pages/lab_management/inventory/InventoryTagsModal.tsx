@@ -59,7 +59,6 @@ export default function InventoryTagsModal({ tagModalOpen, setTagModalOpen }: { 
         <TableHead>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell>Equipment</TableCell>
             <TableCell>Label</TableCell>
             <TableCell>Color</TableCell>
           </TableRow>
