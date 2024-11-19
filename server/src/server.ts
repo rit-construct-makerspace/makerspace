@@ -408,9 +408,10 @@ async function startServer() {
 
     //If state change
     if (API_NORMAL_LOGGING && reader.state != req.body.State) {
-      console.log(`${reader.name} (${req.ip}) [id: ${reader.id}, stateUID ${req.body.StateUID}]: ${reader.state} -> ${req.body.State}`);
       await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, "state", { id: reader?.id, label: reader?.name });
     }
+
+    if(reader.id == 290) await createLog(`DEBUG: scrollsaw state change: ${reader.state} -> ${req.body.State}; {Machine: ${req.body.Machine}, MachineType: ${req.body.MachineType}, UID: ${req.body.UID}, Source: ${req.body.Source}}`, "message");
 
     //If in a user session or just finished a user session
     if (req.body.UID != null || reader.currentUID != null) {
