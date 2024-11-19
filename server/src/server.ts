@@ -389,6 +389,8 @@ async function startServer() {
       else if (API_NORMAL_LOGGING) await createLog(`New Access Device {access_device} registered.`, "status", { id: reader?.id, label: reader?.name });
     }
 
+    console.log(req.body)
+
     await updateReaderStatus({
       id: reader.id,
       machineID: parseInt(reader.machineType),
