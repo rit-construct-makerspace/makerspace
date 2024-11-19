@@ -408,7 +408,7 @@ async function startServer() {
 
     //If state change
     if (API_NORMAL_LOGGING && reader.state != req.body.State) {
-      console.log(`${reader.name} (${req.ip}): ${reader.state} -> ${req.body.State}`);
+      console.log(`${reader.name} (${req.ip}) [id: ${reader.id}, stateUID ${req.body.StateUID}]: ${reader.state} -> ${req.body.State}`);
       await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, "state", { id: reader?.id, label: reader?.name });
     }
 
