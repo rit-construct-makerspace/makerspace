@@ -156,7 +156,6 @@ export async function UserIdHasTrainingModules(
 ): Promise<boolean> {
   let modules = await getModulesByEquipment(equipmentID);
   let hasTraining = true;
-  console.log(modules.toString());
   // get last submission from maker for every module
   for(let i = 0; i < modules.length; i++) {
     if (await ModuleRepo.hasPassedModule(userID, modules[i].id)) {
