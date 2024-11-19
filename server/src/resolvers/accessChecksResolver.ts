@@ -92,8 +92,9 @@ const AccessChecksResolver = {
         const equipmentToCheck = await EquipmentRepo.getEquipment();
         equipmentToCheck.forEach(async (equipment) => {
           await purgeUnapprovedAccessChecks(args.userID);
-          if (!equipment.archived && !(await accessCheckExists(args.userID, equipment.id)) && (await EquipmentRepo.UserIdHasTrainingModules(args.userID, equipment.id))) {
-            await createAccessCheck(user.id, equipment.id);
+          if (!equipment.archived && !(await accessCheckExists(args.userID, equipment.id)) && ((await EquipmentRepo.getModulesByEquipment(equipment.id)).length == 0 || (await EquipmentRepo.UserIdHasTrainingModules(args.userID, equipment.id)))) {
+            console.log("create " + equipment.name)
+            await createAccessCheck(args.userID, equipment.id);
           }
         });
       }
