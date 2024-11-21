@@ -409,13 +409,13 @@ async function startServer() {
     //If state change
     if (API_NORMAL_LOGGING && reader.state != req.body.State) {
       await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, "state", { id: reader?.id, label: reader?.name });
-      await createLog(`DEBUG: {Machine: ${req.body.Machine}, Time: ${req.body.Time}, Source: ${req.body.Source}}`, "status")
+      // await createLog(`DEBUG: {Machine: ${req.body.Machine}, Time: ${req.body.Time}, Source: ${req.body.Source}}`, "status")
     }
 
     //if(reader.id == 290) await createLog(`DEBUG: scrollsaw state change: ${reader.state} -> ${req.body.State}; {Machine: ${req.body.Machine}, MachineType: ${req.body.MachineType}, UID: ${req.body.UID}, Source: ${req.body.Source}}`, "message");
 
     //If in a user session or just finished a user session
-    if (reader.state == "Active") {
+    if (reader.state == "Active" && req.body.Time != 0) {
       //Update said user session length
       await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
     }
