@@ -287,7 +287,7 @@ async function startServer() {
     //Staff bypass. Skip Welcome and training check.
     if (user.privilege == Privilege.STAFF) {
       if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} - {equipment} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name });
-      createEquipmentSession(machine.id, user.id);
+      createEquipmentSession(machine.id, user.id, req.query.machine?.toString() ?? undefined);
       return res.status(202).json({
         "Type": "Authorization",
         "Machine": machine.id,
@@ -339,7 +339,7 @@ async function startServer() {
 
     //Success
     if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} - {equipment}", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name });
-    createEquipmentSession(machine.id, user.id);
+    createEquipmentSession(machine.id, user.id, req.query.machine?.toString() ?? undefined);
     return res.status(202).json({
       "Type": "Authorization",
       "Machine": machine.id,
@@ -423,7 +423,7 @@ async function startServer() {
       const user = await getUserByCardTagID(reader.currentUID);
       const equipment = await getEquipmentByID(parseInt(reader.machineType));
       if (user != undefined) {
-        await createLog(`{user} signed out of {equipment} (Session: ${req.body.Time} sec)`, "session", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
+        await createLog(`{user} signed out of {equipment} (Session: ${req.body.Time} sec)`, "status", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
       }
     }
 

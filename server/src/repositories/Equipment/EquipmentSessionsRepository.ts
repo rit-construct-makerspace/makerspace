@@ -1,8 +1,8 @@
 import { knex } from "../../db/index.js";
 import { EquipmentSessionRow } from "../../db/tables.js";
 
-export async function createEquipmentSession(equipmentID: number, userID: number): Promise<EquipmentSessionRow> {
-    return knex("EquipmentSessions").insert({equipmentID, userID});
+export async function createEquipmentSession(equipmentID: number, userID: number, readerSlug?: string): Promise<EquipmentSessionRow> {
+    return knex("EquipmentSessions").insert({equipmentID, userID, readerSlug});
 }
 
 export async function getEquipmentSessions(): Promise<EquipmentSessionRow[]> {
@@ -11,11 +11,11 @@ export async function getEquipmentSessions(): Promise<EquipmentSessionRow[]> {
 
 export async function setLatestEquipmentSessionLength(equipmentID: number, sessionLength: number, readerSlug: string) {
     const latest = await knex("EquipmentSessions").select()
-        .where({equipmentID})
+        .where({equipmentID, readerSlug})
         .orderBy("start", "desc")
         .first();
     if (latest == undefined) return undefined;
     return await knex("EquipmentSessions")
-        .update({sessionLength, readerSlug})
+        .update({sessionLength})
         .where({id: latest.id});
 }
