@@ -389,7 +389,7 @@ async function startServer() {
       else if (API_NORMAL_LOGGING) await createLog(`New Access Device {access_device} registered.`, "status", { id: reader?.id, label: reader?.name });
     }
 
-    await updateReaderStatus({
+    const newReader = await updateReaderStatus({
       id: reader.id,
       machineID: parseInt(reader.machineType),
       machineType: reader.machineType,
@@ -414,13 +414,13 @@ async function startServer() {
     //if(reader.id == 290) await createLog(`DEBUG: scrollsaw state change: ${reader.state} -> ${req.body.State}; {Machine: ${req.body.Machine}, MachineType: ${req.body.MachineType}, UID: ${req.body.UID}, Source: ${req.body.Source}}`, "message");
 
     //If in a user session or just finished a user session
-    if (req.body.UID != null || reader.currentUID != null) {
+    if (reader.state == "Active") {
       //Update said user session length
       await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
     }
     //If session just finished
-    if (req.body.UID == null && reader.currentUID != null && API_NORMAL_LOGGING) {
-      const user = await getUserByCardTagID(reader.currentUID)
+    if (reader.state == "Active" && req.body.State != "Active") {
+      const user = await getUserByCardTagID(reader.currentUID);
       const equipment = await getEquipmentByID(parseInt(reader.machineType));
       if (user != undefined) {
         await createLog(`{user} signed out of {equipment} (Session: ${req.body.Time} sec)`, "session", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
