@@ -409,6 +409,7 @@ async function startServer() {
     //If state change
     if (API_NORMAL_LOGGING && reader.state != req.body.State) {
       await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, "state", { id: reader?.id, label: reader?.name });
+      await createLog(`DEBUG: {Machine: ${req.body.Machine}, Time: ${req.body.Time}, Source: ${req.body.Source}}`, "status")
     }
 
     //if(reader.id == 290) await createLog(`DEBUG: scrollsaw state change: ${reader.state} -> ${req.body.State}; {Machine: ${req.body.Machine}, MachineType: ${req.body.MachineType}, UID: ${req.body.UID}, Source: ${req.body.Source}}`, "message");
@@ -423,7 +424,7 @@ async function startServer() {
       const user = await getUserByCardTagID(reader.currentUID);
       const equipment = await getEquipmentByID(parseInt(reader.machineType));
       if (user != undefined) {
-        await createLog(`{user} signed out of {equipment} (Session: ${req.body.Time} sec)`, "status", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
+        await createLog(`{user} signed out of {machine} - {equipment} (Session: ${req.body.Time} sec)`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: req.body.Machine ?? "undefined" }, { id: equipment.id, label: equipment.name });
       }
     }
 
