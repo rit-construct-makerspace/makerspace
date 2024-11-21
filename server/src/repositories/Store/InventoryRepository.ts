@@ -148,9 +148,9 @@ export async function addTagToItem(itemID: number, tagID: number): Promise<boole
 
 export async function removeTagFromItem(itemID: number, tagID: number): Promise<boolean> {
   const item = await knex("InventoryItem").select().where({id: itemID}).first();
-  if (item?.tagID1 == tagID) await knex("InventoryItem").update({tagID1: null});
-  else if (item?.tagID2 == tagID) await knex("InventoryItem").update({tagID2: null});
-  else if (item?.tagID3 == tagID) await knex("InventoryItem").update({tagID3: null});
+  if (item?.tagID1 == tagID) await knex("InventoryItem").update({tagID1: null}).where({id: itemID});
+  else if (item?.tagID2 == tagID) await knex("InventoryItem").update({tagID2: null}).where({id: itemID});
+  else if (item?.tagID3 == tagID) await knex("InventoryItem").update({tagID3: null}).where({id: itemID});
   return true;
 }
 
