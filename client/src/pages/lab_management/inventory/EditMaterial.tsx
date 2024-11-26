@@ -20,7 +20,7 @@ export default function EditMaterial({ itemId, onClose }: EditMaterialProps) {
   });
 
   const [updateInventoryItem, mutation] = useMutation(UPDATE_INVENTORY_ITEM, {
-    variables: { id: itemId, item: itemDraft },
+    variables: { id: itemId, item: {...itemDraft, id: undefined, tags: undefined} },
     refetchQueries: [
       { query: GET_INVENTORY_ITEMS },
       { query: GET_INVENTORY_ITEM, variables: { id: itemId } },
