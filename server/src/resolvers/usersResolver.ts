@@ -6,6 +6,7 @@ import { Privilege } from "../schemas/usersSchema.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { ApolloContext } from "../context.js";
 import { getUsersFullName } from "../repositories/Users/UserRepository.js";
+import { getActiveTrainingHoldsByUser, getTrainingHoldsByUser } from "../repositories/Training/TrainingHoldsRespository.js";
 
 const UsersResolvers = {
   User: {
@@ -28,6 +29,13 @@ const UsersResolvers = {
       _args: any,
       _context: ApolloContext) => {
       return AccessCheckRepo.getAccessChecksByUserID(Number(parent.id));
+    },
+
+    trainingHolds: async (
+      parent: { id: string },
+      _args: any,
+      _context: ApolloContext) => {
+      return getActiveTrainingHoldsByUser(Number(parent.id));
     }
 
   },

@@ -10,6 +10,7 @@ import { EquipmentRow, TrainingModuleItem, TrainingModuleRow } from "../db/table
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import { accessCheckExists, createAccessCheck, hasApprovedAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
 import fetch from "node-fetch";
+import { createTrainingHold, getTrainingHoldByUserForModule } from "../repositories/Training/TrainingHoldsRespository.js";
 
 
 const ID_3DPRINTEROS_QUIZ = Number(process.env.ID_3DPRINTEROS_QUIZ);
@@ -98,7 +99,9 @@ const TrainingModuleResolvers = {
       ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, false);
 
-        if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
+        if (user.privilege === "MAKER") {
+          removeAnswersFromQuiz(module.quiz);
+        }
 
         return module;
       }),
@@ -162,7 +165,16 @@ const TrainingModuleResolvers = {
     ) =>
       ifAuthenticated(async (user) => {
         return ModuleRepo.getEquipmentsByModuleID(parent.id);
-      })
+      }),
+    isLocked: async (
+      parent: TrainingModuleRow,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        return (await getTrainingHoldByUserForModule(user.id, parent.id)) != undefined
+      }),
+        
   },
 
   AccessProgress: {
@@ -263,6 +275,8 @@ const TrainingModuleResolvers = {
       return ifAllowed(
         [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
         async (user: any) => {
+          if (await getTrainingHoldByUserForModule(user.id, Number(args.moduleID))) throw Error(`Active Training Hold on this Module.`)
+
           const module = await ModuleRepo.getModuleByIDWhereArchived(Number(args.moduleID), false);
 
           if (!module || module.archived) {
@@ -366,6 +380,11 @@ const TrainingModuleResolvers = {
                     await createAccessCheck(user.id, equipmentID);
                   }
                 });
+              }
+            } else {
+              if (Number(process.env.TRAINING_MAX_ATTEMPTS_PER_DAY_BEFORE_LOCK) && (await SubmissionRepo.getFailedSubmissionsTodayByModuleAndUser(Number(args.moduleID), user.id)).length >= Number(process.env.TRAINING_MAX_ATTEMPTS_PER_DAY_BEFORE_LOCK)) {
+                await createLog("Daily attempt limit reached. A hold has been placed on training {module} for {user}", "server", {id: module.id, label: module.name}, {id: user.id, label: getUsersFullName(user)});
+                await createTrainingHold(user.id, Number(args.moduleID));
               }
             }
 

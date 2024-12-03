@@ -21,7 +21,7 @@ export const GET_ALL_TRAINING_MODULES = gql`
 `;
 
 export default function TrainingPage() {
-  const { passedModules } = useCurrentUser();
+  const { passedModules, trainingHolds } = useCurrentUser();
   const result = useQuery(GET_ALL_TRAINING_MODULES);
   const [searchText, setSearchText] = useState("");
 
@@ -29,7 +29,7 @@ export default function TrainingPage() {
     <RequestWrapper2
       result={result}
       render={({ modules }) => {
-        const moduleStatuses = modules.map(moduleStatusMapper(passedModules));
+        const moduleStatuses = modules.map(moduleStatusMapper(passedModules, trainingHolds));
 
         const matching = searchFilter<ModuleStatus>(
           searchText,
@@ -46,8 +46,11 @@ export default function TrainingPage() {
         const notTaken = matching.filter(
           (ms: ModuleStatus) => ms.status === "Not taken"
         );
+        const locked = matching.filter(
+          (ms: ModuleStatus) => ms.status === "Locked"
+        );
 
-        const reordered = [...expired, ...passed, ...notTaken];
+        const reordered = [...expired, ...passed, ...locked, ...notTaken];
 
         return (
           <Page title="Training" maxWidth="1250px">

@@ -21,12 +21,14 @@ interface QuestionProps {
   selectedOptionIDs: string[];
   quizItem: QuizItem;
   onClick: (optionID: string) => void;
+  disabled: boolean;
 }
 
 export default function Question({
   selectedOptionIDs,
   quizItem,
   onClick,
+  disabled
 }: QuestionProps) {
   const classes = useStyles();
 
@@ -40,6 +42,7 @@ export default function Question({
           text={o.text}
           selected={selectedOptionIDs.includes(o.id)}
           onClick={() => onClick(o.id)}
+          disabled={disabled}
         />
       ))}
     </Card>

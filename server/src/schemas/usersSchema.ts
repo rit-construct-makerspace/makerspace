@@ -59,6 +59,7 @@ export const UsersTypeDefs = gql`
     roomMonitoring: Room
     notes: String
     activeHold: Boolean
+    trainingHolds: [TrainingHold]
 
     """
     The number-letter combination that is attached to your RIT email

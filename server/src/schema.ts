@@ -52,6 +52,8 @@ import { EquipmentInstanceTypeDefs } from "./schemas/equipmentInstanceSchema.js"
 import EquipmentInstanceResolver from "./resolvers/equipmentInstanceResolver.js";
 import { ToolItemTypeDefs } from "./schemas/toolItemsSchema.js";
 import ToolItemResolver from "./resolvers/toolItemResolver.js";
+import { TrainingHoldsTypeDefs } from "./schemas/trainingHoldsSchema.js";
+import { TrainingHoldResolver } from "./resolvers/trainingHoldResolver.js";
 
 // for custom scalars such as Date
 const resolveFunctions = {
@@ -61,6 +63,7 @@ const resolveFunctions = {
 
 export const schema = makeExecutableSchema({
   typeDefs: [
+    TrainingHoldsTypeDefs,
     UsersTypeDefs,
     HoldsTypeDefs,
     EquipmentTypeDefs,
@@ -93,6 +96,7 @@ export const schema = makeExecutableSchema({
     EquipmentInstanceResolver,
     trainingModuleResolvers,
     trainingSubmissionsResolvers,
+    TrainingHoldResolver,
     storefrontResolvers,
     roomsResolver,
     usersResolver,

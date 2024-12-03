@@ -1,0 +1,46 @@
+import { ApolloContext } from "../context.js";
+import { TrainingHoldsRow } from "../db/tables.js";
+import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
+import { getModuleByID } from "../repositories/Training/ModuleRepository.js";
+import { deleteTrainingHold, getTrainingHoldByID } from "../repositories/Training/TrainingHoldsRespository.js";
+import { getUserByID, getUsersFullName } from "../repositories/Users/UserRepository.js";
+import { Privilege } from "../schemas/usersSchema.js";
+
+export const TrainingHoldResolver = {
+  TrainingHold: {
+    module: async (
+      parent: TrainingHoldsRow,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async () => {
+        return await getModuleByID(parent.moduleID)
+      }),
+    user: async (
+      parent: TrainingHoldsRow,
+      _: any,
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await getUserByID(parent.userID)
+      }),
+  },
+
+  Mutation: {
+    deleteTrainingHold: async (
+      _parent: any,
+      args: { id: number },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        const hold = await getTrainingHoldByID(args.id);
+        if (!hold) throw Error("Training hold does not exist.");
+        const recipient = await getUserByID(hold.userID)
+        if (!recipient) throw Error("Recipient User does not exist.");
+        const module = await getModuleByID(hold.moduleID)
+        if (!module) throw Error("Held Module does not exist.");
+        await createLog("{user} has removed a hold on training {module} for {user}", "admin", {id: user.id, label: getUsersFullName(user)}, {id: module.id, label: module.name}, {id: recipient.id, label: getUsersFullName(recipient)});
+        return await deleteTrainingHold(args.id);
+      }),
+  }
+}

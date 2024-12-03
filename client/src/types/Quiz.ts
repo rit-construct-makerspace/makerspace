@@ -37,6 +37,7 @@ export interface Module {
   archived: boolean;
   quiz: QuizItem[];
   reservationPrompt: ReservationPrompt;
+  isLocked?: boolean;
 };
 
 export interface Submission {

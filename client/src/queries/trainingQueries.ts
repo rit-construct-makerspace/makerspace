@@ -8,6 +8,7 @@ export const GET_MODULE = gql`
       quiz
       reservationPrompt
       archived
+      isLocked
     }
   }
 `;
@@ -30,6 +31,7 @@ export const GET_TRAINING_MODULES = gql`
       id
       name
       archived
+      isLocked
     }
   }
 `;

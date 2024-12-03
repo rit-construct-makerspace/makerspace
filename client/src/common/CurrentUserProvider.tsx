@@ -30,6 +30,10 @@ export const GET_CURRENT_USER = gql`
         approved
       }
       cardTagID
+      trainingHolds {
+        moduleID
+        expires
+      }
     }
   }
 `;
@@ -38,6 +42,11 @@ export interface PassedModule {
   moduleID: string;
   submissionDate: string;
   expirationDate: string;
+}
+
+export interface TrainingHold {
+  moduleID: number;
+  expires: Date;
 }
 
 export interface CurrentUser {
@@ -52,6 +61,7 @@ export interface CurrentUser {
   passedModules: PassedModule[];
   accessChecks: AccessCheck[];
   cardTagID: string;
+  trainingHolds: TrainingHold[];
 }
 
 const CurrentUserContext = createContext<CurrentUser | undefined>(undefined);

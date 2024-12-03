@@ -25,7 +25,7 @@ interface IncompleteTrainingsCardProps {
   }
 
 export default function IncompleteTrainingsCard({onClick}: IncompleteTrainingsCardProps) {
-    const { passedModules } = useCurrentUser();
+    const { passedModules, trainingHolds } = useCurrentUser();
     const result = useQuery(GET_ALL_TRAINING_MODULES);
     const [searchText] = useState("");
 
@@ -33,7 +33,7 @@ export default function IncompleteTrainingsCard({onClick}: IncompleteTrainingsCa
         <RequestWrapper2
             result={result}
             render={({ modules }) => {
-                const moduleStatuses = modules.map(moduleStatusMapper(passedModules));
+                const moduleStatuses = modules.map(moduleStatusMapper(passedModules, trainingHolds));
 
                 const matching = searchFilter<ModuleStatus>(
                     searchText,

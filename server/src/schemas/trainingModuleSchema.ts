@@ -29,6 +29,7 @@ export const TrainingModuleTypeDefs = gql`
     quiz: JSON
     reservationPrompt: JSON
     equipment: [Equipment]
+    isLocked: Boolean
   }
 
   type AccessProgress {

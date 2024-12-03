@@ -4,6 +4,7 @@ export interface TrainingModule {
     name: string;
     quiz: JSON;
     reservationPrompt: string;
+    isLocked?: boolean;
 }
 export interface AccessProgress {
     equipment: {

@@ -153,3 +153,12 @@ export async function getModulePassedandFailedCountWithModuleName(startDate: str
     return moduleStats;
     
 }
+
+
+export async function getFailedSubmissionsTodayByModuleAndUser(moduleID: number, userID: number): Promise<ModuleSubmissionRow[]> {
+    var today = new Date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0)
+    return await knex("ModuleSubmissions").select().where({moduleID, makerID: userID, passed: false}).andWhere("submissionDate", ">=", today);
+}
