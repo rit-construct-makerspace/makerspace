@@ -22,9 +22,9 @@ export function LoanToolItemModal({item, setItem, type}: {item: ToolItemInstance
   const [userSearch, setUserSearch] = useState<string>();
 
   function handleUserSearchChange(e: any) {
-    setUserSearch(e.target.value);
+    setUserSearch(e.target.value.toLowerCase());
 
-    getUser({ variables: { value: e.target.value } });
+    getUser({ variables: { value: e.target.value.toLowerCase() } });
   }
 
   function handleSubmit () {
