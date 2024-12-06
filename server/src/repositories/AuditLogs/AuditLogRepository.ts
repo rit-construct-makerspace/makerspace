@@ -92,7 +92,7 @@ export async function getLogs(
     + (filters?.admin ? "'admin', " : "")
     + (filters?.server ? "'server', " : "")
   );
-  const filterSQL = `"category" = ALL (ARRAY[${filterString.substring(0, filterString.length-2)}])` + (filters?.uncategorized ? ` OR "category" IS NULL` : "");
+  const filterSQL = `"category" = ANY (ARRAY[${filterString.substring(0, filterString.length-2)}])` + (filters?.uncategorized ? ` OR "category" IS NULL` : "");
   console.log(filterSQL)
 
   const knexResult = (filterString && filterString != "")
