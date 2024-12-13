@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardActions, Stack, Typography } from "@mui/material";
 import { AccessCheck, GET_USER, Hold } from "./UserModal";
 import { gql, useMutation, useQuery } from "@apollo/client";
@@ -43,6 +43,18 @@ export default function AccessCheckCard({ accessCheck, userID }: AccessCheckCard
 
   const equipment = useQuery(GET_ANY_EQUIPMENT_BY_ID, {variables: {id: accessCheck.equipmentID}});
 
+  const [width, setWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+  const isMobile = width <= 1100;
+
   return (
     <RequestWrapper
     loading={equipment.loading}
@@ -55,12 +67,13 @@ export default function AccessCheckCard({ accessCheck, userID }: AccessCheckCard
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between',
+          flexWrap: isMobile ? 'wrap' : 'nowrap',
           alignItems: 'center',
           paddingLeft: '1em',
           paddingRight: '1em'
         }}
       >
-        <div>
+        <div style={{width: isMobile ? "100%" : "40%"}}>
           <AuditLogEntity entityCode={"equipment:" + accessCheck.equipmentID + ":" + ((equipment.data != undefined && equipment.data.anyEquipment != undefined) ? equipment.data.anyEquipment.name : "Loading...")}></AuditLogEntity>
         </div>
         <CardActions sx={{ px: 2 }}>
