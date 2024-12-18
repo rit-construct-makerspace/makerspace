@@ -5,7 +5,6 @@
 
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository.js";
-import { ReservationRepository } from "../repositories/Equipment/ReservationRepository.js";
 import { ApolloContext } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
@@ -14,7 +13,6 @@ import { EquipmentRow } from "../db/tables.js";
 import { EquipmentInput } from "../schemas/equipmentSchema.js";
 import { getNumUnavailableReadersByEquipment, getNumIdleReadersByEquipment } from "../repositories/Readers/ReaderRepository.js";
 
-const reservationRepo = new ReservationRepository();
 
 const EquipmentResolvers = {
 
