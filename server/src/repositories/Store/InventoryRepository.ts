@@ -14,19 +14,39 @@ import {
   InventoryItemInput,
 } from "../../schemas/storeFrontSchema.js";
 
+/**
+ * Fetch all Inventory Items
+ * @returns all InventoryItems
+ */
 export async function getItems(): Promise<InventoryItem[]> {
   const knexResult = await knex("InventoryItem").select().where('archived', false);
   return inventoryItemsToDomain(knexResult);
 }
 
+/**
+ * Fetch Inventory Items by "staffOnly" column
+ * @param staffOnly whether to fetch staffOnly items or not staffOnly items
+ * @returns matching Inventory Items
+ */
 export async function getItemsWhereStaff(staffOnly: boolean): Promise<InventoryItem[]> {
   return inventoryItemsToDomain(await knex("InventoryItem").select().where({staffOnly}));
 }
 
+/**
+ * Fetch Inventory Items by "storefrontVisible" column
+ * @param storefrontVisible 
+ * @returns matching Inventory Items
+ */
 export async function getItemsWhereStorefront(storefrontVisible: boolean): Promise<InventoryItem[]> {
   return inventoryItemsToDomain(await knex("InventoryItem").select().where({storefrontVisible}));
 }
 
+/**
+ * Get Inventory Item if matching storefrontVisible column
+ * @param id ID of Inventory Item to find
+ * @param storefrontVisible storefrontVisible column to filter by
+ * @returns InventoryItem or null if not found
+ */
 export async function getItemByIdWhereStorefront(
   id: number,
   storefrontVisible: boolean
@@ -34,6 +54,11 @@ export async function getItemByIdWhereStorefront(
   return singleInventoryItemToDomain(await knex("InventoryItem").select().where({id, storefrontVisible}));
 }
 
+/**
+ * Fetch Inventory Item by ID
+ * @param itemId ID of Inventory Item
+ * @returns Inventory Item
+ */
 export async function getItemById(
   itemId: number
 ): Promise<InventoryItem | null> {
@@ -45,6 +70,12 @@ export async function getItemById(
   return singleInventoryItemToDomain(knexResult);
 }
 
+/**
+ * Modify an existing Inventory Item
+ * @param itemId ID of Inventory Item to modify
+ * @param item InventoryItemInput with new attributes
+ * @returns updated Inventory Item
+ */
 export async function updateItemById(
   itemId: number,
   item: InventoryItemInput
@@ -63,6 +94,11 @@ export async function updateItemById(
   return await getItemById(itemId);
 }
 
+/**
+ * Insert a new Inventory Item into table
+ * @param item InventoryItemInput with new attributes
+ * @returns new InventoryItem
+ */
 export async function addItem(
   item: InventoryItemInput
 ): Promise<InventoryItem | null> {
@@ -84,6 +120,12 @@ export async function addItem(
   return await getItemById(newId.id);
 }
 
+/**
+ * Modify the count of an existing InventoryItem
+ * @param itemId ID of item to modify amount to
+ * @param amount amount modify by
+ * @returns modified Inventory Item
+ */
 export async function addItemAmount(
   itemId: number,
   amount: number
@@ -102,6 +144,11 @@ export async function addItemAmount(
   return await getItemById(updateItem.id);
 }
 
+/**
+ * Archive an Inventory Item
+ * @param itemId ID of Inventory Item to archive
+ * @returns updated Inventory Item
+ */
 export async function archiveItem(
   itemId: number
 ): Promise<InventoryItem | null> {
@@ -112,6 +159,11 @@ export async function archiveItem(
   return updatedInventoryItems[0];
 }
 
+/**
+ * Delete an Inventory Item
+ * @param itemId ID of item to delete
+ * @returns true
+ */
 export async function deleteInventoryItem(
     itemId: number
 ): Promise<boolean> {
@@ -119,24 +171,51 @@ export async function deleteInventoryItem(
     return true
 }
 
+/**
+ * Update storefrontVisible column of Inventory Item
+ * @param id ID of inventory item to update
+ * @param storefrontVisible new storefrontVisible value
+ * @returns true
+ */
 export async function setStorefrontVisible(id: number, storefrontVisible: boolean): Promise<boolean> {
   await knex("InventoryItem").update({storefrontVisible}).where({id});
   return true;
 }
 
+/**
+ * Update staffOnly column of Inventory Item
+ * @param id ID of Inventory to modify
+ * @param staffOnly new staffOnly value
+ * @returns true
+ */
 export async function setStaffOnly(id: number, staffOnly: boolean): Promise<boolean> {
   await knex("InventoryItem").update({staffOnly}).where({id});
   return true;
 }
 
+/**
+ * Fetch all Inventory Tags
+ * @returns all Inventory Tags
+ */
 export async function getTags(): Promise<InventoryTagRow[]> {
   return await knex("InventoryTags").select();
 }
 
+/**
+ * Fetch Inventory Tag
+ * @param id ID of Inventory Tag to fetch
+ * @returns Inventory Tag or undefined if not exist
+ */
 export async function getTagByID(id: number): Promise<InventoryTagRow | undefined> {
   return await knex("InventoryTags").select().where({id}).first();
 }
 
+/**
+ * Add a tag to an existing inventory item
+ * @param itemID ID of inventory item to modify
+ * @param tagID ID of Inventory Tag to apply
+ * @returns true or false if max amount of tags already
+ */
 export async function addTagToItem(itemID: number, tagID: number): Promise<boolean> {
   const item = await knex("InventoryItem").select().where({id: itemID}).first();
   if (!item?.tagID1) await knex("InventoryItem").update({tagID1: tagID}).where({id: itemID});
@@ -146,6 +225,12 @@ export async function addTagToItem(itemID: number, tagID: number): Promise<boole
   return true;
 }
 
+/**
+ * Remove an inventory tag reference from an Inventory Item
+ * @param itemID ID of inventory item to modify
+ * @param tagID ID of tag to remove from entry
+ * @returns true
+ */
 export async function removeTagFromItem(itemID: number, tagID: number): Promise<boolean> {
   const item = await knex("InventoryItem").select().where({id: itemID}).first();
   if (item?.tagID1 == tagID) await knex("InventoryItem").update({tagID1: null}).where({id: itemID});
@@ -154,16 +239,33 @@ export async function removeTagFromItem(itemID: number, tagID: number): Promise<
   return true;
 }
 
+/**
+ * Insert a new Inventory Tag into the table
+ * @param label new label text
+ * @param color new React color string
+ * @returns true
+ */
 export async function createTag(label: string, color: string): Promise<boolean> {
   await knex("InventoryTags").insert({label, color});
   return true;
 }
 
+/**
+ * Modify an existing Inventory Tag
+ * @param label new label text
+ * @param color new React color string
+ * @returns true
+ */
 export async function updateTag(id: number, label: string, color: string): Promise<boolean> {
   await knex("InventoryTags").update({label, color}).where({id});
   return true
 }
 
+/**
+ * Delte an Inventory Tag
+ * @param id Id of Inventory Tag to delete
+ * @returns true
+ */
 export async function deleteTag(id: number): Promise<boolean> {
   await knex("InventoryTags").delete().where({id});
   return true;

@@ -1,3 +1,9 @@
+/**
+ * tables.ts
+ * 
+ * This contains the definitions for the objects every knex select operation will map to.
+ */
+
 import { Privilege } from "../schemas/usersSchema.js";
 
 export interface AuditLogRow {

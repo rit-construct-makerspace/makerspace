@@ -1,5 +1,7 @@
 /** ReservationRepository.ts
  * DB operations endpoint for Equipment table
+ * 
+ * DEPRECATED
  */
 
 import { knex } from "../../db/index.js";

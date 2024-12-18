@@ -1,3 +1,8 @@
+/**
+ * usersSchema.ts
+ * GraphQL declarations for Users
+ */
+
 import { gql } from "graphql-tag";
 import { UserRow } from "../db/tables.js";
 

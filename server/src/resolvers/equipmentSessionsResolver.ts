@@ -1,3 +1,8 @@
+/**
+ * equipmentSessionsResolver.ts
+ * GraphQL endpoint implementations for EquipmentSessions
+ */
+
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
@@ -9,12 +14,14 @@ import { getZoneByID } from "../repositories/Zones/ZonesRespository.js";
 
 const EquipmentSessionsResolver = {
   EquipmentSession: {
+    //Map user field to User
     user: async (
       parent: { userID: string },
       _args: any,
       _context: ApolloContext) => {
       return getUserByID(Number(parent.userID));
     },
+    //Map equipment field to Equipment
     equipment: async (
       parent: { equipmentID: string },
       _args: any,
@@ -22,6 +29,7 @@ const EquipmentSessionsResolver = {
       if (parent.equipmentID == null || parent.equipmentID == "" || Number(parent.equipmentID) == 0) return null;
       return EquipmentRepo.getEquipmentByID(Number(parent.equipmentID));
     },
+    //Map Equipment.room to Room
     room: async (
       parent: { equipmentID: string },
       _args: any,
@@ -29,6 +37,7 @@ const EquipmentSessionsResolver = {
       if (parent.equipmentID == null || parent.equipmentID == "" || Number(parent.equipmentID) == 0) return null;
       return getRoomByID((await EquipmentRepo.getEquipmentByID(Number(parent.equipmentID))).roomID)
     },
+    //Map Room.zone to Zone
     zone: async (
       parent: { equipmentID: string },
       _args: any,
@@ -42,6 +51,11 @@ const EquipmentSessionsResolver = {
   },
 
   Query: {
+    /**
+     * Fetch all Equipment Sessions
+     * @returns all Equipment Sessions
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     equipmentSessions: async (
       _parent: any,
       args: {startDate: string, stopDate: string},

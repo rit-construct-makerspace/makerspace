@@ -8,6 +8,7 @@ import { HoldRow } from "../db/tables.js";
 
 const HoldsResolvers = {
   Hold: {
+    //Map creator field to User
     creator: async (
       parent: HoldRow,
       _args: any,
@@ -17,6 +18,7 @@ const HoldsResolvers = {
         return UsersRepo.getUserByID(parent.creatorID);
       }),
 
+    //Map remover field to User
     remover: async (
       parent: HoldRow,
       _args: any,
@@ -29,6 +31,12 @@ const HoldsResolvers = {
   },
 
   Mutation: {
+    /**
+     * Create a Hold
+     * @argument userID ID of User subject to the hold
+     * @argument description Reason for the hold
+     * @returns new Hold
+     */
     createHold: async (
       _parent: any,
       args: { userID: string; description: string },
@@ -48,6 +56,11 @@ const HoldsResolvers = {
         return HoldsRepo.createHold(user.id, Number(args.userID), args.description);
       }),
 
+    /**
+     * Set a Hold as inactive
+     * @argument holdID ID of the Hold to remove
+     * @returns updated Hold
+     */
     removeHold: async (
       _parent: any,
       args: { holdID: string },

@@ -1,3 +1,8 @@
+/**
+ * announcementsSchema.ts
+ * GraphQL declarations for Announcements
+ */
+
 import { gql } from "graphql-tag";
 
 export const AnnouncementsTypeDefs = gql`

@@ -1,3 +1,8 @@
+/**
+ * storeFrontSchema.ts
+ * GraphQL declarations for InventoryItems, InventoryLedgers, and InventoryTags
+ */
+
 import { gql } from "graphql-tag";
 
 export interface InventoryItem {

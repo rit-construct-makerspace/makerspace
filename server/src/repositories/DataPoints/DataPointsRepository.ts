@@ -1,3 +1,10 @@
+/**
+ * DataPointsRepository.ts
+ * 
+ * DB Operations for DataPoints table
+ */
+
+
 import { knex } from "../../db/index.js";
 import {  DataPointsRow } from "../../db/tables.js";
 

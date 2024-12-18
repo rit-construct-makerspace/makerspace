@@ -1,3 +1,8 @@
+/**
+ * StatisticQueryrepository.ts
+ * DB Operations for various statistical queries
+ */
+
 import moment from "moment";
 import { knex } from "../../db/index.js";
 import {  DataPointsRow, EquipmentSessionRow } from "../../db/tables.js";
@@ -19,7 +24,7 @@ export interface RoomSwipesByRoomByWeekDayByHour {
 /**
  * Get Equipment Session by the day of the week in the start timestamp
  * @param dayOfTheWeek abbreviated string format (i.e. mon, wed)
- * @returns 
+ * @returns room swipe counts seperated by rooms and hours (ex: count_3 = hour 3)
  */
 export async function getEquipmentSessionsByDayOfTheWeek(dayOfTheWeek: string, startDate: string, stopDate: string): Promise<EquipmentSessionRow[]> {
  return await knex("EquipmentSessions").select().where(knex.raw(`to_char("start", 'dy') = ${dayOfTheWeek}`)).andWhereBetween(`("dateTime" at time zone 'EST5EDT')`, [startDate, stopDate]);
@@ -135,7 +140,10 @@ export async function getCummRoomSwipesByRoomByWeekDayByHour(startDate: string, 
 }
 
 
-
+/**
+ * Get number of users with registrationDate equal to today
+ * @returns number of new users registered today
+ */
 export async function getNumUsersRegisteredToday(): Promise<number | undefined> {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
@@ -148,6 +156,10 @@ export async function getNumUsersRegisteredToday(): Promise<number | undefined> 
     return (await knex("Users").whereRaw(`("registrationDate") BETWEEN '${startOfDay.toISOString().split("T")[0]}' AND '${endOfDay.toISOString().split("T")[0]}'`)).length;
 }
 
+/**
+ * Get number of total room swipes today
+ * @returns number of swipes into all rooms today
+ */
 export async function getNumRoomSwipesToday(): Promise<number | undefined> {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
@@ -159,6 +171,10 @@ export async function getNumRoomSwipesToday(): Promise<number | undefined> {
     return (await knex("RoomSwipes").whereRaw(`("dateTime" at time zone '${process.env.STAT_TIMEZONE}') BETWEEN '${startOfDay.toISOString().replace("T", " ").replace("Z", "")}' AND '${endOfDay.toISOString().replace("T", " ").replace("Z", "")}-04'`)).length;
 }
 
+/**
+ * Get number of equipment sessions made today
+ * @returns number of equipment sessions for all equipment today
+ */
 export async function getNumEquipmentSessionsToday(): Promise<number | undefined> {
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);

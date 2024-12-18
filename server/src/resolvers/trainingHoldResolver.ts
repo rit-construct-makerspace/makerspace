@@ -1,3 +1,8 @@
+/**
+ * trainingHoldResolver.ts
+ * GraphQL Endpoint Implementations for TrainingHolds
+ */
+
 import { ApolloContext } from "../context.js";
 import { TrainingHoldsRow } from "../db/tables.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
@@ -8,6 +13,7 @@ import { Privilege } from "../schemas/usersSchema.js";
 
 export const TrainingHoldResolver = {
   TrainingHold: {
+    //Map the module field to TrainingModule
     module: async (
       parent: TrainingHoldsRow,
       _: any,
@@ -16,6 +22,8 @@ export const TrainingHoldResolver = {
       ifAuthenticated(async () => {
         return await getModuleByID(parent.moduleID)
       }),
+
+    //Map the user field to User
     user: async (
       parent: TrainingHoldsRow,
       _: any,
@@ -27,6 +35,12 @@ export const TrainingHoldResolver = {
   },
 
   Mutation: {
+    /**
+     * Delete a TrainingHold
+     * @argument id ID of TrainingHold to delete
+     * @returns true
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     deleteTrainingHold: async (
       _parent: any,
       args: { id: number },

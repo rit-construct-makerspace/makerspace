@@ -1,3 +1,8 @@
+/**
+ * trainingHoldsSchema.ts
+ * GraphQL declarations for TrainingHolds
+ */
+
 import { gql } from "graphql-tag";
 import { EquipmentRow, TrainingModuleRow } from "../db/tables.js";
 

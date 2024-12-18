@@ -1,7 +1,10 @@
+/**
+ * toolItemResolver.ts
+ * GraphQL Endpoint Implementations for ToolItemInstances and ToolItemTypes
+ */
+
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
-import { getDataPointByID, incrementDataPointValue, setDataPointValue } from "../repositories/DataPoints/DataPointsRepository.js";
-import { getTerms, setTerms } from "../repositories/TextItems/TermsRepository.js";
 import { ToolItemInstancesRow, ToolItemTypesRow } from "../db/tables.js";
 import { borrowItem, createToolItemInstance, deleteToolItemInstance, getToolItemInstanceByID, getToolItemInstances, getToolItemInstancesByBorrower, getToolItemInstancesByType, returnItem, updateToolItemInstance } from "../repositories/Store/ToolItemInstancesRepository.js";
 import { createToolItemType, deleteToolItemType, getToolItemTypeByID, getToolItemTypes, getToolItemTypesWhereAllowCheckout, updateToolItemType } from "../repositories/Store/ToolItemTypesRepository.js";
@@ -14,6 +17,7 @@ import { notifyToolItemMarked } from "../slack/slack.js";
 
 const ToolItemResolver = {
   ToolItemType: {
+    //Map instances field to array of assocaited ToolItemInstances
     instances: async (
       parent: ToolItemTypesRow,
       _args: any,
@@ -24,6 +28,7 @@ const ToolItemResolver = {
       }
     ),
 
+    //Map defaultLocationRoom field to Room
     defaultLocationRoom: async (
       parent: ToolItemTypesRow,
       _args: any,
@@ -36,6 +41,7 @@ const ToolItemResolver = {
   },
 
   ToolItemInstance: {
+    //Map type field to ToolItemType
     type: async (
       parent: ToolItemInstancesRow,
       _args: any,
@@ -46,6 +52,7 @@ const ToolItemResolver = {
       }
     ),
 
+    //Map borrower field to User
     borrower: async (
       parent: ToolItemInstancesRow,
       _args: any,
@@ -57,6 +64,7 @@ const ToolItemResolver = {
       }
     ),
 
+    //Map locationRoom field to Room
     locationRoom: async (
       parent: ToolItemInstancesRow,
       _args: any,
@@ -69,6 +77,11 @@ const ToolItemResolver = {
   },
 
   Query: {
+    /**
+     * Fetch all ToolItemTypes
+     * @returns array of ToolItemTypes
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     toolItemTypes: async (
       _parent: any,
       _args: any,
@@ -78,6 +91,12 @@ const ToolItemResolver = {
         return getToolItemTypes();
       }
     ),
+
+    /**
+     * Fetch all ToolItemTypes where allowCheckout is true
+     * @returns array of ToolItemTypes
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     toolItemTypesAllowCheckout: async (
       _parent: any,
       _args: any,
@@ -87,6 +106,13 @@ const ToolItemResolver = {
         return getToolItemTypesWhereAllowCheckout();
       }
     ),
+
+    /**
+     * Fetch ToolItemType by ID
+     * @argument id ID of ToolItemType
+     * @returns ToolItemType
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     toolItemType: async (
       _parent: any,
       args: {id: number},
@@ -96,6 +122,12 @@ const ToolItemResolver = {
         return getToolItemTypeByID(args.id);
       }
     ),
+
+    /**
+     * Fetch all ToolItemInstances
+     * @returns array of ToolItemInstances
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     toolItemInstances: async (
       _parent: any,
       _args: any,
@@ -105,6 +137,13 @@ const ToolItemResolver = {
         return getToolItemInstances();
       }
     ),
+
+    /**
+     * Fetch all ToolItemInstances by assocciated ToolItemType
+     * @argument id ID of associated ToolItemType
+     * @returns array of ToolItemInstances
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     toolItemInstancesByType: async (
       _parent: any,
       args: {id: number},
@@ -114,6 +153,13 @@ const ToolItemResolver = {
         return getToolItemInstancesByType(args.id);
       }
     ),
+
+    /**
+     * Fetch ToolItemInstance by ID
+     * @argument id ID of ToolItemInstance
+     * @returns ToolItemType
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     toolItemInstance: async (
       _parent: any,
       args: {id: number},
@@ -124,6 +170,12 @@ const ToolItemResolver = {
       }
     ),
 
+    /**
+     * Fetch all ToolItemInstances by brrowing User
+     * @argument id ID of borrower User
+     * @returns array of ToolItemInstances
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     toolItemInstancesByBorrower: async (
       _parent: any,
       args: {id: number},
@@ -136,6 +188,12 @@ const ToolItemResolver = {
   },
 
   Mutation: {
+    /**
+     * Create a ToolItemType
+     * @argument toolItemType new ToolItemType input
+     * @returns new ToolItemType
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     createToolItemType: async (
       _parent: any,
       args: {toolItemType: ToolItemTypeInput},
@@ -148,6 +206,14 @@ const ToolItemResolver = {
           args.toolItemType.checkinNote, args.toolItemType.allowCheckout);
       }
     ),
+
+    /**
+     * Modify a ToolItemType
+     * @argument id ID of ToolItemType to modify
+     * @argument toolItemType new ToolItemType input
+     * @returns updated ToolItemType
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     updateToolItemType: async (
       _parent: any,
       args: {id: number, toolItemType: ToolItemTypeInput},
@@ -162,6 +228,13 @@ const ToolItemResolver = {
           args.toolItemType.checkinNote, args.toolItemType.allowCheckout);
       }
     ),
+
+    /**
+     * Create a ToolItemInstance
+     * @argument toolItemInstance new ToolItemInstance input
+     * @returns new ToolItemInstance
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     createToolItemInstance: async (
       _parent: any,
       args: {toolItemInstance: ToolItemInstanceInput},
@@ -174,6 +247,14 @@ const ToolItemResolver = {
           args.toolItemInstance.status, args.toolItemInstance.notes);
       }
     ),
+
+    /**
+     * Modify a ToolItemInstance
+     * @argument id ID of ToolItemInstance to modify
+     * @argument toolItemInstance new ToolItemInstance input
+     * @returns updated ToolItemInstance
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     updateToolItemInstance: async (
       _parent: any,
       args: {id: number, toolItemInstance: ToolItemInstanceInput},
@@ -200,6 +281,14 @@ const ToolItemResolver = {
           args.toolItemInstance.status, args.toolItemInstance.notes);
       }
     ),
+
+    /**
+     * Mark a ToolItemInstance as Borrowed
+     * @argument userID ID of User to be set as the Borrower
+     * @argument instanceID ID of ToolItemInstance to modify
+     * @returns updated ToolItemInstance
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     borrowInstance: async (
       _parent: any,
       args: {userID: number, instanceID: number},
@@ -214,6 +303,13 @@ const ToolItemResolver = {
         return borrowItem(args.userID, args.instanceID);
       }
     ),
+
+    /**
+     * Mark a ToolItemInstance as not borrowed
+     * @argument instanceID ID of ToolItemInstance to modify
+     * @returns updated ToolItemInstance
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold, or if there is no valid Borrower or ToolItemType
+     */
     returnInstance: async (
       _parent: any,
       args: {instanceID: number},
@@ -228,6 +324,13 @@ const ToolItemResolver = {
         return returnItem(args.instanceID)
       }
     ),
+
+    /**
+     * Delete a ToolItemType
+     * @argument id ID of ToolItemType to delete
+     * @returns true
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     deleteToolItemType: async (
       _parent: any,
       args: {id: number},
@@ -240,6 +343,13 @@ const ToolItemResolver = {
         return deleteToolItemType(args.id);
       }
     ),
+
+    /**
+     * Delete a ToolItemInstance
+     * @argument id ID of ToolItemInstance to delete
+     * @returns true
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     deleteToolItemInstance: async (
       _parent: any,
       args: {id: number},

@@ -1,3 +1,8 @@
+/**
+ * maintenanceLogsResolver.ts
+ * GraphQL Endpoint implementations for MaintenanceLogs, ResolutionLogs, and MaintenanceTags
+ */
+
 import { ApolloContext } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository.js";
@@ -13,6 +18,7 @@ import { notifyMachineIssueCreated } from "../slack/slack.js";
 
 const MaintenanceLogsResolver = {
   MaintenanceLog: {
+    //Map author field to User
     author: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -22,6 +28,7 @@ const MaintenanceLogsResolver = {
         return UsersRepo.getUserByID(parent.authorID);
       }),
 
+    //Map equipment field to Equipment
     equipment: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -32,6 +39,7 @@ const MaintenanceLogsResolver = {
         async () => parent.equipmentID && getEquipmentByID(parent.equipmentID)
       ),
 
+    //Map instance field to EquipmentInstance
     instance: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -42,6 +50,7 @@ const MaintenanceLogsResolver = {
         async () => parent.instanceID && getInstanceByID(parent.instanceID)
       ),
 
+    //Map tag1 field to MaintenanceTag
     tag1: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -51,6 +60,8 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async () => parent.tagID1 && getMaintenanceTagByID(parent.tagID1)
       ),
+
+    //Map tag2 field to MaintenanceTag
     tag2: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -60,6 +71,8 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async () => parent.tagID2 && getMaintenanceTagByID(parent.tagID2)
       ),
+
+    //Map tag3 field to MaintenanceTag
     tag3: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -72,6 +85,7 @@ const MaintenanceLogsResolver = {
   },
 
   ResolutionLog: {
+    //Map author field to User
     author: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -81,6 +95,7 @@ const MaintenanceLogsResolver = {
         return UsersRepo.getUserByID(parent.authorID);
       }),
 
+    //Map equipment field to Equipment
     equipment: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -91,6 +106,7 @@ const MaintenanceLogsResolver = {
         async () => parent.equipmentID && getEquipmentByID(parent.equipmentID)
       ),
 
+    //Map instance field to EquipmentInstance
     instance: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -101,6 +117,7 @@ const MaintenanceLogsResolver = {
         async () => parent.instanceID && getInstanceByID(parent.instanceID)
       ),
 
+    //Map tag1 field to MaintenanceTag
     tag1: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -110,6 +127,8 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async () => parent.tagID1 && getMaintenanceTagByID(parent.tagID1)
       ),
+
+    //Map tag2 field to MaintenanceTag
     tag2: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -119,6 +138,8 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async () => parent.tagID2 && getMaintenanceTagByID(parent.tagID2)
       ),
+
+    //Map tag3 field to MaintenanceTag
     tag3: async (
       parent: MaintenanceLogRow,
       _args: any,
@@ -131,6 +152,7 @@ const MaintenanceLogsResolver = {
   },
 
   MaintenanceTag: {
+    //Map equipment field to Equipment
     equipment: async (
       parent: MaintenanceTagRow,
       _args: any,
@@ -143,6 +165,11 @@ const MaintenanceLogsResolver = {
   },
 
   Query: {
+    /**
+     * Fetch all MaintenanceLogs associated with an Equipment
+     * @argument equipmentID ID of Equipment to filter by
+     * @returns all matching MaintenanceLogs
+     */
     getMaintenanceLogsByEquipment: async (
       _parent: any,
       args: { equipmentID: number },
@@ -152,6 +179,12 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async () => getMaintenanceLogsByEquipment(args.equipmentID)
       ),
+
+    /**
+     * Fetch all ResolutionLogs associated with an Equipment
+     * @argument equipmentID ID of Equipment to filter by
+     * @returns all matching ResolutionLogs
+     */
     getResolutionLogsByEquipment: async (
       _parent: any,
       args: { equipmentID: number },
@@ -161,6 +194,12 @@ const MaintenanceLogsResolver = {
         [Privilege.MENTOR, Privilege.STAFF],
         async () => getResolutionLogsByEquipment(args.equipmentID)
       ),
+
+    /**
+     * Fetch all MaintenanceTags optionally associated with an Equipment
+     * @argument equipmentID ID of Equipment to filter by
+     * @returns all MaintenanceTags where equipmentID equals provided or is NULL
+     */
     getMaintenanceTags: async (
       _parent: any,
       args: {equipmentID?: number},
@@ -172,6 +211,12 @@ const MaintenanceLogsResolver = {
           return !args.equipmentID ? getMaintenanceTags() : getMaintenanceTagsByEquipmentOrGlobal(args.equipmentID)
         }
       ),
+
+    /**
+     * Fetch MaintenanceTag by ID
+     * @argument id ID of MaintenanceTag
+     * @returns MaintenanceTag
+     */
     getMaintenanceTagByID: async (
       _parent: any,
       args: { id: number },
@@ -184,6 +229,13 @@ const MaintenanceLogsResolver = {
   },
 
   Mutation: {
+    /**
+     * Create a MaintenanceLog
+     * @argument equipmentID ID of associated Equipment
+     * @argument instanceID ID of associated EquipmentInstance if defined
+     * @argument content Issue description
+     * @returns MaintenanceLog
+     */
     createMaintenanceLog: async (
       _parent: any,
       args: { equipmentID: number, instanceID?: number, content: string },
@@ -199,6 +251,14 @@ const MaintenanceLogsResolver = {
           return result;
         }
       ),
+
+    /**
+     * Create a ResolutionLog
+     * @argument equipmentID ID of associated Equipment
+     * @argument instanceID ID of associated EquipmentInstance if defined
+     * @argument content Issue description
+     * @returns ResolutionLog
+     */
     createResolutionLog: async (
       _parent: any,
       args: { equipmentID: number, instanceID?: number, issue: string, content: string },
@@ -211,6 +271,12 @@ const MaintenanceLogsResolver = {
           return createResolutionLog(user.id, args.equipmentID, ((!args.instanceID && args.instanceID != 0) ? undefined : args.instanceID), args.issue, args.content);
         }
       ),
+
+    /**
+     * Delete a MaintenanceLog
+     * @argument id ID of MaintennaceLog to delete
+     * @returns true
+     */
     deleteMaintenanceLog: async (
       _parent: any,
       args: { id: number },
@@ -225,6 +291,12 @@ const MaintenanceLogsResolver = {
           return deleteMaintenanceLog(args.id);
         }
       ),
+
+    /**
+     * Delete a ResolutionLog
+     * @argument id ID of ResolutionLog to delete
+     * @returns true
+     */
     deleteResolutionLog: async (
       _parent: any,
       args: { id: number },
@@ -239,6 +311,14 @@ const MaintenanceLogsResolver = {
           return deleteResolutionLog(args.id);
         }
       ),
+
+    /**
+     * Create a MaintenanceTag
+     * @argument equipmentID ID of equipment to restrict tag to (or undefined if Global)
+     * @argument label Tag label
+     * @argument color Tag ReactJS color type
+     * @returns true
+     */
     createMaintenanceTag: async (
       _parent: any,
       args: { equipmentID?: number, label: string, color: string },
@@ -251,6 +331,12 @@ const MaintenanceLogsResolver = {
           return createMaintenanceTag(args.equipmentID ?? null, args.label, args.color);
         }
       ),
+
+    /**
+     * Delete a MaintenanceTag
+     * @argument id ID of MaintenanceTag to delete
+     * @returns true
+     */
     deleteMaintenanceTag: async (
       _parent: any,
       args: { id: number },
@@ -265,6 +351,14 @@ const MaintenanceLogsResolver = {
           return deleteMaintenanceTag(args.id);
         }
       ),
+
+    /**
+     * Update a MaintenanceTag
+     * @argument id ID of MaintenanceTag to modify
+     * @argument label new Tag label
+     * @argument color new Tag ReactJS color type
+     * @returns true
+     */
     updateMaintenanceTag: async (
       _parent: any,
       args: { id: number, label?: string, color?: string },
@@ -279,6 +373,14 @@ const MaintenanceLogsResolver = {
           return updateMaintenanceTag(args.id, args.label ?? orig.label, args.color ?? orig.color);
         }
       ),
+
+    /**
+     * Add a Tag to a MaintenanceLog or ResolutionLog
+     * @argument id ID of log to modify
+     * @argument tagId ID of tag to add
+     * @argument logType if "resolution", attempt to modify ResolutionLog, otherwise MaintenanceLog
+     * @returns updated MaintenanceLog or ResolutionLog
+     */
     addTagToLog: async (
       _parent: any,
       args: { logId: number, tagId: number, logType: string },
@@ -308,6 +410,14 @@ const MaintenanceLogsResolver = {
           return args.logType != "resolution" ? updateMaintenanceLog(log.id, log.content, tag1, tag2, tag3) : updateResolutionLog(log.id, log.content, log.issue, tag1, tag2, tag3);
         }
       ),
+
+    /**
+     * Remove a Tag from a MaintenanceLog or ResolutionLog
+     * @argument id ID of log to modify
+     * @argument tagId ID of tag to remove
+     * @argument logType if "resolution", attempt to modify ResolutionLog, otherwise MaintenanceLog
+     * @returns updated MaintenanceLog or ResolutionLog
+     */
     removeTagFromLog: async (
       _parent: any,
       args: { logId: number, tagId: number, logType: string },

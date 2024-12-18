@@ -24,7 +24,6 @@ import EquipmentResolvers from "./resolvers/equipmentResolver.js";
 import usersResolver from "./resolvers/usersResolver.js";
 import auditLogsResolver from "./resolvers/auditLogsResolver.js";
 import holdsResolver from "./resolvers/holdsResolver.js";
-import calendarEventsResolver from "./resolvers/calendarEventsResolver.js";
 import AnnouncementsResolver from "./resolvers/announcementsResolver.js";
 import { ReaderTypeDefs } from "./schemas/readersSchema.js";
 import ReadersResolver from "./resolvers/readersResolver.js";
@@ -102,7 +101,6 @@ export const schema = makeExecutableSchema({
     usersResolver,
     holdsResolver,
     auditLogsResolver,
-    calendarEventsResolver,
     AnnouncementsResolver,
     ReadersResolver,
     AccessChecksResolver,

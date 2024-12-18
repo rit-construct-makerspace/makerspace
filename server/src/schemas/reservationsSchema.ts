@@ -1,3 +1,8 @@
+/**
+ * reservationsSchema.ts
+ * DEPRECATED
+ */
+
 import { gql } from "graphql-tag";
 
 /*

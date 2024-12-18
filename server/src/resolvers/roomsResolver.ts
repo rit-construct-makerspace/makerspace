@@ -10,30 +10,19 @@ import { Privilege } from "../schemas/usersSchema.js";
 import * as ZoneRepo from "../repositories/Zones/ZonesRespository.js";
 
 const RoomResolvers = {
-  Query: {
-    rooms: async (
-      _:any,
-      args: {null:any},
-      {ifAllowed}: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        return await RoomRepo.getRooms();
-    }),
-
-    room: async (parent: any, args: { id: string }) => {
-      return await RoomRepo.getRoomByID(Number(args.id));
-    },
-  },
-
   Room: {
+    //Map equipment field to array of published Equipment
     equipment: async (parent: Room) => {
       return await EquipmentRepo.getEquipmentWithRoomID(parent.id, false);
     },
 
+    //Map zone field to Zone
     zone: async (parent: Room) => {
       if (parent.zoneID === null) return null;
       return await ZoneRepo.getZoneByID(parent.zoneID);
     },
 
+    //Map recentSwipes field to array of recent RoomSwipes
     recentSwipes: async (parent: Room) => {
       const swipes = await RoomRepo.getRecentSwipes(parent.id);
       return swipes.map(async (s) => ({
@@ -44,8 +33,39 @@ const RoomResolvers = {
     },
   },
 
+  Query: {
+    /**
+     * Fetch all Rooms
+     * @returns all Rooms
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
+    rooms: async (
+      _:any,
+      args: {null:any},
+      {ifAllowed}: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        return await RoomRepo.getRooms();
+    }),
+
+    /**
+     * Fetch Room by ID
+     * @argument id ID of Room
+     * @returns Room
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
+    room: async (parent: any, args: { id: string }) => {
+      return await RoomRepo.getRoomByID(Number(args.id));
+    },
+  },
+
   Mutation: {
-    addRoom: async (parent: any, args: any, { ifAllowed }: ApolloContext) =>
+    /**
+     * Create a Room
+     * @argument room Room input
+     * @returns new Room
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
+    addRoom: async (parent: any, args: {room: Room}, { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.STAFF], async (user: any) => {
         const newRoom = await RoomRepo.addRoom(args.room);
 
@@ -63,15 +83,34 @@ const RoomResolvers = {
       return await RoomRepo.archiveRoom(args.id);
     },
 
-    updateRoomName: async (_parent: any, args: any) => {
-      return await RoomRepo.updateRoomName(args.id, args.name);
+    /**
+     * Update the name of a Room
+     * @argument id ID of Room to modify
+     * @argument name new Room name
+     * @returns updated Room
+     * @throws GraphQLError if not STAFF or is on hold
+     */
+    updateRoomName: async (_parent: any, args: {id: number, name: string}, { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF], async () => await RoomRepo.updateRoomName(args.id, args.name));
     },
 
-    setZone: async (_parent: any, args: any) => {
-      console.log(args);
-      return await RoomRepo.updateZone(args.roomID, args.zoneID);
+    /**
+     * Update the zone of a Room
+     * @argument roomID ID of Room to modify
+     * @argument zoneID new Zone ID
+     * @returns updated Room
+     * @throws GraphQLError if not STAFF or is on hold
+     */
+    setZone: async (_parent: any, args: {roomID: number, zoneID: number}, { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF], async () => await RoomRepo.updateZone(args.roomID, args.zoneID));
     },
 
+    /**
+     * Swipe into a Room
+     * @argument roomID ID of room to swipe into
+     * @argument universityID user's Card Tag ID
+     * @returns user or null if failure
+     */
     swipeIntoRoom: async (
       _parent: any,
       args: { roomID: string; universityID: string }

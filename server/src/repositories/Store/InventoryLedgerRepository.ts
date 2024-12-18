@@ -1,7 +1,19 @@
+/**
+ * InventoryLedgerRepository.ts
+ * DB Operations for Inventory Ledgers
+ */
+
 import { knex } from "../../db/index.js";
 import { InventoryLedgerRow } from "../../db/tables.js";
 import { InventoryItem } from "../../schemas/storeFrontSchema.js";
 
+/**
+ * Get all Inventory Ledgers by search params
+ * @param startDate earliest date to filter by
+ * @param stopDate latest date to filter by
+ * @param searchText text to inclusively filter by
+ * @returns all matching Inventory Ledger rows
+ */
 export async function getLedgers(
     startDate: string,
     stopDate: string,
@@ -14,11 +26,26 @@ export async function getLedgers(
         .orderBy("timestamp", "DESC");
 }
 
+/**
+ * Delete an Inventory Ledger
+ * @param id ID of Inventory Ledger to delete
+ * @returns true
+ */
 export async function deleteLedger(id: number): Promise<boolean> {
     await knex("InventoryLedger").delete().where({id});
     return true;
 }
 
+/**
+ * Insert new Inventory Ledger into table
+ * @param initiator ID of user who caused to ledger
+ * @param category string representing action type
+ * @param totalCost total change caused by action
+ * @param purchaser ID of user who purchased items, or null if not purchase
+ * @param notes text description
+ * @param items JSON array of affected item names and counts
+ * @returns new Inventory Ledger
+ */
 export async function createLedger(
     initiator: number,
     category: string,

@@ -1,3 +1,8 @@
+/**
+ * toolItemsSchema.ts
+ * GraphQL declarations for ToolItemInstances and ToolItemType
+ */
+
 import { gql } from "graphql-tag";
 
 export interface ToolItemTypeInput {

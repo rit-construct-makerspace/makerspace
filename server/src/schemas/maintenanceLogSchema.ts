@@ -1,3 +1,8 @@
+/**
+ * maintenanceLogSchema.ts
+ * GraphQL declarations for MaintnenaceLog
+ */
+
 import { gql } from "graphql-tag";
 
 export const MaintenanceLogsTypeDefs = gql`

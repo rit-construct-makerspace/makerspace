@@ -1,3 +1,8 @@
+/**
+ * equipmentInstanceSchema.ts
+ * GraphQL declarations for EquipmentInstances
+ */
+
 import {gql} from "graphql-tag";
 
 export const EquipmentInstanceTypeDefs = gql`

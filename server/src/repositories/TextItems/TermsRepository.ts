@@ -1,3 +1,8 @@
+/**
+ * TermsRepository
+ * DB Operations for the Terms and Conditions text value in the TextFields table
+ */
+
 import { knex } from "../../db/index.js";
 import {  TextFieldRow } from "../../db/tables.js";
 

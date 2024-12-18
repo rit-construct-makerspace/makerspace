@@ -1,3 +1,8 @@
+/**
+ * calendarEventsSchema.ts
+ * DEPRECATED
+ */
+
 import { gql } from "graphql-tag";
 
 export interface CalendarEvent {

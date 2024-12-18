@@ -1,3 +1,8 @@
+/**
+ * roomsSchema.ts
+ * GraphQL declarations for Rooms
+ */
+
 import { gql } from "graphql-tag";
 
 export interface Swipe {

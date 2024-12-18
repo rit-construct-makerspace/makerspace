@@ -1,3 +1,8 @@
+/**
+ * TermsSchema.ts
+ * GraphQL declarations for Terms
+ */
+
 import { gql } from "graphql-tag";
 
 export const TermsTypeDefs = gql`

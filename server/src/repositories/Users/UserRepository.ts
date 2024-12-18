@@ -113,13 +113,17 @@ export async function getUserByCardTagID(
   return knex("Users").first().where("cardTagID", cardTagID);
 }
 
-
+/**
+ * Fetch User by either ritUsername or cardTagID
+ * @param value represents either ritUsername or cardTagID
+ * @returns matching User or undefined if none
+ */
 export async function getUserByUsernameOrUID(value: string): Promise<UserRow | undefined> {
   return await knex("Users").select().where({ritUsername: value}).orWhere({cardTagID: value}).first();
 }
 
 /**
- * Create a USer and append it to the table
+ * Create a User and append it to the table
  * @param user the user object
  * @returns the added User
  */
@@ -219,12 +223,21 @@ export async function setNotes(
   return await getUserByID(userID);
 }
 
+/**
+ * Archive a User
+ * @param userID ID of user to archive
+ * @returns updated User
+ */
 export async function archiveUser(userID: number): Promise<UserRow> {
   await knex("Users").where({ id: userID }).update({ archived: true });
   return await getUserByID(userID);
 }
 
-
+/**
+ * Fetch total number of users
+ * @returns number of users as JSON with "count" attribute
+ * @todo knex.count gives a JSON string that our JSON parser can't recognize for some reason.
+ */
 export async function getNumUsers(): Promise<string> {
   return (await knex("Users").count("*"))[0];
 }

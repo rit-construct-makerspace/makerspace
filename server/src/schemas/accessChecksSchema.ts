@@ -1,3 +1,8 @@
+/**
+ * accessChecksSchema.ts
+ * GraphQL declarations for AccessChecks
+ */
+
 import { gql } from "graphql-tag";
 
 export const AccessCheckTypeDefs = gql`

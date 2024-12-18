@@ -1,17 +1,19 @@
-import * as CalenderEventsRepository from "../repositories/CalendarEvents/CalendarEventsRepository.js";
-import { ApolloContext, CurrentUser } from "../context.js";
-import { Privilege } from "../schemas/usersSchema.js";
+//DEPRECATED
 
-const CalendarEventsResolver = {
-  Query: {
-    calendarEvents: async (
-      _: any,
-      args: { timeMin: string, maxResults: number },
-      { ifAllowed }: ApolloContext) =>
-        ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (_user) => {
-          return CalenderEventsRepository.getUpcomingEvents(args.timeMin, args.maxResults);
-        })
-  }
-};
+// import * as CalenderEventsRepository from "../repositories/CalendarEvents/CalendarEventsRepository.js";
+// import { ApolloContext, CurrentUser } from "../context.js";
+// import { Privilege } from "../schemas/usersSchema.js";
 
-export default CalendarEventsResolver;
+// const CalendarEventsResolver = {
+//   Query: {
+//     calendarEvents: async (
+//       _: any,
+//       args: { timeMin: string, maxResults: number },
+//       { ifAllowed }: ApolloContext) =>
+//         ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (_user) => {
+//           return CalenderEventsRepository.getUpcomingEvents(args.timeMin, args.maxResults);
+//         })
+//   }
+// };
+
+// export default CalendarEventsResolver;

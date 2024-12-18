@@ -1,3 +1,8 @@
+/**
+ * statisticQuerySchema.ts
+ * GraphQL declarations for various statistical queries
+ */
+
 import { gql } from "graphql-tag";
 
 export const StatisticQueryTypeDefs = gql`

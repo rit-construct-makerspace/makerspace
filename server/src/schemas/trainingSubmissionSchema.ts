@@ -1,3 +1,8 @@
+/**
+ * trainingSubmissionSchema.ts
+ * GraphQL declarations for Submissions
+ */
+
 import { gql } from "graphql-tag";
 
 export interface Submission {
