@@ -62,7 +62,7 @@ export function ZoneDash({ zone, open }: { zone: FullZone, open: boolean }) {
                                 {room.equipment.map((equipment) => (
                                     <Grid key={equipment.id} item>
                                         <UnpagedEquipmentCard id={equipment.id} name={equipment.name} setID={setEquipmentModalID} sopUrl={equipment.sopUrl} trainingModules={equipment.trainingModules} numAvailable={equipment.numAvailable} numUnavailable={equipment.numInUse} byReservationOnly={equipment.byReservationOnly}
-                                            imageUrl={(equipment.imageUrl == undefined || equipment.imageUrl == null ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + equipment.imageUrl)} />
+                                            imageUrl={((equipment.imageUrl == undefined || equipment.imageUrl == null || equipment.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + equipment.imageUrl)} />
                                     </Grid>
                                 ))}
                             </Grid>
