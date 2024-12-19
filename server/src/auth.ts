@@ -301,6 +301,7 @@ export function setupStagingAuth(app: express.Application) {
   });
 
   app.get("/login", function (req, res) {
+    console.log(`============================${req.query.orig?.toString()}`)
     authenticate(req.query.orig?.toString())
   });
 
