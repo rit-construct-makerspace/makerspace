@@ -297,7 +297,7 @@ export function setupStagingAuth(app: express.Application) {
   const authenticate = (orig?: string) => passport.authenticate("saml", {
     failureFlash: true,
     failureRedirect: "/login/fail",
-    successRedirect: orig ?? reactAppUrl,
+    successRedirect: orig?.toString() ?? reactAppUrl,
   });
 
   app.get("/login", function (req, res) {
