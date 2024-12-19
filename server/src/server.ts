@@ -116,7 +116,7 @@ async function startServer() {
     console.log("LOGIN REDIRECT " + `/login?orig=${new URL(`${process.env.REACT_APP_ORIGIN ?? 'localhost:3000'}${req.url}`)}`);
     //Redirect to login path
     //In staging/prod, /login will then redirect to the IdP
-    res.redirect(`/login?orig=${new URL(`http://${process.env.REACT_APP_URL ?? 'localhost:3000'}${req.url}`)}`);
+    res.redirect(`/login?orig=${new URL(`${process.env.REACT_APP_ORIGIN ?? 'localhost:3000'}${req.url}`)}`);
   });
 
 
