@@ -81,7 +81,9 @@ export default function CardTagSettings({
         <TextField
           label="Update RIT ID"
           value={updatedCardTagID}
-          onChange={(e) => setUpdatedCardTagID(e.target.value)}
+          onChange={(e) => {
+            setUpdatedCardTagID(e.target.value.replaceAll(/(?=[^a-z])([^0-9])/g, ''))
+          }}
           sx={{ mt: 4 }}
         />
         <LoadingButton

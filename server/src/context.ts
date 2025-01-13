@@ -71,7 +71,6 @@ export const ifAuthenticated =
     }
 
     const user = expressUser as CurrentUser;
-
     return callback(user);
   };
 

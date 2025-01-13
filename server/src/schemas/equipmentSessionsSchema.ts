@@ -1,3 +1,8 @@
+/**
+ * equipmentSessionsSchema.ts
+ * GraphQL declarations for EquipmentSessions
+ */
+
 import {gql} from "graphql-tag";
 
 export const EquipmentSessionTypeDefs = gql`

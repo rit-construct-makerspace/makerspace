@@ -21,12 +21,13 @@ interface OptionProps {
   text: string;
   selected: boolean;
   onClick: () => void;
+  disabled: boolean;
 }
 
-export default function Option({ type, text, selected, onClick }: OptionProps) {
+export default function Option({ type, text, selected, onClick, disabled }: OptionProps) {
   return (
     <Stack direction="row" alignItems="center">
-      <IconButton size="small" onClick={onClick}>
+      <IconButton size="small" onClick={onClick} disabled={disabled}>
         {getCorrectIcon(type, selected)}
       </IconButton>
 

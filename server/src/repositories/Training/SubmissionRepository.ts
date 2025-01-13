@@ -141,7 +141,13 @@ export async function getModulePassedandFailedCount(
         .first();
 }
 
-export async function getModulePassedandFailedCountWithModuleName(startDate: string, stopDate: string) {
+/**
+ * Get passed and failed counts of each module
+ * @param startDate earliest date to filter by
+ * @param stopDate latest date to filter by
+ * @returns array of objects containing moduleID and how many times it's been passed and failed in the timeframe given
+ */
+export async function getModulePassedandFailedCountWithModuleName(startDate: string, stopDate: string): Promise<{ moduleID: number, moduleName: string, passedSum: number, failedSum: number }[]> {
     const result =  await getModules()
     var moduleStats: { moduleID: number, moduleName: string, passedSum: number, failedSum: number }[] = [];
     for (var i = 0; i < result.length; i++) {
@@ -152,4 +158,18 @@ export async function getModulePassedandFailedCountWithModuleName(startDate: str
     }
     return moduleStats;
     
+}
+
+/**
+ * Fetch all attempts of a specified module by a specified user today
+ * @param moduleID ID of module to check
+ * @param userID ID of user to check
+ * @returns all failed ModuleSubmissions today of the noted attributes
+ */
+export async function getFailedSubmissionsTodayByModuleAndUser(moduleID: number, userID: number): Promise<ModuleSubmissionRow[]> {
+    var today = new Date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0)
+    return await knex("ModuleSubmissions").select().where({moduleID, makerID: userID, passed: false}).andWhere("submissionDate", ">=", today);
 }

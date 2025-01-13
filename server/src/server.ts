@@ -1,3 +1,8 @@
+/**
+ * server.ts
+ * Server Configuration and API
+ */
+
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
@@ -14,17 +19,17 @@ import * as schedule from "node-schedule";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository.js";
 import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository.js";
 import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLogRepository.js";
-import { getEquipmentByID, hasAccess, hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
+import { getEquipmentByID,  hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
 import { Room } from "./models/rooms/room.js";
 import { Privilege } from "./schemas/usersSchema.js";
-import { createReader, getReaderByID, getReaderByMachineID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
+import { createReader, getReaderByID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
 import { createRequire } from "module";
 import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursRepository.js";
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
-import { incrementDataPointValue, setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
+import { setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 import { ReaderRow } from "./db/tables.js";
 const require = createRequire(import.meta.url);
 
@@ -287,7 +292,7 @@ async function startServer() {
     //Staff bypass. Skip Welcome and training check.
     if (user.privilege == Privilege.STAFF) {
       if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} - {equipment} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name });
-      createEquipmentSession(machine.id, user.id);
+      createEquipmentSession(machine.id, user.id, req.query.machine?.toString() ?? undefined);
       return res.status(202).json({
         "Type": "Authorization",
         "Machine": machine.id,
@@ -339,7 +344,7 @@ async function startServer() {
 
     //Success
     if (API_NORMAL_LOGGING) createLog("{user} has activated {machine} - {equipment}", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name });
-    createEquipmentSession(machine.id, user.id);
+    createEquipmentSession(machine.id, user.id, req.query.machine?.toString() ?? undefined);
     return res.status(202).json({
       "Type": "Authorization",
       "Machine": machine.id,
@@ -389,7 +394,7 @@ async function startServer() {
       else if (API_NORMAL_LOGGING) await createLog(`New Access Device {access_device} registered.`, "status", { id: reader?.id, label: reader?.name });
     }
 
-    await updateReaderStatus({
+    const newReader = await updateReaderStatus({
       id: reader.id,
       machineID: parseInt(reader.machineType),
       machineType: reader.machineType,
@@ -409,19 +414,22 @@ async function startServer() {
     //If state change
     if (API_NORMAL_LOGGING && reader.state != req.body.State) {
       await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, "state", { id: reader?.id, label: reader?.name });
+      // await createLog(`DEBUG: {Machine: ${req.body.Machine}, Time: ${req.body.Time}, Source: ${req.body.Source}}`, "status")
     }
 
+    //if(reader.id == 290) await createLog(`DEBUG: scrollsaw state change: ${reader.state} -> ${req.body.State}; {Machine: ${req.body.Machine}, MachineType: ${req.body.MachineType}, UID: ${req.body.UID}, Source: ${req.body.Source}}`, "message");
+
     //If in a user session or just finished a user session
-    if (req.body.UID != null || reader.currentUID != null) {
+    if (reader.state == "Active" && req.body.Time != 0) {
       //Update said user session length
       await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
     }
     //If session just finished
-    if (req.body.UID == null && reader.currentUID != null && API_NORMAL_LOGGING) {
-      const user = await getUserByCardTagID(reader.currentUID)
+    if (reader.state == "Active" && req.body.State != "Active") {
+      const user = await getUserByCardTagID(reader.currentUID);
       const equipment = await getEquipmentByID(parseInt(reader.machineType));
       if (user != undefined) {
-        await createLog(`{user} signed out of {equipment} (Session: ${req.body.Time} sec)`, "session", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
+        await createLog(`{user} signed out of {machine} - {equipment} (Session: ${req.body.Time} sec)`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: req.body.Machine ?? "undefined" }, { id: equipment.id, label: equipment.name });
       }
     }
 

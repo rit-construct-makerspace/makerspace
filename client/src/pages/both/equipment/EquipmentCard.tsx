@@ -38,7 +38,7 @@ export default function EquipmentCard({ id, name, to, imageUrl, sopUrl, training
 
 
   const moduleStatuses: ModuleStatus[] = trainingModules.map(
-    moduleStatusMapper(user.passedModules)
+    moduleStatusMapper(user.passedModules, user.trainingHolds)
   );
 
   const numNotPassed = moduleStatuses.filter((ms) => ms.status != "Passed" && ms.status != "Expiring Soon").length;

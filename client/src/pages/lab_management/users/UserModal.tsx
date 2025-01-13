@@ -87,6 +87,14 @@ export const GET_USER = gql`
         moduleName
         submissionDate
       }
+      trainingHolds {
+        id
+        module {
+          id
+          name
+        }
+        expires
+      }
     }
   }
 `;
@@ -127,6 +135,12 @@ const CREATE_CHECK = gql`
   }
 `;
 
+const DELETE_TRAINING_HOLD = gql`
+  mutation DeleteTrainingHold($id: ID!) {
+    deleteTrainingHold(id: $id)
+  }
+`;
+
 
 interface UserModalProps {
   selectedUserID: string;
@@ -146,8 +160,9 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   const [createHold] = useMutation(CREATE_HOLD);
   const [deleteUser] = useMutation(ARCHIVE_USER);
   const [setNotesMutation] = useMutation(SET_NOTES);
-  const [refreshCheck, refreshCheckResult] = useMutation(REFRESH_CHECKS, {variables: {userID: selectedUserID}, refetchQueries: [{query: GET_USER, variables: { id: selectedUserID } }]});
-  const [createCheck] = useMutation(CREATE_CHECK, {refetchQueries: [{query: GET_USER, variables: { id: selectedUserID } }]})
+  const [refreshCheck, refreshCheckResult] = useMutation(REFRESH_CHECKS, { variables: { userID: selectedUserID }, refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }] });
+  const [createCheck] = useMutation(CREATE_CHECK, { refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }] });
+  const [deleteTrainingHold] = useMutation(DELETE_TRAINING_HOLD, { refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }] });
 
   useEffect(() => {
     if (selectedUserID) getUser({ variables: { id: selectedUserID } });
@@ -183,21 +198,25 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   //   };
   // }
 
+  function handleTrainingHoldDeleteClick(id: number) {
+    deleteTrainingHold({variables: {id}});
+  }
+
   function handleCheckCreate() {
     if (!newCheckEquipmentID) return;
-    createCheck({variables: {userID: selectedUserID, equipmentID: newCheckEquipmentID}});
+    createCheck({ variables: { userID: selectedUserID, equipmentID: newCheckEquipmentID } });
     setOpenCreateCheckDialouge(false);
   }
 
   const [width, setWidth] = useState<number>(window.innerWidth);
   function handleWindowSizeChange() {
-      setWidth(window.innerWidth);
+    setWidth(window.innerWidth);
   }
   useEffect(() => {
-      window.addEventListener('resize', handleWindowSizeChange);
-      return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
-      }
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
   }, []);
   const isMobile = width <= 1100;
 
@@ -284,14 +303,14 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
             )}
 
             <Stack direction={"row"} spacing={1}>
-              <ActionButton iconSize={5} color="info" appearance={"small"} variant="outlined" handleClick={async () => {refreshCheck()}} loading={refreshCheckResult.loading} buttonText="Refresh Checks" tooltipText="Purge all unapproved checks and repopulate based on currently passed modules." />
-              {currentUser.privilege == Privilege.STAFF && <ActionButton iconSize={5} color="primary" appearance={"small"} variant="outlined" handleClick={async () => {setOpenCreateCheckDialouge(!openCreateCheckDialouge)}} loading={false} buttonText="Create Check" />}
+              <ActionButton iconSize={5} color="info" appearance={"small"} variant="outlined" handleClick={async () => { refreshCheck() }} loading={refreshCheckResult.loading} buttonText="Refresh Checks" tooltipText="Purge all unapproved checks and repopulate based on currently passed modules." />
+              {currentUser.privilege == Privilege.STAFF && <ActionButton iconSize={5} color="primary" appearance={"small"} variant="outlined" handleClick={async () => { setOpenCreateCheckDialouge(!openCreateCheckDialouge) }} loading={false} buttonText="Create Check" />}
             </Stack>
             {openCreateCheckDialouge && <Stack direction={"row"} mt={1}>
               <RequestWrapper loading={getEquipment.loading} error={getEquipment.error}>
-                <Select value={newCheckEquipmentID} onChange={(e) => setNewCheckEquipmentID(e.target.value)} sx={{width: "50%"}}>
-                  {getEquipment.data?.allEquipment.map((equipment: {id: number, name: string, archived: boolean}) => (
-                    <MenuItem value={equipment.id}>{equipment.name} {equipment.archived && <Chip variant="outlined" color="warning" size="small" label="hidden" sx={{ml: "1em"}}/>}</MenuItem>
+                <Select value={newCheckEquipmentID} onChange={(e) => setNewCheckEquipmentID(e.target.value)} sx={{ width: "50%" }}>
+                  {getEquipment.data?.allEquipment.map((equipment: { id: number, name: string, archived: boolean }) => (
+                    <MenuItem value={equipment.id}>{equipment.name} {equipment.archived && <Chip variant="outlined" color="warning" size="small" label="hidden" sx={{ ml: "1em" }} />}</MenuItem>
                   ))}
                 </Select>
               </RequestWrapper>
@@ -325,6 +344,36 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
                     <Stack direction={"row"} sx={{ justifyContent: "space-between" }}>
                       <Typography>{module.moduleName}</Typography>
                       <Typography>{format(new Date(module.submissionDate), "M/d/yy h:mmaaa")}</Typography>
+                    </Stack>
+                  </Card>
+                ))}
+              </Stack>
+            </Box>
+
+
+            <Typography variant="h6" component="div" mt={6} mb={1}>
+              Locked Trainings
+            </Typography>
+
+            {user.trainingHolds == null || user.trainingHolds.length === 0 && (
+              <Stack direction="row" spacing={1} sx={{ opacity: 0.8 }}>
+                <CheckCircleIcon color="error" fontSize="small" />
+                <Typography variant="body1" fontStyle="italic">
+                  No trainings.
+                </Typography>
+              </Stack>
+            )}
+
+            <Box sx={{ maxHeight: "300px", overflowY: "scroll" }}>
+              <Stack spacing={0.5}>
+                {user.trainingHolds != null && user.trainingHolds.map((hold: { id: number; expires: Date; module: {id: number; name: string} }) => (
+                  <Card sx={{ p: "0.25em", backgroundColor: (localStorage.getItem("themeMode") == "dark" ? "grey.900" : "grey.100"), border: `1px solid grey` }}>
+                    <Stack direction={"row"} alignItems={"center"} sx={{ justifyContent: "space-between" }}>
+                      <Stack direction={"row"} alignItems={"center"} spacing={2}>
+                        <Typography color={"secondary"}><b>Exp: </b>{format(new Date(hold.expires), "M/d/yy h:mmaaa")}</Typography>
+                        <Typography>{hold.module.name}</Typography>
+                      </Stack>
+                      <Button variant="text" color="success" onClick={() => handleTrainingHoldDeleteClick(hold.id)}>Unlock</Button>
                     </Stack>
                   </Card>
                 ))}

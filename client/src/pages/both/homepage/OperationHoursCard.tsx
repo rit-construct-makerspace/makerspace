@@ -16,7 +16,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 
 interface HoursTabPanelProps {
     children?: React.ReactNode;
-    hours: [{type: string, dayOfTheWeek: number, time: string}];
+    hours: {type: string, dayOfTheWeek: number, time: string}[];
     index: number;
     value: number;
     title: string;
@@ -72,6 +72,11 @@ function HoursTabPanel(props: HoursTabPanelProps) {
                         </Typography></TableCell>
                     </TableRow>
                 ))}
+                {hours.length == 0 && 
+                    <TableRow>
+                        <Typography variant="h5" color={"error"}>Area Closed</Typography>
+                    </TableRow>
+                }
                 </Table> 
                 
                 {children}

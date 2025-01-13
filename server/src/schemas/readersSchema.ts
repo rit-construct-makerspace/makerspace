@@ -1,3 +1,8 @@
+/**
+ * readersSchema.ts
+ * GraphQL declarations for ACS Readers
+ */
+
 import { gql } from "graphql-tag";
 
 export const ReaderTypeDefs = gql`

@@ -1,3 +1,8 @@
+/**
+ * zoneHoursSchema.ts
+ * GraphQL declarations for ZoneHours
+ */
+
 import { gql } from "graphql-tag";
 import { ZoneHoursRow } from "../db/tables.js";
 

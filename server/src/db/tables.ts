@@ -1,3 +1,9 @@
+/**
+ * tables.ts
+ * 
+ * This contains the definitions for the objects every knex select operation will map to.
+ */
+
 import { Privilege } from "../schemas/usersSchema.js";
 
 export interface AuditLogRow {
@@ -176,6 +182,13 @@ export interface TrainingModuleItem {
   options?: ModuleItemOption[];
 }
 
+export interface TrainingHoldsRow {
+  id: number;
+  moduleID: number;
+  userID: number;
+  expires: Date;
+}
+
 export interface ReservationPrompt {
   promptText: string;
 }
@@ -311,6 +324,7 @@ declare module "knex/types/tables.js" {
     RoomSwipes: RoomSwipeRow;
     Rooms: RoomRow;
     TrainingModule: TrainingModuleRow;
+    TrainingHolds: TrainingHoldsRow;
     Users: UserRow;
     Readers: ReaderRow;
     AccessChecks: AccessCheckRow;

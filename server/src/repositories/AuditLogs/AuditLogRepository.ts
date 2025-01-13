@@ -6,18 +6,20 @@ import { knex } from "../../db/index.js";
 import { logsToDomain } from "../../mappers/auditLogs/auditLogMapper.js";
 import { AuditLog } from "../../schemas/auditLogsSchema.js";
 
+
+//Options to filter by log type
 export interface Filters {
-  errors: string
-  welcome: boolean
-  auth: boolean
-  status: boolean
-  state: boolean
-  help: boolean
-  message: boolean
-  server: boolean
-  training: boolean
-  admin: boolean
-  uncategorized: boolean
+  errors: string; //"no-errors" | "both" | "only-errors" (Do not enforce this)
+  welcome: boolean;
+  auth: boolean;
+  status: boolean;
+  state: boolean;
+  help: boolean;
+  message: boolean;
+  server: boolean;
+  training: boolean;
+  admin: boolean;
+  uncategorized: boolean;
 }
 
 /**
@@ -73,7 +75,7 @@ export async function createLogWithArray(
  * @param startDate earliest date to filter by
  * @param stopDate latest date to filter by
  * @param searchText text to filter by
- * @returns 
+ * @returns matching AuditLogs
  */
 export async function getLogs(
   startDate: string,
@@ -81,6 +83,7 @@ export async function getLogs(
   searchText: string,
   filters?: Filters
 ): Promise<AuditLog[]> {
+  //Add every active filter to SQL-valid array syntax
   const filterString = ((filters?.welcome ? "'welcome', " : "")
     + (filters?.auth ? "'auth', " : "")
     + (filters?.help ? "'help', " : "")
@@ -92,10 +95,12 @@ export async function getLogs(
     + (filters?.admin ? "'admin', " : "")
     + (filters?.server ? "'server', " : "")
   );
-  const filterSQL = `"category" = ALL (ARRAY[${filterString.substring(0, filterString.length-2)}])` + (filters?.uncategorized ? ` OR "category" IS NULL` : "");
-  console.log(filterSQL)
+
+  //Create WHERE rule content to only grab entries matcching one of the applied filters
+  const filterSQL = `"category" = ANY (ARRAY[${filterString.substring(0, filterString.length-2)}])` + (filters?.uncategorized ? ` OR "category" IS NULL` : "");
 
   const knexResult = (filterString && filterString != "")
+  //If filters exist, use filterSQL
   ? await knex("AuditLogs")
   .select()
   .whereRaw(`("dateTime" at time zone 'UTC') BETWEEN TIMESTAMP '${new Date(startDate).toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${new Date(stopDate).toISOString().replace("T", " ").replace("Z", "")}'`)
@@ -104,6 +109,7 @@ export async function getLogs(
   .whereRaw((filters?.errors != "both" ? `message ${filters?.errors == "no-errors" ? "NOT " : ""} ilike '%<error:%'` : "TRUE"))
   .orderBy("dateTime", "DESC")
   .limit(100)
+  //else, don't use filterSQL
   : await knex("AuditLogs")
   .select()
   .whereRaw(`("dateTime" at time zone 'UTC') BETWEEN TIMESTAMP '${new Date(startDate).toISOString().replace("T", " ").replace("Z", "")}' AND TIMESTAMP '${new Date(stopDate).toISOString().replace("T", " ").replace("Z", "")}'`)
@@ -112,5 +118,6 @@ export async function getLogs(
   .orderBy("dateTime", "DESC")
   .limit(100)
 
+  //Map rows
   return logsToDomain(knexResult);
 }

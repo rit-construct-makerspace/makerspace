@@ -1,8 +1,19 @@
+/**
+ * trainingSubmissionResolver.ts
+ * GraphQL Endpoint Implementations for ModuleSubmissions
+ */
+
 import * as SubmissionRepo from "../repositories/Training/SubmissionRepository.js";
 import { ApolloContext } from "../context.js";
 
 const TrainingSubmissionResolvers = {
   Query: {
+    /**
+     * Fetch a ModuleSubmission by ID
+     * @argument submissionID ID of the ModuleSubmission
+     * @returns ModuleSubmission
+     * @throws GraphQLError if not authenticated or is on hold
+     */
     submission: async (
       parent: any,
       args: { submissionID: string },
@@ -11,6 +22,12 @@ const TrainingSubmissionResolvers = {
       ifAuthenticated (async (user: any) => {
         return SubmissionRepo.getSubmission(Number(args.submissionID));
     }),
+
+    /**
+     * Fetch all ModuleSubmissions
+     * @returns array of ModuleSubmission
+     * @throws GraphQLError if not authenticated or is on hold
+     */
     submissions: async (
       _parent: any,
       args: { moduleID: string },
@@ -21,6 +38,13 @@ const TrainingSubmissionResolvers = {
           await SubmissionRepo.getSubmissionsByModule(user.id, Number(args.moduleID)) :
           await SubmissionRepo.getSubmissionsByUser(user.id)
     }),
+
+    /**
+     * Fetch the last submitted ModuleSubmission for the specified module
+     * @argument moduleID ID of the TrainingModule to filter by
+     * @returns ModuleSubmission
+     * @throws GraphQLError if not authenticated or is on hold
+     */
     latestSubmission: async (
       _parent: any,
       args: { moduleID: string },

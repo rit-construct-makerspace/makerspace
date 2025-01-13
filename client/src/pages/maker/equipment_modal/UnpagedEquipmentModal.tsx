@@ -57,7 +57,7 @@ export default function UnpagedEquipmentModal({ equipmentID, setEquipmentID }: E
         result={result}
         render={({ equipment }) => {
           const moduleStatuses = equipment.trainingModules.map(
-            moduleStatusMapper(user.passedModules)
+            moduleStatusMapper(user.passedModules, user.trainingHolds)
           );
 
           return (

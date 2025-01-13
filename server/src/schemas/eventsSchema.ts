@@ -1,3 +1,8 @@
+/**
+ * eventsSchema.ts
+ * GraphQL declarations for Events
+ */
+
 import { gql } from "graphql-tag";
 
 export const EventsTypeDefs = gql`

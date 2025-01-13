@@ -1,3 +1,8 @@
+/**
+ * accessChecksRepository.ts
+ * GraphQL Endpoint Implementations for Access Checks
+ */
+
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
@@ -5,9 +10,15 @@ import { accessCheckExists, createAccessCheck, getAccessCheckByID, getAccessChec
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUserByID, getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { GraphQLError } from "graphql";
+
 const AccessChecksResolver = {
 
   Query: {
+    /**
+     * Fetch all Access Checks
+     * @returns all Access Checks
+     * @throws GraphQLError if not MENTOR or STAFF or on hold
+     */
     accessChecks: async (
       _parent: any,
       _args: any,
@@ -16,6 +27,12 @@ const AccessChecksResolver = {
         return await getAccessChecks();
       }),
 
+    /**
+     * Fetch access check by ID
+     * @argument id ID of Access Check
+     * @returns Access Check or undefined if not exist
+     * @throws  GraphQLError if not MENTOR or STAFF or on hold
+     */
     accessCheck: async (
       _parent: any,
       args: { id: number },
@@ -24,6 +41,11 @@ const AccessChecksResolver = {
         return await getAccessCheckByID(args.id)
       }),
 
+    /**
+     * Fetch all approved Access Checks
+     * @returns all approved Access Checks
+     * @throws GraphQLError if not MENTOR or STAFF or on hold
+     */
     approvedAccessChecks: async (
       _parent: any,
       _args: any,
@@ -32,6 +54,11 @@ const AccessChecksResolver = {
         return await getAccessChecksByApproved(true)
       }),
 
+    /**
+     * Fetch all unapproved Access Checks
+     * @returns all unapproved Access Checks
+     * @throws GraphQLError if not MENTOR or STAFF or on hold
+     */
     unapprovedAccessChecks: async (
       _parent: any,
       _args: any,
@@ -42,6 +69,12 @@ const AccessChecksResolver = {
   },
 
   Mutation: {
+    /**
+     * Set an Access Check as approved
+     * @argument id ID of Access Check to modify
+     * @returns updated Access Check
+     * @throws GraphQLError if not MENTOR or STAFF or or hold or if invalid id provided
+     */
     approveAccessCheck: async (
       _parent: any,
       args: { id: number },
@@ -58,6 +91,12 @@ const AccessChecksResolver = {
         return await setAccessCheckApproval(args.id, true);
       }),
 
+    /**
+     * Set an Access Check as not approved
+     * @argument id ID of Access Check to modify
+     * @returns updated Access Check
+     * @throws GraphQLError if not MENTOR or STAFF or or hold or if invalid id provided
+     */
     unapproveAccessCheck: async (
       _parent: any,
       args: { id: number },
@@ -74,6 +113,13 @@ const AccessChecksResolver = {
         return await setAccessCheckApproval(args.id, false);
       }),
 
+    /**
+     * Create a new Access Check
+     * @argument userID id of affected User
+     * @argument equipmentID id of affected equipment
+     * @returns new Access Check
+     * @throws GraphQLError if not MENTOR or STAFF or or hold
+     */
     createAccessCheck: async (
       _parent: any,
       args: { userID: number, equipmentID: number },
@@ -84,6 +130,12 @@ const AccessChecksResolver = {
       }
       ),
 
+    /**
+     * Purge all unapproved access checks for a specified user and fetch new ones based on ccompleted trainings
+     * @argument userID id of user to filter by
+     * @returns void
+     * @throws GraphQLError if not MENTOR or STAFF or or hold
+     */
     refreshAccessChecks: async (
       _parent: any,
       args: { userID: number },
@@ -93,12 +145,11 @@ const AccessChecksResolver = {
         equipmentToCheck.forEach(async (equipment) => {
           await purgeUnapprovedAccessChecks(args.userID);
           if (!equipment.archived && !(await accessCheckExists(args.userID, equipment.id)) && ((await EquipmentRepo.getModulesByEquipment(equipment.id)).length == 0 || (await EquipmentRepo.UserIdHasTrainingModules(args.userID, equipment.id)))) {
-            console.log("create " + equipment.name)
             await createAccessCheck(args.userID, equipment.id);
           }
         });
       }
-    ),
+      ),
 
   }
 };

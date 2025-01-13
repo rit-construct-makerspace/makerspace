@@ -1,3 +1,8 @@
+/**
+ * holdsSchema.ts
+ * GraphQL declarations for Holds
+ */
+
 import { gql } from "graphql-tag";
 
 export const HoldsTypeDefs = gql`

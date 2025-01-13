@@ -1,3 +1,8 @@
+/**
+ * equipmentSchema.ts
+ * GraphQL declarations for Equipment
+ */
+
 import { gql } from "graphql-tag";
 
 export interface EquipmentInput {

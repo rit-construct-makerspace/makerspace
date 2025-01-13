@@ -8,6 +8,7 @@ import { getRooms, getRoomsByZone } from "../repositories/Rooms/RoomRepository.j
 
 const ZonesResolver = {
   Zone: {
+    //Map rooms field to array of Rooms
     rooms: async (
       parent: ZoneRow,
       _args: any,
@@ -17,6 +18,8 @@ const ZonesResolver = {
         return getRoomsByZone(parent.id);
       }
     ),
+    
+    //Map hours field to array of ZoneHours
     hours: async (
       parent: ZoneRow,
       _args: any,
@@ -29,6 +32,11 @@ const ZonesResolver = {
   },
 
   Query: {
+    /**
+     * Fetch all Zones
+     * @returns array of Zones
+     * @throws GraphQLError if not MAKER, MENTOR, or STAFF or is on hold
+     */
     zones: async (
       _parent: any,
       _args: any,
@@ -39,6 +47,12 @@ const ZonesResolver = {
   },
 
   Mutation: {
+    /**
+     * Create a Zone
+     * @argument name Name of the new Zone
+     * @returns new Zone
+     * @throws GraphQLError if not STAFF or is on hold
+     */
     addZone: async (
       _parent: any,
       args: { name: string },
@@ -48,6 +62,12 @@ const ZonesResolver = {
         return res
       }),
 
+    /**
+     * Delete a Zone
+     * @argument id ID of the ZOne to delete
+     * @returns true
+     * @throws GraphQLError if not STAFF or is on hold
+     */
     deleteZone: async (
       _parent: any,
       args: { id: number },

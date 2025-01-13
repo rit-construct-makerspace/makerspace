@@ -1,9 +1,22 @@
+/**
+ * auditLogsResolver.ts
+ * GraphQL Endpoint Implementations for Audit Logs
+ */
+
 import * as AuditLogRepo from "../repositories/AuditLogs/AuditLogRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
 
 const AuditLogResolvers = {
   Query: {
+    /**
+     * Fetch Audit Logs by search parameters
+     * @argument startDate Earliest date to filter by (ex: 2024-01-23)
+     * @argument stopDate Earliest date to filter by (ex: 2024-01-23)
+     * @argument searchText inclusive search string for log content
+     * @argument filters optional advanced filtering options
+     * @returns matching Audit Logs
+     */
     auditLogs: async (
       parent: any,
       args: { startDate: string; stopDate: string; searchText: string, filters?: AuditLogRepo.Filters },

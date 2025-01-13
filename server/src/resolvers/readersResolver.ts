@@ -1,3 +1,8 @@
+/**
+ * readersResolver.ts
+ * GraphQL Endpoint Implementations for ACS Readers
+ */
+
 import * as ReaderRepo from "../repositories/Readers/ReaderRepository.js";
 import { ApolloContext } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
@@ -8,6 +13,7 @@ import { ReaderRow } from "../db/tables.js";
 
 const ReadersResolver = {
   Reader: {
+    //Map user field to User
     user: async (
       parent: ReaderRow,
       _args: any,
@@ -17,32 +23,59 @@ const ReadersResolver = {
   },
 
   Query: {
+    /**
+     * Fetch all Readers
+     * @returns all Readers
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     readers: async (
       _parent: any,
       _args: any,
-      {ifAllowed}: ApolloContext) =>
-        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-          return await ReaderRepo.getReaders();
-        }),
-    
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await ReaderRepo.getReaders();
+      }),
+
+    /**
+     * Fetch Reader by ID
+     * @argument id ID of Reader
+     * @returns Reader
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     reader: async (
       _parent: any,
       args: { id: string },
-      {ifAllowedOrSelf} : ApolloContext) =>
-        ifAllowedOrSelf(Number(args.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
-          return await ReaderRepo.getReaderByID(Number(args.id));
-        })
+      { ifAllowedOrSelf }: ApolloContext) =>
+      ifAllowedOrSelf(Number(args.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await ReaderRepo.getReaderByID(Number(args.id));
+      })
   },
 
   Mutation: {
+    /**
+     * Create a Reader
+     * @argument machineID ID of Equipment
+     * @argument machineType Type indication string (mostly deprecated)
+     * @argument name Reader name
+     * @argument zone comma seperated list of zone IDs the machine resides in (usually just the one)
+     * @returns new Reader
+     * @throws GraphQLError if not STAFF or is on hold
+     */
     createReader: async (
       _parent: any,
-      args: any,
+      args: {machineID?: number, machineType?: string, name?: string, zone?: string},
       { ifAllowed }: ApolloContext) =>
-        ifAllowed([Privilege.STAFF], async () => {
-          return await ReaderRepo.createReader(args);
+      ifAllowed([Privilege.STAFF], async () => {
+        return await ReaderRepo.createReader(args);
       }),
 
+    /**
+     * Update the name of a Reader
+     * @argument id of Reader to modify
+     * @argument name new Reader name
+     * @returns updated Reader
+     * @throws GraphQLError if not STAFF or is on hold
+     */
     setName: async (
       _parent: any,
       args: { id: string; name: string },

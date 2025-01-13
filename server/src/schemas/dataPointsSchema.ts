@@ -1,3 +1,8 @@
+/**
+ * dataPointsSchema.ts
+ * GraphQL declarations for DataPoints
+ */
+
 import { gql } from "graphql-tag";
 
 export const DataPointsTypeDefs = gql`

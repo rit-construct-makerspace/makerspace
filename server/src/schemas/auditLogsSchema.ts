@@ -1,3 +1,8 @@
+/**
+ * auditLogsSchema.ts
+ * GraphQL declarations for AuditLogs
+ */
+
 import { gql } from "graphql-tag";
 
 export interface AuditLog {

@@ -1,3 +1,8 @@
+/**
+ * trainingModuleResolver.ts
+ * GraphQL Endpoint Implementations for TrainingModules, and executions for submitting to modules
+ */
+
 import * as ModuleRepo from "../repositories/Training/ModuleRepository.js";
 import { AccessProgress, AnswerInput } from "../schemas/trainingModuleSchema.js";
 import { ApolloContext } from "../context.js";
@@ -10,11 +15,24 @@ import { EquipmentRow, TrainingModuleItem, TrainingModuleRow } from "../db/table
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import { accessCheckExists, createAccessCheck, hasApprovedAccessCheck } from "../repositories/Equipment/AccessChecksRepository.js";
 import fetch from "node-fetch";
+import { createTrainingHold, getTrainingHoldByUserForModule } from "../repositories/Training/TrainingHoldsRespository.js";
 
-
+/**
+ * The ID of the quiz that, on pass, will grant 3DPrinterOS Self-Service access
+ */
 const ID_3DPRINTEROS_QUIZ = Number(process.env.ID_3DPRINTEROS_QUIZ);
+
+/**
+ * The ID of the quiz that, on pass, will grant 3DPrinterOS Full-Service access
+ */
 const ID_3DPRINTEROS_FS_QUIZ = Number(process.env.ID_3DPRINTEROS_FS_QUIZ);
 
+/**
+ * Add an RIT 3DPrinterOS user to a workgroup
+ * @param username the RIT Username of a user to add to a workgroup
+ * @param workgroupId the ID of the 3DPrinterOS Workgroup to add to
+ * @returns request result body
+ */
 async function add3DPrinterOSUser(username: string, workgroupId: string) {
   //Login API User
   var options = {
@@ -34,7 +52,6 @@ async function add3DPrinterOSUser(username: string, workgroupId: string) {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       method: "POST"
     }
-    console.log(options);
     return await fetch((process.env.CLOUDPRINT_API_URL + "add_user_to_workgroup"), options)
       .then(function (res) {
         return res.json() as any;
@@ -45,12 +62,19 @@ async function add3DPrinterOSUser(username: string, workgroupId: string) {
   return addRequestBody.result;
 }
 
+/**
+ * Summary of a question answer result for display to user of results page
+ */
 interface ChoiceSummary {
   questionNum: string;
   questionText: string;
   correct: boolean;
 }
 
+/**
+ * Delete the correct indicator for each option on each question
+ * @param quiz array of TrainingModuleItems involved in a quiz
+ */
 const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   for (let item of quiz) {
     if (item.options) {
@@ -61,6 +85,12 @@ const removeAnswersFromQuiz = (quiz: TrainingModuleItem[]) => {
   }
 };
 
+/**
+ * Determine if an array of submitted options for a question is correct
+ * @param correct array of correct option IDs
+ * @param submitted array of submitted option IDs
+ * @returns true if arrays are matching
+ */
 function submittedOptionIDsCorrect(
   correct: string[],
   submitted: string[] | undefined
@@ -75,7 +105,47 @@ function submittedOptionIDsCorrect(
 }
 
 const TrainingModuleResolvers = {
+  TrainingModule: {
+    //Map equipment field to Equipment
+    equipment: async (
+      parent: TrainingModuleRow,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        return ModuleRepo.getEquipmentsByModuleID(parent.id);
+      }),
+
+    //Set isLocked field  to true if there is a training hold for the requesting user on the parent TrainingModule
+    isLocked: async (
+      parent: TrainingModuleRow,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        return (await getTrainingHoldByUserForModule(user.id, parent.id)) != undefined
+      }),
+
+  },
+
+  AccessProgress: {
+    //Map equipment filed to Equipment
+    equipment: async (
+      parent: AccessProgress,
+      _: any,
+      { ifAuthenticated }: ApolloContext
+    ) =>
+      ifAuthenticated(async (user) => {
+        return parent.equipment;
+      })
+  },
+
   Query: {
+    /**
+     * Fetch all TrainingModules that are not archived. If requesting user is a MAKER, question option correct values are stripped
+     * @returns array of TrainingModules
+     * @throws GraphQLError if not MAKER, MENTOR, or STAFF or is on hold
+     */
     modules: async (
       _parent: any,
       _args: any,
@@ -90,6 +160,12 @@ const TrainingModuleResolvers = {
         return modules;
       }),
 
+    /**
+     * Fetch a TrainingModule by ID. If requesting user is a MAKER, question option correct values are stripped
+     * @argument id ID of TrainingModule
+     * @returns TrainingModule
+     * @throws GraphQLError if not MAKER, MENTOR, or STAFF or is on hold
+     */
     module: async (
       _parent: any,
       args: { id: number },
@@ -98,11 +174,18 @@ const TrainingModuleResolvers = {
       ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
         let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, false);
 
-        if (user.privilege === "MAKER") removeAnswersFromQuiz(module.quiz);
+        if (user.privilege === "MAKER") {
+          removeAnswersFromQuiz(module.quiz);
+        }
 
         return module;
       }),
 
+    /**
+     * Fetch all archived TrainingModules
+     * @returns TrainingModule
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     archivedModules: async (
       _parent: any,
       _args: any,
@@ -114,6 +197,12 @@ const TrainingModuleResolvers = {
         return modules;
       }),
 
+    /**
+     * Fetch an archived TrainingModule by ID
+     * @argument id ID of TrainingModule
+     * @returns TrainingModule
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     archivedModule: async (
       _parent: any,
       args: { id: number },
@@ -125,6 +214,12 @@ const TrainingModuleResolvers = {
         return module;
       }),
 
+    /**
+     * Fetch an array of AccessProgress items representing progress on gaining access to all equipment relating to the noted TrainingModule
+     * @argument sourceTrainingModuleID ID of TrainingModule to source from
+     * @returns array of AccessProgress
+     * @throws GraphQLError if not authenticated or is on hold
+     */
     relatedAccessProgress: async (
       _parent: any,
       args: { sourceTrainingModuleID: number },
@@ -147,36 +242,22 @@ const TrainingModuleResolvers = {
             }
           }
           const accessCheckDone = await hasApprovedAccessCheck(user.id, relatedEquipments[i].id);
-          accessProgresses.push({equipment: relatedEquipments[i], passedModules, availableModules, accessCheckDone: accessCheckDone ?? false});
+          accessProgresses.push({ equipment: relatedEquipments[i], passedModules, availableModules, accessCheckDone: accessCheckDone ?? false });
         }
-        
+
         return accessProgresses;
       })
   },
 
-  TrainingModule: {
-    equipment: async (
-      parent: TrainingModuleRow,
-      _: any,
-      { ifAuthenticated }: ApolloContext
-    ) =>
-      ifAuthenticated(async (user) => {
-        return ModuleRepo.getEquipmentsByModuleID(parent.id);
-      })
-  },
-
-  AccessProgress: {
-    equipment: async (
-      parent: AccessProgress,
-      _: any,
-      { ifAuthenticated }: ApolloContext
-    ) =>
-      ifAuthenticated(async (user) => {
-        return parent.equipment;
-      })
-  },
 
   Mutation: {
+    /**
+     * Create a TrainingModule
+     * @argument name Module Name
+     * @argument quiz JSON array of quiz items
+     * @returns TrainingModule new TrainingModule
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     createModule: async (
       _parent: any,
       args: { name: string; quiz: object },
@@ -198,9 +279,18 @@ const TrainingModuleResolvers = {
         return module;
       }),
 
+    /**
+     * Modify a TrainingModule
+     * @argument id ID of TrainingModule to modify
+     * @argument name Module Name
+     * @argument quiz JSON array of quiz items
+     * @argument reservationPrompt DEPRECATED
+     * @returns TrainingModule updated TrainingModule
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     updateModule: async (
       _parent: any,
-      args: { id: string; name: string; quiz: object; reservationPrompt: object },
+      args: { id: string; name: string; quiz: object; reservationPrompt?: object },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
@@ -208,7 +298,7 @@ const TrainingModuleResolvers = {
           Number(args.id),
           args.name,
           args.quiz,
-          args.reservationPrompt
+          args.reservationPrompt ?? { "promptText": "Make reservation", "enabled": false }
         );
 
         await createLog(
@@ -219,6 +309,12 @@ const TrainingModuleResolvers = {
         );
       }),
 
+    /**
+     * Mark a TrainingModule as Archived
+     * @argument id ID of TrainingModule to modify
+     * @returns TrainingModule updated TrainingModule
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     archiveModule: async (
       _parent: any,
       args: { id: string },
@@ -237,6 +333,12 @@ const TrainingModuleResolvers = {
         return module;
       }),
 
+    /**
+     * Mark a TrainingModule as Not Archived
+     * @argument id ID of TrainingModule to modify
+     * @returns TrainingModule updated TrainingModule
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     publishModule: async (
       _parent: any,
       args: { id: string },
@@ -255,6 +357,13 @@ const TrainingModuleResolvers = {
         return module;
       }),
 
+    /**
+     * Calculate submission grade and create a TrainingSubmission
+     * @argument moduleID ID of TrainingModule the submission is for
+     * @argument answerSheet array of AnswerInput: user answers
+     * @returns submission id
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
     submitModule: async (
       _parent: any,
       args: { moduleID: string; answerSheet: AnswerInput[] },
@@ -263,38 +372,55 @@ const TrainingModuleResolvers = {
       return ifAllowed(
         [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
         async (user: any) => {
+          //Prevent submission if user has a Training Hold on this training
+          if (await getTrainingHoldByUserForModule(user.id, Number(args.moduleID))) throw Error(`Active Training Hold on this Module.`)
+
           const module = await ModuleRepo.getModuleByIDWhereArchived(Number(args.moduleID), false);
 
+          //Prevent if module is not MAKER accessible
           if (!module || module.archived) {
             throw Error(`Cannot access module #${args.moduleID}`);
           }
 
+          //Prevent if module has no questions
           if (module.quiz.length === 0) {
             throw Error("Provided module has no questions");
           }
 
+          //Number of correct questions
           let correct = 0;
+
+          //Number of incorrect questions
           let incorrect = 0;
+
+          //Summary of options chosen
           var choiceSummary: ChoiceSummary[] = [];
 
+          //Get Questions from quiz
           const questions = module.quiz.filter((i: any) =>
             ["CHECKBOXES", "MULTIPLE_CHOICE"].includes(i.type)
           );
 
           for (let question of questions) {
+
+            //Stop if question has no options (invalid format)
             if (!question.options)
               throw Error(
                 `Module Item ${question.id} of type ${question.type} has no options`
               );
 
+            //Get the correct options
             const correctOptionIDs = question.options
               .filter((o: any) => o.correct)
               .map((o: any) => o.id);
 
+            //Get the user-submitted options
             const submittedOptionIDs = args.answerSheet.find(
               (item) => item.itemID === question.id
             )?.optionIDs;
 
+            //Increment correcct if submitted options match correct options (order doesn't matter)
+            //Increment incorrect otherwise
             if (submittedOptionIDsCorrect(correctOptionIDs, submittedOptionIDs)) {
               correct++;
               choiceSummary.push({ questionNum: question.id, questionText: question.text, correct: true });
@@ -305,8 +431,10 @@ const TrainingModuleResolvers = {
 
           }
 
+          //Calculate percentage grade
           const grade = (correct / (incorrect + correct)) * 100;
 
+          //Insert submission record
           SubmissionRepo.addSubmission(
             user.id,
             Number(args.moduleID),
@@ -366,6 +494,12 @@ const TrainingModuleResolvers = {
                     await createAccessCheck(user.id, equipmentID);
                   }
                 });
+              }
+            } else {
+              //If max daily attempts reached. Create a training hold on this module
+              if (Number(process.env.TRAINING_MAX_ATTEMPTS_PER_DAY_BEFORE_LOCK) && (await SubmissionRepo.getFailedSubmissionsTodayByModuleAndUser(Number(args.moduleID), user.id)).length >= Number(process.env.TRAINING_MAX_ATTEMPTS_PER_DAY_BEFORE_LOCK)) {
+                await createLog("Daily attempt limit reached. A hold has been placed on training {module} for {user}", "server", { id: module.id, label: module.name }, { id: user.id, label: getUsersFullName(user) });
+                await createTrainingHold(user.id, Number(args.moduleID));
               }
             }
 

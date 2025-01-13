@@ -57,7 +57,7 @@ export default function EquipmentModal({ equipmentID }: EquipmentModalProps) {
         result={result}
         render={({ equipment }) => {
           const moduleStatuses = equipment.trainingModules.map(
-            moduleStatusMapper(user.passedModules)
+            moduleStatusMapper(user.passedModules, user.trainingHolds)
           );
 
           return (

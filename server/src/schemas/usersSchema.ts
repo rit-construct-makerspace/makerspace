@@ -1,3 +1,8 @@
+/**
+ * usersSchema.ts
+ * GraphQL declarations for Users
+ */
+
 import { gql } from "graphql-tag";
 import { UserRow } from "../db/tables.js";
 
@@ -59,6 +64,7 @@ export const UsersTypeDefs = gql`
     roomMonitoring: Room
     notes: String
     activeHold: Boolean
+    trainingHolds: [TrainingHold]
 
     """
     The number-letter combination that is attached to your RIT email

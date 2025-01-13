@@ -80,6 +80,11 @@ export default function ZoneHoursCard({ hours, children }: ZoneHoursCardProps) {
                             </TableRow>
                         ))}
                     </Table>
+                    {hours.length == 0 && 
+                    <TableRow>
+                        <Typography variant="h5" color={"error"}>Area Closed</Typography>
+                    </TableRow>
+                    }
 
                     {children}
                 </Box>

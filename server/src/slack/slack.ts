@@ -1,3 +1,9 @@
+/**
+ * slack.ts
+ * 
+ * Configurations and message functions for the Slack Bot
+ */
+
 import { WebClient } from "@slack/web-api";
 import { EquipmentInstancesRow, MaintenanceLogRow, ToolItemInstancesRow } from "../db/tables.js";
 import { getEquipmentByID } from "../repositories/Equipment/EquipmentRepository.js";

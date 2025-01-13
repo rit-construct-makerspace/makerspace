@@ -1,3 +1,8 @@
+/**
+ * readerRepository.ts
+ * DB Operations for Readers (ACS Devices)
+ */
+
 import { knex } from "../../db/index.js";
 import { ReaderRow } from "../../db/tables.js";
 
@@ -125,6 +130,11 @@ export async function setReaderName(
     return await getReaderByID(id);
 }
 
+/**
+ * Toggle the "helpRequested" column of a noted Reader
+ * @param id ID of Reader to modify
+ * @returns void
+ */
 export async function toggleHelpRequested(id: number): Promise<void> {
     const oldRow = await knex("Readers").select("*").where({ id: id }).first()
     return await knex("Readers").where({ id: id }).update({ helpRequested: !(oldRow?.helpRequested)})

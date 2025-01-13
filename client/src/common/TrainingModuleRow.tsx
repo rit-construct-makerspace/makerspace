@@ -4,6 +4,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
+import LockClockIcon from '@mui/icons-material/LockClock';
 import { format, parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
 import { ModuleStatus } from "./TrainingModuleUtils";
@@ -29,12 +30,17 @@ export default function TrainingModuleRow({
         {moduleStatus.status === "Expired" && <WarningIcon color="warning" />}
         {moduleStatus.status === "Not taken" && <CloseIcon color="error" />}
         {moduleStatus.status === "Expiring Soon" && <HourglassBottomIcon color="warning" />}
+        {moduleStatus.status === "Locked" && <LockClockIcon color="error" />}
 
         <Typography
           variant="body2"
           sx={{ width: 80, lineHeight: 1 }}
         >
-          {moduleStatus.status}
+          {
+            moduleStatus.status === "Locked"
+            ? "Locked Until Tomorrow"
+            : moduleStatus.status
+          }
         </Typography>
 
         <Typography>{moduleStatus.moduleName}</Typography>

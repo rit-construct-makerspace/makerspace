@@ -1,3 +1,8 @@
+/**
+ * trainingModuleSchema.ts
+ * GraphQL declarations for TrainingModules and AccessProgresses
+ */
+
 import { gql } from "graphql-tag";
 import { EquipmentRow, TrainingModuleRow } from "../db/tables.js";
 
@@ -29,6 +34,7 @@ export const TrainingModuleTypeDefs = gql`
     quiz: JSON
     reservationPrompt: JSON
     equipment: [Equipment]
+    isLocked: Boolean
   }
 
   type AccessProgress {

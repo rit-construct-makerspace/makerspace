@@ -1,77 +1,79 @@
-import { ReservationInput } from "../models/equipment/reservationInput.js";
-import { ReservationRepository } from "../repositories/Equipment/ReservationRepository.js";
-import { ApolloContext } from "../context.js";
-import { Privilege } from "../schemas/usersSchema.js";
-import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
-import { getUsersFullName } from "../repositories/Users/UserRepository.js";
+//DEPRECATED
 
-const reservationRepo = new ReservationRepository();
+// import { ReservationInput } from "../models/equipment/reservationInput.js";
+// import { ReservationRepository } from "../repositories/Equipment/ReservationRepository.js";
+// import { ApolloContext } from "../context.js";
+// import { Privilege } from "../schemas/usersSchema.js";
+// import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
+// import { getUsersFullName } from "../repositories/Users/UserRepository.js";
 
-const ReservationResolvers = {
+// const reservationRepo = new ReservationRepository();
 
-  Query: {
-    reservations: async (_: any, args: any, context: any) => {
-      return await reservationRepo.getReservations();
-    },
+// const ReservationResolvers = {
 
-    reservation: async (_: any, args: { id: string }, context: any) => {
-      return await reservationRepo.getReservationById(Number(args.id));
-    }
-  },
+//   Query: {
+//     reservations: async (_: any, args: any, context: any) => {
+//       return await reservationRepo.getReservations();
+//     },
 
-  Mutation: {
+//     reservation: async (_: any, args: { id: string }, context: any) => {
+//       return await reservationRepo.getReservationById(Number(args.id));
+//     }
+//   },
 
-    createReservation:async (
-      _parent: any,
-      args: { reservation: ReservationInput },
-      { ifAllowed }: ApolloContext
-    ) => {
-      ifAllowed([Privilege.MAKER], async (user: any) => {
-        const eligible = await reservationRepo.userIsEligible(args.reservation);
-        const noConflicts = await reservationRepo.noConflicts(args.reservation);
-        if (eligible && noConflicts) {
-          const reservation = await reservationRepo.createReservation(args.reservation);
+//   Mutation: {
 
-        await createLog(
-          "{user} created the {reservation} reservation.",
-          "admin",
-          { id: user.id, label: getUsersFullName(user) },
-          { id: reservation.id, label: reservation.id.toString() }
-        );
+//     createReservation:async (
+//       _parent: any,
+//       args: { reservation: ReservationInput },
+//       { ifAllowed }: ApolloContext
+//     ) => {
+//       ifAllowed([Privilege.MAKER], async (user: any) => {
+//         const eligible = await reservationRepo.userIsEligible(args.reservation);
+//         const noConflicts = await reservationRepo.noConflicts(args.reservation);
+//         if (eligible && noConflicts) {
+//           const reservation = await reservationRepo.createReservation(args.reservation);
 
-        return reservation;
+//         await createLog(
+//           "{user} created the {reservation} reservation.",
+//           "admin",
+//           { id: user.id, label: getUsersFullName(user) },
+//           { id: reservation.id, label: reservation.id.toString() }
+//         );
 
-        } else {
-          return null;
-        }
+//         return reservation;
+
+//         } else {
+//           return null;
+//         }
         
-      })
-    },
+//       })
+//     },
 
-    addComment: async (_parent: any, args: { resID: string, commentText: string },
-    { ifAllowed }: ApolloContext) => 
-        ifAllowed([Privilege.MAKER], async (user: any) => {
-          return await reservationRepo.addComment(Number(args.resID), user.id, args.commentText);
-    }),
+//     addComment: async (_parent: any, args: { resID: string, commentText: string },
+//     { ifAllowed }: ApolloContext) => 
+//         ifAllowed([Privilege.MAKER], async (user: any) => {
+//           return await reservationRepo.addComment(Number(args.resID), user.id, args.commentText);
+//     }),
 
-    confirmReservation: async (_parent: any,
-      args: { resID: string },
-      { ifAllowed }: ApolloContext
-    ) => {
-      ifAllowed([Privilege.MENTOR], async (user) => {
-        return await reservationRepo.confirmReservation(Number(args.resID));
-    });
-    },
+//     confirmReservation: async (_parent: any,
+//       args: { resID: string },
+//       { ifAllowed }: ApolloContext
+//     ) => {
+//       ifAllowed([Privilege.MENTOR], async (user) => {
+//         return await reservationRepo.confirmReservation(Number(args.resID));
+//     });
+//     },
 
-    cancelReservation: async (_parent: any,
-      args: { resID: string },
-      { ifAllowed }: ApolloContext
-    ) => {
-      ifAllowed([Privilege.MENTOR], async (user) => {
-        return await reservationRepo.cancelReservation(Number(args.resID));
-    });
-    }
-  }
-};
+//     cancelReservation: async (_parent: any,
+//       args: { resID: string },
+//       { ifAllowed }: ApolloContext
+//     ) => {
+//       ifAllowed([Privilege.MENTOR], async (user) => {
+//         return await reservationRepo.cancelReservation(Number(args.resID));
+//     });
+//     }
+//   }
+// };
 
-export default ReservationResolvers;
+// export default ReservationResolvers;

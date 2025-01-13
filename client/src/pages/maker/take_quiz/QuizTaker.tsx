@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Module, QuizItem, QuizItemType } from "../../../types/Quiz";
 import { useImmer } from "use-immer";
-import { Button, Stack, Typography } from "@mui/material";
+import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
 import Question from "./Question";
 import styled, { css } from "styled-components";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
-import { GET_CURRENT_USER } from "../../../common/CurrentUserProvider";
+import { GET_CURRENT_USER, useCurrentUser } from "../../../common/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Markdown from 'react-markdown'
 import { makeStyles } from '@material-ui/core/styles';
+import GET_TRAINING_MODULES from "../../../queries/trainingQueries";
 
 
 const StyledDiv = styled.div`
@@ -65,6 +66,8 @@ interface QuizTakerProps {
 
 export default function QuizTaker({ module }: QuizTakerProps) {
 
+  const currentUser = useCurrentUser();
+
   const [quizProgressed, setQuizProgressed] = useState<boolean>(false);
 
   const [width, setWidth] = useState<number>(window.innerWidth);
@@ -94,7 +97,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
   const [submitModule, result] = useMutation(SUBMIT_MODULE, {
     variables: { moduleID: module.id, answerSheet },
     refetchQueries: [
-      { query: GET_CURRENT_USER }
+      { query: GET_CURRENT_USER }, { query: GET_TRAINING_MODULES }
     ]
   });
 
@@ -174,6 +177,17 @@ export default function QuizTaker({ module }: QuizTakerProps) {
 
   return (
     <Stack spacing={4} className={classes.strongerBolds}>
+      {module.isLocked &&
+      <Card>
+        <CardContent>
+          <b>This training is locked due to too many attempts.</b>
+          <br />
+          You will be unable to progress and submit this quiz until <b>tomorrow</b>.
+          <br /><br />
+          If you would like to unlock this training early and seek help with the quiz, please see a Makerspace Mentor.
+        </CardContent>
+      </Card>}
+
       {module.quiz.map((quizItem) => {
         const selectedOptionIDs =
           answerSheet.find((qi) => qi.itemID === quizItem.id)?.optionIDs ?? [];
@@ -187,6 +201,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
                 selectedOptionIDs={selectedOptionIDs}
                 key={quizItem.id}
                 quizItem={quizItem}
+                disabled={module.isLocked ?? false}
                 onClick={(optionID) =>
                   selectMultipleChoiceOption(quizItem.id, optionID)
                 }
@@ -198,6 +213,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
                 selectedOptionIDs={selectedOptionIDs}
                 key={quizItem.id}
                 quizItem={quizItem}
+                disabled={module.isLocked ?? false}
                 onClick={(optionID) =>
                   toggleCheckboxOption(quizItem.id, optionID)
                 }
@@ -230,6 +246,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
           loading={result.loading}
           variant="contained"
           sx={{ alignSelf: "flex-end" }}
+          disabled={module.isLocked ?? false}
           onClick={() => submitAndViewResults()}
         >
           Submit
