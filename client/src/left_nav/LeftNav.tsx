@@ -20,7 +20,7 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
-import {Stack, Box, Button, IconButton} from "@mui/material";
+import {Stack, Box, Button, IconButton, Badge} from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -33,6 +33,7 @@ import { gql, useQuery } from "@apollo/client";
 import BarChartIcon from '@mui/icons-material/BarChart';
 import ThemeToggle from "./ThemeToggle";
 import ArchitectureIcon from '@mui/icons-material/Architecture';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -128,6 +129,13 @@ export default function LeftNav() {
           toggleDrawer={toggleDrawer(false)}
           newTab={true}
         />
+        <NavLink
+          to="https://rit0.sharepoint.com/:l:/s/shed-makerspace-internal/FLWWXKH1sflHs-h3tbs2ZFABOwYAmWuxffG18ansYFXlfA"
+          primary="Equipment Calendar"
+          icon={<EventIcon />}
+          toggleDrawer={toggleDrawer(false)}
+          newTab={true}
+        />
       </List>
 
         {!isMaker && (
@@ -136,14 +144,14 @@ export default function LeftNav() {
               <Divider textAlign="left">STAFF</Divider>
               <NavLink
                 to="/admin/equipment"
-                primary="Equipment"
-                icon={<HandymanIcon />}
+                primary="Manage Equipment"
+                icon={<Badge badgeContent={<SettingsIcon fontSize="small" />} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}><HandymanIcon /></Badge>}
                 toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
                 to="/admin/training"
-                primary="Training"
-                icon={<SchoolIcon />}
+                primary="Manage Training"
+                icon={<Badge badgeContent={<SettingsIcon fontSize="small" />} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}><SchoolIcon /></Badge>}
                 toggleDrawer={toggleDrawer(false)}
               />
               <NavLink
