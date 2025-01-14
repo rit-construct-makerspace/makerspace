@@ -20,7 +20,7 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
-import {Stack, Box, Button, IconButton, Badge} from "@mui/material";
+import { Stack, Box, Button, IconButton, Badge } from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -34,6 +34,7 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import ThemeToggle from "./ThemeToggle";
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SharepointIcon from "../common/SharepointIcon";
 
 const StyledLogo = styled.img`
   margin: 20px 12px 12px 12px;
@@ -64,13 +65,13 @@ export default function LeftNav() {
   const [width, setWidth] = useState<number>(window.innerWidth);
 
   function handleWindowSizeChange() {
-      setWidth(window.innerWidth);
+    setWidth(window.innerWidth);
   }
   useEffect(() => {
-      window.addEventListener('resize', handleWindowSizeChange);
-      return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
-      }
+    window.addEventListener('resize', handleWindowSizeChange);
+    return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
   }, []);
   const isMobile = width <= 1100;
 
@@ -78,11 +79,11 @@ export default function LeftNav() {
   const isMentorOrHigherResult = useQuery(IS_MENTOR_OR_HIGHER);
 
   const drawerContent = (
-    <Box sx={{overflowX: "hidden", minHeight: "100%"}}>
+    <Box sx={{ overflowX: "hidden", minHeight: "100%" }}>
       <StyledLogo src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => {
         setOpen(false);
         navigate(`/`);
-        }} />
+      }} />
 
       <Stack direction="row" alignItems="center" spacing={2} padding={2}>
         <Avatar
@@ -133,105 +134,117 @@ export default function LeftNav() {
           to="https://rit0.sharepoint.com/:l:/s/shed-makerspace-internal/FLWWXKH1sflHs-h3tbs2ZFABOwYAmWuxffG18ansYFXlfA"
           primary="Equipment Calendar"
           icon={<EventIcon />}
+        />
+        <NavLink
+          to="https://rit0.sharepoint.com/sites/shed-makerspace-public"
+          primary="Knowledge Base"
+          icon={<SharepointIcon />}
           toggleDrawer={toggleDrawer(false)}
           newTab={true}
         />
       </List>
 
-        {!isMaker && (
-          <RequestWrapper loading={isMentorOrHigherResult.loading} error={isMentorOrHigherResult.error}>
-            <List component="nav">
-              <Divider textAlign="left">STAFF</Divider>
-              <NavLink
-                to="/admin/equipment"
-                primary="Manage Equipment"
-                icon={<Badge badgeContent={<SettingsIcon fontSize="small" />} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}><HandymanIcon /></Badge>}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/training"
-                primary="Manage Training"
-                icon={<Badge badgeContent={<SettingsIcon fontSize="small" />} anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}><SchoolIcon /></Badge>}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/inventory"
-                primary="Material Inventory"
-                icon={<InventoryIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/tools"
-                primary="Tool Inventory"
-                icon={<ArchitectureIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/storefront"
-                primary="Storefront"
-                icon={<StorefrontIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/rooms"
-                primary="Rooms"
-                icon={<MeetingRoomIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/announcements"
-                primary="Announcements"
-                icon={<AnnouncementIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/people"
-                primary="People"
-                icon={<PeopleIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/history"
-                primary="History"
-                icon={<HistoryIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/readers"
-                primary="Access Devices"
-                icon={<AdfScannerIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-              <NavLink
-                to="/admin/statistics"
-                primary="Statistics"
-                icon={<BarChartIcon />}
-                toggleDrawer={toggleDrawer(false)}
-              />
-            </List>
-          </RequestWrapper>
-        )}
-      
-      
-        {/*Logout Button*/}
+      {!isMaker && (
+        <RequestWrapper loading={isMentorOrHigherResult.loading} error={isMentorOrHigherResult.error}>
+          <List component="nav">
+            <Divider textAlign="left">STAFF</Divider>
+            <NavLink
+              to="/admin/equipment"
+              primary="Manage Equipment"
+              icon={<Badge badgeContent={<SettingsIcon fontSize="small" />} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}><HandymanIcon /></Badge>}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/training"
+              primary="Manage Training"
+              icon={<Badge badgeContent={<SettingsIcon fontSize="small" />} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}><SchoolIcon /></Badge>}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/inventory"
+              primary="Material Inventory"
+              icon={<InventoryIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/tools"
+              primary="Tool Inventory"
+              icon={<ArchitectureIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/storefront"
+              primary="Storefront"
+              icon={<StorefrontIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/rooms"
+              primary="Rooms"
+              icon={<MeetingRoomIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/announcements"
+              primary="Announcements"
+              icon={<AnnouncementIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/people"
+              primary="People"
+              icon={<PeopleIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/history"
+              primary="History"
+              icon={<HistoryIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/readers"
+              primary="Access Devices"
+              icon={<AdfScannerIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="/admin/statistics"
+              primary="Statistics"
+              icon={<BarChartIcon />}
+              toggleDrawer={toggleDrawer(false)}
+            />
+            <NavLink
+              to="https://rit0.sharepoint.com/sites/shed-makerspace-internal/SitePages/TrainingHome.aspx"
+              primary="Internal Wiki"
+              icon={<SharepointIcon />}
+              toggleDrawer={toggleDrawer(false)}
+              newTab={true}
+            />
+          </List>
+        </RequestWrapper>
+      )}
+
+
+      {/*Logout Button*/}
       <List component={"nav"}>
         <NavLink
-            to="/logoutprompt"
-            primary="Logout"
-            icon={<HandymanIcon />}
-            toggleDrawer={toggleDrawer(false)}
+          to="/logoutprompt"
+          primary="Logout"
+          icon={<HandymanIcon />}
+          toggleDrawer={toggleDrawer(false)}
         />
       </List>
 
 
-      <List component={"nav"} sx={{mt: "auto"}}>
-        <ThemeToggle/>
+      <List component={"nav"} sx={{ mt: "auto" }}>
+        <ThemeToggle />
       </List>
     </Box>
   );
 
   return (
-    <Box display={!isMobile ? "flex" : "block"} sx={{overflowX: "hidden"}}>
+    <Box display={!isMobile ? "flex" : "block"} sx={{ overflowX: "hidden" }}>
       <ToastContainer
         position="bottom-left"
         autoClose={3000}
@@ -243,9 +256,9 @@ export default function LeftNav() {
         draggable
         pauseOnHover
         theme="colored"
-        />
-      <Box sx={{position: "fixed", zIndex: 90, background: `#${localStorage.getItem('themeMode') == "dark" ? "000000" : "fafafa"} !important`}}>
-        <IconButton onClick={toggleDrawer(true)} sx={{height: 20, width: 20, p: 3, borderRadius: 1}}><MenuIcon /></IconButton>
+      />
+      <Box sx={{ position: "fixed", zIndex: 90, background: `#${localStorage.getItem('themeMode') == "dark" ? "000000" : "fafafa"} !important` }}>
+        <IconButton onClick={toggleDrawer(true)} sx={{ height: 20, width: 20, p: 3, borderRadius: 1 }}><MenuIcon /></IconButton>
       </Box>
       <Drawer
         sx={{
