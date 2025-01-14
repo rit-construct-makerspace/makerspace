@@ -294,21 +294,15 @@ export function setupStagingAuth(app: express.Application) {
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  const authenticate = (orig?: string) => {
-    console.log(`============================${(!orig || orig.toString().length === 0) ? reactAppUrl : orig.toString()}`)
-    
-    return passport.authenticate("saml", {
-      failureFlash: true,
-      failureRedirect: "/login/fail",
-      successRedirect: (!orig || orig.toString().length === 0) ? reactAppUrl : orig.toString(),
-    });
-  };
-
-  app.get("/login", function (req, res) {
-    authenticate(req.query.orig?.toString())
+  const authenticate = passport.authenticate("saml", {
+    failureFlash: true,
+    failureRedirect: "/login/fail",
+    successRedirect: reactAppUrl,
   });
 
-  app.post("/login/callback", authenticate, async (req: any, res: any) => {
+  app.get("/login", authenticate);
+
+  app.post("/login/callback", authenticate, async (req, res) => {
     console.log("Logged in")
     if (req.user && 'id' in req.user && 'firstName' in req.user && 'lastName' in req.user) {
       await createLog(
