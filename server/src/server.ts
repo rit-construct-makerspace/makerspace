@@ -440,9 +440,10 @@ async function startServer() {
       await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
     }
     //If session just finished
-    if (reader.state == "Active" && req.body.State != "Active") {
+    if (req.body.Source == "Card Removed") {
       const user = await getUserByCardTagID(reader.currentUID);
       const equipment = await getEquipmentByID(parseInt(reader.machineType));
+      await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
       if (user != undefined) {
         await createLog(`{user} signed out of {machine} - {equipment} (Session: ${req.body.Time} sec)`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: req.body.Machine ?? "undefined" }, { id: equipment.id, label: equipment.name });
       }
