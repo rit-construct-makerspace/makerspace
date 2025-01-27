@@ -491,7 +491,9 @@ const TrainingModuleResolvers = {
                 equipmentIDsToCheck.forEach(async equipmentID => {
                   //check if access check does not already exists
                   if (!(await accessCheckExists(user.id, equipmentID))) {
-                    await createAccessCheck(user.id, equipmentID);
+                    await createAccessCheck(user.id, equipmentID).then(async result => {
+                      await createLog(`[DEBUG] access check automatically created for User ${user.id}, Equipment ${equipmentID}`, "server", { id: module.id, label: module.name }, { id: user.id, label: getUsersFullName(user) });
+                    });
                   }
                 });
               }
