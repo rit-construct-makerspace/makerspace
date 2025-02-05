@@ -639,9 +639,9 @@ async function startServer() {
     --REMEMBER HEROKU SERVER RUNS IN UTC (EST+4)--
    */
 
-  const dailyJob = schedule.scheduleJob("0 0 0 * * *", async function () {
+  const dailyJob = schedule.scheduleJob("0 0 4 * * *", async function () {
     console.log('Wiping daily records...');
-    if (API_DEBUG_LOGGING) await createLog('It is now ' + new Date().getHours() + ':' + new Date().getMinutes() + 'Daily Temp Records have been wiped.', "server")
+    if (API_DEBUG_LOGGING) await createLog('It is now 4:00am. Daily Temp Records have been wiped.', "server")
     setDataPointValue(1, 0);
   });
 
