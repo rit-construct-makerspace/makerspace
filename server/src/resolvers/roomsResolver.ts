@@ -133,6 +133,28 @@ const RoomResolvers = {
 
       return user;
     },
+    swipeIntoRoomWithID: async (
+      _parent: any,
+      args: { roomID: string; id: number }
+    ) => {
+      const room = await RoomRepo.getRoomByID(Number(args.roomID));
+      assert(room);
+
+      const user = await UserRepo.getUserByID(args.id);
+
+      if (!user) return null;
+
+      await RoomRepo.swipeIntoRoom(Number(args.roomID), user.id);
+
+      await createLog(
+        "{user} was manually signed into {room}.",
+        "welcome",
+        { id: user.id, label: getUsersFullName(user) },
+        { id: room.id, label: room.name }
+      );
+
+      return user;
+    },
   },
 };
 
