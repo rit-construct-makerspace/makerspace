@@ -145,6 +145,32 @@ export async function hasTrainingModules(
 }
 
 /**
+ * Fetch training module ids needed for an equipment that are not yet completed for by a specified user
+ * @param user User info to check trainings of
+ * @param equipmentID equipment ID to check trainings needed
+ * @returns array of incomplete training modules
+ */
+export async function getMissingTrainingModules(
+  user: UserRow,
+  equipmentID: number
+): Promise<TrainingModuleRow[]> {
+  let modules = await getModulesByEquipment(equipmentID);
+  let incompleteTrainings = [];
+  console.log(modules.toString());
+  // get last submission from maker for every module
+  for(let i = 0; i < modules.length; i++) {
+    if (await ModuleRepo.hasPassedModule(user.id, modules[i].id)) {
+      continue;
+    }
+    else {
+      incompleteTrainings.push(modules[i]);
+      break;
+    }
+  }
+  return incompleteTrainings;
+}
+
+/**
  * Check if User has completed all trainings needed for Equipment
  * @param user User info to check trainings of
  * @param equipmentID equipment ID to check trainings needed

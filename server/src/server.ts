@@ -19,7 +19,7 @@ import * as schedule from "node-schedule";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository.js";
 import { getRoomByID, hasSwipedToday, swipeIntoRoom } from "./repositories/Rooms/RoomRepository.js";
 import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLogRepository.js";
-import { getEquipmentByID,  hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
+import { getEquipmentByID,  getMissingTrainingModules,  hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
 import { Room } from "./models/rooms/room.js";
 import { Privilege } from "./schemas/usersSchema.js";
 import { createReader, getReaderByID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
@@ -244,7 +244,7 @@ async function startServer() {
    */
   app.get("/api/auth", async function (req, res) {
     if (req.query.id == undefined || req.query.needswelcome == undefined || req.query.type == undefined) {
-      if (API_DEBUG_LOGGING) createLog("Request failed to gain equipent access with error '{error}'", "auth", { id: 400, label: "Missing paramaters" });
+      if (API_DEBUG_LOGGING) createLog("Request failed to gain equipment access with error '{error}'", "auth", { id: 400, label: "Missing paramaters" });
       return res.status(400).json({ error: "Missing paramaters" }).send();
     }
 
@@ -335,7 +335,13 @@ async function startServer() {
 
     //Check that all required trainings are passed
     if (!(process.env.GLOBAL_TRAINING_BYPASS == "TRUE") && !(await hasAccessByID(user.id, machine.id))) {
-      if (API_DEBUG_LOGGING) createLog("{user} failed to swipe into {machine} - {equipment} with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name }, { id: 401, label: "Incomplete trainings" });
+      const incompleteTrainings = await getMissingTrainingModules(user, machine.id);
+      var incompleteTrainingsStr = ""
+      incompleteTrainings.forEach((module, i) => {
+        incompleteTrainingsStr += module.name;
+        if (i < incompleteTrainings.length-1) incompleteTrainingsStr += ", ";
+      });
+      if (API_DEBUG_LOGGING) createLog(`{user} failed to swipe into {machine} - {equipment} with error '{error}' [${incompleteTrainingsStr}]`, "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: req.query.machine?.toString() ?? "undefined" }, { id: machine.id, label: machine.name }, { id: 401, label: "Incomplete trainings" });
       return res.status(401).json({
         "Type": "Authorization",
         "Machine": machine.id,
