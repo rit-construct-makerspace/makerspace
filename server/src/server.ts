@@ -180,6 +180,9 @@ async function startServer() {
 
     const user = await getUserByCardTagID(uid);
 
+    if (req.body.Zone.toString().length == 0) {
+      return res.status(406).json({ error: "Empty Zone" }).send();
+    }
     var roomIDs = req.body.Zone.toString().split(",");
 
     var rooms: (Room | null)[] = [];
