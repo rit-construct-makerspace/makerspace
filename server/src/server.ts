@@ -435,9 +435,11 @@ async function startServer() {
       HWVer: req.body.HWVer ?? null,
     });
 
+    const user = await getUserByCardTagID(reader.currentUID);
+
     //If state change
     if (API_NORMAL_LOGGING && reader.state != req.body.State) {
-      await createLog(`{access_device} state changed: ${reader.state} -> ${req.body.State}`, "state", { id: reader?.id, label: reader?.name });
+      await createLog(`{user} changed state of {access_device}: ${reader.state} -> ${req.body.State}`, "state", {id: user ? user.id : undefined, label: user ? getUsersFullName(user) : "NULL"}, { id: reader?.id, label: reader?.name });
       // await createLog(`DEBUG: {Machine: ${req.body.Machine}, Time: ${req.body.Time}, Source: ${req.body.Source}}`, "status")
     }
 
@@ -450,7 +452,6 @@ async function startServer() {
     }
     //If session just finished
     if (req.body.Source == "Card Removed") {
-      const user = await getUserByCardTagID(reader.currentUID);
       const equipment = await getEquipmentByID(parseInt(reader.machineType));
       await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
       if (user != undefined) {
