@@ -265,7 +265,8 @@ async function startServer() {
           "Machine": req.query.machine,
           "UID": req.query.id,
           "Allowed": 0,
-          "Error": "User does not exist"
+          "Error": "User does not exist",
+          "Reason": "unknown-uid"
         }).send();
       }
 
@@ -276,7 +277,8 @@ async function startServer() {
         "Machine": req.query.machine,
         "UID": req.query.id,
         "Allowed": 0,
-        "Error": "User does not exist"
+        "Error": "User does not exist",
+        "Reason": "unknown-uid"
       }).send();
     }
 
@@ -290,7 +292,8 @@ async function startServer() {
         "Machine": req.query.type,
         "UID": req.query.id,
         "Allowed": 0,
-        "Error": "Machine does not exist"
+        "Error": "Machine does not exist",
+        "Reason": "unknown-machine"
       }).send();
     }
 
@@ -302,7 +305,8 @@ async function startServer() {
         "Machine": req.query.type,
         "UID": req.query.id,
         "Allowed": 0,
-        "Error": "Machine does not exist"
+        "Error": "Machine does not exist",
+        "Reason": "unknown-machine"
       }).send();
     }
 
@@ -331,7 +335,8 @@ async function startServer() {
           "Machine": machine.id,
           "UID": req.query.id,
           "Allowed": 0,
-          "Error": "User requires Welcome"
+          "Error": "User requires Welcome",
+          "Reason": "no-welcome"
         }).send();
       }
     }
@@ -350,7 +355,8 @@ async function startServer() {
         "Machine": machine.id,
         "UID": req.query.id,
         "Allowed": 0,
-        "Error": "Incomplete trainings"
+        "Error": "Incomplete trainings",
+        "Reason": "missing-training"
       }).send();
     }
 
@@ -362,7 +368,8 @@ async function startServer() {
         "Machine": machine.id,
         "UID": req.query.id,
         "Allowed": 0,
-        "Error": "Missing Staff Approval"
+        "Error": "Missing Staff Approval",
+        "Reason": "no-approval"
       }).send();
     }
 
