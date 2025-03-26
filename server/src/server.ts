@@ -293,7 +293,8 @@ async function startServer() {
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Machine does not exist",
-        "Reason": "unknown-machine"
+        "Reason": "unknown-machine",
+        "Role": user.privilege
       }).send();
     }
 
@@ -306,7 +307,8 @@ async function startServer() {
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Machine does not exist",
-        "Reason": "unknown-machine"
+        "Reason": "unknown-machine",
+        "Role": user.privilege
       }).send();
     }
 
@@ -319,7 +321,8 @@ async function startServer() {
         "Type": "Authorization",
         "Machine": machine.id,
         "UID": req.query.id,
-        "Allowed": 1
+        "Allowed": 1,
+        "Role": user.privilege
       }).send();
     }
 
@@ -336,7 +339,8 @@ async function startServer() {
           "UID": req.query.id,
           "Allowed": 0,
           "Error": "User requires Welcome",
-          "Reason": "no-welcome"
+          "Reason": "no-welcome",
+          "Role": user.privilege
         }).send();
       }
     }
@@ -356,7 +360,8 @@ async function startServer() {
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Incomplete trainings",
-        "Reason": "missing-training"
+        "Reason": "missing-training",
+        "Role": user.privilege
       }).send();
     }
 
@@ -369,7 +374,8 @@ async function startServer() {
         "UID": req.query.id,
         "Allowed": 0,
         "Error": "Missing Staff Approval",
-        "Reason": "no-approval"
+        "Reason": "no-approval",
+        "Role": user.privilege
       }).send();
     }
 
@@ -380,7 +386,8 @@ async function startServer() {
       "Type": "Authorization",
       "Machine": machine.id,
       "UID": req.query.id,
-      "Allowed": 1
+      "Allowed": 1,
+      "Role": user.privilege
     }).send();
   });
 
