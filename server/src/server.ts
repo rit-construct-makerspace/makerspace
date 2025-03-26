@@ -436,10 +436,11 @@ async function startServer() {
     });
 
     const user = await getUserByCardTagID(reader.currentUID);
+    const newUser = await getUserByCardTagID(req.body.UID);
 
     //If state change
     if (API_NORMAL_LOGGING && reader.state != req.body.State) {
-      await createLog(`{user} changed state of {access_device}: ${reader.state} -> ${req.body.State}`, "state", {id: user ? user.id : undefined, label: user ? getUsersFullName(user) : "NULL"}, { id: reader?.id, label: reader?.name });
+      await createLog(`{user} changed state of {access_device}: ${reader.state} -> ${req.body.State}`, "state", {id: newUser ? newUser.id : undefined, label: newUser ? getUsersFullName(newUser) : "NULL"}, { id: reader?.id, label: reader?.name });
       // await createLog(`DEBUG: {Machine: ${req.body.Machine}, Time: ${req.body.Time}, Source: ${req.body.Source}}`, "status")
     }
 
