@@ -45,5 +45,7 @@ export const RoomTypeDefs = gql`
     setZone(roomID: ID!, zoneID: ID!): Room
 
     swipeIntoRoom(roomID: ID!, universityID: String!): User
+    swipeIntoRoomWithID(roomID: ID!, id: ID!): User
+
   }
 `;

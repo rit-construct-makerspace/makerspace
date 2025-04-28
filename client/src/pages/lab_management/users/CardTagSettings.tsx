@@ -16,6 +16,7 @@ import GET_USERS from "../../../queries/getUsers";
 import { GET_USER } from "./UserModal";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { toast } from "react-toastify";
 
 
 const SET_CARD_TAG_ID = gql`
@@ -60,8 +61,24 @@ export default function CardTagSettings({
         { query: GET_USERS },
         { query: GET_USER, variables: { id: userID } },
       ],
+    }).then(() => {
+      cardTagSuccessAnimation();
+      setUpdatedCardTagID("");
     });
   };
+
+    const cardTagSuccessAnimation = () => {
+      toast.success('Card Tag Updated Successfully', {
+        position: "bottom-left",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
 
   return (
     <>

@@ -25,6 +25,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import AdminPage from "../../AdminPage";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { ManualRoomSignInModal } from "./ManualRoomSignInModal";
 
 const GET_LOGS = gql`
   query GetLogs(
@@ -87,6 +89,7 @@ export default function LogPage() {
   const [query, queryResult] = useLazyQuery(GET_LOGS, { pollInterval: 2000 });
   const [searchText, setSearchText] = useState("");
   const [expanded, setExpanded] = React.useState(false);
+  const [manualSignInModal, setManualSignInModal] = useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -164,7 +167,9 @@ export default function LogPage() {
     startDateString || stopDateString || search.includes("q=");
 
   return (
-    <AdminPage title="History" maxWidth="1250px">
+    <AdminPage title="History" maxWidth="1250px" topRightAddons={
+      <Button startIcon={<PersonAddIcon />} color="secondary" onClick={() => setManualSignInModal(true)}>Manual Room Sign-in</Button>
+    }>
       <Stack direction={isMobile ? "column" : "row"} spacing={2}>
         <TextField
           label="Start"
@@ -306,6 +311,8 @@ export default function LogPage() {
           );
         }}
       />
+
+      <ManualRoomSignInModal modalOpen={manualSignInModal} setModalOpen={setManualSignInModal} />
     </AdminPage>
   );
 }

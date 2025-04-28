@@ -58,7 +58,14 @@ export default function SelectRoomPage() {
       loading={getRoomsResult.loading}
       error={getRoomsResult.error}
     >
-      <AdminPage title="Rooms" maxWidth="1250px">
+      <AdminPage title="" maxWidth="1250px">
+        <Typography
+          variant="h4"
+          component="div"
+          sx={{ lineHeight: 1, m: 2 }}
+        >
+          Rooms
+        </Typography>
         <Stack direction="row" spacing={2} mb={4}>
           <Button variant="contained" onClick={handleCreateRoom}>
             + Add Room

@@ -17,7 +17,8 @@ import assert from "assert";
 import express from "express";
 import {
   createUser,
-  getUserByRitUsername
+  getUserByRitUsername,
+  updateUserName
 } from "./repositories/Users/UserRepository.js";
 import { getHoldsByUser } from "./repositories/Holds/HoldsRepository.js";
 import { CurrentUser } from "./context.js";
@@ -255,6 +256,11 @@ export function setupStagingAuth(app: express.Application) {
         ritUsername: ritUser["urn:oid:0.9.2342.19200300.100.1.1"],
         universityID: ritUser["urn:oid:1.3.6.1.4.1.4447.1.20"]
       });
+    }
+
+    //If Shibboleth name does not match, overwrite user's name to Shibboleth provided info
+    else if (existingUser.firstName !== ritUser["urn:oid:2.5.4.42"] || existingUser.lastName != ritUser["urn:oid:2.5.4.4"]) {
+      await updateUserName(existingUser.id, ritUser["urn:oid:2.5.4.42"], ritUser["urn:oid:2.5.4.4"]);
     }
 
     done(null, ritUser["urn:oid:0.9.2342.19200300.100.1.1"]);

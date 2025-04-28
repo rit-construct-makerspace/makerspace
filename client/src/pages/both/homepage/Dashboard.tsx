@@ -54,8 +54,8 @@ export function Dashboard() {
         <Page title="" noPadding={isMobile}>
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
             {(currentUser.cardTagID == null || currentUser.cardTagID == "") &&
-                <Alert variant="standard" color="error">
-                    Your RIT ID has not been registered! You can still complete trainings but you must speak to a SHED Makerspace employee before gaining access to our equipment.
+                <Alert variant="standard" color="warning">
+                    Your RIT ID has not been associated with your Makerspace account yet. Please speak to a member of staff in the makerspace to rectify this before using any makerspace equipment. Trainings and 3DPrinterOS will remain available.
                 </Alert>
             }
 

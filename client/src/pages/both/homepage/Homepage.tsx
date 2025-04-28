@@ -47,11 +47,6 @@ const Homepage: React.FC = () => {
     return (
         <Page title="" maxWidth={"1250px"} noPadding={isMobile}>
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
-            {( currentUser.cardTagID == null || currentUser.cardTagID == "" ) &&
-            <Alert variant="standard" color="error">
-                Your RIT ID has not been registered! You can still complete trainings but you must speak to a SHED Makerspace employee before gaining access to our equipment.
-            </Alert>
-            }
             <Typography variant="h5">Dashboard</Typography>
             <Stack className="flexo" direction={isMobile ? "column" : "row"}>
                 {/* <AccountBalanceCard /> */}

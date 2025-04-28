@@ -173,6 +173,17 @@ export async function updateStudentProfile(args: {
 }
 
 /**
+ * Update a user's first and last name
+ * @param id ID of the User entry
+ * @param firstName new first name
+ * @param lastName new last name
+ */
+export async function updateUserName(id: number, firstName: string, lastName: string) {
+  await knex("Users").update({firstName, lastName}).where({id});
+  await createLog("{user}'s profile info has been automatically updated", "server", {id: id, label: (firstName + " " + lastName)});
+}
+
+/**
  * Update the privlege value of a user
  * @param userID the ID of the user to update
  * @param privilege the privlege to set
