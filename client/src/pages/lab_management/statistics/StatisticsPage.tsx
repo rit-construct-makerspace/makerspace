@@ -460,8 +460,9 @@ export default function StatisticsPage() {
               sx={{ m: 1, width: 500 }}
               color="primary"
               variant="outlined"
+              disabled
               onClick={() => {
-                getEquipmentSessions({ variables: { startDate: sessionsStartDate, stopDate: sessionsStopDate } });
+                //getEquipmentSessions({ variables: { startDate: sessionsStartDate, stopDate: sessionsStopDate } });
               }}
             >
               Fetch (may take up to a minute)
