@@ -14,9 +14,10 @@ import { wrap } from "module";
 import ResourcesCard from "./ResourcesCard";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { FullZone, GET_FULL_ZONES, GET_ZONES_WITH_HOURS } from "../../../queries/getZones";
+import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
 import { ZoneDash } from "./ZoneDash";
 import { HomeDash } from "./HomeDash";
+import ZoneCard from "./ZoneCard";
 // import RequestWrapper from "../../../common/RequestWrapper";
 // import { useQuery } from "@apollo/client";
 // import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
@@ -46,8 +47,7 @@ export function Dashboard() {
     }, []);
     const isMobile = width <= 1100;
 
-    const getZonesResult = useQuery(GET_FULL_ZONES);
-    const [currentTab, setCurrentTab] = useState(0);
+    const getZonesResult = useQuery(GET_ZONES_WITH_HOURS);
 
 
     return (
@@ -60,19 +60,11 @@ export function Dashboard() {
             }
 
             <RequestWrapper loading={getZonesResult.loading} error={getZonesResult.error}>
-                <Box width={"100%"}>
-                    <Tabs sx={{'.MuiTab-root': {fontSize: isMobile ? "0.8em" : "1.3em"}, width: "100%"}} value={currentTab} onChange={((e, x) => setCurrentTab(x))} aria-label="Area Dashboards" variant={isMobile ? "fullWidth" : "scrollable"} scrollButtons="auto" allowScrollButtonsMobile >
-                        <Tab label={"Home"} id={"simple-tab-0"} aria-controls={"simple-tab-panel-0"} value={0} />
-                        {getZonesResult.data?.zones.map((zone: FullZone) => (
-                            <Tab label={zone.name} id={"simple-tab-" + zone.id} aria-controls={"simple-tab-panel-" + zone.id} value={zone.id} />
-                        ))}
-                    </Tabs>
-                    
-                    {currentTab == 0 && <HomeDash />}
-                    {getZonesResult.data?.zones.map((zone: FullZone) => (
-                        <ZoneDash zone={zone} open={currentTab == zone.id}/>
+                <Stack direction="row" justifyContent="space-evenly" alignItems="center">
+                    {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
+                        <ZoneCard id={zone.id} name={zone.name} hours={zone.hours} imageUrl={process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}/>
                     ))}
-                </Box>
+                </Stack>
             </RequestWrapper>
         </Page>
     );
