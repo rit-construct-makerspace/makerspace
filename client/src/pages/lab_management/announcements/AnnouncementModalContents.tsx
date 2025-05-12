@@ -101,10 +101,6 @@ export default function AnnouncementModalContents({
             <DeleteAnnouncementButton 
               onDelete={handleDeleteClick}
             />
-
-            <Button variant="outlined" startIcon={<HistoryIcon />}>
-              View Logs
-            </Button>
           </Stack>
         )}
 
