@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { CardActionArea, Chip, IconButton, MenuItem, Select, Stack, Switch, TableCell, TableRow, Typography } from "@mui/material";
-import InvItemNamePic from "../../../common/InvItemNamePic";
+import InvItemName from "../../../common/InvItemNamePic";
 import InventoryItem, { InventoryTag } from "../../../types/InventoryItem";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { useMutation } from "@apollo/client";
@@ -55,7 +55,7 @@ export default function AdminInventoryRow({ item, onClick, allTags }: InventoryR
 
   return (
     <TableRow sx={{ py: 2 }}>
-      <TableCell><InvItemNamePic item={item} /></TableCell>
+      <TableCell><InvItemName item={item} /></TableCell>
 
       <TableCell>
         <Stack direction={"row"} flexWrap={"wrap"}>

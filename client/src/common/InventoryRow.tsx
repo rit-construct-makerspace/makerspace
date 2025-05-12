@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import InventoryItem from "../types/InventoryItem";
 import { CardActionArea, Chip, Stack, Typography } from "@mui/material";
-import InvItemNamePic from "./InvItemNamePic";
+import InvItemName from "./InvItemNamePic";
 import InvItemCount from "./InvItemCount";
 
 interface InventoryRowProps {
@@ -31,7 +31,7 @@ export default function InventoryRow({ item, onClick }: InventoryRowProps) {
         alignItems="center"
         spacing={isMobile ? 1 : 8}
       >
-        <InvItemNamePic item={item} />
+        <InvItemName item={item} />
         <Stack direction={"row"} spacing={0.1}>
           {!item.storefrontVisible && <Chip variant="outlined" color="warning" label="Internal" />}
           {item.staffOnly && <Chip variant="outlined" color="secondary" label="Staff Only" />}

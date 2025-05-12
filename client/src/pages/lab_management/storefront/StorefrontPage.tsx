@@ -145,10 +145,10 @@ export default function StorefrontPage() {
           </Typography>
           <Stack direction={"row"} spacing={2}>
             <Stack direction={"row"} alignItems={"center"}>
-              <Switch color="warning" onChange={handleShowInternalChange}></Switch><span> Show Internal Items</span>
+              <Switch color="warning" onChange={handleShowInternalChange}></Switch><span> Internal Use Items</span>
             </Stack>
             <Stack direction={"row"} alignItems={"center"}>
-            <Switch color="warning" onChange={handleShowStaffChange} disabled={currentUser.privilege != Privilege.STAFF}></Switch><span> Show Staff Only Items</span>
+            <Switch color="warning" onChange={handleShowStaffChange} disabled={currentUser.privilege != Privilege.STAFF}></Switch><span> Staff Only Items</span>
             </Stack>
           </Stack>
         </Stack>

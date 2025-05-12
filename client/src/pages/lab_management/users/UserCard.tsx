@@ -19,10 +19,10 @@ export default function UserCard({ user, onClick }: UserCardProps) {
     const BORDER = ((
       user.activeHold
     ) ? `2px solid ${theme.palette.error.main}`
-      : "inherit");
+      : `2px solid lightgray`);
 
   return (
-    <Card elevation={2} sx={{ mr: 2, mb: 2, background: CARD_COLOR, border: BORDER }}>
+    <Card elevation={2} sx={{ mr: 2, mb: 2, background: CARD_COLOR, border: BORDER}}>
       <CardActionArea sx={{ p: 2, height: "100%" }} onClick={onClick}>
         <Stack alignItems="center" spacing={1.5} height="100%">
           <Avatar
