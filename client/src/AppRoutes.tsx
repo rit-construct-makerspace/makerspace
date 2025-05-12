@@ -33,6 +33,7 @@ import TermsPage from "./pages/both/policy/TermsPage";
 import ResolutionLogPage from "./pages/lab_management/manage_equipment/ResolutionLog";
 import { Dashboard } from "./pages/both/homepage/Dashboard";
 import { ToolItemPage } from "./pages/lab_management/inventory/ToolItemPage";
+import TopNav from "./top_nav/TopNav";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -49,7 +50,7 @@ export default function AppRoutes() {
         <Route path="/admin/storefront/preview" element={<StorefrontPreviewPage />} />
 
 
-        <Route path={"/"} element={<LeftNav />}>
+        <Route path={"/"} element={<TopNav />}>
 
           <Route path="/" element={<Dashboard />} />
 
