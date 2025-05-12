@@ -67,7 +67,7 @@ export default function RoomZoneAssociation({
   return (
     <>
       <FormControl disabled={!isAdmin || setNewZoneResult.loading}>
-        <InputLabel id="update-zone-label">Zone</InputLabel>
+        <InputLabel sx={{fontWeight:"bold", color: "black"}} id="update-zone-label">Zone</InputLabel>
         <Select
           value={updatedZoneID}
           id="update-zone-label"
