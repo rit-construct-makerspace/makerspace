@@ -134,6 +134,7 @@ export default function LeftNav() {
           to="https://rit0.sharepoint.com/:l:/s/shed-makerspace-internal/FLWWXKH1sflHs-h3tbs2ZFABOwYAmWuxffG18ansYFXlfA"
           primary="Equipment Calendar"
           icon={<EventIcon />}
+          newTab={true}
         />
         <NavLink
           to="https://rit0.sharepoint.com/sites/shed-makerspace-public"
