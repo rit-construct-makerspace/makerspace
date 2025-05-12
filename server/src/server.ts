@@ -466,7 +466,9 @@ async function startServer() {
 
       //If state change
       if (API_NORMAL_LOGGING && reader.state != req.body.State) {
-        await createLog(`{user} changed state of {access_device}: ${reader.state} -> ${req.body.State}`, "state", { id: newUser ? newUser.id : undefined, label: newUser ? getUsersFullName(newUser) : "NULL" }, { id: reader?.id, label: reader?.name });
+        //If no user responsible, dont print a user
+        if (!newUser) await createLog(`changed state of {access_device}: ${reader.state} -> ${req.body.State}`, "state", { id: reader?.id, label: reader?.name });
+        else await createLog(`{user} changed state of {access_device}: ${reader.state} -> ${req.body.State}`, "state", { id: newUser ? newUser.id : 0, label: newUser ? getUsersFullName(newUser) : "NULL" }, { id: reader?.id, label: reader?.name });
         // await createLog(`DEBUG: {Machine: ${req.body.Machine}, Time: ${req.body.Time}, Source: ${req.body.Source}}`, "status")
       }
 
