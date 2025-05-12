@@ -23,6 +23,9 @@ import styled from "styled-components";
 import HistoryIcon from "@mui/icons-material/History";
 import RoomZoneAssociation from "./RoomZoneAssociation";
 import AdminPage from "../../AdminPage";
+import RequestWrapper from "../../../common/RequestWrapper";
+import EditableEquipmentCard from "../manage_equipment/EditableEquipmentCard";
+import Equipment from "../../../types/Equipment";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -66,6 +69,16 @@ export const GET_ROOM = gql`
       equipment {
         id
         name
+        archived
+        imageUrl
+        sopUrl
+        trainingModules {
+          id
+          name
+        }
+        numAvailable
+        numInUse
+        byReservationOnly
       }
     }
   }
@@ -79,6 +92,8 @@ export interface Swipe {
     lastName: string;
   };
 }
+
+const url = "/admin/equipment/";
 
 export default function MonitorRoomPage() {
   const { id } = useParams<{ id: string }>();
@@ -124,28 +139,19 @@ export default function MonitorRoomPage() {
           {room.equipment.length === 0 && (
             <EmptyPageSection label="No equipment found." />
           )}
-          <Grid container spacing={2}>
-            {room.equipment.map((equipment: any) => (
-              <Grid item key={equipment.id}>
-                <Card sx={{ width: 250 }}>
-                  <CardMedia
-                    component="img"
-                    height="150"
-                    image="https://ae01.alicdn.com/kf/Hc43d9bc0340547709698a3900a1566f69/ROBOTEC-1325-Cnc-Router-Auction-3D-Cnc-Wood-Carving-Machine-Cnc-Milling-Machine-Design-For-Wood.jpg_Q90.jpg_.webp"
-                  />
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      component="div"
-                      sx={{ lineHeight: 1 }}
-                    >
-                      {equipment.name}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          <RequestWrapper
+            loading={queryResult.loading}
+            error={queryResult.error}
+          >
+            <Grid container spacing={3} mt={2}>
+              {queryResult.data?.room.equipment
+                .map((e: Equipment) => (
+                  <Grid key={e.id} item>
+                    <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} sopUrl={e.sopUrl} imageUrl={((e.imageUrl == undefined || e.imageUrl == null || e.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + e.imageUrl)} />
+                  </Grid>
+                ))}
+            </Grid>
+          </RequestWrapper>
 
           <PageSectionHeader>Actions</PageSectionHeader>
           <Stack direction="column" spacing={2}>
