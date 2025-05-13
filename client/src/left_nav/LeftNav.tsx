@@ -20,7 +20,7 @@ import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useCurrentUser } from "../common/CurrentUserProvider";
 import Privilege from "../types/Privilege";
 import { Outlet } from "react-router-dom";
-import { Stack, Box, Button, IconButton, Badge } from "@mui/material";
+import { Stack, Box, Button, IconButton, Badge, ButtonBase, Menu, MenuItem } from "@mui/material";
 import HoldAlert from "./HoldAlert";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -73,10 +73,20 @@ export default function LeftNav() {
       window.removeEventListener('resize', handleWindowSizeChange);
     }
   }, []);
+  
   const isMobile = width <= 1100;
-
-
   const isMentorOrHigherResult = useQuery(IS_MENTOR_OR_HIGHER);
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const userMenuOpen = Boolean(anchorEl);
+
+  const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  }
+
+  const handleUserMenuClose = () => {
+    setAnchorEl(null);
+  }
 
   const drawerContent = (
     <Box sx={{ overflowX: "hidden", minHeight: "100%" }}>
@@ -84,16 +94,35 @@ export default function LeftNav() {
         setOpen(false);
         navigate(`/`);
       }} />
-
-      <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-        <Avatar
-          alt="Profile picture"
-          src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-        />
-        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-          {`${currentUser.firstName} ${currentUser.lastName}`}
-        </Typography>
-      </Stack>
+      <ButtonBase onClick={handleUserMenuOpen}>
+        <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+          <Avatar
+            alt="Profile picture"
+            src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+          />
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+            {`${currentUser.firstName} ${currentUser.lastName}`}
+          </Typography>
+        </Stack>
+      </ButtonBase>
+      <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
+        <MenuItem onClick={handleUserMenuClose}>
+          <NavLink 
+            to="/user/trainings"
+            primary="User Trainings"
+            icon={<SchoolIcon />}
+            toggleDrawer={toggleDrawer(false)}
+          />
+        </MenuItem>
+        <MenuItem onClick={handleUserMenuClose}>
+          <NavLink 
+            to="/user/settings"
+            primary="User Settings"
+            icon={<SettingsIcon />}
+            toggleDrawer={toggleDrawer(false)}
+          />
+        </MenuItem>
+      </Menu>
 
       {currentUser.hasHolds && <HoldAlert />}
 
