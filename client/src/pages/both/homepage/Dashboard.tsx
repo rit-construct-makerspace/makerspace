@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Box, Stack, Tab, Tabs } from "@mui/material";
+import { Alert, Box, Divider, Stack, Tab, Tabs } from "@mui/material";
 import Page from "../../Page";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
@@ -18,6 +18,8 @@ import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
 import { ZoneDash } from "./ZoneDash";
 import { HomeDash } from "./HomeDash";
 import ZoneCard from "./ZoneCard";
+import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
+import AnnouncementCard from "./AnnouncementCard";
 // import RequestWrapper from "../../../common/RequestWrapper";
 // import { useQuery } from "@apollo/client";
 // import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
@@ -45,20 +47,24 @@ export function Dashboard() {
             window.removeEventListener('resize', handleWindowSizeChange);
         }
     }, []);
+
+    const [IDAlert, setIDAlert] = useState(true);
+
     const isMobile = width <= 1100;
 
     const getZonesResult = useQuery(GET_ZONES_WITH_HOURS);
+    const getAnnouncementsResult = useQuery(GET_ANNOUNCEMENTS);
 
 
     return (
-        <Page title="" noPadding={isMobile}>
+        <Box margin="30px 0px">
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
-            {(currentUser.cardTagID == null || currentUser.cardTagID == "") &&
-                <Alert variant="standard" color="warning">
+            {((currentUser.cardTagID == null || currentUser.cardTagID == "") && IDAlert) &&
+                <Alert variant="standard" color="warning" onClose={() => {setIDAlert(false)}}>
                     Your RIT ID has not been associated with your Makerspace account yet. Please speak to a member of staff in the makerspace to rectify this before using any makerspace equipment. Trainings and 3DPrinterOS will remain available.
                 </Alert>
             }
-
+            {/* Zones */}
             <RequestWrapper loading={getZonesResult.loading} error={getZonesResult.error}>
                 <Stack direction="row" justifyContent="space-evenly" alignItems="center">
                     {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
@@ -66,6 +72,22 @@ export function Dashboard() {
                     ))}
                 </Stack>
             </RequestWrapper>
-        </Page>
+            {/* Announcments */}
+            <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
+                <Box>
+                    <Typography variant="h3" margin="30px">Announcements</Typography>
+                    <Stack direction="row" justifyContent="flex-start" alignItems="stretch" spacing={2}
+                        divider={<Divider orientation="vertical" flexItem/>}
+                        margin="0px 20px"
+                    >
+                        {getAnnouncementsResult.data?.getAllAnnouncements?.slice(2, getAnnouncementsResult.data?.getAllAnnouncements?.length)
+                            .map((thisAnnouncement: Announcement) => (
+                                <AnnouncementCard announcement={thisAnnouncement}/>
+                        ))}
+                    </Stack>
+                </Box>
+            </RequestWrapper>
+            
+        </Box>
     );
 };
