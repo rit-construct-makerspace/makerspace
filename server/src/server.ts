@@ -484,7 +484,7 @@ async function startServer() {
         const equipment = await getEquipmentByID(parseInt(reader.machineType));
         await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
         if (user != undefined) {
-          await createLog(`{user} signed out of {machine} - {equipment} (Session: ${req.body.Time} sec)`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: req.body.Machine ?? "undefined" }, { id: equipment.id, label: equipment.name });
+          await createLog(`{user} signed out of {machine} - {equipment} (Session: ${new Date(Number(req.body.Time) * 1000).toISOString().substring(11, 19)})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: req.body.Machine ?? "undefined" }, { id: equipment.id, label: equipment.name });
         }
       }
 
