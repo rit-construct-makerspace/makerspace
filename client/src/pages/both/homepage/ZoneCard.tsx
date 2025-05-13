@@ -34,6 +34,35 @@ function dayOfTheWeekConvert(day: number) {
     }
 }
 
+function addHours(date: Date, hours: number) {
+    const msToAdd = hours * 60 * 60 * 1000;
+    date.setTime(date.getTime() + msToAdd);
+    return date;
+}
+
+function currentStatus(closing: string) {
+    if (closing === "") {
+        return <Typography color="red">CLOSED</Typography>;
+    }
+    const date = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        hour12: false
+    });
+
+    var curTimeString = formatter.format(date); // Current time in 24hr
+
+    var curTimeDate = new Date(Date.parse('01/01/2011 ' + curTimeString));
+    var closingDate = new Date(Date.parse('01/01/2011 ' + closing));
+
+    if (curTimeDate > closingDate) {
+        return <Typography color="red">CLOSED</Typography>;
+    } else if (addHours(curTimeDate, 1) > closingDate) {
+        return <Typography color="yellow">CLOSING SOON</Typography>;
+    } else {
+        return <Typography color="green">OPEN</Typography>;
+    }
+}
+
 function getHoursToday(times: {type: string, dayOfTheWeek: number, time: string}[]) {
     const date = new Date();
     const formatter = new Intl.DateTimeFormat('en-US', {
@@ -41,24 +70,28 @@ function getHoursToday(times: {type: string, dayOfTheWeek: number, time: string}
         timeZone: 'America/New_York'
     });
     var today = formatter.format(date);
-    var open = "";
-    var close = "";
+    var rawOpen = "";
+    var rawClose = "";
 
     times.map((time: {type: string, dayOfTheWeek: number, time: string}, index) => {
         if (dayOfTheWeekConvert(time.dayOfTheWeek) === today && time.type === "OPEN") {
-            open = reformatTime(time.time);
+            rawOpen = time.time;
         }
 
         if (dayOfTheWeekConvert(time.dayOfTheWeek) === today && time.type === "CLOSE") {
-            close = reformatTime(time.time);
+            rawClose = time.time;
         }
         
     })
 
     return (
         <Stack justifyContent="space-between" direction="row">
-            <Typography color="darkorange">{today}</Typography>
-            <Typography>{open !== "" ? close !== "" ? `${open} - ${close}` : "CLOSED" : "CLOSED"}</Typography>
+            {currentStatus(rawClose)}
+            <Stack direction="row">
+                <Typography color="darkorange">{today}</Typography>
+                <Typography paddingLeft={"10px"}>{rawOpen !== "" ? rawClose !== "" ? `${reformatTime(rawOpen)} - ${reformatTime(rawClose)}` : "" : ""}</Typography>
+            </Stack>
+            
         </Stack>
     )
 }
