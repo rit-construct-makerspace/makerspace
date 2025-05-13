@@ -105,22 +105,19 @@ export default function LeftNav() {
           </Typography>
         </Stack>
       </ButtonBase>
+
       <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
-        <MenuItem onClick={handleUserMenuClose}>
-          <NavLink 
-            to="/user/trainings"
-            primary="User Trainings"
-            icon={<SchoolIcon />}
-            toggleDrawer={toggleDrawer(false)}
-          />
+        <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose();}}>
+          <Stack direction="row" spacing={2} alignItems="center" width="100%">
+            <SchoolIcon sx={{color: "gray"}}/>
+            <Typography variant="body1">User Trainings</Typography>
+          </Stack>
         </MenuItem>
-        <MenuItem onClick={handleUserMenuClose}>
-          <NavLink 
-            to="/user/settings"
-            primary="User Settings"
-            icon={<SettingsIcon />}
-            toggleDrawer={toggleDrawer(false)}
-          />
+        <MenuItem onClick={() => {navigate("/user/settings"); handleUserMenuClose();}}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
+            <SettingsIcon sx={{color: "gray"}}/>
+            <Typography variant="body1">User Settings</Typography>
+          </Stack>
         </MenuItem>
       </Menu>
 
