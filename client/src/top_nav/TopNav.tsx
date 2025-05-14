@@ -36,7 +36,6 @@ export default function TopNav() {
     const navigate = useNavigate();
 
     const currentUser = useCurrentUser();
-
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const userMenuOpen = Boolean(anchorEl);
 
@@ -47,7 +46,6 @@ export default function TopNav() {
     const handleUserMenuClose = () => {
         setAnchorEl(null);
     }
-
     return (
         <Stack>
             <Box width="100%" height="5%" sx={{flexGrow: 1}}>
