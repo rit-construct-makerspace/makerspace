@@ -1,10 +1,11 @@
 import { Card, CardActionArea, CardContent, CardMedia, Stack, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 interface ZoneCardProps {
     id: number;
     name: string;
     hours: {type: string, dayOfTheWeek: number, time: string}[];
-    imageUrl: string; 
+    imageUrl: string;
 }
 
 function reformatTime(time: string) {
@@ -98,9 +99,11 @@ function getHoursToday(times: {type: string, dayOfTheWeek: number, time: string}
 
 export default function ZoneCard(props: ZoneCardProps) {
 
+    const navigate = useNavigate();
+
     return (
         <Card sx={{minWidth: "500px"}}>
-            <CardActionArea>
+            <CardActionArea onClick={() => {navigate(`/makerspace/${props.id}`)}}>
                 <CardMedia
                     component="img"
                     height="200px"

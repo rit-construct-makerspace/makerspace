@@ -36,6 +36,7 @@ import { ToolItemPage } from "./pages/lab_management/inventory/ToolItemPage";
 import UserSettingsPage from "./pages/both/user_page/user_settings/UserSettingsPage";
 import UserTraingingsPage from "./pages/both/user_page/user_trainings/UserTrainingsPage";
 import TopNav from "./top_nav/TopNav";
+import MakerspacePage from "./pages/makerspace_page/MakerspacePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -58,6 +59,8 @@ export default function AppRoutes() {
 
           <Route path="/user/trainings" element={<UserTraingingsPage />}/>
           <Route path="/user/settings" element={<UserSettingsPage />}/>
+
+          <Route path="/makerspace/:id" element={<MakerspacePage />} />
 
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
