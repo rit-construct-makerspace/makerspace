@@ -1,18 +1,14 @@
 import { Box, Divider, Stack, Typography } from "@mui/material";
-import { PassedModule, useCurrentUser } from "../../../../common/CurrentUserProvider";
+import { useCurrentUser } from "../../../../common/CurrentUserProvider";
 import { GET_ALL_TRAINING_MODULES } from "../../../maker/training/TrainingPage";
 import { useQuery } from "@apollo/client";
-import RequestWrapper from "../../../../common/RequestWrapper";
-import { searchFilter } from "../../../../common/SearchBar";
 import { ModuleStatus, moduleStatusMapper } from "../../../../common/TrainingModuleUtils";
 import TrainingModuleRow from "../../../../common/TrainingModuleRow";
 import RequestWrapper2 from "../../../../common/RequestWrapper2";
-import GET_EQUIPMENTS from "../../../../queries/equipmentQueries";
-import Equipment from "../../../../types/Equipment";
 import { GET_ACCESS_CHECKS_BY_USERID } from "../../../../queries/accessChecksQueries";
 import AccessCheck from "../../../../types/AccessCheck";
 import UnpagedEquipmentCard from "../../equipment/UnpagedEquipmentCard";
-import { ReactElement, SetStateAction, useState } from "react";
+import { useState } from "react";
 import UnpagedEquipmentModal from "../../../maker/equipment_modal/UnpagedEquipmentModal";
 
 export default function UserTraingingsPage() {

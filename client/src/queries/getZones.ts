@@ -91,3 +91,34 @@ export const GET_FULL_ZONES = gql`
     }
   }
 `;
+
+export const GET_ZONE_BY_ID = gql`
+  query GetZoneByID($id: ID!) {
+    zoneByID(id: $id) {
+      id
+      name
+      hours {
+        type
+        dayOfTheWeek
+        time
+      }
+      rooms {
+        id
+        name
+        equipment {
+          id
+          name
+          imageUrl
+          sopUrl
+          trainingModules {
+            id
+            name
+          }
+          numAvailable
+          numInUse
+          byReservationOnly
+        }
+      }
+    }
+  }
+`;
