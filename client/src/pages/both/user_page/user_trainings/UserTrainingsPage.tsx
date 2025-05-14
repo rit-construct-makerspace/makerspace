@@ -49,20 +49,20 @@ export default function UserTraingingsPage() {
                         <Stack
                             spacing={3}
                             direction="row"
-                            justifyContent="center"
+                            justifyContent="space-between"
                             divider={<Divider orientation="vertical" flexItem/>}
                             maxHeight="30%"
                             width="100%"
                         >
                             {/* Complete Trainings */}
-                            <Stack width="40%" overflow="auto">
+                            <Stack width="50%" overflow="auto">
                                 <Typography variant="h4" alignSelf="center">Passed Trainings</Typography>
                                 {passed.map((ms: ModuleStatus) => (
                                     <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
                                 ))}
                             </Stack>
                             {/* Expiring Trainings */}
-                            <Stack width="40%" overflow="auto">
+                            <Stack width="50%" overflow="auto">
                                 <Typography variant="h4" alignSelf="center">Expired Trainings</Typography>
                                 {expired.map((ms: ModuleStatus) => (
                                     <TrainingModuleRow key={ms.moduleID} moduleStatus={ms} />
