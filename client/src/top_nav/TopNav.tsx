@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Box, Container, List, Stack, Typography, useScrollTrigger } from "@mui/material";
+import { AppBar, Avatar, Box, ButtonBase, Container, List, Menu, MenuItem, Stack, Typography, useScrollTrigger } from "@mui/material";
 import styled from "styled-components";
 import LogoSvg from "../assets/acronym_logo.svg";
 import LogoSvgW from "../assets/acronym_logo_w.svg";
@@ -10,6 +10,9 @@ import EventIcon from "@mui/icons-material/Event";
 import SharepointIcon from "../common/SharepointIcon";
 import NavLink from "./NavLink";
 import { useCurrentUser } from "../common/CurrentUserProvider";
+import SchoolIcon from "@mui/icons-material/School";
+import SettingsIcon from '@mui/icons-material/Settings';
+import { stringAvatar } from "../common/avatarGenerator";
 
 const StyledLogo = styled.img`
   margin: 12px;
@@ -33,6 +36,17 @@ export default function TopNav() {
     const navigate = useNavigate();
 
     const currentUser = useCurrentUser();
+
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const userMenuOpen = Boolean(anchorEl);
+
+    const handleUserMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    }
+
+    const handleUserMenuClose = () => {
+        setAnchorEl(null);
+    }
 
     return (
         <Stack>
@@ -64,15 +78,32 @@ export default function TopNav() {
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
-                        <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-                            <Typography variant="body1" color="grey" sx={{ fontWeight: "bold" }}>
-                                {`${currentUser.firstName} ${currentUser.lastName}`}
-                            </Typography>
-                            <Avatar
-                                alt="Profile picture"
-                                src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-                            />
-                        </Stack>
+                        <ButtonBase onClick={handleUserMenuOpen}>
+                            <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+                                <Typography variant="body1" color="grey" sx={{ fontWeight: "bold" }}>
+                                    {`${currentUser.firstName} ${currentUser.lastName}`}
+                                </Typography>
+                                <Avatar
+                                    alt="Profile picture"
+                                    {...stringAvatar(`${currentUser.firstName} ${currentUser.lastName}`)}
+                                />
+                            </Stack>
+                        </ButtonBase>
+
+                        <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
+                            <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose();}}>
+                                <Stack direction="row" spacing={2} alignItems="center" width="100%">
+                                <SchoolIcon sx={{color: "gray"}}/>
+                                <Typography variant="body1">User Trainings</Typography>
+                                </Stack>
+                            </MenuItem>
+                            <MenuItem onClick={() => {navigate("/user/settings"); handleUserMenuClose();}}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
+                                <SettingsIcon sx={{color: "gray"}}/>
+                                <Typography variant="body1">User Settings</Typography>
+                                </Stack>
+                            </MenuItem>
+                        </Menu>
                     </Stack>
                 </AppBar>
             </Box>

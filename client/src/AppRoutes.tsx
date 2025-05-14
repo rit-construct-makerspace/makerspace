@@ -56,6 +56,9 @@ export default function AppRoutes() {
 
           <Route path="/" element={<Dashboard />} />
 
+          <Route path="/user/trainings" element={<UserTraingingsPage />}/>
+          <Route path="/user/settings" element={<UserSettingsPage />}/>
+
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
 
