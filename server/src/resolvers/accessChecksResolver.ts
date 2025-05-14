@@ -6,12 +6,18 @@
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
-import { accessCheckExists, createAccessCheck, getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, purgeUnapprovedAccessChecks, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository.js";
+import { accessCheckExists, createAccessCheck, getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, getAccessChecksByUserID, purgeUnapprovedAccessChecks, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUserByID, getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { GraphQLError } from "graphql";
+import { AccessCheckRow } from "../db/tables.js";
 
 const AccessChecksResolver = {
+  AccessCheck: {
+    equipment: async (parent: AccessCheckRow) => {
+      return await EquipmentRepo.getEquipmentByID(parent.equipmentID);
+    }
+  },
 
   Query: {
     /**
@@ -39,6 +45,20 @@ const AccessChecksResolver = {
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await getAccessCheckByID(args.id)
+      }),
+    
+    /**
+     * Fetch all the access checks for a UserID
+     * @argument userID userID to get access checks for
+     * @returns All access checks for a UserID
+     * @throws GraphQLError if not MAKER or MENTOR or STAFF
+     */
+    accessChecksByUserID: async (
+      _parent: any,
+      args: { userID: number },
+      { ifAuthenticated }: ApolloContext) =>
+        ifAuthenticated(async () => {
+          return await getAccessChecksByUserID(args.userID)
       }),
 
     /**
