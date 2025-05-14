@@ -12,7 +12,7 @@ import Equipment from "../../../../types/Equipment";
 import { GET_ACCESS_CHECKS_BY_USERID } from "../../../../queries/accessChecksQueries";
 import AccessCheck from "../../../../types/AccessCheck";
 import UnpagedEquipmentCard from "../../equipment/UnpagedEquipmentCard";
-import { SetStateAction, useState } from "react";
+import { ReactElement, SetStateAction, useState } from "react";
 import UnpagedEquipmentModal from "../../../maker/equipment_modal/UnpagedEquipmentModal";
 
 export default function UserTraingingsPage() {
@@ -24,7 +24,7 @@ export default function UserTraingingsPage() {
     const [modalID, setModalID] = useState<number | undefined>(undefined);
 
     return (
-        <Stack spacing={2} margin="20px" width="100%" divider={<Divider orientation="horizontal" flexItem/>}>
+        <Stack spacing={2} margin="20px" width="100%" height="100vh" divider={<Divider orientation="horizontal" flexItem/>}>
             {/* Trainings */}
             <RequestWrapper2
                 result={getAllModules}
@@ -49,8 +49,10 @@ export default function UserTraingingsPage() {
                         <Stack
                             spacing={3}
                             direction="row"
+                            justifyContent="center"
                             divider={<Divider orientation="vertical" flexItem/>}
-                            maxHeight="20%"
+                            maxHeight="30%"
+                            width="100%"
                         >
                             {/* Complete Trainings */}
                             <Stack width="40%" overflow="auto">
@@ -86,9 +88,9 @@ export default function UserTraingingsPage() {
                     return (
                         <Stack spacing={1}>
                             <Typography variant="h4">Approved Equipment</Typography>
-                            <Stack direction="row" overflow="auto" spacing={2}>
+                            <Stack direction="row" flexWrap="wrap">
                                 {approved.map((ac: AccessCheck) => (
-                                    <Box width="250px" height="345px" padding="20px 0px">
+                                    <Box width="250px" height="345px" padding="10px 10px 10px 0px">
                                         <UnpagedEquipmentCard
                                             id={ac.equipment.id}
                                             name={ac.equipment.name}
@@ -102,9 +104,9 @@ export default function UserTraingingsPage() {
                                 ))}
                             </Stack>
                             <Typography variant="h4">Awaiting In-person Knowledge Check</Typography>
-                            <Stack direction="row" overflow="auto" spacing={2}>
+                            <Stack direction="row" flexWrap="wrap">
                                 {unapproved.map((ac: AccessCheck) => (
-                                    <Box width="250px" height="345px" padding="20px 0px">
+                                    <Box width="250px" height="345px" padding="10px 10px 10px 0px">
                                         <UnpagedEquipmentCard
                                             id={ac.equipment.id}
                                             name={ac.equipment.name}
@@ -122,7 +124,6 @@ export default function UserTraingingsPage() {
                     );
                 }}
             />
-            {/* History */}
         </Stack>
     );
 }
