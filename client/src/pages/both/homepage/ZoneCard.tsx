@@ -38,7 +38,6 @@ function dayOfTheWeekConvert(day: number) {
 function addHours(date: Date, hours: number) {
     const msToAdd = hours * 60 * 60 * 1000;
     date.setTime(date.getTime() + msToAdd);
-    console.log(date);
     return date;
 }
 
@@ -47,21 +46,25 @@ function currentStatus(closing: string) {
         return <Typography color="red">CLOSED</Typography>;
     }
     const date = new Date();
-    const formatter = new Intl.DateTimeFormat('en-US', {
+
+    const formatter = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        timeZone: "America/New_York",
         hour12: false
-    });
+    })
 
-    var curTimeString = formatter.format(date); // Current time in 24hr
+    console.log(formatter.resolvedOptions().timeZone)
 
-    var curTimeDate = new Date(Date.parse('01/01/2011 ' + curTimeString));
+    var curTimeDate = new Date(Date.parse('01/01/2011 ' + formatter.format(date)));
     var closingDate = new Date(Date.parse('01/01/2011 ' + closing));
 
     if (curTimeDate > closingDate) {
-        return <Typography color="red">CLOSED</Typography>;
+        return <Typography color="red" fontWeight="bold">CLOSED</Typography>;
     } else if (addHours(curTimeDate, 1) > closingDate) {
-        return <Typography color="yellow">CLOSING SOON</Typography>;
+        return <Typography color="#F9CA24" fontWeight="bold">CLOSING SOON</Typography>;
     } else {
-        return <Typography color="green">OPEN</Typography>;
+        return <Typography color="green" fontWeight="bold">OPEN</Typography>;
     }
 }
 
