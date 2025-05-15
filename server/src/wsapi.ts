@@ -1,12 +1,12 @@
 import { Request } from "express";
 import * as ws from "ws";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository.js";
-import { getReaderByName } from "./repositories/Readers/ReaderRepository.js";
-import { ReaderRow } from "./db/tables.js";
+import { getReaderByID, getReaderByName } from "./repositories/Readers/ReaderRepository.js";
+import { EquipmentRow, EquipmentSessionRow, ReaderRow } from "./db/tables.js";
 
 
-const API_NORMAL_LOGGING = false;// process.env.API_NORMAL_LOGGING == "true";
-const API_DEBUG_LOGGING = false;// process.env.API_DEBUG_LOGGING == "true";
+const API_NORMAL_LOGGING = process.env.API_NORMAL_LOGGING == "true";
+const API_DEBUG_LOGGING = process.env.API_DEBUG_LOGGING == "true";
 
 // var activeConnections: Map<string, ConnectionData> = new Map();
 // function addConnection(connData: ConnectionData) {
@@ -49,12 +49,9 @@ export async function wsApiLog(
 interface ConnectionData {
     ws: ws.WebSocket
 
-    needsWelcome?: boolean
-    machineType?: number
-    machineName?: string
-    zone?: number
+    readerId?: number
 
-    toShlugSeqNum?: number
+    toShlugSeqNum: number
     timeLastSent?: Date
 }
 function initConnectionData(ws: ws.WebSocket): ConnectionData {
@@ -113,7 +110,12 @@ interface ShlugResponse {
     State?: string
 }
 
-
+/**
+ * 
+ * @param ev The data that came over the websocket. Valid if textual json
+ * @param req Information about the initial request (ip, flags, etc)
+ * @returns a valid ShlugMessage on successful parsing and correct key. null on error
+ */
 function validateShlugMessage(ev: ws.MessageEvent, req: Request): ShlugMessage | undefined {
     if (typeof ev.data != 'string') {
         // malformed data
@@ -128,11 +130,11 @@ function validateShlugMessage(ev: ws.MessageEvent, req: Request): ShlugMessage |
         return undefined;
     }
     if (jdata.Seq == null) {
-        console.error(`WSACS: Received valid JSON  from ${req.ip} with no Sequence Number`, jdata)
+        wsApiLog(`WSACS: Received valid JSON  from ${req.ip} with no Sequence Number. Got ${JSON.stringify(jdata)}`, "status")
         return undefined;
     }
     if (jdata.Key != process.env.API_KEY) {
-        console.error(`WSACS: Invalid key from ${req.ip}. Got ${jdata.Key}`)
+        wsApiLog(`WSACS: Invalid key from ${req.ip}. Got ${jdata.Key}`, "status");
     }
     return jdata;
 }
@@ -140,29 +142,40 @@ function validateShlugMessage(ev: ws.MessageEvent, req: Request): ShlugMessage |
 async function handleBootupMessage(connData: ConnectionData, sdata: ShlugMessage): Promise<boolean> {
     const required = [sdata.Zone, sdata.NeedsWelcome, sdata.MachineType, sdata.MachineName, sdata.Key, sdata.FWVersion, sdata.HWVersion, sdata.HWType, sdata.Request];
     if (required.some((x) => x == null)) {
-        console.error(`Missing fields in boot message: ${JSON.stringify(sdata)}`)
+        wsApiDebugLog(`WSACS: Missing fields in boot message. Got ${JSON.stringify(sdata)}`, "status");
         return false;
     }
-    // connData.zone = sdata.Zone;
-    // connData.needsWelcome = sdata.NeedsWelcome;
-    // connData.machineType = sdata.MachineType;
-    // connData.machineName = sdata.MachineName;
+
     console.log("Boot Message", sdata);
-    // var reader: ReaderRow | undefined = await getReaderByName(connData.machineName);
-    // if doesnt exist
-    // if exists
+
+    var reader: ReaderRow | undefined = await getReaderByName(sdata.MachineName ? sdata.MachineName : "");
+
+    if (reader) {
+        console.log("Reader: ", reader);
+        connData.readerId = reader.id;
+    } else {
+        console.log("Reader doesn't exist");
+    }
+
+    wsApiLog(`WSACS: Opened connection to {access_device}`, "status", { id: reader?.id ?? 0, label: reader?.name ?? "unknown name" })
     return true;
 }
 
 export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
     var connData: ConnectionData = initConnectionData(ws);
+    console.log(`WSACS: Websocket opened to ${req.ip}`)
+    ws.onclose = async function (ev: ws.CloseEvent) {
+        if (connData.readerId == null) {
+            // Connection was never associated with a real reader (boot message never sent, probably something fishy)
+            console.error(`Websocket from non-reader ${req.ip} closed`);
+            return;
+        }
+        var reader: ReaderRow | undefined = await getReaderByID(connData.readerId ?? 0);
 
-    ws.onclose = function (ev: ws.CloseEvent) {
-        console.log("Closing Data", connData);
-        wsApiLog(`Websocket to {access_device} closed. code:${ev.code}. Type: ${ev.type}. Reason: ${ev.reason}`, "ACS Status", { id: 0, label: "shlug name" });
+        wsApiLog(`Websocket to {access_device} closed. code:${ev.code}. ${ev.reason.length > 0 ? "Reason: " + ev.reason : ""}`, "status", { id: connData.readerId ?? 0, label: reader?.name ?? "unknown shlug" });
     };
     ws.onerror = function (ev: ws.ErrorEvent) {
-        console.error(`WSACS: error ${ev.error} : ${ev.message}`)
+        console.error(`WSACS: websocket error ${ev.error} - ${ev.type}: ${ev.message}`)
     }
     ws.onmessage = async function (ev: ws.MessageEvent) {
         const jdata: ShlugMessage | undefined = validateShlugMessage(ev, req);

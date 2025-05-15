@@ -54,8 +54,9 @@ async function startServer() {
   require("dotenv").config({ path: __dirname + "/./../.env" });
 
   //Init with Node Express
-  var app = express();
-  expressWs(app);
+  var exp = express();
+  var wsserver = expressWs(exp);
+  var app = wsserver.app;
 
   //Configure CORS
   app.use(cors(CORS_CONFIG));
@@ -163,9 +164,9 @@ async function startServer() {
   /**
    * Websocket
    * Handler for upgrading api call to websocket connection
+   * Details of protocol are handled in wsapi.ts
    */
   // Websocket ACS Handler
-  console.log("WEBSOCKET")
   app.ws("/api/ws", ws_acs_api)
 
   /**
