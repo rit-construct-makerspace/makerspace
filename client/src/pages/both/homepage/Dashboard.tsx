@@ -40,26 +40,18 @@ export function Dashboard() {
         }
     }, []);
 
-    const [IDAlert, setIDAlert] = useState(true);
-
     const isMobile = width <= 1100;
 
     const getZonesResult = useQuery(GET_ZONES_WITH_HOURS);
     const getAnnouncementsResult = useQuery(GET_ANNOUNCEMENTS);
     const getEvents = useQuery(GET_EVENTS);
 
-
     return (
-        <Box margin="30px 0px">
+        <Box>
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
-            {((currentUser.cardTagID == null || currentUser.cardTagID == "") && IDAlert) &&
-                <Alert variant="standard" color="warning" onClose={() => {setIDAlert(false)}}>
-                    Your RIT ID has not been associated with your Makerspace account yet. Please speak to a member of staff in the makerspace to rectify this before using any makerspace equipment. Trainings and 3DPrinterOS will remain available.
-                </Alert>
-            }
             {/* Zones */}
             <RequestWrapper loading={getZonesResult.loading} error={getZonesResult.error}>
-                <Stack direction={isMobile ? "column" : "row"} justifyContent="space-evenly" alignItems="center" spacing={2}>
+                <Stack marginTop="30px" direction={isMobile ? "column" : "row"} justifyContent="space-evenly" alignItems="center" spacing={2}>
                     {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
                         <ZoneCard id={zone.id} name={zone.name} hours={zone.hours} imageUrl={process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}/>
                     ))}
@@ -69,12 +61,12 @@ export function Dashboard() {
             <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
                 <Box>
                     <Typography variant="h3" margin="30px 30px 10px 30px">Announcements</Typography>
-                    <Stack direction={isMobile ? "column" : "row"} justifyContent="flex-start" alignItems="stretch" spacing={2}
+                    <Stack direction={isMobile ? "column" : "row"} justifyContent={isMobile ? "flex-start" : "space-around"} alignItems="stretch" spacing={2}
                         divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
                         margin="0px 20px"
                     >
                         {getAnnouncementsResult.data?.getAllAnnouncements?.map((thisAnnouncement: Announcement) => (
-                                <AnnouncementCard announcement={thisAnnouncement}/>
+                            <AnnouncementCard announcement={thisAnnouncement}/>
                         ))}
                     </Stack>
                 </Box>
@@ -89,7 +81,10 @@ export function Dashboard() {
                             divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
                             margin="0px 20px"
                         >
-                            {data.events.map((event: MakeEvent) => (
+                            {
+                                data.events.length == 0
+                                ? <Typography variant="body1">No Events!</Typography>
+                                : data.events.map((event: MakeEvent) => (
                                 <EventCard
                                     name={event.name.text}
                                     description={event.name.html}

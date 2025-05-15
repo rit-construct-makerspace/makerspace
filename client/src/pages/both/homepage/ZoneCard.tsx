@@ -38,6 +38,7 @@ function dayOfTheWeekConvert(day: number) {
 function addHours(date: Date, hours: number) {
     const msToAdd = hours * 60 * 60 * 1000;
     date.setTime(date.getTime() + msToAdd);
+    console.log(date);
     return date;
 }
 

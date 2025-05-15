@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Box, ButtonBase, Container, List, Menu, MenuItem, Stack, Typography, useScrollTrigger } from "@mui/material";
+import { Alert, AppBar, Avatar, Box, ButtonBase, Container, List, Menu, MenuItem, Stack, Typography, useScrollTrigger } from "@mui/material";
 import styled from "styled-components";
 import LogoSvg from "../assets/acronym_logo.svg";
 import LogoSvgW from "../assets/acronym_logo_w.svg";
@@ -39,6 +39,8 @@ export default function TopNav() {
     const handleUserMenuClose = () => {
         setAnchorEl(null);
     };
+
+    const [labTraining, setLabTraining] = useState(true);
 
     return (
         <Stack>
@@ -99,6 +101,28 @@ export default function TopNav() {
                     </Stack>
                 </AppBar>
             </Box>
+            { // Hold alert
+                currentUser.hasHolds
+                ? <Alert variant="filled" severity="error" sx={{borderRadius: 0}}>
+                    A hold has been placed on your account. You won't be able to create reservations, use machines, or purchase materials. Please speak to a member of staff in the makerspace to rectify this.
+                </Alert>
+                : null
+
+            }
+            { // No ID alert
+                currentUser.cardTagID == null || currentUser.cardTagID == ""
+                ? <Alert variant="filled" severity="warning" sx={{borderRadius: 0}}>
+                    Your RIT ID has not been associated with your Makerspace account yet. Please speak to a member of staff in the makerspace to rectify this before using any makerspace equipment. Trainings and 3DPrinterOS will remain available.
+                </Alert>
+                : null
+            }
+            { // Lab training Alert
+                labTraining
+                ? <Alert variant="standard" severity="info" onClose={() => setLabTraining(false)} sx={{borderRadius: 0}}>
+                    All Makerspace users must complete the <a href="https://rit.sabacloud.com/Saba/Web_spf/NA3P1PRD0049/common/leclassview/dowbt-0000146117">Shop Safety training course</a> before using any equipment.
+                </Alert>
+                : null
+            }
             <Outlet />
         </Stack>
     );
