@@ -40,16 +40,16 @@ export function ZoneDash({ zone }: { zone: FullZone}) {
             <Stack direction={isMobile ? "column-reverse" : "row"} alignItems={isMobile ? "center" : undefined}>
                 <Box width={"100%"}>
                     {zone.rooms.map((room) => (
-                        <Box>
+                        <Stack padding="10px 0px">
                             <Typography variant="h5">{room.name}</Typography>
-                            <Grid container spacing={3}>
+                            <Grid container spacing={3} justifyContent="center">
                                 {room.equipment.map((equipment: Equipment) => (
                                     <Grid key={equipment.id} item>
                                         <EquipmentCard equipment={equipment} />
                                     </Grid>
                                 ))}
                             </Grid>
-                        </Box>
+                        </Stack>
                     ))}
                 </Box>
             </Stack>
