@@ -73,8 +73,7 @@ export function Dashboard() {
                         divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
                         margin="0px 20px"
                     >
-                        {getAnnouncementsResult.data?.getAllAnnouncements?.slice(2, getAnnouncementsResult.data?.getAllAnnouncements?.length)
-                            .map((thisAnnouncement: Announcement) => (
+                        {getAnnouncementsResult.data?.getAllAnnouncements?.map((thisAnnouncement: Announcement) => (
                                 <AnnouncementCard announcement={thisAnnouncement}/>
                         ))}
                     </Stack>
@@ -82,8 +81,6 @@ export function Dashboard() {
             </RequestWrapper>
             {/* Upcoming Events */}
             <RequestWrapper2 result={getEvents} render={(data) => {
-
-                console.log(data);
 
                 return (
                     <Box>
