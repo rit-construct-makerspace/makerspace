@@ -9,6 +9,7 @@ import Equipment from "../../types/Equipment";
 import EquipmentCard from "../../common/EquipmentCard";
 import RoomSection from "../both/homepage/RoomSection";
 import { FullRoom } from "../../types/Room";
+import SearchBar from "../../common/SearchBar";
 
 export default function MakerspacePage() {
     const { id } = useParams<{ id: string }>();
@@ -29,6 +30,8 @@ export default function MakerspacePage() {
 
     const isMobile = windowWidth <= 1100;
 
+    const [equipmentSearch, setEquipmentSearch] = useState("");
+
     return (
         <RequestWrapper2 result={getZone} render={(data) => {
 
@@ -38,8 +41,12 @@ export default function MakerspacePage() {
                 <Stack spacing={"2"} padding="20px" divider={<Divider orientation="horizontal" flexItem/>}>
                     <Typography variant="h3" align="center">{fullZone.name}</Typography>
                     <ZoneHours hours={fullZone.hours} isMobile={isMobile} />
+                    <SearchBar
+                        placeholder="Search Equipment"
+                        value={equipmentSearch}
+                        onChange={(e) => setEquipmentSearch(e.target.value)}/>
                     {fullZone.rooms.map((room: FullRoom) => (
-                        <RoomSection room={room} isMobile={isMobile} />
+                        <RoomSection room={room} equipmentSearch={equipmentSearch} isMobile={isMobile} />
                     ))}
                 </Stack>
             );
