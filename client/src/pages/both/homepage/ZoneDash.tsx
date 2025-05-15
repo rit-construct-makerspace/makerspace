@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Box, Grid, Stack } from "@mui/material";
+import { Box, Grid, Stack, Typography } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import { useNavigate } from "react-router-dom";
 import { gql } from "@apollo/client";
@@ -17,7 +17,7 @@ const INCREMENT_SITE_VISITS = gql`
     }
 `;
 
-export function ZoneDash({ zone, open }: { zone: FullZone, open: boolean }) {
+export function ZoneDash({ zone }: { zone: FullZone}) {
     const currentUser = useCurrentUser();
     const navigate = useNavigate();
 
@@ -35,16 +35,13 @@ export function ZoneDash({ zone, open }: { zone: FullZone, open: boolean }) {
 
     const [equipmentModalID, setEquipmentModalID] = useState<number | undefined>(undefined);
 
-    if (!open) return (<></>);
-
     return (
         <Box>
             <Stack direction={isMobile ? "column-reverse" : "row"} alignItems={isMobile ? "center" : undefined}>
-                <Box width={"75%"}>
+                <Box width={"100%"}>
                     {zone.rooms.map((room) => (
                         <Box>
-                            <PageSectionHeader>{room.name}</PageSectionHeader>
-
+                            <Typography variant="h5">{room.name}</Typography>
                             <Grid container spacing={3}>
                                 {room.equipment.map((equipment: Equipment) => (
                                     <Grid key={equipment.id} item>
@@ -55,11 +52,7 @@ export function ZoneDash({ zone, open }: { zone: FullZone, open: boolean }) {
                         </Box>
                     ))}
                 </Box>
-                {!isMobile && <ZoneHoursCard hours={zone.hours}></ZoneHoursCard>}
             </Stack>
-
-
-            <UnpagedEquipmentModal equipmentID={equipmentModalID} setEquipmentID={setEquipmentModalID} />
         </Box>
     );
 };
