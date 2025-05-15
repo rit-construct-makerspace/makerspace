@@ -9,6 +9,9 @@ import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
 import ZoneCard from "./ZoneCard";
 import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import AnnouncementCard from "./AnnouncementCard";
+import RequestWrapper2 from "../../../common/RequestWrapper2";
+import GET_EVENTS, { MakeEvent } from "../../../queries/eventQueries"
+import EventCard from "./EventCard";
 // import RequestWrapper from "../../../common/RequestWrapper";
 // import { useQuery } from "@apollo/client";
 // import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
@@ -43,6 +46,7 @@ export function Dashboard() {
 
     const getZonesResult = useQuery(GET_ZONES_WITH_HOURS);
     const getAnnouncementsResult = useQuery(GET_ANNOUNCEMENTS);
+    const getEvents = useQuery(GET_EVENTS);
 
 
     return (
@@ -64,9 +68,9 @@ export function Dashboard() {
             {/* Announcments */}
             <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
                 <Box>
-                    <Typography variant="h3" margin="30px">Announcements</Typography>
+                    <Typography variant="h3" margin="30px 30px 10px 30px">Announcements</Typography>
                     <Stack direction={isMobile ? "column" : "row"} justifyContent="flex-start" alignItems="stretch" spacing={2}
-                        divider={<Divider orientation="vertical" flexItem/>}
+                        divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
                         margin="0px 20px"
                     >
                         {getAnnouncementsResult.data?.getAllAnnouncements?.slice(2, getAnnouncementsResult.data?.getAllAnnouncements?.length)
@@ -77,6 +81,31 @@ export function Dashboard() {
                 </Box>
             </RequestWrapper>
             {/* Upcoming Events */}
+            <RequestWrapper2 result={getEvents} render={(data) => {
+
+                console.log(data);
+
+                return (
+                    <Box>
+                        <Typography variant="h3" margin="30px 30px 10px 30px">Upcoming Events</Typography>
+                        <Stack direction={isMobile ? "column" : "row"} justifyContent="flex-start" alignItems="stretch" spacing={2}
+                            divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
+                            margin="0px 20px"
+                        >
+                            {data.events.map((event: MakeEvent) => (
+                                <EventCard
+                                    name={event.name.text}
+                                    description={event.name.html}
+                                    summary={event.summary}
+                                    url={event.url}
+                                    start={event.start.local}
+                                    end={event.end.local}
+                                    logoUrl={event.logo.url} />
+                            ))}
+                        </Stack>
+                    </Box>
+                );
+            }} />
             
         </Box>
     );

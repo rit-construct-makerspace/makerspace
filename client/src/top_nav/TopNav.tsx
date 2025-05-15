@@ -38,7 +38,8 @@ export default function TopNav() {
 
     const handleUserMenuClose = () => {
         setAnchorEl(null);
-    }
+    };
+
     return (
         <Stack>
             <Box width="100%" height="5%" sx={{flexGrow: 1}}>
