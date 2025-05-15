@@ -15,7 +15,6 @@ import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPrevi
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
-import Homepage from "./pages/both/homepage/Homepage";
 import AnnouncementsPage from "./pages/lab_management/announcements/AnnouncementsPage";
 import EditAnnouncementSample from "./pages/lab_management/announcements/EditAnnouncementPage_sample";
 import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
@@ -60,7 +59,7 @@ export default function AppRoutes() {
           <Route path="/user/trainings" element={<UserTraingingsPage />}/>
           <Route path="/user/settings" element={<UserSettingsPage />}/>
 
-          <Route path="/makerspace/:id" element={<MakerspacePage />} />
+          <Route path="/makerspace/:id" element={<MakerspacePage />}/>
 
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />

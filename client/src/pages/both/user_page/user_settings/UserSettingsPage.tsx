@@ -53,6 +53,11 @@ export default function UserSettingsPage() {
                     setEditInfo(true);
                 }
 
+                function handleClose() {
+                    setEditInfo(false);
+                    setPronouns(user.pronouns);
+                }
+
                 return (
                     <Stack spacing={1}>
                         <Stack direction="row" alignItems="center" spacing={2}>
@@ -67,7 +72,7 @@ export default function UserSettingsPage() {
                             <IconButton aria-label="edit information" onClick={handleOpen}>
                                 <EditIcon sx={{width: "30px", height: "30px", color: "gray"}}/>
                             </IconButton>
-                            <Dialog open={editInfo} onClose={() => {setEditInfo(false)}}>
+                            <Dialog open={editInfo} onClose={handleClose}>
                                 <DialogTitle>Edit Personal Information</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>
@@ -84,7 +89,7 @@ export default function UserSettingsPage() {
                                     />
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button onClick={() => {setEditInfo(false)}}>Cancel</Button>
+                                    <Button onClick={handleClose}>Cancel</Button>
                                     <Button onClick={handleSubmit}>Submit</Button>
                                 </DialogActions>
                             </Dialog>

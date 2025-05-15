@@ -8,6 +8,8 @@ import PageSectionHeader from "../../../common/PageSectionHeader";
 import ZoneHoursCard from "./ZoneHoursCard";
 import UnpagedEquipmentModal from "../../maker/equipment_modal/UnpagedEquipmentModal";
 import UnpagedEquipmentCard from "../equipment/UnpagedEquipmentCard";
+import Equipment from "../../../types/Equipment";
+import EquipmentCard from "../../../common/EquipmentCard";
 
 const INCREMENT_SITE_VISITS = gql`
     query IncrementSiteVisits {
@@ -44,10 +46,9 @@ export function ZoneDash({ zone, open }: { zone: FullZone, open: boolean }) {
                             <PageSectionHeader>{room.name}</PageSectionHeader>
 
                             <Grid container spacing={3}>
-                                {room.equipment.map((equipment) => (
+                                {room.equipment.map((equipment: Equipment) => (
                                     <Grid key={equipment.id} item>
-                                        <UnpagedEquipmentCard id={equipment.id} name={equipment.name} setID={setEquipmentModalID} sopUrl={equipment.sopUrl} trainingModules={equipment.trainingModules} numAvailable={equipment.numAvailable} numUnavailable={equipment.numInUse} byReservationOnly={equipment.byReservationOnly}
-                                            imageUrl={((equipment.imageUrl == undefined || equipment.imageUrl == null || equipment.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + equipment.imageUrl)} />
+                                        <EquipmentCard equipment={equipment} />
                                     </Grid>
                                 ))}
                             </Grid>
