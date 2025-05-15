@@ -3,7 +3,6 @@ import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { FullZone, GET_ZONE_BY_ID } from "../../queries/getZones";
 import RequestWrapper2 from "../../common/RequestWrapper2";
-import { ZoneDash } from "../both/homepage/ZoneDash";
 import { useEffect, useState } from "react";
 import ZoneHours from "./ZoneHours";
 import Equipment from "../../types/Equipment";
@@ -43,7 +42,7 @@ export default function MakerspacePage() {
                             <Grid container spacing={3} justifyContent="center">
                                 {room.equipment.map((equipment: Equipment) => (
                                     <Grid key={equipment.id} item>
-                                        <EquipmentCard equipment={equipment} />
+                                        <EquipmentCard equipment={equipment} isMobile={isMobile} />
                                     </Grid>
                                 ))}
                             </Grid>

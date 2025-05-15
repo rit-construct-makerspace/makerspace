@@ -13,6 +13,7 @@ import LockClockIcon from '@mui/icons-material/LockClock';
 
 interface EquipmentCardProps {
     equipment: Equipment;
+    isMobile: boolean;
 }
 
 export default function EquipmentCard(props: EquipmentCardProps) {
@@ -25,18 +26,20 @@ export default function EquipmentCard(props: EquipmentCardProps) {
         moduleStatusMapper(user.passedModules, user.trainingHolds)
     );
 
-    return ( 
-        <Card sx={{width: "600px", height: "350px"}}> {/* TODO: Add isMobile detection for auto resizing */}
+    return (
+        <Card sx={{width: props.isMobile ? "450px" : "600px", minHeight: "350px"}}>
             <Stack>
                 <Stack direction="row" height="200px">
-                    <Box width="150px" height="200px">
-                    <CardMedia
-                        component="img"
-                        image={(props.equipment.imageUrl == undefined || props.equipment.imageUrl == null || props.equipment.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + props.equipment.imageUrl}
-                        alt={`Picture of ${props.equipment.name}`}
-                        sx={{width: "150px", height: "200px", backgroundColor: "lightgray"}}
-                    />
-                    </Box>
+                    {props.isMobile ? null :
+                        <Box width="150px" height="200px">
+                            <CardMedia
+                                component="img"
+                                image={(props.equipment.imageUrl == undefined || props.equipment.imageUrl == null || props.equipment.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + props.equipment.imageUrl}
+                                alt={`Picture of ${props.equipment.name}`}
+                                sx={{width: "150px", height: "200px", backgroundColor: "lightgray"}}
+                            />
+                        </Box>
+                    }
                     <CardContent sx={{width: "100%", height: "100%"}}>
                         <Stack height="100%">
                             {/* Title & Edit button */}
