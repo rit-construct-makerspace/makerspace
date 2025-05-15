@@ -21,13 +21,6 @@ const StyledLogo = styled.img`
   }
 `;
 
-function ElevationScroll() {
-    const trigger = useScrollTrigger({
-        disableHysteresis: true,
-        threshold: 0,
-    })
-}
-
 export default function TopNav() {
 
     const [width, setWidth] = useState<number>(window.innerWidth);

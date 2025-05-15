@@ -1,22 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Alert, Box, Divider, Stack, Tab, Tabs } from "@mui/material";
-import Page from "../../Page";
+import { useEffect, useState } from "react";
+import { Alert, Box, Divider, Stack } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
-import AccountBalanceCard from "./AccountBalanceCard";
-import OperationHoursCard from "./OperationHoursCard";
-import UpcomingEventsCard from "./UpcomingEventsCard";
-import IncompleteTrainingsCard from "./IncompleteTrainingsCard";
-import ExpiringSoonCard from "./ExpiringSoonCard";
-import AnnouncementsCard from "./AnnouncementsCard";
 import { useNavigate } from "react-router-dom";
-import { wrap } from "module";
-import ResourcesCard from "./ResourcesCard";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
-import { ZoneDash } from "./ZoneDash";
-import { HomeDash } from "./HomeDash";
 import ZoneCard from "./ZoneCard";
 import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import AnnouncementCard from "./AnnouncementCard";
@@ -66,7 +55,7 @@ export function Dashboard() {
             }
             {/* Zones */}
             <RequestWrapper loading={getZonesResult.loading} error={getZonesResult.error}>
-                <Stack direction="row" justifyContent="space-evenly" alignItems="center">
+                <Stack direction={isMobile ? "column" : "row"} justifyContent="space-evenly" alignItems="center" spacing={2}>
                     {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
                         <ZoneCard id={zone.id} name={zone.name} hours={zone.hours} imageUrl={process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}/>
                     ))}
@@ -76,7 +65,7 @@ export function Dashboard() {
             <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
                 <Box>
                     <Typography variant="h3" margin="30px">Announcements</Typography>
-                    <Stack direction="row" justifyContent="flex-start" alignItems="stretch" spacing={2}
+                    <Stack direction={isMobile ? "column" : "row"} justifyContent="flex-start" alignItems="stretch" spacing={2}
                         divider={<Divider orientation="vertical" flexItem/>}
                         margin="0px 20px"
                     >
@@ -87,6 +76,7 @@ export function Dashboard() {
                     </Stack>
                 </Box>
             </RequestWrapper>
+            {/* Upcoming Events */}
             
         </Box>
     );
