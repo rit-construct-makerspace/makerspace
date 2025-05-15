@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import ZoneHours from "./ZoneHours";
 import Equipment from "../../types/Equipment";
 import EquipmentCard from "../../common/EquipmentCard";
+import RoomSection from "../both/homepage/RoomSection";
+import { FullRoom } from "../../types/Room";
 
 export default function MakerspacePage() {
     const { id } = useParams<{ id: string }>();
@@ -36,17 +38,8 @@ export default function MakerspacePage() {
                 <Stack spacing={"2"} padding="20px" divider={<Divider orientation="horizontal" flexItem/>}>
                     <Typography variant="h3" align="center">{fullZone.name}</Typography>
                     <ZoneHours hours={fullZone.hours} isMobile={isMobile} />
-                    {fullZone.rooms.map((room) => (
-                        <Stack padding={"0 0 20px 0"}>
-                            <Typography variant="h4" sx={{padding: "15px"}}>{room.name}</Typography>
-                            <Grid container spacing={3} justifyContent="center">
-                                {room.equipment.map((equipment: Equipment) => (
-                                    <Grid key={equipment.id} item>
-                                        <EquipmentCard equipment={equipment} isMobile={isMobile} />
-                                    </Grid>
-                                ))}
-                            </Grid>
-                        </Stack>
+                    {fullZone.rooms.map((room: FullRoom) => (
+                        <RoomSection room={room} isMobile={isMobile} />
                     ))}
                 </Stack>
             );
