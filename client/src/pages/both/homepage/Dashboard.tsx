@@ -53,14 +53,20 @@ export function Dashboard() {
             <RequestWrapper loading={getZonesResult.loading} error={getZonesResult.error}>
                 <Stack marginTop="30px" direction={isMobile ? "column" : "row"} justifyContent="space-evenly" alignItems="center" spacing={2}>
                     {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
-                        <ZoneCard id={zone.id} name={zone.name} hours={zone.hours} imageUrl={process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}/>
+                        <ZoneCard 
+                            id={zone.id}
+                            name={zone.name}
+                            hours={zone.hours}
+                            imageUrl={process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}
+                            isMobile={isMobile}
+                        />
                     ))}
                 </Stack>
             </RequestWrapper>
             {/* Announcments */}
             <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
                 <Box>
-                    <Typography variant="h3" margin="30px 30px 10px 30px">Announcements</Typography>
+                    <Typography variant={isMobile ? "h4" : "h3"} margin="30px 30px 10px 30px">Announcements</Typography>
                     <Stack direction={isMobile ? "column" : "row"} justifyContent={isMobile ? "flex-start" : "space-around"} alignItems="stretch" spacing={2}
                         divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
                         margin="0px 20px"
@@ -77,7 +83,7 @@ export function Dashboard() {
                 return (
                     <Box>
                         <Stack  direction="row" margin="30px 30px 10px 30px" justifyContent="space-between" alignItems="center">
-                            <Typography variant="h3">Upcoming Events</Typography>
+                            <Typography variant={isMobile ? "h4" : "h3"}>Upcoming Events</Typography>
                             <Typography variant="h6">
                                 <a 
                                     href="https://www.eventbrite.com/o/rit-shed-makerspace-92409962123" 

@@ -6,6 +6,7 @@ interface ZoneCardProps {
     name: string;
     hours: {type: string, dayOfTheWeek: number, time: string}[];
     imageUrl: string;
+    isMobile: boolean;
 }
 
 function reformatTime(time: string) {
@@ -106,7 +107,7 @@ export default function ZoneCard(props: ZoneCardProps) {
     const navigate = useNavigate();
 
     return (
-        <Card sx={{minWidth: "500px"}}>
+        <Card sx={{width: props.isMobile ? "350px" : "500px"}}>
             <CardActionArea onClick={() => {navigate(`/makerspace/${props.id}`)}}>
                 <CardMedia
                     component="img"
