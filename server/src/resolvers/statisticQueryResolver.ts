@@ -9,6 +9,9 @@ import { getDataPointByID, incrementDataPointValue, setDataPointValue } from "..
 import { getEquipmentSessionsByDayOfTheWeek, getCummRoomSwipesByRoomByWeekDayByHour, RoomSwipesByRoomByWeekDayByHour, getNumUsersRegisteredToday, getNumRoomSwipesToday, getNumEquipmentSessionsToday } from "../repositories/StatisticsQuery/StatisticQueryRepository.js";
 import { getModules } from "../repositories/Training/ModuleRepository.js";
 import { getModulePassedandFailedCount, getModulePassedandFailedCountWithModuleName } from "../repositories/Training/SubmissionRepository.js";
+import { getEquipmentSessionsWithAttachedEntities } from "../repositories/StatisticsQuery/EquipmentStatsRepository.js";
+import { getRoomSwipesWithAttachedEntities } from "../repositories/StatisticsQuery/RoomStatsRepository.js";
+import { getTrainingSubmissionsWithAttachedEntities } from "../repositories/StatisticsQuery/TrainingStatsRepository.js";
 
 //Get start of month and end of today as Dates
 function getMonthToPresentBounds(): { startOfMonth: Date, today: Date } {
@@ -28,23 +31,51 @@ function getSunday() {
   return new Date(d.setDate(diff));
 }
 
-//Set "avg" property in result to the "avg" property in avgResult
-async function fitSeperateRangeAverages(result: RoomSwipesByRoomByWeekDayByHour[], avgResult: RoomSwipesByRoomByWeekDayByHour[]): Promise<RoomSwipesByRoomByWeekDayByHour[]> {
-  for (var i = 0; i < result.length; i++) {
-    var dayEntryData = result[i].data;
-    var averagesDayEntryData = avgResult[i] != null ? avgResult[i].data : null;
-    if (!averagesDayEntryData) continue;
-    for (var j = 0; j < dayEntryData.length; j++) {
-      if (!averagesDayEntryData[i]) continue;
-      dayEntryData[i].avg = averagesDayEntryData[i].avg
-    }
-  }
-  return await result;
-}
-
 const StatisticQueryResolver = {
   Query: {
-    
+    /**
+     * Fetch an array of Equipment Sessions with extra attributes for user, equipment, and room information
+     * @argument startDate the earliest date to filter by
+     * @argument endDate the latest date to filter by 
+     * @argument equipmentIDs the IDS of equipment to filter by 
+     * @returns array of equipment sessions with user, equipment, and room info
+     */
+    getEquipmentSessionsWithAttachedEntities: async (
+      _parent: any,
+      args: {startDate: string, endDate: string, equipmentIDs: number[]},
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await getEquipmentSessionsWithAttachedEntities(args.startDate, args.endDate, args.equipmentIDs);
+      }),
+
+    /**
+     * Fetch an array of Room Swipes with extra attributes for user and room information
+     * @argument startDate the earliest date to filter by
+     * @argument endDate the latest date to filter by 
+     * @returns array of room swipes with user and room info
+     */
+    getRoomSwipesWithAttachedEntities: async (
+      _parent: any,
+      args: {startDate: string, endDate: string},
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await getRoomSwipesWithAttachedEntities(args.startDate, args.endDate);
+      }),
+
+    /**
+     * Fetch an array of Training Submissions with extra attributes for user and module information
+     * @argument startDate the earliest date to filter by
+     * @argument endDate the latest date to filter by 
+     * @argument moduleIDs the IDS of training modules to filter by 
+     * @returns array of equipment sessions with user, equipment, and room info
+     */
+    getTrainingSubmissionsWithAttachedEntities: async (
+      _parent: any,
+      args: {startDate: string, endDate: string, moduleIDs: number[]},
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await getTrainingSubmissionsWithAttachedEntities(args.startDate, args.endDate, args.moduleIDs);
+      }),
 
     /**
      * Fetch number of users who have registered today

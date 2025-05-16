@@ -69,5 +69,8 @@ export const StatisticQueryTypeDefs = gql`
         numNewUsersToday: Int
         numRoomSwipesToday: Int
         numEquipmentSessionsToday: Int
+        getEquipmentSessionsWithAttachedEntities: [VerboseEquipmentSession]
+        getRoomSwipesWithAttachedEntities: [VerboseRoomSwipe]
+        getTrainingSubmissionsWithAttachedEntities: [VerboseTrainingSubmission]
     }
 `;
