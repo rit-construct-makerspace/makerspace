@@ -137,13 +137,13 @@ export default function TopNav() {
                         </ButtonBase>
 
                         <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
-                            <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose();}}>
+                            <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose(); setMobileDrawer(false);}}>
                                 <Stack direction="row" spacing={2} alignItems="center" width="100%">
                                 <SchoolIcon sx={{color: "gray"}}/>
                                 <Typography variant="body1">User Trainings</Typography>
                                 </Stack>
                             </MenuItem>
-                            <MenuItem onClick={() => {navigate("/user/settings"); handleUserMenuClose();}}>
+                            <MenuItem onClick={() => {navigate("/user/settings"); handleUserMenuClose(); setMobileDrawer(false);}}>
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
                                 <SettingsIcon sx={{color: "gray"}}/>
                                 <Typography variant="body1">User Settings</Typography>
