@@ -44,72 +44,7 @@ async function fitSeperateRangeAverages(result: RoomSwipesByRoomByWeekDayByHour[
 
 const StatisticQueryResolver = {
   Query: {
-    /**
-     * Fetch Equipment Sessions within supplied range of the day of the week given
-     * @argument dayOfTheWeek Day of the week as integer (1-7) to filter results by
-     * @argument sumStartDate earliest date to filter by
-     * @argument sumStartDate latest date to filter by
-     * @returns array of matching Equipment Sessions
-     */
-    equipmentSessionsByDayOfTheWeek: async (
-      _parent: any,
-      args: {
-        dayOfTheWeek: string,
-        sumStartDate: string, sumStopDate: string
-      },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        const { startOfMonth, today } = getMonthToPresentBounds();
-
-        const sumStartDate = args.sumStartDate ?? startOfMonth;
-        const sumStopDate = args.sumStopDate ?? today;
-        return await getEquipmentSessionsByDayOfTheWeek(args.dayOfTheWeek, sumStartDate, sumStopDate);
-      }),
-
-    /**
-     * Fetch stastics representing sum and avg number of room swipes in each room per day of the week per hour in the range provided
-     * @argument sumStartDate earliest date to filter by for calculating sums
-     * @argument sumStartDate latest date to filter by for calculating sums
-     * @argument avgStartDate earliest date to filter by for calculating averages
-     * @argument avgStopDate latest date to filter by for calculating averages
-     * @returns array of RoomSwipesByRoomByWeekDayByHour
-     */
-    sumRoomSwipesByRoomByWeekDayByHour: async (
-      _parent: any,
-      args: {
-        sumStartDate: string, sumStopDate: string
-        avgStartDate: string, avgStopDate: string,
-      },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        const { startOfMonth, today } = getMonthToPresentBounds();
-        const startOfWeek = getSunday();
-        const startDate = args.sumStartDate && args.sumStartDate != "" ? args.sumStartDate : startOfWeek.toDateString();
-        const stopDate = args.sumStopDate && args.sumStopDate != "" ? args.sumStopDate : today.toDateString();
-        const avgStartDate = args.avgStartDate && args.avgStartDate != "" ? args.avgStartDate : startOfMonth.toDateString();
-        const avgStopDate = args.avgStopDate && args.avgStopDate != "" ? args.avgStopDate : today.toDateString();
-
-        const result = await getCummRoomSwipesByRoomByWeekDayByHour(startDate, stopDate);
-        const avgResult = await getCummRoomSwipesByRoomByWeekDayByHour(avgStartDate, avgStopDate);
-
-        const combinedResult = fitSeperateRangeAverages(result, avgResult);
-        return await combinedResult;
-      }),
-
-    /**
-     * Fetch number of passed and failed submission attempts for each module in the supplied range
-     * @argument startDate earliest Date to filter by
-     * @argument stopDate latest Date to filter by
-     * @returns array of { moduleID: number, moduleName: string, passedSum: number, failedSum: number }
-     */
-    moduleScores: async (
-      _parent: any,
-      args: { startDate: string, stopDate: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        const result = await getModulePassedandFailedCountWithModuleName(args.startDate, args.stopDate);
-        return result
-      }),
+    
 
     /**
      * Fetch number of users who have registered today
