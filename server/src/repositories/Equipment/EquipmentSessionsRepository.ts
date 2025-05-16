@@ -42,3 +42,11 @@ export async function setLatestEquipmentSessionLength(equipmentID: number, sessi
         .update({sessionLength})
         .where({id: latest.id});
 }
+
+/**
+ * Delete all EquipmentSessions with sessionLength still set to NULL
+ * @returns number of rows deleted
+ */
+export async function pruneNullLengthEquipmentSessions(): Promise<number> {
+    return await knex("EquipmentSessions").delete().havingNull("sessionLength");
+}
