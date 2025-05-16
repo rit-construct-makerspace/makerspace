@@ -112,7 +112,7 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
             wsApiDebugLog(`Failed to retrieve information about reader ${readerId}. Can't authorize`, "auth");
             inResponse.Machine = 0;
             inResponse.Auth = uid;
-            inResponse.Allowed = 0;
+            inResponse.Verified = 0;
             inResponse.Error = "Failed to retrieve info about reader";
             inResponse.Reason = "server-error";
             return inResponse
@@ -128,6 +128,7 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
             return inResponse;
         }
         inResponse.Role = user.privilege;
+        inResponse.Auth = uid;
 
         // Find Machine
         var machine: EquipmentRow
@@ -148,7 +149,7 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
         if (user.privilege == Privilege.STAFF) {
             wsApiLog("{user} has activated {machine} - {equipment} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: reader.machineID.toString() ?? "undefined" }, { id: machine.id, label: machine.name });
             createEquipmentSession(machine.id, user.id, reader.machineID?.toString() ?? undefined);
-            inResponse.Allowed = 1;
+            inResponse.Verified = 1;
             return inResponse;
         }
 
@@ -163,7 +164,7 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
                     { id: machine.id, label: machine.name },
                     { id: 401, label: "User requires Welcome" });
 
-                inResponse.Allowed = 0;
+                inResponse.Verified = 0;
                 inResponse.Error = "User requires Welcome";
                 inResponse.Reason = "no-welcome";
                 return inResponse;
@@ -184,7 +185,7 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
                 { id: machine.id, label: machine.name },
                 { id: 401, label: "Incomplete trainings" });
 
-            inResponse.Allowed = 0;
+            inResponse.Verified = 0;
             inResponse.Error = "Incomplete trainings";
             inResponse.Reason = "missing-training";
             return inResponse;
@@ -197,7 +198,7 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
                 { id: machine.id, label: reader.name },
                 { id: machine.id, label: machine.name ?? "undefined" },
                 { id: 401, label: "Missing Staff Approval" });
-            inResponse.Allowed = 0;
+            inResponse.Verified = 0;
             inResponse.Error = "Missing Staff Approval";
             inResponse.Reason = "no-approval";
             return inResponse;
@@ -212,12 +213,12 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
             { id: machine.id, label: machine.name });
 
         createEquipmentSession(machine.id, user.id, reader.machineID.toString());
-        inResponse.Allowed = 1;
+        inResponse.Verified = 1;
         return inResponse;
     } catch (err) {
         wsApiDebugLog(`Unhandled error when authorizing on {access_device} - ${err}`, "auth", { id: readerId, label: (await getReaderByID(readerId))?.name ?? "unknown device" })
         inResponse.Role = "unknown role";
-        inResponse.Allowed = 0;
+        inResponse.Verified = 0;
         inResponse.Error = "Unknown Error";
         inResponse.Reason = "server-error";
         return inResponse;
@@ -277,7 +278,7 @@ interface ShlugResponse {
     Seq: number
     Machine?: number
     Auth?: string
-    Allowed?: number
+    Verified?: number
     Role?: string
     Error?: string
     Reason?: string
@@ -329,7 +330,6 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
     console.log("Boot Message", message);
 
     var reader: ReaderRow | undefined = await getReaderByName(message.MachineName ? message.MachineName : "");
-    wsApiLog(`WSACS: Opened connection to {access_device}`, "status", { id: reader?.id ?? 0, label: reader?.name ?? "unknown name" })
     connData.readerId = reader?.id;
     connData.needsWelcome = message.NeedsWelcome;
 
@@ -344,6 +344,7 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
             zone: String(message.Zone), // TODO: Make this a number when zone/room debacle is figured out
         });
 
+
         if (reader == undefined) {
             wsApiDebugLog("Failed to create new access device. Error '{error}'", "status", { id: 400, label: "Reader does not exist" });
             return false;
@@ -352,6 +353,8 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
             wsApiLog("New Access Device {access_device} registered", "status", { id: reader?.id, label: reader?.name })
         }
     }
+    wsApiLog(`WSACS: Opened connection to {access_device}`, "status", { id: reader?.id ?? 0, label: reader?.name ?? "unknown name" })
+
 
     // update with new info
     const newReader = await updateReaderStatus({
@@ -416,7 +419,7 @@ async function handleStateTransition(connData: ConnectionData, reader: ReaderRow
 }
 
 function isReplyWorthSending(resp: ShlugResponse): boolean {
-    if (resp.Allowed || resp.Auth || resp.Error || resp.Reason || resp.Machine || resp.Role || resp.State || resp.Time) {
+    if (resp.Verified || resp.Auth || resp.Error || resp.Reason || resp.Machine || resp.Role || resp.State || resp.Time) {
         return true
     }
     return false

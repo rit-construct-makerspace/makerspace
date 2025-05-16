@@ -1,0 +1,34 @@
+{"Auth":"1234", "Verified":0, "Reason":"missing-sign-in", "Seq":125}
+
+{ "Auth":"1234", "Role":"Staff", "Verified":1, "Seq":125}
+
+{  "Zone":4,  "NeedsWelcome":true,  "MachineType":7,  "MachineName":"Drill Press",  "Key":"super_secret",  "FWVersion":"1.3.0",  "HWVersion":"2.3.2-LE",  "HWType":"ACS Core",  "Request":["Time","State"],  "Seq":0}
+
+{  "Zone":6,  "NeedsWelcome":true,  "MachineType":39,  "MachineName":"vinylcutter",  "Key":"super_secret",  "FWVersion":"1.3.0",  "HWVersion":"2.3.2-LE",  "HWType":"ACS Core",  "Request":["Time","State"],  "Seq":0}
+
+
+
+{  "Zone":6,  "NeedsWelcome":true,  "MachineType":70,  "MachineName":"testmachine",  "Key":"super_secret",  "FWVersion":"1.3.0",  "HWVersion":"2.3.2-LE",  "HWType":"ACS Core",  "Request":["Time","State"],  "Seq":0}
+
+{"Auth": "43e1c6af61290", "Seq": 1,  "Key":"super_secret"}
+
+{"Message": "Hello from WSACS", "Seq": 2,  "Key":"super_secret"}
+
+
+
+{  "Zone":4,  "NeedsWelcome":true,  "MachineType":70,  "MachineName":"testmachine",  "Key":"super_secret",  "FWVersion":"1.3.0",  "HWVersion":"2.3.2-LE",  "HWType":"ACS Core",  "Request":["Time","State"],  "Seq":0}
+{  "Zone":6,  "NeedsWelcome":true,  "MachineType":70,  "MachineName":"testmachine",  "Key":"super_secret",  "FWVersion":"1.3.0",  "HWVersion":"2.3.2-LE",  "HWType":"ACS Core",  "Request":["Time","State"],  "Seq":0}
+{  "Zone":6,  "NeedsWelcome":false,  "MachineType":70,  "MachineName":"testmachine",  "Key":"super_secret",  "FWVersion":"1.3.0",  "HWVersion":"2.3.2-LE",  "HWType":"ACS Core",  "Request":["Time","State"], "State":"Startup", "Seq":0}
+
+{"State": "Active", "UID": "43e1c6af61290", "Seq": 2}
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"username":"Key","Secret":"super_secret","ID": "43e1c6af61290", "Zone": 4}' \
+  http://localhost:3000/api/welcome
+
+
+  curl --header "Content-Type: application/json" \
+    --request PUT \
+    --data '{"Key":"Z5&fUh7@zKerGcxY*6M9Z8sVy^U0Tc","ID": "43e1c6af61290", "Zone": 4}'  \
+    make.rit.edu/api/welcome

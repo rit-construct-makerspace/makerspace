@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -14,7 +15,7 @@ import { GET_ANY_EQUIPMENT_BY_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/e
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/getRooms";
-import { useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import TimeAgo from 'react-timeago'
 import { blue } from "@mui/material/colors";
 
@@ -37,6 +38,8 @@ interface ReaderCardProps {
     FEVer?: string,
     HWVer?: string
 }
+
+const SEND_STATE_TO_SHLUG= gql``;
 
 const useStyles = makeStyles({
   errorText: {
@@ -174,6 +177,10 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
           >
               {stateContent}
           </Typography>
+          <Button variant = "contained" onClick={async () => {alert("blowing up")}}>
+            Blow Up
+            
+          </Button>
           <Box>
             <Stack direction={"column"} spacing={0.5} color={"secondary"} mt={1}>
               <Typography variant="body2"><b>BEVer:</b> {BEVer ?? "NULL"}</Typography>
