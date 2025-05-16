@@ -15,7 +15,6 @@ import InventoryPreviewPage from "./pages/maker/inventory_preview/InventoryPrevi
 import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
-import Homepage from "./pages/both/homepage/Homepage";
 import AnnouncementsPage from "./pages/lab_management/announcements/AnnouncementsPage";
 import EditAnnouncementSample from "./pages/lab_management/announcements/EditAnnouncementPage_sample";
 import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
@@ -35,6 +34,8 @@ import { Dashboard } from "./pages/both/homepage/Dashboard";
 import { ToolItemPage } from "./pages/lab_management/inventory/ToolItemPage";
 import UserSettingsPage from "./pages/both/user_page/user_settings/UserSettingsPage";
 import UserTraingingsPage from "./pages/both/user_page/user_trainings/UserTrainingsPage";
+import TopNav from "./top_nav/TopNav";
+import MakerspacePage from "./pages/makerspace_page/MakerspacePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -51,12 +52,14 @@ export default function AppRoutes() {
         <Route path="/admin/storefront/preview" element={<StorefrontPreviewPage />} />
 
 
-        <Route path={"/"} element={<LeftNav />}>
-
-          <Route path="/user/settings" element={<UserSettingsPage />} />
-          <Route path="/user/trainings" element={<UserTraingingsPage />} />
+        <Route path={"/"} element={<TopNav />}>
 
           <Route path="/" element={<Dashboard />} />
+
+          <Route path="/user/trainings" element={<UserTraingingsPage />}/>
+          <Route path="/user/settings" element={<UserSettingsPage />}/>
+
+          <Route path="/makerspace/:id" element={<MakerspacePage />}/>
 
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />

@@ -1,20 +1,21 @@
 import { useCurrentUser } from "../../../../common/CurrentUserProvider";
-import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, IconButton, Stack, TextField, Typography } from "@mui/material";
+import { Avatar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Grid, IconButton, Stack, TextField, Typography } from "@mui/material";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_USER } from "../../../lab_management/users/UserModal";
 import InfoBlob from "../../../lab_management/users/InfoBlob";
 import styled from "styled-components";
 import EditIcon from '@mui/icons-material/Edit';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UPDATE_STUDENT_PROFILE } from "../../../maker/signup/SignupPage";
 import RequestWrapper2 from "../../../../common/RequestWrapper2";
+import { stringAvatar } from "../../../../common/avatarGenerator";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   row-gap: 32px;
-  width: 50%;
+  width: auto;
 `;
 
 
@@ -40,8 +41,21 @@ export default function UserSettingsPage() {
         });
     }
 
+    const [width, setWidth] = useState<number>(window.innerWidth);
+    function handleWindowSizeChange() {
+        setWidth(window.innerWidth);
+    }
+    useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+
+    const isMobile = width <= 1100;
+
     return (
-        <Stack margin="30px" width="100%" spacing={2} divider={<Divider orientation="horizontal" flexItem/>}>
+        <Stack margin={isMobile ? "10px" : "30px"} width={isMobile ? "fit-content" : "auto"} spacing={2} divider={<Divider orientation="horizontal" flexItem/>}>
             {/* Personal info */}
             <RequestWrapper2 result={userResult} render={({user}) => {
                 
@@ -53,21 +67,30 @@ export default function UserSettingsPage() {
                     setEditInfo(true);
                 }
 
+                function handleClose() {
+                    setEditInfo(false);
+                    setPronouns(user.pronouns);
+                }
+
                 return (
                     <Stack spacing={1}>
                         <Stack direction="row" alignItems="center" spacing={2}>
                             <Stack direction="row" spacing={2} alignItems="center">
                                 <Avatar
-                                    alt="Profile picture"
-                                    src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-                                    sx={{width: "60px", height: "60px"}}
+                                    alt={`Profile Picture for ${user.firstName} ${user.lastName}`}
+                                    {
+                                        ...stringAvatar(
+                                            `${user.firstName} ${user.lastName}`,
+                                            {width: "60px", height: "60px", fontSize: 28}
+                                        )
+                                    }
                                 />
-                                <Typography variant="h3">{user.firstName} {user.lastName} ({user.ritUsername})</Typography>
+                                <Typography variant={isMobile ? "h5" : "h3"}>{user.firstName} {user.lastName} ({user.ritUsername})</Typography>
                             </Stack>
                             <IconButton aria-label="edit information" onClick={handleOpen}>
                                 <EditIcon sx={{width: "30px", height: "30px", color: "gray"}}/>
                             </IconButton>
-                            <Dialog open={editInfo} onClose={() => {setEditInfo(false)}}>
+                            <Dialog open={editInfo} onClose={handleClose}>
                                 <DialogTitle>Edit Personal Information</DialogTitle>
                                 <DialogContent>
                                     <DialogContentText>
@@ -84,19 +107,25 @@ export default function UserSettingsPage() {
                                     />
                                 </DialogContent>
                                 <DialogActions>
-                                    <Button onClick={() => {setEditInfo(false)}}>Cancel</Button>
+                                    <Button onClick={handleClose}>Cancel</Button>
                                     <Button onClick={handleSubmit}>Submit</Button>
                                 </DialogActions>
                             </Dialog>
                         </Stack>
-                        <StyledInfo>
-                            <InfoBlob label="Pronous" value={pronouns}/>
-                            <InfoBlob label="Role" value={user.privilege}/>
-                        </StyledInfo>
-                        <StyledInfo>
-                            <InfoBlob label="College" value={user.college}/>
-                            <InfoBlob label="Expected Graduation" value={user.expectedGraduation}/>
-                        </StyledInfo>
+                        <Grid container justifyContent="space-around" maxWidth={isMobile ? undefined : "750px"}>
+                            <Grid item minWidth="155px">
+                                <InfoBlob label="Pronous" value={pronouns}/>
+                            </Grid>
+                            <Grid item minWidth="155px">
+                                <InfoBlob label="Role" value={user.privilege}/>
+                            </Grid>
+                            <Grid item minWidth="155px">
+                                <InfoBlob label="College" value={user.college}/>
+                            </Grid>
+                            <Grid item minWidth="155px">
+                                <InfoBlob label="Expected Graduation" value={user.expectedGraduation}/>
+                            </Grid>
+                        </Grid>
                         <InfoBlob label="Member Since" value={user.registrationDate}/>
                     </Stack>
                 );

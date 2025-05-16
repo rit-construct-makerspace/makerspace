@@ -1,0 +1,20 @@
+import { Card, CardContent, Stack, Typography } from "@mui/material";
+import { Announcement } from "../../../queries/announcementsQueries";
+import Markdown from "react-markdown";
+
+interface AnnouncementCardProps {
+    announcement: Announcement;
+}
+
+export default function AnnouncementCard(props: AnnouncementCardProps) {
+    return (
+        <Card>
+            <CardContent>
+                <Stack maxWidth="400px">
+                    <Typography color="darkorange" variant="h5">{props.announcement.title}</Typography>
+                    <Typography variant="body1"><Markdown>{props.announcement.description}</Markdown></Typography>
+                </Stack>
+            </CardContent>
+        </Card>
+    );
+}
