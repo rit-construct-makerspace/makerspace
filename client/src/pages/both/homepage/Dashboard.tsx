@@ -76,7 +76,18 @@ export function Dashboard() {
 
                 return (
                     <Box>
-                        <Typography variant="h3" margin="30px 30px 10px 30px">Upcoming Events</Typography>
+                        <Stack  direction="row" margin="30px 30px 10px 30px" justifyContent="space-between" alignItems="center">
+                            <Typography variant="h3">Upcoming Events</Typography>
+                            <Typography variant="h6">
+                                <a 
+                                    href="https://www.eventbrite.com/o/rit-shed-makerspace-92409962123" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                >
+                                    All Events
+                                </a>
+                            </Typography>
+                        </Stack>
                         <Stack direction={isMobile ? "column" : "row"} justifyContent="flex-start" alignItems="stretch" spacing={2}
                             divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
                             margin="0px 20px 20px 20px"
