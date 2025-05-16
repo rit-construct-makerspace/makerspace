@@ -10,8 +10,8 @@ import {
     Typography
 } from "@mui/material";
 import { ReactNode, useEffect, useState } from "react";
-import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
-import RequestWrapper from "../../../common/RequestWrapper";
+import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../queries/getZones";
+import RequestWrapper from "../../common/RequestWrapper";
 
 
 function dayOfTheWeekConvert(day: number) {

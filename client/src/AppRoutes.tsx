@@ -30,7 +30,7 @@ import StatisticsPage from "./pages/lab_management/statistics/StatisticsPage";
 import EditTermsPage from "./pages/lab_management/policy/EditTermsPage";
 import TermsPage from "./pages/both/policy/TermsPage";
 import ResolutionLogPage from "./pages/lab_management/manage_equipment/ResolutionLog";
-import { Dashboard } from "./pages/both/homepage/Dashboard";
+import { Dashboard } from "./pages/homepage/Dashboard";
 import { ToolItemPage } from "./pages/lab_management/inventory/ToolItemPage";
 import UserSettingsPage from "./pages/both/user_page/user_settings/UserSettingsPage";
 import UserTraingingsPage from "./pages/both/user_page/user_trainings/UserTrainingsPage";

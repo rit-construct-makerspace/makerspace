@@ -1,5 +1,5 @@
 import { Card, CardContent, Stack, Typography } from "@mui/material";
-import { Announcement } from "../../../queries/announcementsQueries";
+import { Announcement } from "../../queries/announcementsQueries";
 import Markdown from "react-markdown";
 
 interface AnnouncementCardProps {

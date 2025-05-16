@@ -1,7 +1,7 @@
 import { Grid, Stack, Typography } from "@mui/material";
-import { FullRoom } from "../../../types/Room";
-import Equipment from "../../../types/Equipment";
-import EquipmentCard from "../../../common/EquipmentCard";
+import { FullRoom } from "../../types/Room";
+import Equipment from "../../types/Equipment";
+import EquipmentCard from "../../common/EquipmentCard";
 
 
 interface RoomSectionProps {

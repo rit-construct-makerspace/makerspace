@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react";
-import { Alert, Box, Divider, Stack } from "@mui/material";
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import { Box, Divider, Stack } from "@mui/material";
+import { useCurrentUser } from "../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
-import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
+import RequestWrapper from "../../common/RequestWrapper";
+import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../queries/getZones";
 import ZoneCard from "./ZoneCard";
-import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
+import { Announcement, GET_ANNOUNCEMENTS } from "../../queries/announcementsQueries";
 import AnnouncementCard from "./AnnouncementCard";
-import RequestWrapper2 from "../../../common/RequestWrapper2";
-import GET_EVENTS, { MakeEvent } from "../../../queries/eventQueries"
+import RequestWrapper2 from "../../common/RequestWrapper2";
+import GET_EVENTS, { MakeEvent } from "../../queries/eventQueries"
 import EventCard from "./EventCard";
-// import RequestWrapper from "../../../common/RequestWrapper";
-// import { useQuery } from "@apollo/client";
-// import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
-//import UpcomingEventsCard from "./GoogleCalendarAPI";
 
 const INCREMENT_SITE_VISITS = gql`
     query IncrementSiteVisits {
