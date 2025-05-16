@@ -8,6 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState } from "react";
 import { UPDATE_STUDENT_PROFILE } from "../../../maker/signup/SignupPage";
 import RequestWrapper2 from "../../../../common/RequestWrapper2";
+import { stringAvatar } from "../../../../common/avatarGenerator";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -76,9 +77,13 @@ export default function UserSettingsPage() {
                         <Stack direction="row" alignItems="center" spacing={2}>
                             <Stack direction="row" spacing={2} alignItems="center">
                                 <Avatar
-                                    alt="Profile picture"
-                                    src="https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-                                    sx={{width: "60px", height: "60px"}}
+                                    alt={`Profile Picture for ${user.firstName} ${user.lastName}`}
+                                    {
+                                        ...stringAvatar(
+                                            `${user.firstName} ${user.lastName}`,
+                                            {width: "60px", height: "60px", fontSize: 28}
+                                        )
+                                    }
                                 />
                                 <Typography variant={isMobile ? "h5" : "h3"}>{user.firstName} {user.lastName} ({user.ritUsername})</Typography>
                             </Stack>
