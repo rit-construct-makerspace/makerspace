@@ -29,6 +29,42 @@ export const StatisticQueryTypeDefs = gql`
         failedSum: Int
     }
 
+    type VerboseEquipmentSession {
+        id: ID!
+        start: DateTime!
+        equipmentID: ID!
+        userID: ID!
+        userName: String!
+        sessionLength: Int!
+        readerSlug: String!
+        equipmentName: String!
+        roomID: ID!
+        roomName: String!
+        zoneID: ID!
+        zoneName: String!
+    }
+
+    type VerboseRoomSwipe {
+        id: ID!
+        dateTime: DateTime!
+        roomID: ID!
+        roomName: String!
+        userID: ID!
+        userName: String!
+    }
+
+    type VerboseTrainingSubmission {
+        id: ID!
+        moduleID: ID!
+        moduleName: String!
+        makerID: ID!
+        makerName: String!
+        summary: String!
+        submissionDate: DateTime!
+        passed: Boolean!
+        expirationDate: DateTime!
+    }
+
     extend type Query {
         equipmentSessionsByDayOfTheWeek(dayOfTheWeek: String!, startDate: String, stopDate: String): String
         sumRoomSwipesByRoomByWeekDayByHour(sumStartDate: String, sumStopDate: String, avgStartDate: String, avgStopDate: String): [RoomSwipeStats]
