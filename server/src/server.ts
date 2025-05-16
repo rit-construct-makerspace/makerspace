@@ -6,7 +6,6 @@
 import express from "express";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground";
 import { createServer } from "http";
 import compression from "compression";
 import cors from "cors";
@@ -720,7 +719,7 @@ async function startServer() {
 
   const server = new ApolloServer({
     schema,
-    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+    plugins: [],
   });
 
 
