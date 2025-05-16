@@ -33,7 +33,7 @@ export default function EventCard(props: EventCardProps) {
           alt={props.name + " Event Logo"}
         />
         <CardContent>
-          <Typography variant="body2">
+          <Typography variant="body1">
             {props.summary}...
           </Typography>
         </CardContent>

@@ -79,7 +79,7 @@ export function Dashboard() {
                         <Typography variant="h3" margin="30px 30px 10px 30px">Upcoming Events</Typography>
                         <Stack direction={isMobile ? "column" : "row"} justifyContent="flex-start" alignItems="stretch" spacing={2}
                             divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
-                            margin="0px 20px"
+                            margin="0px 20px 20px 20px"
                         >
                             {
                                 data.events.length == 0
