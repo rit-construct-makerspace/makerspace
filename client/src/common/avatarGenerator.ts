@@ -1,3 +1,5 @@
+import { SxProps } from "@mui/material";
+
 function stringToColor(string: string) {
     let hash = 0;
     let i;
@@ -18,10 +20,11 @@ function stringToColor(string: string) {
     return color;
 }
 
-export function stringAvatar(name: string) {
+export function stringAvatar(name: string, props:SxProps={}) {
     return {
         sx: {
             bgcolor: stringToColor(name),
+            ...props
         },
         children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
     };
