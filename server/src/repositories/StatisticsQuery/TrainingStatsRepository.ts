@@ -17,20 +17,20 @@ export interface VerboseTrainingSubmission {
   makerName: string;
 }
 
-export async function getTrainingSubmissionsWithAttachedEntities(startDate: string, endDate: string, moduleIDs?: number[]): Promise<VerboseTrainingSubmission[]> {
+export async function getTrainingSubmissionsWithAttachedEntities(startDate?: string, endDate?: string, moduleIDs?: number[]): Promise<VerboseTrainingSubmission[]> {
   var numWhereCaluses = 0;
   var startDateSearchString = "";
   if (startDate) {
     numWhereCaluses++;
     //To prevent SQL Injection, Make sure JS sees it as a Date
-    if (!isNaN(new Date(startDate).getDate())) moduleSearchString = `WHERE tm.id = ANY(ARRAY ${moduleIDs})`;
+    if (!isNaN(new Date(startDate).getDate())) startDateSearchString = `ms."submissionDate" >= '${startDate}'`;
   }
 
   var endDateSearchString = "";
   if (endDate) {
     numWhereCaluses++;
     //To prevent SQL Injection, Make sure JS sees it as a Date
-    if (!isNaN(new Date(endDate).getDate())) moduleSearchString = `WHERE tm.id = ANY(ARRAY ${moduleIDs})`;
+    if (!isNaN(new Date(endDate).getDate())) endDateSearchString = `ms."submissionDate" < '${endDate}'`;
   }
 
   var moduleSearchString = "";
@@ -47,9 +47,9 @@ export async function getTrainingSubmissionsWithAttachedEntities(startDate: stri
     INNER JOIN "Users" u ON ms."makerID" = u.id
     ${numWhereCaluses > 0 ? " WHERE " : ""}
     ${startDateSearchString}
-    ${startDateSearchString.length > 0 ? " AND " : ""}
-    ${endDateSearchString}
     ${endDateSearchString.length > 0 ? " AND " : ""}
+    ${endDateSearchString}
+    ${moduleSearchString.length > 0 ? " AND " : ""}
     ${moduleSearchString}
     ORDER BY ms."submissionDate" DESC 
   `));
