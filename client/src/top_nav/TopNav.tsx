@@ -96,7 +96,7 @@ export default function TopNav() {
                 <Drawer anchor="top" open={mobileDrawer} onClose={() => setMobileDrawer(false)}>
                     <Stack alignItems="center" spacing={2} paddingTop="10px">
                         <NavLink
-                            to="/app/trainings/13"
+                            to="/maker/training/13"
                             primary="3D Printing Training"
                             icon={<SchoolIcon />}
                         />
@@ -158,7 +158,7 @@ export default function TopNav() {
                     <Stack component="nav" direction="row" justifyContent="space-between">
                         <StyledLogo width="15%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
                         <NavLink
-                            to="/app/trainings/13"
+                            to="/maker/training/13"
                             primary="3D Printing Training"
                             icon={<SchoolIcon />}
                         />
