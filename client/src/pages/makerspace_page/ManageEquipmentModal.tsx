@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { Autocomplete, AutocompleteRenderInputParams, Box, Button, Divider, IconButton, Modal, Stack, Switch, TextField, Typography } from "@mui/material";
 import { GET_EQUIPMENT_BY_ID, UPDATE_EQUIPMENT } from "../../queries/equipmentQueries";
 import RequestWrapper2 from "../../common/RequestWrapper2";
-import Equipment, { EquipmentWithRoom } from "../../types/Equipment";
+import { EquipmentWithRoom } from "../../types/Equipment";
 import CloseIcon from '@mui/icons-material/Close';
 import { SyntheticEvent, useState } from "react";
 import styled from "styled-components";
@@ -20,12 +20,6 @@ interface ManageEquipmentModalProps {
 
 export default function ManageEquipmentModal(props: ManageEquipmentModalProps) {
 
-    const StyledMachineImage = styled.img`
-      width: 128px;
-      height: 128px;
-      border-radius: 4px;
-    `;
-
     const getEquipmentResult = useQuery(GET_EQUIPMENT_BY_ID, { variables: { id: props.equipmentID } });
     const getRoomsResult = useQuery(GET_ROOMS);
     const getModulesResult = useQuery(GET_TRAINING_MODULES);
@@ -39,17 +33,27 @@ export default function ManageEquipmentModal(props: ManageEquipmentModalProps) {
     const [reservationOnly, setReservationOnly] = useState(false);
     const [trainingModules, setTrainingModules] = useState<number[]>([]);
 
+    const [inited, setInit] = useState(false);
+
+    function init(equipment: EquipmentWithRoom) {
+        setName(equipment.name);
+        setRoomID(equipment.room.id);
+        setImageURL(equipment.imageUrl ?? "");
+        setSopURL(equipment.sopUrl);
+        setDescription(equipment.notes);
+        setReservationOnly(equipment.byReservationOnly);
+        setInit(true);
+    }
+
 
     return (
         <RequestWrapper2 result={getEquipmentResult} render={(data) => {
 
             const equipment: EquipmentWithRoom = data.equipment;
 
-            setName(equipment.name);
-            setImageURL(equipment.imageUrl ?? "");
-            setSopURL(equipment.sopUrl);
-            setDescription(equipment.notes);
-            setReservationOnly(equipment.byReservationOnly);
+            if (!inited) {
+                init(equipment);
+            }
             
             equipment.trainingModules.map((tm: any) => {
                 if (!trainingModules.includes(tm.id)) {
@@ -93,6 +97,8 @@ export default function ManageEquipmentModal(props: ManageEquipmentModalProps) {
                     notes: description,
                     byReservationOnly: reservationOnly,
                 }});
+                props.onClose();
+                window.location.reload();
             };
 
             return (
