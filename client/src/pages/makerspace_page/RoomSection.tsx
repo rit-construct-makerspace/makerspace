@@ -18,6 +18,7 @@ export default function RoomSection(props: RoomSectionProps) {
     const roomEquipment = props.room.equipment;
     const isPriviledged = user.privilege === "MENTOR" || user.privilege === "STAFF";
     const filteredEquipment = roomEquipment.filter((equipment: Equipment) => equipment.name.toLowerCase().includes(props.equipmentSearch.toLowerCase()))
+    const sortedEquipment = filteredEquipment.sort((a, b) => (a.name.localeCompare(b.name)));
 
     const [manageEquipment, setManageEquipment] = useState(false);
     const [curEquipID, setCurEquipID] = useState(0);
@@ -35,7 +36,7 @@ export default function RoomSection(props: RoomSectionProps) {
         <Stack padding={"0 0 20px 0"}>
             <Typography variant="h4" sx={{padding: "15px"}}>{props.room.name}</Typography>
             <Grid container spacing={3} justifyContent="center">
-                {filteredEquipment.map((equipment: Equipment) => (
+                {sortedEquipment.map((equipment: Equipment) => (
                     <Grid key={equipment.id} item>
                         <EquipmentCard equipment={equipment} isMobile={props.isMobile} handleEdit={handleOpen}/>
                     </Grid>
