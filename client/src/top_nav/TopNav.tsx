@@ -130,7 +130,7 @@ export default function TopNav() {
                                     alt="Profile picture"
                                     {...stringAvatar(`${currentUser.firstName} ${currentUser.lastName}`, {height: "30px", width: "30px", fontSize: 16})}
                                 />
-                                <Typography variant="body1" color="grey">
+                                <Typography variant="body1" color="black">
                                     {`${currentUser.firstName} ${currentUser.lastName}`}
                                 </Typography>     
                             </Stack>
@@ -188,7 +188,7 @@ export default function TopNav() {
                         />
                         <ButtonBase onClick={handleUserMenuOpen}>
                             <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-                                <Typography variant="body1" color="grey" sx={{ fontWeight: "bold" }}>
+                                <Typography variant="body1" color="black" sx={{ fontWeight: "bold" }}>
                                     {`${currentUser.firstName} ${currentUser.lastName}`}
                                 </Typography>
                                 <Avatar
