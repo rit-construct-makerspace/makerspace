@@ -161,7 +161,7 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
 
         //Staff bypass. Skip Welcome and training check.
         if (user.privilege == Privilege.STAFF) {
-            wsApiLog("{user} has activated {machine} - {equipment} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: machine.id, label: reader.machineID.toString() ?? "undefined" }, { id: machine.id, label: machine.name });
+            wsApiLog("{user} has activated {access_device} - {equipment} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: reader?.id, label: reader?.name }, { id: machine.id, label: machine.name });
             createEquipmentSession(machine.id, user.id, reader.machineID?.toString() ?? undefined);
             inResponse.Verified = 1;
             return inResponse;
@@ -418,8 +418,7 @@ async function handleStateTransition(connData: ConnectionData, reader: ReaderRow
             // end last session normally
             reader.currentUID = activeUID ?? '';
             const equipment = await getEquipmentByID(parseInt(reader.machineType));
-            // Elapsed is time of time of this change - time of that change
-
+            // Update equipment session that was created when we authed
             await setLatestEquipmentSessionLength(parseInt(reader.machineType), reader.recentSessionLength, reader.name);
             if (user != null) {
                 const timeString = new Date(reader.recentSessionLength * 1000).toISOString().slice(11, 19);
