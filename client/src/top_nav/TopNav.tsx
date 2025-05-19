@@ -39,6 +39,7 @@ export default function TopNav() {
     const navigate = useNavigate();
 
     const currentUser = useCurrentUser();
+    const isPriviledged = currentUser.privilege === "MENTOR" || currentUser.privilege === "STAFF";
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const userMenuOpen = Boolean(anchorEl);
 
@@ -119,8 +120,8 @@ export default function TopNav() {
                             newTab={true}
                         />
                         <NavLink
-                            to="https://rit0.sharepoint.com/sites/shed-makerspace-public"
-                            primary="Knowledge Base"
+                            to={isPriviledged ? "https://rit0.sharepoint.com/sites/shed-makerspace-internal/SitePages/TrainingHome.aspx" : "https://rit0.sharepoint.com/sites/shed-makerspace-public"}
+                            primary={isPriviledged ? "Internal Wiki" : "Knowledge Base"}
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
@@ -181,8 +182,8 @@ export default function TopNav() {
                             newTab={true}
                         />
                         <NavLink
-                            to="https://rit0.sharepoint.com/sites/shed-makerspace-public"
-                            primary="Knowledge Base"
+                            to={isPriviledged ? "https://rit0.sharepoint.com/sites/shed-makerspace-internal/SitePages/TrainingHome.aspx" : "https://rit0.sharepoint.com/sites/shed-makerspace-public"}
+                            primary={isPriviledged ? "Internal Wiki" : "Knowledge Base"}
                             icon={<SharepointIcon />}
                             newTab={true}
                         />

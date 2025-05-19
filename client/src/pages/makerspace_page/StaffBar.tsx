@@ -98,12 +98,6 @@ export default function StaffBar(props: StaffBarProps) {
                 to={"/admin/statistics"}
                 icon={<BarChartIcon />}
             />
-            <NavLink
-                primary={"Internal Wiki"}
-                to={"https://rit0.sharepoint.com/sites/shed-makerspace-internal/SitePages/TrainingHome.aspx"}
-                icon={<SharepointIcon />}
-                newTab={true}
-            />
         </Stack>
     );
 
