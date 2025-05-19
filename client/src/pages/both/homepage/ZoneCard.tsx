@@ -63,7 +63,7 @@ function currentStatus(closing: string) {
     if (curTimeDate > closingDate) {
         return <Typography color="red" fontWeight="bold">CLOSED</Typography>;
     } else if (addHours(curTimeDate, 1) > closingDate) {
-        return <Typography color="#F9CA24" fontWeight="bold">CLOSING SOON</Typography>;
+        return <Typography color="red" fontWeight="bold">CLOSING SOON</Typography>;
     } else {
         return <Typography color="green" fontWeight="bold">OPEN</Typography>;
     }

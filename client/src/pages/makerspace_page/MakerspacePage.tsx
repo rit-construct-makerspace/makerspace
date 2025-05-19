@@ -5,7 +5,7 @@ import { FullZone, GET_ZONE_BY_ID } from "../../queries/getZones";
 import RequestWrapper2 from "../../common/RequestWrapper2";
 import { useEffect, useState } from "react";
 import ZoneHours from "./ZoneHours";
-import RoomSection from "../both/homepage/RoomSection";
+import RoomSection from "./RoomSection";
 import { FullRoom } from "../../types/Room";
 import SearchBar from "../../common/SearchBar";
 import StaffBar from "./StaffBar";
