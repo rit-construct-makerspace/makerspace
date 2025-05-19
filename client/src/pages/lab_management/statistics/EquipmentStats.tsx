@@ -232,8 +232,7 @@ export function EquipmentStats() {
               disableRowSelectionOnClick
             />
           )
-        }}>
-        </RequestWrapper2>
+        }} />
       </Box>
     </Box>
   )
