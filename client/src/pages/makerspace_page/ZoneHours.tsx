@@ -27,7 +27,6 @@ function getOpen(hours: FullZone["hours"]) {
 
 function getClose(hours: FullZone["hours"]) {
     const closeTime = hours.find((time) => time.type === "CLOSE");
-    console.log(closeTime);
     return closeTime ? reformatTime(closeTime.time) : ""
 }
 

@@ -55,8 +55,6 @@ function currentStatus(closing: string) {
         hour12: false
     })
 
-    console.log(formatter.resolvedOptions().timeZone)
-
     var curTimeDate = new Date(Date.parse('01/01/2011 ' + formatter.format(date)));
     var closingDate = new Date(Date.parse('01/01/2011 ' + closing));
 

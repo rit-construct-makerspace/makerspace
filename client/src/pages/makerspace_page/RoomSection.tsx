@@ -15,9 +15,9 @@ interface RoomSectionProps {
 
 export default function RoomSection(props: RoomSectionProps) {
     const user = useCurrentUser();
-    const roomEuipment = props.room.equipment;
+    const roomEquipment = props.room.equipment;
     const isPriviledged = user.privilege === "MENTOR" || user.privilege === "STAFF";
-    const filteredEquipment = roomEuipment.filter((equipment: Equipment) => equipment.name.includes(props.equipmentSearch))
+    const filteredEquipment = roomEquipment.filter((equipment: Equipment) => equipment.name.toLowerCase().includes(props.equipmentSearch.toLowerCase()))
 
     const [manageEquipment, setManageEquipment] = useState(false);
     const [curEquipID, setCurEquipID] = useState(0);
@@ -42,7 +42,7 @@ export default function RoomSection(props: RoomSectionProps) {
                 ))}
             </Grid>
             {
-                isPriviledged
+                isPriviledged && curEquipID !== 0
                 ? <ManageEquipmentModal equipmentID={curEquipID} open={manageEquipment} onClose={handleClose} />
                 : null
             }

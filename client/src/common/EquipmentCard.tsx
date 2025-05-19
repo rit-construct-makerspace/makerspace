@@ -10,6 +10,7 @@ import { Link, useNavigate } from "react-router-dom";
 import WarningIcon from "@mui/icons-material/Warning";
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import LockClockIcon from '@mui/icons-material/LockClock';
+import ReactMarkdown from "react-markdown";
 
 interface EquipmentCardProps {
     equipment: Equipment;
@@ -112,7 +113,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                 <CardContent>
                     {/* Desc && learn more */}
                     <Typography height="100%" alignSelf="center">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porttitor pellentesque ullamcorper. Donec quis tortor tellus. Donec faucibus tellus eu dui lobortis iaculis. <Link to={props.equipment.sopUrl} target="_blank">Learn More</Link>
+                        {props.equipment.notes} <Link to={props.equipment.sopUrl} target="_blank">Learn More</Link>
                     </Typography>
                 </CardContent>
             </Stack>

@@ -140,7 +140,11 @@ export default function UserTraingingsPage() {
                                     </Grid>
                                 ))}
                             </Grid>
-                            <ManageEquipmentModal equipmentID={curEquipID} open={manageEquipment} onClose={handleClose}/>
+                            {
+                                curEquipID !== 0
+                                ? <ManageEquipmentModal equipmentID={curEquipID} open={manageEquipment} onClose={handleClose}/>
+                                : null
+                            }
                         </Stack>
                     );
                 }}
