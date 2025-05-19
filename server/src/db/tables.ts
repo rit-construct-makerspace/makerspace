@@ -236,6 +236,7 @@ export interface ReaderRow {
   BEVer: string;
   FEVer: string;
   HWVer: string;
+  sessionStartTime: Date;
 }
 
 export interface AnnouncementRow {

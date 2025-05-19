@@ -42,6 +42,7 @@ export const GET_READERS = gql`
       BEVer
       FEVer
       HWVer
+      sessionStartTime
     }
   }
 `

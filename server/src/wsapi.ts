@@ -388,7 +388,6 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
 async function handleStateTransition(connData: ConnectionData, reader: ReaderRow, newState: string, activeUID: string | undefined) {
     const timeOfChange: Date = new Date();
     const oldState = reader.state;
-    const oldLastStatusTime = reader.lastStatusTime;
     const oldUID = reader.currentUID;
 
     reader.state = newState;
@@ -410,7 +409,8 @@ async function handleStateTransition(connData: ConnectionData, reader: ReaderRow
             wsApiLog(`{user} changed state of {access_device}: ${oldState} -> ${newState}`, "state", { id: user.id ?? 0, label: user ? getUsersFullName(user) : "NULL" }, { id: reader?.id, label: reader?.name });
         }
         if (newState == "Unlocked") {
-            console.log("Resettnig session timer");
+            console.log("Starting session");
+            reader.sessionStartTime = new Date();
             reader.recentSessionLength = 0;
         }
 
@@ -428,9 +428,11 @@ async function handleStateTransition(connData: ConnectionData, reader: ReaderRow
         }
     }
     if (newState == "Unlocked") {
-        const deltaseconds = Math.floor((timeOfChange.getTime() - oldLastStatusTime.getTime()) / 1000);
-        reader.recentSessionLength = reader.recentSessionLength + deltaseconds
-        console.log(`Incrementing session timer to ${reader.recentSessionLength}`);
+        const now = new Date();
+        const then = reader.sessionStartTime ?? new Date(); // if not there, set ot 0
+        const elapsedSeconds = Math.floor((now.getTime() - then.getTime()) / 1000);
+        reader.recentSessionLength = elapsedSeconds;
+        console.log(`Recent sesh len: ${reader.recentSessionLength}`)
     }
 
 
