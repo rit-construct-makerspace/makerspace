@@ -422,7 +422,7 @@ async function handleStateTransition(connData: ConnectionData, reader: ReaderRow
 
             await setLatestEquipmentSessionLength(parseInt(reader.machineType), reader.recentSessionLength, reader.name);
             if (user != null) {
-                const timeString = new Date(reader.recentSessionLength * 1000).toISOString().slice(11, 16);
+                const timeString = new Date(reader.recentSessionLength * 1000).toISOString().slice(11, 19);
                 await createLog(`{user} signed out of {machine} - {equipment} (Session: ${timeString})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: reader.name ?? "undefined" }, { id: equipment.id, label: equipment.name });
             }
         }
