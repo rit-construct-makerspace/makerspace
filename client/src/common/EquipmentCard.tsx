@@ -14,6 +14,7 @@ import LockClockIcon from '@mui/icons-material/LockClock';
 interface EquipmentCardProps {
     equipment: Equipment;
     isMobile: boolean;
+    handleEdit: (arg0: number) => void;
 }
 
 export default function EquipmentCard(props: EquipmentCardProps) {
@@ -46,7 +47,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                             <Stack direction="row" justifyContent="space-between">
                                 <Typography variant="h6">{props.equipment.name}</Typography>
                                 {isPriviledged ?
-                                    <IconButton aria-label="edit" sx={{width: "40px", height: "40px"}}>
+                                    <IconButton onClick={() => {props.handleEdit(props.equipment.id)}} aria-label="edit" sx={{width: "40px", height: "40px"}}>
                                         <EditIcon />
                                     </IconButton> :
                                     null

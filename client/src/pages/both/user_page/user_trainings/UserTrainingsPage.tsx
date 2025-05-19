@@ -11,6 +11,7 @@ import UnpagedEquipmentCard from "../../equipment/UnpagedEquipmentCard";
 import { useEffect, useState } from "react";
 import UnpagedEquipmentModal from "../../../maker/equipment_modal/UnpagedEquipmentModal";
 import EquipmentCard from "../../../../common/EquipmentCard";
+import ManageEquipmentModal from "../../../makerspace_page/ManageEquipmentModal";
 
 export default function UserTraingingsPage() {
     const user = useCurrentUser();
@@ -32,6 +33,18 @@ export default function UserTraingingsPage() {
     }, []);
 
     const isMobile = width <= 1100;
+
+    const [manageEquipment, setManageEquipment] = useState(false);
+    const [curEquipID, setCurEquipID] = useState(0);
+
+    function handleOpen(id: number) {
+        setCurEquipID(id);
+        setManageEquipment(true);
+    }
+
+    function handleClose() {
+        setManageEquipment(false);
+    }
 
     return (
         <Stack
@@ -108,7 +121,9 @@ export default function UserTraingingsPage() {
                                 {approved.map((ac: AccessCheck) => (
                                     <Grid item key={ac.equipment.id}>
                                         <EquipmentCard 
-                                            equipment={ac.equipment} isMobile={isMobile}
+                                            equipment={ac.equipment}
+                                            isMobile={isMobile}
+                                            handleEdit={handleOpen}
                                         />
                                     </Grid>
                                 ))}
@@ -120,11 +135,12 @@ export default function UserTraingingsPage() {
                                         <EquipmentCard
                                             equipment={ac.equipment}
                                             isMobile={isMobile}
+                                            handleEdit={handleOpen}
                                         />
                                     </Grid>
                                 ))}
                             </Grid>
-                            <UnpagedEquipmentModal equipmentID={modalID} setEquipmentID={setModalID}/>
+                            <ManageEquipmentModal equipmentID={curEquipID} open={manageEquipment} onClose={handleClose}/>
                         </Stack>
                     );
                 }}
