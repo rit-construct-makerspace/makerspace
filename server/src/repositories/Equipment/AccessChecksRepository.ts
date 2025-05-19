@@ -20,7 +20,7 @@ export async function getAccessChecks(): Promise<AccessCheckRow[]> {
  * @returns all relevant Access Checks
  */
 export async function getAccessChecksByUserID(userID: number): Promise<AccessCheckRow[] | undefined> {
-    return await knex("AccessChecks").select("*").where({userID});
+    return await knex("AccessChecks").select("*").where({userID: userID});
 }
 
 /**

@@ -16,6 +16,7 @@ export const ZonesTypeDefs = gql`
 
   extend type Query {
     zones: [Zone]
+    zoneByID(id: ID!): Zone
   }
 
   extend type Mutation {

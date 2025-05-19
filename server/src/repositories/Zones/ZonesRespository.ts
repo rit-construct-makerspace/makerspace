@@ -21,7 +21,7 @@ export async function getZones(): Promise<ZoneRow[]> {
  * @returns Zone or undefined if ID not exist
  */
 export async function getZoneByID(id: number): Promise<ZoneRow | undefined> {
-    return await knex("Zones").select().where({id}).first();
+    return await knex("Zones").select("*").where({id}).first();
 }
 
 /**
