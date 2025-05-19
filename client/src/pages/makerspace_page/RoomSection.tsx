@@ -18,7 +18,7 @@ export default function RoomSection(props: RoomSectionProps) {
     const roomEquipment = props.room.equipment;
     const isPriviledged = user.privilege === "MENTOR" || user.privilege === "STAFF";
     const filteredEquipment = roomEquipment.filter((equipment: Equipment) => equipment.name.toLowerCase().includes(props.equipmentSearch.toLowerCase()))
-    const sortedEquipment = filteredEquipment.sort((a, b) => (a.name.localeCompare(b.name)));
+    const sortedEquipment = filteredEquipment.sort((a, b) => (a.name.toLowerCase().localeCompare(b.name.toLowerCase())));
 
     const [manageEquipment, setManageEquipment] = useState(false);
     const [curEquipID, setCurEquipID] = useState(0);
