@@ -23,6 +23,7 @@ export const ReaderTypeDefs = gql`
     BEVer: String
     FEVer: String
     HWVer: String
+    sessionStartTime: DateTime
   }
 
   extend type Query {

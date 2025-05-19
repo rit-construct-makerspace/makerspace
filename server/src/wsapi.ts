@@ -134,18 +134,8 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
         inResponse.Machine = reader.machineID;
         // Find User
         const user = await getUserByCardTagID(uid);
-        if (user == null) {
-            wsApiLog("UID {conceal} failed to activate a machine with error '{error}'", "auth", { id: 0, label: uid ?? "undefined_uid" }, { id: 406, label: "User does not exist" });
-
-            inResponse.Error = "User does not exist";
-            inResponse.Reason = "unknown-uid";
-            return inResponse;
-        }
-        inResponse.Role = user.privilege;
-        inResponse.Auth = uid;
-
         // Find Machine
-        var machine: EquipmentRow
+        var machine: EquipmentRow | undefined;
         try {
             machine = await getEquipmentByID(reader.machineID);
             if (machine == null) {
@@ -153,6 +143,21 @@ async function authorizeUid(uid: string, readerId: number, needsWelcome: boolean
                 throw EntityNotFound;
             }
         } catch (EntityNotFound) {
+            machine = undefined;
+        }
+
+        if (user == null) {
+            wsApiLog("UID {conceal} failed to activate {machine} - {equipment} with error '{error}'", "auth", { id: 0, label: uid ?? "undefined_uid" }, { id: reader.id, label: reader.name ?? "undefined" }, { id: machine?.id, label: machine.name ?? "unknown machine" }, { id: 406, label: "User does not exist" });
+
+            inResponse.Error = "User does not exist";
+            inResponse.Reason = "unknown-uid";
+            return inResponse;
+        }
+        inResponse.Role = user.privilege; 
+        inResponse.Auth = uid;
+
+        // Find Machine
+        if (machine == null) {
             wsApiLog("{user} failed to swipe into  a machine with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: 406, label: `Machine ${reader.machineID} does not exist` });
             inResponse.Error = "Machine does not exist";
             inResponse.Reason = "unknown-machine";

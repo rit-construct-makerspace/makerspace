@@ -16,7 +16,8 @@ export interface Reader {
   lastStatusTime: string,
   BEVer: string,
   FEVer: string,
-  HWVer: string
+  HWVer: string,
+  sessionStartTime: number,
 }
 
 export const GET_READERS = gql`
