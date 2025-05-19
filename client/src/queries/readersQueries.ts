@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import Equipment from "../types/Equipment";
 
 export interface Reader {
   helpRequested: boolean;
@@ -106,5 +105,11 @@ export const SET_READER_NAME = gql`
       scheduledStatusFreq
       lastStatusTime
     }
+  }
+`;
+
+export const SET_READER_STATE = gql`
+  mutation SetReaderState($id: ID!, $state: String) {
+    setState(id: $id, state: $state)
   }
 `;

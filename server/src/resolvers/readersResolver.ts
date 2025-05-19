@@ -10,6 +10,8 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUserByCardTagID, getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { EntityNotFound } from "../EntityNotFound.js";
 import { ReaderRow } from "../db/tables.js";
+import * as ShlugControl from "../wsapi.js"
+
 
 const ReadersResolver = {
   Reader: {
@@ -94,7 +96,20 @@ const ReadersResolver = {
           { id: executingUser.id, label: getUsersFullName(executingUser) },
           { id: readerSubject.id, label: readerSubject.name }
         );
-      })
+      }),
+
+    setState: async (
+      _parent: any,
+      args: { id: string; state: string },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.STAFF], async (executingUser: any) => {
+        try {
+          return ShlugControl.sendState(Number(args.id), args.state);
+        } catch (e) {
+          return `failed to parse id: ${e}`;
+        }
+      }),
   }
 };
 

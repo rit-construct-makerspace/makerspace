@@ -38,6 +38,7 @@ export const ReaderTypeDefs = gql`
       zone: String
     ): Reader
 
+
     updateReader(
       id: ID!
       machineID: String
@@ -52,5 +53,6 @@ export const ReaderTypeDefs = gql`
     ): Reader
 
     setName(id: ID!, name: String): Reader
+    setState(id: ID!, state: String): String
   }
 `;

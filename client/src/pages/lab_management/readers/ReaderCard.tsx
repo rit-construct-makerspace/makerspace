@@ -1,10 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
   IconButton,
+  MenuItem,
+  Select,
   Stack,
   Typography,
 } from "@mui/material";
@@ -14,9 +17,10 @@ import { GET_ANY_EQUIPMENT_BY_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/e
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/getRooms";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
 import { blue } from "@mui/material/colors";
+import { SET_READER_STATE } from "../../../queries/readersQueries";
 
 interface ReaderCardProps {
     id: number,
@@ -37,6 +41,7 @@ interface ReaderCardProps {
     FEVer?: string,
     HWVer?: string
 }
+
 
 const useStyles = makeStyles({
   errorText: {
@@ -69,6 +74,14 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
   const now = new Date();
   const lastTimeDifference = now.getTime() - (new Date(lastStatusTime).getTime());
 
+  const [setReaderState]= useMutation(SET_READER_STATE);
+  const handleChange = (event: any) => {
+    // If the value was the informational one, ignore it
+    if (event.target.value === "State"){
+      return;
+    }
+    setReaderState({variables: {id: id, state: event.target.value}});
+  };
   return (
     <RequestWrapper
     loading={machineResult.loading}
@@ -174,6 +187,16 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
           >
               {stateContent}
           </Typography>
+          <Select defaultValue={"State"} onChange={handleChange}>
+            <MenuItem value="State">State</MenuItem>
+            <MenuItem value="Idle">Idle</MenuItem>
+            <MenuItem value="Unlocked">Unlocked</MenuItem>
+            <MenuItem value="AlwaysOn">Always On</MenuItem>
+            <MenuItem value="Lockout">Lockout</MenuItem>
+            <MenuItem value="Fault">Fault</MenuItem>
+            <MenuItem value="Startup">Startup</MenuItem>
+            <MenuItem value="Restart">Restart</MenuItem>
+          </Select>
           <Box>
             <Stack direction={"column"} spacing={0.5} color={"secondary"} mt={1}>
               <Typography variant="body2"><b>BEVer:</b> {BEVer ?? "NULL"}</Typography>
