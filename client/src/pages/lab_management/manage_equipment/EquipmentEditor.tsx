@@ -182,14 +182,15 @@ export default function EquipmentEditor({
               onChange={handleRoomChanged}
               disableClearable
             />
-            <br />
-            <TextareaAutosize 
+            <TextField
+              label="Description"
               style={{background: "none", fontFamily: "Roboto", fontSize: "1em", lineHeight: "2em"}}
-              aria-label="Notes" 
+              aria-label="Description" 
               defaultValue={equipment.notes} 
-              placeholder="Notes (Markdown Compatible)" 
-              value={equipment.notes} 
-              onChange={handleNotesChanged}></TextareaAutosize>
+              placeholder="Description (Markdown Compatible)"
+              onChange={handleNotesChanged}
+              rows={3}
+            />
             <FormControlLabel control={<Switch checked={equipment.byReservationOnly} onChange={handleByReservationOnlySwitchChanged} />} label={"Available by reservation only? (Hides ACS availability from users)"} />
           </Stack>
         </Stack>

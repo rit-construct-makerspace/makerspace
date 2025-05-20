@@ -1,4 +1,4 @@
-import { Box, Card, CardActionArea, CardContent, CardHeader, CardMedia, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, IconButton, Stack, Typography } from "@mui/material";
 import Equipment from "../types/Equipment";
 import { useCurrentUser } from "./CurrentUserProvider";
 import EditIcon from '@mui/icons-material/Edit';
@@ -47,11 +47,18 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                             {/* Title & Edit button */}
                             <Stack direction="row" justifyContent="space-between">
                                 <Typography variant="h6">{props.equipment.name}</Typography>
-                                {isPriviledged ?
-                                    <IconButton onClick={() => {navigate(`/admin/equipment/${props.equipment.id}`)}} aria-label="edit" sx={{width: "40px", height: "40px"}}>
+                                {
+                                    isPriviledged
+                                    ? <Button
+                                        onClick={() => {navigate(`/admin/equipment/${props.equipment.id}`)}}
+                                        aria-label="edit button"
+                                        sx={{width: "40px", height: "40px"}}
+                                        variant="contained"
+                                        color="warning"
+                                    >
                                         <ConstructionIcon />
-                                    </IconButton> :
-                                    null
+                                    </Button>
+                                    : null
                                 }
                             </Stack>
                             <Stack direction="row" justifyContent="space-between" height="100%">
