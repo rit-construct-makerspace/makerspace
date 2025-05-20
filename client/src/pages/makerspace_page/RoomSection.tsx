@@ -3,7 +3,6 @@ import { FullRoom } from "../../types/Room";
 import Equipment from "../../types/Equipment";
 import EquipmentCard from "../../common/EquipmentCard";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
-import ManageEquipmentModal from "./ManageEquipmentModal";
 import { useState } from "react";
 
 
@@ -38,15 +37,10 @@ export default function RoomSection(props: RoomSectionProps) {
             <Grid container spacing={3} justifyContent="center">
                 {sortedEquipment.map((equipment: Equipment) => (
                     <Grid key={equipment.id} item>
-                        <EquipmentCard equipment={equipment} isMobile={props.isMobile} handleEdit={handleOpen}/>
+                        <EquipmentCard equipment={equipment} isMobile={props.isMobile}/>
                     </Grid>
                 ))}
             </Grid>
-            {
-                isPriviledged && curEquipID !== 0
-                ? <ManageEquipmentModal equipmentID={curEquipID} open={manageEquipment} onClose={handleClose} />
-                : null
-            }
         </Stack>
     );
 }

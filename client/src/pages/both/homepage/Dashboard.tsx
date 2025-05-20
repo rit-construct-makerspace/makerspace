@@ -64,8 +64,8 @@ export function Dashboard() {
             {/* Announcments */}
             <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
                 <Box>
-                    <Stack direction="row" spacing={2} alignItems="center">
-                        <Typography variant={isMobile ? "h4" : "h3"} margin="30px 30px 10px 30px">Announcements</Typography>
+                    <Stack direction="row" spacing={2} alignItems="center" margin="30px 30px 10px 30px">
+                        <Typography variant={isMobile ? "h4" : "h3"}>Announcements</Typography>
                         {
                             isPriviledged
                             ?  <IconButton onClick={() => navigate("/admin/announcements")} sx={{color: "gray"}}>

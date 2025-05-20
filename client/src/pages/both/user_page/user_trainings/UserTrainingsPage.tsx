@@ -11,7 +11,6 @@ import UnpagedEquipmentCard from "../../equipment/UnpagedEquipmentCard";
 import { useEffect, useState } from "react";
 import UnpagedEquipmentModal from "../../../maker/equipment_modal/UnpagedEquipmentModal";
 import EquipmentCard from "../../../../common/EquipmentCard";
-import ManageEquipmentModal from "../../../makerspace_page/ManageEquipmentModal";
 
 export default function UserTraingingsPage() {
     const user = useCurrentUser();
@@ -123,7 +122,6 @@ export default function UserTraingingsPage() {
                                         <EquipmentCard 
                                             equipment={ac.equipment}
                                             isMobile={isMobile}
-                                            handleEdit={handleOpen}
                                         />
                                     </Grid>
                                 ))}
@@ -135,16 +133,10 @@ export default function UserTraingingsPage() {
                                         <EquipmentCard
                                             equipment={ac.equipment}
                                             isMobile={isMobile}
-                                            handleEdit={handleOpen}
                                         />
                                     </Grid>
                                 ))}
                             </Grid>
-                            {
-                                curEquipID !== 0
-                                ? <ManageEquipmentModal equipmentID={curEquipID} open={manageEquipment} onClose={handleClose}/>
-                                : null
-                            }
                         </Stack>
                     );
                 }}

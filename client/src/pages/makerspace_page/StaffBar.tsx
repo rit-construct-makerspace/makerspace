@@ -79,11 +79,6 @@ export default function StaffBar(props: StaffBarProps) {
                 icon={<MeetingRoomIcon />}
             />
             <NavLink
-                primary={"Announcements"}
-                to={"/admin/announcements"}
-                icon={<AnnouncementIcon />}
-            />
-            <NavLink
                 primary={"People"}
                 to={"/admin/people"}
                 icon={<PeopleIcon />}

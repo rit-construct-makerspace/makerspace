@@ -10,12 +10,10 @@ import { Link, useNavigate } from "react-router-dom";
 import WarningIcon from "@mui/icons-material/Warning";
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import LockClockIcon from '@mui/icons-material/LockClock';
-import ReactMarkdown from "react-markdown";
 
 interface EquipmentCardProps {
     equipment: Equipment;
     isMobile: boolean;
-    handleEdit: (arg0: number) => void;
 }
 
 export default function EquipmentCard(props: EquipmentCardProps) {
@@ -48,7 +46,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                             <Stack direction="row" justifyContent="space-between">
                                 <Typography variant="h6">{props.equipment.name}</Typography>
                                 {isPriviledged ?
-                                    <IconButton onClick={() => {props.handleEdit(props.equipment.id)}} aria-label="edit" sx={{width: "40px", height: "40px"}}>
+                                    <IconButton onClick={() => {navigate(`/admin/equipment/${props.equipment.id}`)}} aria-label="edit" sx={{width: "40px", height: "40px"}}>
                                         <EditIcon />
                                     </IconButton> :
                                     null
