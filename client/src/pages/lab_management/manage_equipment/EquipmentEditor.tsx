@@ -17,6 +17,7 @@ import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equ
 import EquipmentInstanceRow from "./EquipmentInstanceRow";
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
+import IssueLogModal from "./IssueLogModal";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -123,6 +124,7 @@ export default function EquipmentEditor({
   const isMobile = width <= 1100;
 
   const equipmentInstancesResult = useQuery(GET_EQUIPMENT_INSTANCES, {variables: {equipmentID: equipment.id}});
+  const [issuesModal, setIssuesModal] = useState(false);
 
   return (
     <RequestWrapper
@@ -143,7 +145,7 @@ export default function EquipmentEditor({
                       : <ArchiveEquipmentButton equipmentID={equipment.id} appearance="medium" />
                     : null
                 }
-                {equipment.id && <Button variant="outlined" color="secondary" startIcon={<SpeakerNotesIcon />} onClick={() => {navigate("/admin/equipment/issues/" + equipment.id);}}>
+                {equipment.id && <Button variant="outlined" color="secondary" startIcon={<SpeakerNotesIcon />} onClick={() => setIssuesModal(true)}>
                   View Issue Logs
                 </Button>}
               </Stack>
@@ -257,6 +259,7 @@ export default function EquipmentEditor({
             </Stack>
           </Stack>
         </Stack>
+        <IssueLogModal equipmentID={equipment.id + ""} open={issuesModal} onClose={() => setIssuesModal(false)} />
       </AdminPage>
     </RequestWrapper>
   );
