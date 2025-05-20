@@ -42,7 +42,7 @@ function addHours(date: Date, hours: number) {
     return date;
 }
 
-function currentStatus(closing: string) {
+function currentStatus(opening: string, closing: string) {
     if (closing === "") {
         return <Typography color="red">CLOSED</Typography>;
     }
@@ -57,13 +57,16 @@ function currentStatus(closing: string) {
 
     var curTimeDate = new Date(Date.parse('01/01/2011 ' + formatter.format(date)));
     var closingDate = new Date(Date.parse('01/01/2011 ' + closing));
+    var openingDate = new Date(Date.parse('01/01/2011 ' + opening));
 
-    if (curTimeDate > closingDate) {
+    if (curTimeDate <= openingDate && curTimeDate >= closingDate) {
+        return <Typography color="green" fontWeight="bold">OPEN</Typography>;
+    } else if (curTimeDate > closingDate) {
         return <Typography color="red" fontWeight="bold">CLOSED</Typography>;
     } else if (addHours(curTimeDate, 1) > closingDate) {
         return <Typography color="red" fontWeight="bold">CLOSING SOON</Typography>;
     } else {
-        return <Typography color="green" fontWeight="bold">OPEN</Typography>;
+        return <Typography color="red" fontWeight="bold">CLOSED</Typography>;
     }
 }
 
@@ -90,7 +93,7 @@ function getHoursToday(times: {type: string, dayOfTheWeek: number, time: string}
 
     return (
         <Stack justifyContent="space-between" direction="row">
-            {currentStatus(rawClose)}
+            {currentStatus(rawOpen, rawClose)}
             <Stack direction="row">
                 <Typography color="darkorange">{today}</Typography>
                 <Typography paddingLeft={"10px"}>{rawOpen !== "" ? rawClose !== "" ? `${reformatTime(rawOpen)} - ${reformatTime(rawClose)}` : "" : ""}</Typography>
