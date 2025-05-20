@@ -10,6 +10,8 @@ import { Link, useNavigate } from "react-router-dom";
 import WarningIcon from "@mui/icons-material/Warning";
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import LockClockIcon from '@mui/icons-material/LockClock';
+import ConstructionIcon from '@mui/icons-material/Construction';
+import ReactMarkdown from "react-markdown";
 
 interface EquipmentCardProps {
     equipment: Equipment;
@@ -47,7 +49,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                                 <Typography variant="h6">{props.equipment.name}</Typography>
                                 {isPriviledged ?
                                     <IconButton onClick={() => {navigate(`/admin/equipment/${props.equipment.id}`)}} aria-label="edit" sx={{width: "40px", height: "40px"}}>
-                                        <EditIcon />
+                                        <ConstructionIcon />
                                     </IconButton> :
                                     null
                                 }
@@ -110,9 +112,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                 </Stack>
                 <CardContent>
                     {/* Desc && learn more */}
-                    <Typography height="100%" alignSelf="center">
-                        {props.equipment.notes} <Link to={props.equipment.sopUrl} target="_blank">Learn More</Link>
-                    </Typography>
+                    <ReactMarkdown>{`${props.equipment.notes} [Learn More](${props.equipment.sopUrl})`}</ReactMarkdown>
                 </CardContent>
             </Stack>
         </Card>

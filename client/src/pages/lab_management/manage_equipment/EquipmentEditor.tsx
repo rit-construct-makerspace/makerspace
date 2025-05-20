@@ -117,8 +117,7 @@ export default function EquipmentEditor({
       error={getRoomsResult.error || getModulesResult.error}
     >
       <AdminPage
-        title={`${newEquipment ? "Create new" : "Manage"} equipment`}
-        maxWidth="800px"
+        title={`${newEquipment ? "Create New" : "Manage"} Equipment`}
       >
         {!newEquipment && (
           <Stack direction="row" spacing={1} sx={{ mt: -2, mb: 4 }}>

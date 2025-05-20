@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client";
-import { Box, Divider, Stack, Typography } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 import { FullZone, GET_ZONE_BY_ID } from "../../queries/getZones";
 import RequestWrapper2 from "../../common/RequestWrapper2";
 import { useEffect, useState } from "react";
@@ -9,9 +9,14 @@ import RoomSection from "./RoomSection";
 import { FullRoom } from "../../types/Room";
 import SearchBar from "../../common/SearchBar";
 import StaffBar from "./StaffBar";
+import { useCurrentUser } from "../../common/CurrentUserProvider";
+import AddIcon from '@mui/icons-material/Add';
 
 export default function MakerspacePage() {
     const { id } = useParams<{ id: string }>();
+
+    const user = useCurrentUser();
+    const navigate = useNavigate();
 
     const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: id}});
 
@@ -41,13 +46,20 @@ export default function MakerspacePage() {
                     <Typography variant="h3" align="center">{fullZone.name}</Typography>
                     <ZoneHours hours={fullZone.hours} isMobile={isMobile}/>
                     <StaffBar isMobile={isMobile} zoneID={fullZone.id}/>
-                    <Box padding="10px">
+                    <Stack padding="10px" direction="row" spacing={2}>
                         <SearchBar
                             placeholder="Search Equipment"
                             value={equipmentSearch}
                             onChange={(e) => setEquipmentSearch(e.target.value)}
                         />
-                    </Box>
+                        {
+                            user.privilege === "STAFF"
+                            ? <Button variant="contained" color="success" startIcon={<AddIcon/>} onClick={() => (navigate("/admin/equipment/new"))}>
+                                Create New Equipment
+                            </Button>
+                            : null
+                        }
+                    </Stack>
                     {fullZone.rooms.map((room: FullRoom) => (
                         <RoomSection room={room} equipmentSearch={equipmentSearch} isMobile={isMobile} />
                     ))}
