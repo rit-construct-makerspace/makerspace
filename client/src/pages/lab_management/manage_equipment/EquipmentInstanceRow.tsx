@@ -11,8 +11,9 @@ import { useMutation } from "@apollo/client";
 
 export default function EquipmentInstanceRow({ instance }: { instance: EquipmentInstance }) {
   const [status, setStatus] = useState<InstanceStatus>(instance.status);
+  const [state, setState] = useState("IDLE");
+  
   const [name, setName] = useState<string>(instance.name);
-
   const [allowRename, setAllowRename] = useState<boolean>(false);
 
   const [setInstanceStatus] = useMutation(SET_INSTANCE_STATUS, { refetchQueries: [{ query: GET_EQUIPMENT_INSTANCES, variables: {equipmentID: instance.equipment.id} }] });
@@ -23,6 +24,10 @@ export default function EquipmentInstanceRow({ instance }: { instance: Equipment
   function handleStatusChange(e: any) {
     setStatus(e.target.value);
     setInstanceStatus({ variables: { id: instance.id, status: e.target.value } })
+  }
+
+  function handleStateChange(e: any) {
+    setState(e.target.value);
   }
 
   async function handlenameChangeSubmit() {
@@ -37,12 +42,11 @@ export default function EquipmentInstanceRow({ instance }: { instance: Equipment
 
   return (
     <Card sx={{p: 2}}>
-      <Stack direction={"row"} spacing={2} alignItems={"center"} justifyContent={"space-between"} divider={<Divider />} sx={{ width: "100%" }}>
-        <Stack direction={"row"} alignItems={"center"} spacing={4}>
+      <Stack direction={"row"} spacing={2} alignItems={"center"} justifyContent={"space-between"} sx={{ width: "100%" }}>
+        <Stack direction={"row"} alignItems={"center"} spacing={2}>
           {!allowRename ? <Typography variant="h6" fontWeight={"bold"} width={150}>{instance.name}</Typography>
             : <TextField size="small" value={name} onChange={(e) => setName(e.target.value)}></TextField>}
-          <Typography color={"secondary"} width={60}>ID {instance.id}</Typography>
-          <Select size="small" defaultValue={instance.status} value={status} onChange={handleStatusChange}>
+          <Select size="small" defaultValue={instance.status} value={status} onChange={handleStatusChange} sx={{width: "165px"}}>
             <MenuItem value={InstanceStatus.ACTIVE}>{InstanceStatus.ACTIVE}</MenuItem>
             <MenuItem value={InstanceStatus.NEEDS_REPAIRS}>{InstanceStatus.NEEDS_REPAIRS}</MenuItem>
             <MenuItem value={InstanceStatus.UNDER_REPAIRS}>{InstanceStatus.UNDER_REPAIRS}</MenuItem>
@@ -50,7 +54,13 @@ export default function EquipmentInstanceRow({ instance }: { instance: Equipment
             <MenuItem value={InstanceStatus.UNDEPLOYED}>{InstanceStatus.UNDEPLOYED}</MenuItem>
             <MenuItem value={InstanceStatus.RETIRED}>{InstanceStatus.RETIRED}</MenuItem>
           </Select>
+          <Select size="small" defaultValue={"IDLE"} value={state} onChange={handleStateChange} sx={{width: "140px"}}>
+            <MenuItem value="IDLE">IDLE</MenuItem>
+            <MenuItem value="LOCKOUT">LOCKOUT</MenuItem>
+            <MenuItem value="ALWAYS ON">ALWAYS ON</MenuItem>
+          </Select>
         </Stack>
+        <Typography variant="body1">temporary-fading-slug</Typography>
         <Stack direction={"row"} alignSelf={"flex-end"} spacing={2} alignItems={"center"}>
           {!allowRename
             ? <>

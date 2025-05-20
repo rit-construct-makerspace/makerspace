@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Box, Divider, Stack } from "@mui/material";
+import { Alert, Box, Divider, IconButton, Stack } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
@@ -12,10 +12,7 @@ import AnnouncementCard from "./AnnouncementCard";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import GET_EVENTS, { MakeEvent } from "../../../queries/eventQueries"
 import EventCard from "./EventCard";
-// import RequestWrapper from "../../../common/RequestWrapper";
-// import { useQuery } from "@apollo/client";
-// import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
-//import UpcomingEventsCard from "./GoogleCalendarAPI";
+import EditIcon from '@mui/icons-material/Edit';
 
 const INCREMENT_SITE_VISITS = gql`
     query IncrementSiteVisits {
@@ -25,6 +22,7 @@ const INCREMENT_SITE_VISITS = gql`
 
 export function Dashboard() {
     const currentUser = useCurrentUser();
+    const isPriviledged = currentUser.privilege === "MENTOR" || currentUser.privilege === "STAFF";
     const navigate = useNavigate();
 
     const incrementSiteVisits = useQuery(INCREMENT_SITE_VISITS);
@@ -66,8 +64,17 @@ export function Dashboard() {
             {/* Announcments */}
             <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
                 <Box>
-                    <Typography variant={isMobile ? "h4" : "h3"} margin="30px 30px 10px 30px">Announcements</Typography>
-                    <Stack direction={isMobile ? "column" : "row"} justifyContent={isMobile ? "flex-start" : "space-around"} alignItems="stretch" spacing={2}
+                    <Stack direction="row" spacing={2} alignItems="center" margin="30px 30px 10px 30px">
+                        <Typography variant={isMobile ? "h4" : "h3"}>Announcements</Typography>
+                        {
+                            isPriviledged
+                            ?  <IconButton onClick={() => navigate("/admin/announcements")} sx={{color: "gray"}}>
+                                <EditIcon />
+                            </IconButton>
+                            : undefined
+                        }
+                    </Stack>
+                    <Stack direction={isMobile ? "column" : "row"} alignItems="stretch" spacing={2}
                         divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
                         margin="0px 20px"
                     >

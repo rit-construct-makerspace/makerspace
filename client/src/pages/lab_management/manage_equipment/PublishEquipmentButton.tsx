@@ -22,7 +22,7 @@ export default function PublishEquipmentButton(props: PublishEquipmentButtonProp
 
   const handleClick = async () => {
     await publishEquipment();
-    navigate("/admin/equipment");
+    navigate("/");
   };
 
   return (

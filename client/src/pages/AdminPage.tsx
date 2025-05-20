@@ -5,7 +5,7 @@ import { gql, useQuery } from "@apollo/client";
 import RequestWrapper from "../common/RequestWrapper";
 
 interface PageProps {
-  title: string;
+  title?: string;
   topRightAddons?: ReactNode;
   maxWidth?: string;
   children?: ReactNode;
@@ -42,28 +42,8 @@ export default function AdminPage({
 
   return (
     <RequestWrapper loading={isMentorOrHigherResult.loading} error={isMentorOrHigherResult.error}>
-      <Stack
-        alignItems="center"
-        sx={{ width: "100%", height: "100vh", overflowY: "auto" }}
-      >
-        <Stack
-          sx={{
-            px: noPadding ? 0 : 4,
-            py: 4,
-            width: "100%",
-            maxWidth: `${noPadding ? 'max' : 'min'}(calc(100% - 64px), ${maxWidth})`,
-          }}
-        >
-          <Stack direction="row" alignItems="center" mb={4} ml={noPadding ? 4 : ""}>
-            {title != "" &&
-            <Typography variant={isMobile ? "h5" : "h3"} sx={{pl: isMobile ? 4 : ""}} flexGrow={1}>
-            {title}
-            </Typography>}
-            {topRightAddons}
-          </Stack>
-
-          {children}
-        </Stack>
+      <Stack width="auto">
+        {children}
       </Stack>
     </RequestWrapper>
   );
