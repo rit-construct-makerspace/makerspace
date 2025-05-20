@@ -10,6 +10,7 @@ export default interface Equipment {
   numInUse: number;
   byReservationOnly: boolean;
   notes: string;
+  archived: boolean;
 }
 
 export interface EquipmentWithRoom {

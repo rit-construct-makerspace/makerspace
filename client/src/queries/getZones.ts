@@ -106,6 +106,7 @@ export const GET_ZONE_BY_ID = gql`
           numInUse
           byReservationOnly
           notes
+          archived
         }
       }
     }
