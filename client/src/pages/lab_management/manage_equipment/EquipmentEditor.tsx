@@ -135,7 +135,7 @@ export default function EquipmentEditor({
     >
       <AdminPage>
         <Stack padding="15px">
-          <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+          <Stack direction={isMobile ? "column" : "row"} justifyContent="space-between" alignItems="baseline">
             <Typography variant="h3">{`${newEquipment ? "Create New" : "Manage"} Equipment`}</Typography>
             {
               !newEquipment
@@ -161,7 +161,7 @@ export default function EquipmentEditor({
             width="auto"
             padding="0px 10px"
           >
-            <Stack spacing={2} width="50%">
+            <Stack spacing={2} width={isMobile ? "100%" : "50%"}>
               <Typography variant="h5">Machine Information</Typography>
               <TextField
                 label="Name"
@@ -243,7 +243,7 @@ export default function EquipmentEditor({
                 Save
               </Button>
             </Stack>
-            <Stack width="50%" spacing={2}>
+            <Stack width={isMobile ? "100%" : "50%"} spacing={2}>
               <Typography variant="h5">Instances</Typography>
               {
                 equipmentInstancesResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
