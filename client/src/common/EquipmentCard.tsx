@@ -29,7 +29,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     );
 
     return (
-        <Card sx={{width: props.isMobile ? "350px" : "600px", minHeight: "350px"}}>
+        <Card sx={{width: props.isMobile ? "350px" : "600px", minHeight: "350px", backgroundColor: props.equipment.archived ? "pink" : "white"}}>
             <Stack>
                 <Stack direction="row" height="200px">
                     {props.isMobile ? null :
@@ -46,11 +46,11 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                         <Stack height="100%">
                             {/* Title & Edit button */}
                             <Stack direction="row" justifyContent="space-between">
-                                <Typography variant="h6">{props.equipment.name}</Typography>
+                                <Typography variant="h6">{props.equipment.archived ? `${props.equipment.name} (Hidden)` : props.equipment.name}</Typography>
                                 {
                                     isPriviledged
                                     ? <Button
-                                        onClick={() => {navigate(`/admin/equipment/${props.equipment.id}`)}}
+                                        onClick={() => {navigate(`/admin/equipment/${props.equipment.archived ? "archived/" : ""}${props.equipment.id}`)}}
                                         aria-label="edit button"
                                         sx={{width: "40px", height: "40px"}}
                                         variant="contained"
