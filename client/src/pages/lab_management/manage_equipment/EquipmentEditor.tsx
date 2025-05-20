@@ -1,6 +1,6 @@
 import { ChangeEvent, ChangeEventHandler, SyntheticEvent, useEffect, useState } from "react";
 import { Autocomplete, Button, Divider, FormControlLabel, Stack, Switch, TextField, Typography } from "@mui/material";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_TRAINING_MODULES } from "../../../queries/trainingQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import styled from "styled-components";
@@ -13,11 +13,12 @@ import { ObjectSummary } from "../../../types/Common";
 import AdminPage from "../../AdminPage";
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import { useNavigate } from "react-router-dom";
-import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equipmentInstanceQueries";
+import { CREATE_EQUIPMENT_INSTANCE, EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equipmentInstanceQueries";
 import EquipmentInstanceRow from "./EquipmentInstanceRow";
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import IssueLogModal from "./IssueLogModal";
+import PrettyModal from "../../../common/PrettyModal";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -125,6 +126,20 @@ export default function EquipmentEditor({
 
   const equipmentInstancesResult = useQuery(GET_EQUIPMENT_INSTANCES, {variables: {equipmentID: equipment.id}});
   const [issuesModal, setIssuesModal] = useState(false);
+  const [newInstanceModal, setNewInstanceModal] = useState(false);
+  const [newInstanceName, setNewInstanceName] = useState("");
+  const [createInstance] = useMutation(CREATE_EQUIPMENT_INSTANCE);
+
+  function handleCloseNewInstance() {
+    setNewInstanceModal(false);
+    setNewInstanceName("");
+  }
+
+  async function handleSubmitNewInsatance() {
+    setNewInstanceModal(false)
+    await createInstance({variables: {equipmentID: equipment.id, name: newInstanceName}})
+    window.location.reload()
+  }
 
   return (
     <RequestWrapper
@@ -245,9 +260,29 @@ export default function EquipmentEditor({
             <Stack width={isMobile ? "100%" : "50%"} spacing={2}>
               <Stack direction="row" alignItems="center" spacing={4}>
                 <Typography variant="h5">Instances</Typography>
-                <Button variant="contained" startIcon={<AddIcon/>} color="success">
+                <Button variant="contained" startIcon={<AddIcon/>} color="success" onClick={() => {setNewInstanceModal(true)}}>
                   Create New Instance
                 </Button>
+                <PrettyModal open={newInstanceModal} onClose={handleCloseNewInstance}>
+                  <Stack width="auto" spacing={2}>
+                    <Typography variant="h4">Create New Instance</Typography>
+                    <TextField
+                      label="Name"
+                      value={newInstanceName}
+                      onChange={(e) => setNewInstanceName(e.target.value)}
+                    />
+                    <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={handleCloseNewInstance}
+                      >
+                        Cancel
+                      </Button>
+                      <Button variant="contained" color="success" onClick={handleSubmitNewInsatance}>Submit</Button>
+                    </Stack>
+                  </Stack>
+                </PrettyModal>
               </Stack>
               {
                 equipmentInstancesResult.data?.equipmentInstances.length == 0
