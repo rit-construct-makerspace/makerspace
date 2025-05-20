@@ -65,6 +65,7 @@ export default function MakerspacePage() {
                             placeholder="Search Equipment"
                             value={equipmentSearch}
                             onChange={(e) => setEquipmentSearch(e.target.value)}
+                            onClear={() => setEquipmentSearch("")}
                         />
                         {
                             user.privilege === "STAFF"

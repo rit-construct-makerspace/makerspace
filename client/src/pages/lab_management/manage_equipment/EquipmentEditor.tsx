@@ -1,9 +1,5 @@
-import { ChangeEvent, ChangeEventHandler, SetStateAction, SyntheticEvent, useEffect, useState } from "react";
-import Page from "../../Page";
-import { Autocomplete, Button, Divider, FormControlLabel, Stack, Switch, TextareaAutosize, TextField, Typography } from "@mui/material";
-import EngineeringIcon from "@mui/icons-material/Engineering";
-import HistoryIcon from "@mui/icons-material/History";
-import PageSectionHeader from "../../../common/PageSectionHeader";
+import { ChangeEvent, ChangeEventHandler, SyntheticEvent, useEffect, useState } from "react";
+import { Autocomplete, Button, Divider, FormControlLabel, Stack, Switch, TextField, Typography } from "@mui/material";
 import { useQuery } from "@apollo/client";
 import { GET_TRAINING_MODULES } from "../../../queries/trainingQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
@@ -17,10 +13,10 @@ import { ObjectSummary } from "../../../types/Common";
 import AdminPage from "../../AdminPage";
 import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
 import { useNavigate } from "react-router-dom";
-import EquipmentInstancesModal from "./EquipmentInstancesModal";
-import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import { EquipmentInstance, GET_EQUIPMENT_INSTANCES } from "../../../queries/equipmentInstanceQueries";
 import EquipmentInstanceRow from "./EquipmentInstanceRow";
+import AddIcon from '@mui/icons-material/Add';
+import SaveIcon from '@mui/icons-material/Save';
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -239,14 +235,22 @@ export default function EquipmentEditor({
                 sx={{ mt: 4, alignSelf: "flex-end" }}
                 onClick={onSave}
                 color="success"
+                startIcon={<SaveIcon />}
               >
                 Save
               </Button>
             </Stack>
             <Stack width={isMobile ? "100%" : "50%"} spacing={2}>
-              <Typography variant="h5">Instances</Typography>
+              <Stack direction="row" alignItems="center" spacing={4}>
+                <Typography variant="h5">Instances</Typography>
+                <Button variant="contained" startIcon={<AddIcon/>} color="success">
+                  Create New Instance
+                </Button>
+              </Stack>
               {
-                equipmentInstancesResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
+                equipmentInstancesResult.data?.equipmentInstances.length == 0
+                ? <Typography variant="body1">No Instances!</Typography>
+                : equipmentInstancesResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
                   <EquipmentInstanceRow instance={instance} />
                 ))
               }
