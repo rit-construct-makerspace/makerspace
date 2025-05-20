@@ -105,11 +105,15 @@ export default function UserTraingingsPage() {
                 result={getAccessChecks}
                 render={({accessChecksByUserID}) => {
 
-                    const approved = accessChecksByUserID.filter(
+                    const unarchived = accessChecksByUserID.filter(
+                        (ac: AccessCheck) => !ac.equipment.archived
+                    );
+
+                    const approved = unarchived.filter(
                         (ac: AccessCheck) => ac.approved
                     );
 
-                    const unapproved = accessChecksByUserID.filter(
+                    const unapproved = unarchived.filter(
                         (ac: AccessCheck) => !ac.approved && !ac.equipment.byReservationOnly
                     );
 
