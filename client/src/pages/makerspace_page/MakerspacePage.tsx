@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, IconButton, Stack, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { FullZone, GET_ZONE_BY_ID } from "../../queries/getZones";
 import RequestWrapper2 from "../../common/RequestWrapper2";
@@ -11,6 +11,7 @@ import SearchBar from "../../common/SearchBar";
 import StaffBar from "./StaffBar";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function MakerspacePage() {
     const { id } = useParams<{ id: string }>();
@@ -43,7 +44,20 @@ export default function MakerspacePage() {
 
             return (
                 <Stack spacing={"2"} padding="20px" divider={<Divider orientation="horizontal" flexItem/>}>
-                    <Typography variant="h3" align="center">{fullZone.name}</Typography>
+                    <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} width="auto">
+                        <Typography variant="h3" align="center">{fullZone.name}</Typography>
+                        {
+                            user.privilege === "STAFF"
+                            ? <IconButton
+                                onClick={() => {navigate("/admin/rooms")}}
+                                sx={{color: "gray"}}
+                            >
+                                <EditIcon/>
+                            </IconButton>
+                            : null
+                        }
+                        
+                    </Stack>
                     <ZoneHours hours={fullZone.hours} isMobile={isMobile}/>
                     <StaffBar isMobile={isMobile} zoneID={fullZone.id}/>
                     <Stack padding="10px" direction="row" spacing={2}>
