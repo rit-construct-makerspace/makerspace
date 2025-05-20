@@ -59,7 +59,7 @@ function currentStatus(opening: string, closing: string) {
     var closingDate = new Date(Date.parse('01/01/2011 ' + closing));
     var openingDate = new Date(Date.parse('01/01/2011 ' + opening));
 
-    if (curTimeDate <= openingDate && curTimeDate >= closingDate) {
+    if (curTimeDate >= openingDate && curTimeDate <= closingDate) {
         return <Typography color="green" fontWeight="bold">OPEN</Typography>;
     } else if (curTimeDate > closingDate) {
         return <Typography color="red" fontWeight="bold">CLOSED</Typography>;
