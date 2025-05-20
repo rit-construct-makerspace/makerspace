@@ -369,7 +369,7 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
 
 
     // update with new info
-    const newReader = await updateReaderStatus({
+    await updateReaderStatus({
         id: reader.id,
         machineID: parseInt(reader.machineType),
         machineType: reader.machineType,
@@ -389,8 +389,13 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
     return true;
 }
 
-
-async function handleStateTransition(connData: ConnectionData, reader: ReaderRow, newState: string, activeUID: string | undefined) {
+/**
+ * handles a state change as told by the shlug
+ * @param reader information about the reader that is changing
+ * @param newState the state the shlug changed to
+ * @param activeUID the active UID if there is one. null if no card inserted
+ */
+async function handleStateTransition(reader: ReaderRow, newState: string, activeUID: string | undefined) {
     const timeOfChange: Date = new Date();
     const oldState = reader.state;
     const oldUID = reader.currentUID;
@@ -414,7 +419,6 @@ async function handleStateTransition(connData: ConnectionData, reader: ReaderRow
             wsApiLog(`{user} changed state of {access_device}: ${oldState} -> ${newState}`, "state", { id: user.id ?? 0, label: user ? getUsersFullName(user) : "NULL" }, { id: reader?.id, label: reader?.name });
         }
         if (newState == "Unlocked") {
-            console.log("Starting session");
             reader.sessionStartTime = new Date();
             reader.recentSessionLength = 0;
         }
@@ -436,7 +440,6 @@ async function handleStateTransition(connData: ConnectionData, reader: ReaderRow
         const then = reader.sessionStartTime ?? new Date(); // if not there, set ot 0
         const elapsedSeconds = Math.floor((now.getTime() - then.getTime()) / 1000);
         reader.recentSessionLength = elapsedSeconds;
-        console.log(`Recent sesh len: ${reader.recentSessionLength}`)
     }
 
 
@@ -521,7 +524,7 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                 wsApiLog(`{access_device} message: ${shlugMessage.Message}`, "message", { id: reader.id, label: reader.name })
             }
             if (shlugMessage.State) {
-                await handleStateTransition(connData, reader, shlugMessage.State, shlugMessage.UID)
+                await handleStateTransition(reader, shlugMessage.State, shlugMessage.UID)
             }
 
             if (shlugMessage.Auth) {

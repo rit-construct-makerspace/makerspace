@@ -187,23 +187,25 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
           >
               {stateContent}
           </Typography>
-          <Select defaultValue={"State"} onChange={handleChange}>
-            <MenuItem value="State">State</MenuItem>
-            <MenuItem value="Idle">Idle</MenuItem>
-            <MenuItem value="Unlocked">Unlocked</MenuItem>
-            <MenuItem value="AlwaysOn">Always On</MenuItem>
-            <MenuItem value="Lockout">Lockout</MenuItem>
-            <MenuItem value="Fault">Fault</MenuItem>
-            <MenuItem value="Startup">Startup</MenuItem>
-            <MenuItem value="Restart">Restart</MenuItem>
-          </Select>
-          <Box>
-            <Stack direction={"column"} spacing={0.5} color={"secondary"} mt={1}>
-              <Typography variant="body2"><b>BEVer:</b> {BEVer ?? "NULL"}</Typography>
-              <Typography variant="body2"><b>FEVer:</b> {FEVer ?? "NULL"}</Typography>
-              <Typography variant="body2"><b>HWVer:</b> {HWVer ?? "NULL"}</Typography>
-            </Stack>
-          </Box>
+          <Stack direction={"row"}>
+            <Select defaultValue={"State"} onChange={handleChange}>
+              <MenuItem value="State">State</MenuItem>
+              <MenuItem value="Idle">Idle</MenuItem>
+              <MenuItem value="Unlocked">Unlocked</MenuItem>
+              <MenuItem value="AlwaysOn">Always On</MenuItem>
+              <MenuItem value="Lockout">Lockout</MenuItem>
+              <MenuItem value="Fault">Fault</MenuItem>
+              <MenuItem value="Startup">Startup</MenuItem>
+              <MenuItem value="Restart">Restart</MenuItem>
+            </Select>
+            <Box>
+              <Stack direction={"column"} spacing={0.5} color={"secondary"} mt={1}>
+                <Typography variant="body2"><b>BEVer:</b> {BEVer ?? "NULL"}</Typography>
+                <Typography variant="body2"><b>FEVer:</b> {FEVer ?? "NULL"}</Typography>
+                <Typography variant="body2"><b>HWVer:</b> {HWVer ?? "NULL"}</Typography>
+              </Stack>
+            </Box>
+          </Stack>
         </CardContent>
       </Card>
     </RequestWrapper>
