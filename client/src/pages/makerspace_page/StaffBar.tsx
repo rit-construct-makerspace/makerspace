@@ -54,7 +54,7 @@ export default function StaffBar(props: StaffBarProps) {
                 icon={<HandymanIcon />}
             />
             <NavLink
-                primary={"Manage Training"}
+                primary={"Manage Trainings"}
                 to={"/admin/training"}
                 icon={<SchoolIcon />}
             />
