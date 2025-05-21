@@ -34,10 +34,6 @@ export default function EquipmentInstanceRow(props: EquipmentInstanceRowProps) {
     setState(e.target.value);
   }
 
-  function handleStateChange(e: any) {
-    setState(e.target.value);
-  }
-
   async function handlenameChangeSubmit() {
     setAllowRename(false);
     setInstanceName({ variables: { id: props.instance.id, name } })
