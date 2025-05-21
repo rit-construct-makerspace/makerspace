@@ -8,22 +8,30 @@ import CheckIcon from '@mui/icons-material/Check';
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
 
+interface EquipmentInstanceRowProps {
+  instance: EquipmentInstance;
+  isMobile: boolean;
+}
 
-export default function EquipmentInstanceRow({ instance }: { instance: EquipmentInstance }) {
-  const [status, setStatus] = useState<InstanceStatus>(instance.status);
+export default function EquipmentInstanceRow(props: EquipmentInstanceRowProps) {
+  const [status, setStatus] = useState<InstanceStatus>(props.instance.status);
   const [state, setState] = useState("IDLE");
   
-  const [name, setName] = useState<string>(instance.name);
+  const [name, setName] = useState<string>(props.instance.name);
   const [allowRename, setAllowRename] = useState<boolean>(false);
 
-  const [setInstanceStatus] = useMutation(SET_INSTANCE_STATUS, { refetchQueries: [{ query: GET_EQUIPMENT_INSTANCES, variables: {equipmentID: instance.equipment.id} }] });
-  const [setInstanceName] = useMutation(SET_INSTANCE_NAME, { refetchQueries: [{ query: GET_EQUIPMENT_INSTANCES, variables: {equipmentID: instance.equipment.id} }] });
-  const [deleteInstance] = useMutation(DELETE_EQUIPMENT_INSTANCE, { refetchQueries: [{ query: GET_EQUIPMENT_INSTANCES, variables: {equipmentID: instance.equipment.id} }] });
+  const [setInstanceStatus] = useMutation(SET_INSTANCE_STATUS, { refetchQueries: [{ query: GET_EQUIPMENT_INSTANCES, variables: {equipmentID: props.instance.equipment.id} }] });
+  const [setInstanceName] = useMutation(SET_INSTANCE_NAME, { refetchQueries: [{ query: GET_EQUIPMENT_INSTANCES, variables: {equipmentID: props.instance.equipment.id} }] });
+  const [deleteInstance] = useMutation(DELETE_EQUIPMENT_INSTANCE, { refetchQueries: [{ query: GET_EQUIPMENT_INSTANCES, variables: {equipmentID: props.instance.equipment.id} }] });
 
 
   function handleStatusChange(e: any) {
     setStatus(e.target.value);
-    setInstanceStatus({ variables: { id: instance.id, status: e.target.value } })
+    setInstanceStatus({ variables: { id: props.instance.id, status: e.target.value } })
+  }
+
+  function handleStateChange(e: any) {
+    setState(e.target.value);
   }
 
   function handleStateChange(e: any) {
@@ -32,21 +40,21 @@ export default function EquipmentInstanceRow({ instance }: { instance: Equipment
 
   async function handlenameChangeSubmit() {
     setAllowRename(false);
-    setInstanceName({ variables: { id: instance.id, name } })
+    setInstanceName({ variables: { id: props.instance.id, name } })
   }
 
   async function handlenameChangeCancel() {
     setAllowRename(false);
-    setName(instance.name)
+    setName(props.instance.name)
   }
 
   return (
     <Card sx={{p: 2}}>
-      <Stack direction={"row"} spacing={2} alignItems={"center"} justifyContent={"space-between"} sx={{ width: "100%" }}>
-        <Stack direction={"row"} alignItems={"center"} spacing={2}>
-          {!allowRename ? <Typography variant="h6" fontWeight={"bold"} width={150}>{instance.name}</Typography>
+      <Stack direction={props.isMobile ? "column" : "row"} spacing={2} alignItems={"center"} justifyContent={"space-between"} sx={{ width: "100%" }}>
+        <Stack direction={props.isMobile ? "column" : "row"} alignItems={"center"} spacing={2}>
+          {!allowRename ? <Typography variant="h6" fontWeight={"bold"} width={150}>{props.instance.name}</Typography>
             : <TextField size="small" value={name} onChange={(e) => setName(e.target.value)}></TextField>}
-          <Select size="small" defaultValue={instance.status} value={status} onChange={handleStatusChange} sx={{width: "165px"}}>
+          <Select size="small" defaultValue={props.instance.status} value={status} onChange={handleStatusChange} sx={{width: "165px"}}>
             <MenuItem value={InstanceStatus.ACTIVE}>{InstanceStatus.ACTIVE}</MenuItem>
             <MenuItem value={InstanceStatus.NEEDS_REPAIRS}>{InstanceStatus.NEEDS_REPAIRS}</MenuItem>
             <MenuItem value={InstanceStatus.UNDER_REPAIRS}>{InstanceStatus.UNDER_REPAIRS}</MenuItem>

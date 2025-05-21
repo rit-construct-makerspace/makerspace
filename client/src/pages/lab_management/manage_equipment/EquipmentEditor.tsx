@@ -288,7 +288,7 @@ export default function EquipmentEditor({
                 equipmentInstancesResult.data?.equipmentInstances.length == 0
                 ? <Typography variant="body1">No Instances!</Typography>
                 : equipmentInstancesResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
-                  <EquipmentInstanceRow instance={instance} />
+                  <EquipmentInstanceRow instance={instance} isMobile={isMobile}/>
                 ))
               }
             </Stack>
