@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import { Divider, Stack } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
@@ -34,7 +34,9 @@ export default function AnnouncementsPage() {
       loading={getAnnouncementsResults.loading}
       error={getAnnouncementsResults.error}
     >
-      <AdminPage title="Announcements" maxWidth="1250px">
+      <AdminPage>
+        <Box margin="25px">
+        <Typography variant="h4">Edit Announcements</Typography>
         <Stack direction="row" alignItems="center" spacing={1}>
           <SearchBar
             placeholder="Search announcements"
@@ -67,6 +69,7 @@ export default function AnnouncementsPage() {
               <AnnouncementModule key={m.id} id={m.id} title={m.title} />
             ))}
         </Stack>
+        </Box>
       </AdminPage>
     </RequestWrapper>
   );
