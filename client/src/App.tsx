@@ -4,6 +4,7 @@ import { createTheme, GlobalStyles, ThemeProvider } from "@mui/material";
 import { CurrentUserProvider } from "./common/CurrentUserProvider";
 import AppRoutes from "./AppRoutes";
 import { BrowserRouter } from "react-router-dom";
+import { theme } from "./Theme";
 
 const apolloClient = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URL ?? "https://localhost:3000/graphql",
@@ -11,40 +12,11 @@ const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#F76902',
-    },
-    secondary: {
-      main: '#ACA39A'
-    },
-    text: {
-      secondary: '#ACA39A'
-    }
-  },
-});
-
-darkTheme.applyStyles('dark', {
-  background: '#000000'
-})
-
-
-const theme = createTheme();
 
 export default function App() {
   return (
     <ApolloProvider client={apolloClient}>
-      <ThemeProvider theme={localStorage.getItem("themeMode") == "dark" ? darkTheme : theme}>
-        <GlobalStyles styles={localStorage.getItem("themeMode") == "dark" && { 
-          body: {background: 'black', color: 'white'},
-          '::-webkit-scrollbar': {background: '#00000000', 'width': '5px'},
-          '::-webkit-scrollbar-thumb': {'background': '#FFFFFF50', 'border-radius': '1em'},
-          a: {color: '#7D55C7'},
-          textarea: {color: '#eaeaea'},
-          legend: {color: '#eaeaea'}
-          }} />
+      <ThemeProvider theme={theme}>
         <BrowserRouter basename={ process.env.PUBLIC_URL }>
           <CurrentUserProvider>
             <AppRoutes />
