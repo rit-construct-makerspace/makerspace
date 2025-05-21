@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { UPDATE_STUDENT_PROFILE } from "../../../maker/signup/SignupPage";
 import RequestWrapper2 from "../../../../common/RequestWrapper2";
 import { stringAvatar } from "../../../../common/avatarGenerator";
+import ThemeToggle from "../../../../left_nav/ThemeToggle";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -134,7 +135,7 @@ export default function UserSettingsPage() {
             {/* Appearence (Dark Mode toggle) */}
             <Stack spacing={1}>
                 <Typography variant="h3">Appearance</Typography>
-                <Typography sx={{fontStyle: "italic"}}>Under Construction...</Typography>
+                <ThemeToggle/>
             </Stack>
         </Stack>
     );
