@@ -23,7 +23,7 @@ export interface VerboseEquipmentSession {
   zoneName: string;
 }
 
-export async function getEquipmentSessionsWithAttachedEntities(startDate?: string, endDate?: string, equipmentIDs?: number[]): Promise<VerboseEquipmentSession[]> {
+export async function getEquipmentSessionsWithAttachedEntities(startDate?: string, endDate?: string, equipmentIDs?: number[]): Promise<{rows: VerboseEquipmentSession[]}> {
   var numWhereCaluses = 0;
   var startDateSearchString = "";
   if (startDate) {
@@ -45,7 +45,7 @@ export async function getEquipmentSessionsWithAttachedEntities(startDate?: strin
     equipmentSearchString = `WHERE tm.id = ANY(ARRAY ${equipmentIDs})`;
   }
 
-  return await knex(knex.raw(`
+  return await knex.raw(`
     SELECT es.*, concat(substr(u."firstName", 0, 2), '. ', u."lastName") AS "userName", e."name" AS "equipmentName", r.id AS "roomID", r."name" AS "roomName", z.id AS "zoneID", z."name" AS "zoneName"
     FROM "EquipmentSessions" es 
     INNER JOIN "Users" u ON es."userID" = u.id
@@ -60,5 +60,5 @@ export async function getEquipmentSessionsWithAttachedEntities(startDate?: strin
     ${equipmentSearchString.length > 0 ? " AND " : ""}
     ${equipmentSearchString}
     ORDER BY es."start" DESC
-`));
+`);
 }

@@ -45,7 +45,7 @@ const StatisticQueryResolver = {
       args: {startDate: string, endDate: string, equipmentIDs: number[]},
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await getEquipmentSessionsWithAttachedEntities(args.startDate, args.endDate, args.equipmentIDs);
+        return (await getEquipmentSessionsWithAttachedEntities(args.startDate, args.endDate, args.equipmentIDs)).rows;
       }),
 
     /**
