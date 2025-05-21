@@ -22,7 +22,7 @@ export default function ArchiveEquipmentButton(props: ArchiveEquipmentButtonProp
 
   const handleClick = async () => {
     await archiveEquipment();
-    navigate("/admin/equipment");
+    navigate("/");
   };
 
   return (

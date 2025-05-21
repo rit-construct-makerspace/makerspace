@@ -1,4 +1,4 @@
-import { Box, Card, CardActionArea, CardContent, CardHeader, CardMedia, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, IconButton, Stack, Typography } from "@mui/material";
 import Equipment from "../types/Equipment";
 import { useCurrentUser } from "./CurrentUserProvider";
 import EditIcon from '@mui/icons-material/Edit';
@@ -10,6 +10,8 @@ import { Link, useNavigate } from "react-router-dom";
 import WarningIcon from "@mui/icons-material/Warning";
 import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import LockClockIcon from '@mui/icons-material/LockClock';
+import ConstructionIcon from '@mui/icons-material/Construction';
+import ReactMarkdown from "react-markdown";
 
 interface EquipmentCardProps {
     equipment: Equipment;
@@ -27,7 +29,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     );
 
     return (
-        <Card sx={{width: props.isMobile ? "350px" : "600px", minHeight: "350px"}}>
+        <Card sx={{width: props.isMobile ? "350px" : "600px", minHeight: "350px", backgroundColor: props.equipment.archived ? "pink" : "white"}}>
             <Stack>
                 <Stack direction="row" height="200px">
                     {props.isMobile ? null :
@@ -44,12 +46,19 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                         <Stack height="100%">
                             {/* Title & Edit button */}
                             <Stack direction="row" justifyContent="space-between">
-                                <Typography variant="h6">{props.equipment.name}</Typography>
-                                {isPriviledged ?
-                                    <IconButton aria-label="edit" sx={{width: "40px", height: "40px"}}>
-                                        <EditIcon />
-                                    </IconButton> :
-                                    null
+                                <Typography variant="h6">{props.equipment.archived ? `${props.equipment.name} (Hidden)` : props.equipment.name}</Typography>
+                                {
+                                    isPriviledged
+                                    ? <Button
+                                        onClick={() => {navigate(`/admin/equipment/${props.equipment.archived ? "archived/" : ""}${props.equipment.id}`)}}
+                                        aria-label="edit button"
+                                        sx={{width: "40px", height: "40px"}}
+                                        variant="contained"
+                                        color="warning"
+                                    >
+                                        <ConstructionIcon />
+                                    </Button>
+                                    : null
                                 }
                             </Stack>
                             <Stack direction="row" justifyContent="space-between" height="100%">
@@ -110,9 +119,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                 </Stack>
                 <CardContent>
                     {/* Desc && learn more */}
-                    <Typography height="100%" alignSelf="center">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec porttitor pellentesque ullamcorper. Donec quis tortor tellus. Donec faucibus tellus eu dui lobortis iaculis. <Link to={props.equipment.sopUrl} target="_blank">Learn More</Link>
-                    </Typography>
+                    <ReactMarkdown>{`${props.equipment.notes} [Learn More](${props.equipment.sopUrl})`}</ReactMarkdown>
                 </CardContent>
             </Stack>
         </Card>

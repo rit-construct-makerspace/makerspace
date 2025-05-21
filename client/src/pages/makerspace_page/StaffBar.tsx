@@ -49,12 +49,7 @@ export default function StaffBar(props: StaffBarProps) {
                 : null
             }
             <NavLink
-                primary={"Manage Equipment"}
-                to={"/admin/equipment"}
-                icon={<HandymanIcon />}
-            />
-            <NavLink
-                primary={"Manage Training"}
+                primary={"Manage Trainings"}
                 to={"/admin/training"}
                 icon={<SchoolIcon />}
             />
@@ -74,16 +69,6 @@ export default function StaffBar(props: StaffBarProps) {
                 icon={<StorefrontIcon />}
             />
             <NavLink
-                primary={"Rooms"}
-                to={"/admin/rooms"}
-                icon={<MeetingRoomIcon />}
-            />
-            <NavLink
-                primary={"Announcements"}
-                to={"/admin/announcements"}
-                icon={<AnnouncementIcon />}
-            />
-            <NavLink
                 primary={"People"}
                 to={"/admin/people"}
                 icon={<PeopleIcon />}
@@ -97,12 +82,6 @@ export default function StaffBar(props: StaffBarProps) {
                 primary={"Statistics"}
                 to={"/admin/statistics"}
                 icon={<BarChartIcon />}
-            />
-            <NavLink
-                primary={"Internal Wiki"}
-                to={"https://rit0.sharepoint.com/sites/shed-makerspace-internal/SitePages/TrainingHome.aspx"}
-                icon={<SharepointIcon />}
-                newTab={true}
             />
         </Stack>
     );

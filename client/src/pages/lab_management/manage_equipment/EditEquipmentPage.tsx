@@ -52,8 +52,8 @@ export default function EditEquipmentPage(props: EditEquipmentPageProps) {
     }
 
     await mutation({ variables });
-
-    navigate("/admin/equipment");
+    
+    navigate("/");
   };
 
   return newEquipment ? (

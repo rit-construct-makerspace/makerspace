@@ -1,3 +1,5 @@
+import Equipment from "./Equipment";
+
 export default interface Room {
   id: number;
   name: string;
@@ -19,17 +21,5 @@ export default interface ZoneHour {
 export interface FullRoom {
   id: number;
   name: string;
-  equipment: {
-    id: number;
-    name: string;
-    imageUrl: string;
-    sopUrl: string;
-    trainingModules: {
-      id: number;
-      name: string;
-    }[];
-    numAvailable: number;
-    numInUse: number;
-    byReservationOnly: boolean;
-  }[];
+  equipment: Equipment[];
 }

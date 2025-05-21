@@ -89,7 +89,7 @@ export async function setEquipmentArchived(equipmentID: number, archived: boolea
 /**
  * Fetch equipment filtered by room ID and archival status
  * @param roomID room ID to filter equipment by
- * @param archived archival state to filter by
+ * @param archived archival state to filter by (Depreceated)
  * @returns filtered Equipment entries
  */
 export async function getEquipmentWithRoomID(
@@ -100,7 +100,6 @@ export async function getEquipmentWithRoomID(
           .select()
           .where({
             roomID: roomID,
-            archived: archived
           });
 }
 

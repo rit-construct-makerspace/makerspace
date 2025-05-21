@@ -33,6 +33,18 @@ export default function UserTraingingsPage() {
 
     const isMobile = width <= 1100;
 
+    const [manageEquipment, setManageEquipment] = useState(false);
+    const [curEquipID, setCurEquipID] = useState(0);
+
+    function handleOpen(id: number) {
+        setCurEquipID(id);
+        setManageEquipment(true);
+    }
+
+    function handleClose() {
+        setManageEquipment(false);
+    }
+
     return (
         <Stack
             spacing={2}
@@ -93,11 +105,15 @@ export default function UserTraingingsPage() {
                 result={getAccessChecks}
                 render={({accessChecksByUserID}) => {
 
-                    const approved = accessChecksByUserID.filter(
+                    const unarchived = accessChecksByUserID.filter(
+                        (ac: AccessCheck) => !ac.equipment.archived
+                    );
+
+                    const approved = unarchived.filter(
                         (ac: AccessCheck) => ac.approved
                     );
 
-                    const unapproved = accessChecksByUserID.filter(
+                    const unapproved = unarchived.filter(
                         (ac: AccessCheck) => !ac.approved && !ac.equipment.byReservationOnly
                     );
 
@@ -108,7 +124,8 @@ export default function UserTraingingsPage() {
                                 {approved.map((ac: AccessCheck) => (
                                     <Grid item key={ac.equipment.id}>
                                         <EquipmentCard 
-                                            equipment={ac.equipment} isMobile={isMobile}
+                                            equipment={ac.equipment}
+                                            isMobile={isMobile}
                                         />
                                     </Grid>
                                 ))}
@@ -124,7 +141,6 @@ export default function UserTraingingsPage() {
                                     </Grid>
                                 ))}
                             </Grid>
-                            <UnpagedEquipmentModal equipmentID={modalID} setEquipmentID={setModalID}/>
                         </Stack>
                     );
                 }}
