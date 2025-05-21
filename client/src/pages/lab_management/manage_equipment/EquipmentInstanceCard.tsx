@@ -7,6 +7,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { useMutation } from "@apollo/client";
 import SendIcon from '@mui/icons-material/Send';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface EquipmentInstanceCardProps {
     instance: EquipmentInstance;
@@ -19,17 +20,17 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     const [deleteInstance] = useMutation(DELETE_EQUIPMENT_INSTANCE, { refetchQueries: [{ query: GET_EQUIPMENT_INSTANCES, variables: {equipmentID: props.instance.equipment.id} }] });
 
     const [name, setName] = useState<string>(props.instance.name);
-    const [allowRename, setAllowRename] = useState(false);
+    const [allowEdit, setAllowEdit] = useState(false);
     const [status, setStatus] = useState<InstanceStatus>(props.instance.status);
     const [state, setState] = useState("IDLE");
 
     async function handlenameChangeSubmit() {
-        setAllowRename(false);
+        setAllowEdit(false);
         setInstanceName({ variables: { id: props.instance.id, name } })
     }
 
     async function handlenameChangeCancel() {
-    setAllowRename(false);
+    setAllowEdit(false);
     setName(props.instance.name)
     }
 
@@ -47,14 +48,14 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
             <Stack spacing={1}>
                 <Stack direction="row" alignItems="center" justifyContent={"space-between"} width="200px">
                     {
-                        !allowRename
+                        !allowEdit
                         ? <Typography variant="h6" fontWeight={"bold"}>{props.instance.name}</Typography>
                         : <TextField size="small" value={name} onChange={(e) => setName(e.target.value)}></TextField>
                     }
                     {
-                        !allowRename
+                        !allowEdit
                         ? <>
-                        <ActionButton iconSize={20} color={"primary"} appearance={"icon-only"} tooltipText="Rename" handleClick={async () => setAllowRename(true)}
+                        <ActionButton iconSize={20} color={"primary"} appearance={"icon-only"} tooltipText="Rename" handleClick={async () => setAllowEdit(true)}
                             loading={false}><DriveFileRenameOutlineIcon /></ActionButton>
                         </>
                         : <>
@@ -84,6 +85,13 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                     </IconButton>
                 </Stack>
                 <Typography variant="body1">placeholder-purple-slug</Typography>
+                {
+                    allowEdit
+                    ? <Stack direction="row" justifyContent="flex-end">
+                        <Button color="error" variant="contained" startIcon={<DeleteIcon />}>Delete</Button>
+                    </Stack>
+                    : null
+                }
             </Stack>
         </Card>
     );
