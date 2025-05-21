@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Page from "../../Page";
 import {
+  Box,
   Button,
   Card,
   Checkbox,
@@ -167,9 +168,12 @@ export default function LogPage() {
     startDateString || stopDateString || search.includes("q=");
 
   return (
-    <AdminPage title="History" maxWidth="1250px" topRightAddons={
-      <Button startIcon={<PersonAddIcon />} color="secondary" onClick={() => setManualSignInModal(true)}>Manual Room Sign-in</Button>
-    }>
+    <AdminPage>
+      <Box margin="25px">
+      <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+        <Typography variant="h4">History</Typography>
+        <Button startIcon={<PersonAddIcon />} color="secondary" onClick={() => setManualSignInModal(true)}>Manual Room Sign-in</Button>
+      </Stack>
       <Stack direction={isMobile ? "column" : "row"} spacing={2}>
         <TextField
           label="Start"
@@ -313,6 +317,7 @@ export default function LogPage() {
       />
 
       <ManualRoomSignInModal modalOpen={manualSignInModal} setModalOpen={setManualSignInModal} />
+    </Box>
     </AdminPage>
   );
 }
