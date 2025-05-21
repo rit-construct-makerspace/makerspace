@@ -25,6 +25,15 @@ export async function getInstanceByID(id: number): Promise<EquipmentInstancesRow
 }
 
 /**
+ * Fetch an EquipmentInstance by its associate reader ID
+ * @param id unique id of reader
+ * @returns EquipmentInstance or undefined if not exist
+ */
+export async function getInstanceByReaderID(readerId: number): Promise<EquipmentInstancesRow | undefined> {
+    return await knex("EquipmentInstances").select().where({ readerId }).first();
+}
+
+/**
  * Insert a new EquipmentInstance into table
  * @param equipmentID equipment ID of instance
  * @param name name of instance

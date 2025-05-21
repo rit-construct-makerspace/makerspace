@@ -24,6 +24,7 @@ export const ReaderTypeDefs = gql`
     FEVer: String
     HWVer: String
     sessionStartTime: DateTime
+    shlugID: String
   }
 
   extend type Query {
@@ -51,6 +52,7 @@ export const ReaderTypeDefs = gql`
       recentSessionLength: String
       lastStatusReason: String
       scheduledStatusFreq: String
+      shlugID: String
     ): Reader
 
     setName(id: ID!, name: String): Reader

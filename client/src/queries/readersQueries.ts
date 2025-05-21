@@ -44,28 +44,10 @@ export const GET_READERS = gql`
       FEVer
       HWVer
       sessionStartTime
+      shlugID
     }
   }
 `
-
-export const GET_READER = gql`
-  query GetReader($id: ID!) {
-    reader(id: $id) {
-      id
-      machineID
-      machineType
-      name
-      zone
-      temp
-      state
-      currentUID
-      recentSessionLength
-      lastStatusReason
-      scheduledStatusFreq
-      lastStatusTime
-    }
-  }
-`;
 
 export const CREATE_READER = gql`
   mutation CreateReader(
@@ -90,6 +72,7 @@ export const CREATE_READER = gql`
     }
   }
 `;
+
 
 export const SET_READER_NAME = gql`
   mutation SetReaderName($id: ID!, $name: string) {

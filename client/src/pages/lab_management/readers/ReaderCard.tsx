@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { makeStyles } from '@material-ui/core/styles';
-import { GET_ANY_EQUIPMENT_BY_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
+import { GET_CORRESPONDING_BY_READER_ID_OR_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/getRooms";
@@ -21,6 +21,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
 import { blue } from "@mui/material/colors";
 import { SET_READER_STATE } from "../../../queries/readersQueries";
+import Equipment from "../../../types/Equipment";
+import Room from "../../../types/Room";
 
 interface ReaderCardProps {
     id: number,
@@ -62,13 +64,14 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
   ) : (
     <p>Last User: {userID != null ? (<AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity>) : "NULL"}<br></br>Session Length: {recentSessionLength} sec</p>
   );
+  
+  const machineResult = useQuery(GET_CORRESPONDING_BY_READER_ID_OR_ID, {
+      variables: {readerid: id, id: machineID }
+    });
 
-  const machineResult = useQuery(GET_ANY_EQUIPMENT_BY_ID, {
-    variables: { id: machineID }
-  });
-
+    
   const rooms = useQuery(GET_ROOMS);
-
+    
   const classes = useStyles();
 
   const now = new Date();
@@ -106,14 +109,18 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
             {
               zone.split(",").map(function(zoneStr) {
                 const zoneNum = parseInt(zoneStr);
-                const code = rooms.data == undefined ? "0:none:none" : "room:" + zoneNum + ":" + rooms.data.rooms.find((room: { id: number; }) => room.id == zoneNum).name;
+                var code = "0:none:none:"
+                if (rooms.data != null && zone != null && zone !== ''){
+                  const room = rooms.data.rooms.find((room: { id: number; }) => Number(room.id) === zoneNum)
+                  code = `room:${zoneNum}:${room.name}`    
+                }
                 return (
                   <div><AuditLogEntity entityCode={code}></AuditLogEntity><br></br></div>
                 )
               })
             }
             <br></br>
-            <b>Machine: </b> <AuditLogEntity entityCode={machineID == undefined || machineResult.data == undefined ? "0:none:none" : "equipment:" + machineResult.data.anyEquipment.id + ":" + machineResult.data.anyEquipment.name}></AuditLogEntity>
+            <b>Machine: </b> <AuditLogEntity entityCode={(machineID == null || machineResult?.data?.correspondingEquipment == null) ? "0:none:none" : ("equipment:" + (machineResult.data?.correspondingEquipment?.id) + ":" + machineResult.data?.correspondingEquipment?.name)}></AuditLogEntity>
 
             <br></br>
           </Typography>

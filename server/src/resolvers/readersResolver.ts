@@ -100,11 +100,22 @@ const ReadersResolver = {
 
     setState: async (
       _parent: any,
-      args: { id: string; state: string },
+      args: { id: number; state: string },
       { ifAllowed }: ApolloContext
     ) =>
       ifAllowed([Privilege.STAFF], async (executingUser: any) => {
         try {
+          const reader = await ReaderRepo.getReaderByID(args.id);
+          if (reader == undefined) {
+            throw EntityNotFound;
+          }
+          await createLog(
+            `{user} set {access_device}'s state to ${args.state}.`,
+            "admin",
+            { id: executingUser.id, label: getUsersFullName(executingUser) },
+            { id: reader.id, label: reader.name }
+          );
+
           return ShlugControl.sendState(Number(args.id), args.state);
         } catch (e) {
           return `failed to parse id: ${e}`;
