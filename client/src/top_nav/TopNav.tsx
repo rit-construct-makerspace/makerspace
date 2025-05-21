@@ -86,8 +86,8 @@ export default function TopNav() {
 
     return (
         <Stack>
-            {isMobile
-            ?<Box width="100%">
+            { isMobile
+            ? <AppBar position="static">
                 <Stack direction="row" justifyContent="space-between">
                     <StyledLogo width="75%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
                     <IconButton onClick={() => setMobileDrawer(true)}>
@@ -131,7 +131,7 @@ export default function TopNav() {
                                     alt="Profile picture"
                                     {...stringAvatar(currentUser.firstName, currentUser.lastName, {height: "30px", width: "30px", fontSize: 16})}
                                 />
-                                <Typography variant="body1" color="black">
+                                <Typography variant="body1">
                                     {`${currentUser.firstName} ${currentUser.lastName}`}
                                 </Typography>     
                             </Stack>
@@ -153,9 +153,9 @@ export default function TopNav() {
                         </Menu>
                     </Stack>
                 </Drawer>
-            </Box>
+            </AppBar>
             :<Box width="100%" height="5%" sx={{flexGrow: 1}}>
-                <AppBar sx={{backgroundColor: "white"}} position="static">
+                <AppBar position="static">
                     <Stack component="nav" direction="row" justifyContent="space-between">
                         <StyledLogo width="15%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
                         <NavLink
@@ -189,7 +189,7 @@ export default function TopNav() {
                         />
                         <ButtonBase onClick={handleUserMenuOpen}>
                             <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-                                <Typography variant="body1" color="black" sx={{ fontWeight: "bold" }}>
+                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                                     {`${currentUser.firstName} ${currentUser.lastName}`}
                                 </Typography>
                                 <Avatar
@@ -202,13 +202,13 @@ export default function TopNav() {
                         <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
                             <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose();}}>
                                 <Stack direction="row" spacing={2} alignItems="center" width="100%">
-                                <SchoolIcon sx={{color: "gray"}}/>
+                                <SchoolIcon/>
                                 <Typography variant="body1">User Trainings</Typography>
                                 </Stack>
                             </MenuItem>
                             <MenuItem onClick={() => {navigate("/user/settings"); handleUserMenuClose();}}>
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-                                <SettingsIcon sx={{color: "gray"}}/>
+                                <SettingsIcon/>
                                 <Typography variant="body1">User Settings</Typography>
                                 </Stack>
                             </MenuItem>

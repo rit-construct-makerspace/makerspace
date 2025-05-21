@@ -47,7 +47,8 @@ export default function NavLink({
         if (toggleDrawer) toggleDrawer();
       }}
       startIcon={icon}
-      sx={{color: "black", fontSize: 16}}
+      color="inherit"
+      sx={{fontSize: 16}}
     >
         {primary}
     </Button>
