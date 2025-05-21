@@ -238,7 +238,9 @@ export default function StatisticsPage() {
   }
 
   return (
-    <AdminPage title="Statistics" maxWidth="1250px">
+    <AdminPage>
+      <Box margin="25px">
+      <Typography variant="h4">Statisitcs</Typography>
       <Box>
         <Typography variant="h4">Today's Numbers</Typography>
         <Stack direction={"row"} flexWrap={"wrap"}>
@@ -460,8 +462,9 @@ export default function StatisticsPage() {
               sx={{ m: 1, width: 500 }}
               color="primary"
               variant="outlined"
+              disabled
               onClick={() => {
-                getEquipmentSessions({ variables: { startDate: sessionsStartDate, stopDate: sessionsStopDate } });
+                //getEquipmentSessions({ variables: { startDate: sessionsStartDate, stopDate: sessionsStopDate } });
               }}
             >
               Fetch (may take up to a minute)
@@ -574,7 +577,7 @@ export default function StatisticsPage() {
           </Stack>
         </RequestWrapper>
       </Box>
-
+      </Box>
     </AdminPage>
   );
 }

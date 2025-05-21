@@ -129,7 +129,7 @@ export default function TopNav() {
                             <Stack direction="row" alignItems="center" spacing={2} padding={2}>
                                 <Avatar
                                     alt="Profile picture"
-                                    {...stringAvatar(`${currentUser.firstName} ${currentUser.lastName}`, {height: "30px", width: "30px", fontSize: 16})}
+                                    {...stringAvatar(currentUser.firstName, currentUser.lastName, {height: "30px", width: "30px", fontSize: 16})}
                                 />
                                 <Typography variant="body1" color="black">
                                     {`${currentUser.firstName} ${currentUser.lastName}`}
@@ -194,7 +194,7 @@ export default function TopNav() {
                                 </Typography>
                                 <Avatar
                                     alt="Profile picture"
-                                    {...stringAvatar(`${currentUser.firstName} ${currentUser.lastName}`)}
+                                    {...stringAvatar(currentUser.firstName, currentUser.lastName)}
                                 />
                             </Stack>
                         </ButtonBase>

@@ -92,6 +92,24 @@ const EquipmentResolvers = {
     },
 
     /**
+     * Fetch specific Equipment based on EITHER an equipment ID or by finding it based on the shlug id
+     * @argument readerid the id of the corresponding reader, possibly null
+     * @argument id ID of equipment, possibly null
+     * @returns Equipment
+     */
+    correspondingEquipment: async (_parent: any, args: { readerid: number, id: string }, _context: any) => {
+      // Try via equipment ID
+      try {
+        return await EquipmentRepo.getEquipmentByID(Number(args.id));
+      } catch (EntityNotFound) {
+        // try with readerid
+      }
+      // coming soon when we give instances shlugs
+      // response = await EquipmentRepo.getEquipmentByReaderId(readerid);
+      return null
+    },
+
+    /**
      * Fetch all Equipment
      * @returns all Equipment
      */

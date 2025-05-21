@@ -30,8 +30,9 @@ export default function ThemeToggle() {
         window.location.reload();
       }
     }}>
-    <ListItemIcon><DarkModeIcon /></ListItemIcon>
-      <Stack direction={"row"}>
+    
+      <Stack direction={"row"} alignItems="center" spacing={1}>
+        <DarkModeIcon />
         <Typography>
           Dark Mode (Experimental)
         </Typography>
