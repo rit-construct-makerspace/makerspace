@@ -1,6 +1,6 @@
 import React from "react";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
-import { createTheme, GlobalStyles, ThemeProvider } from "@mui/material";
+import { createTheme, CssBaseline, GlobalStyles, ThemeProvider } from "@mui/material";
 import { CurrentUserProvider } from "./common/CurrentUserProvider";
 import AppRoutes from "./AppRoutes";
 import { BrowserRouter } from "react-router-dom";
@@ -17,6 +17,7 @@ export default function App() {
   return (
     <ApolloProvider client={apolloClient}>
       <ThemeProvider theme={theme}>
+        <CssBaseline/>
         <BrowserRouter basename={ process.env.PUBLIC_URL }>
           <CurrentUserProvider>
             <AppRoutes />
