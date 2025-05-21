@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import { Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import UserCard from "./UserCard";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import GET_USERS, { GET_NUM_USERS, GET_USERS_LIMIT, PartialUser } from "../../../queries/getUsers";
@@ -64,7 +64,9 @@ export default function UsersPage() {
       loading={queryResult.loading}
       error={queryResult.error}
     >
-      <AdminPage title="People" noPadding={isMobile}>
+      <AdminPage>
+        <Box margin="25px">
+        <Typography variant="h4">People</Typography>
         <Stack direction={"row"} spacing={1} sx={{mb: 2}}>
           <SearchBar 
             placeholder={"Search " + numUsersResult.data?.numUsers.count + " users"}
@@ -94,6 +96,7 @@ export default function UsersPage() {
         <p>This page is limited to 100 users. Consider narrowing your search.</p>
 
         <UserModal selectedUserID={id ?? ""} onClose={handleUserModalClosed} />
+        </Box>
       </AdminPage>
     </RequestWrapper>
   );

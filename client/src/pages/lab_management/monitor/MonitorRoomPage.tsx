@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Page from "../../Page";
 import {
   Alert,
+  Box,
   Button,
   Card,
   CardContent,
@@ -106,7 +107,9 @@ export default function MonitorRoomPage() {
     <RequestWrapper2
       result={queryResult}
       render={({ room }) => (
-        <AdminPage title={room.name} maxWidth="1250px">
+        <AdminPage>
+          <Box margin="25px">
+          <Typography>{room.name}</Typography>
           <Collapse in={cardError}>
             <Alert
               severity="error"
@@ -164,6 +167,7 @@ export default function MonitorRoomPage() {
             </Button>
             <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(id)}></RoomZoneAssociation>
           </Stack>
+          </Box>
         </AdminPage>
       )}
     />

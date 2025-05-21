@@ -12,6 +12,7 @@ import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import ReactMarkdown from "react-markdown";
+import { useTheme } from "@material-ui/core/styles";
 
 interface EquipmentCardProps {
     equipment: Equipment;
@@ -21,6 +22,7 @@ interface EquipmentCardProps {
 export default function EquipmentCard(props: EquipmentCardProps) {
     const user = useCurrentUser();
     const navigate = useNavigate();
+    const theme = useTheme();
     const isPriviledged = user.privilege === "MENTOR" || user.privilege === "STAFF";
     const hasApprovedAccessCheck: boolean = !!user.accessChecks.find((ac) => Number(ac.equipmentID) == props.equipment.id && ac.approved)
 
@@ -29,16 +31,16 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     );
 
     return (
-        <Card sx={{width: props.isMobile ? "350px" : "600px", minHeight: "350px", backgroundColor: props.equipment.archived ? "pink" : "white"}}>
+        <Card sx={{width: props.isMobile ? "350px" : "600px", minHeight: "350px", backgroundColor: props.equipment.archived ? theme.palette.error.light : undefined}}>
             <Stack>
                 <Stack direction="row" height="200px">
                     {props.isMobile ? null :
-                        <Box width="150px" height="200px">
+                        <Box width="150px" height="175px">
                             <CardMedia
                                 component="img"
                                 image={(props.equipment.imageUrl == undefined || props.equipment.imageUrl == null || props.equipment.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + props.equipment.imageUrl}
                                 alt={`Picture of ${props.equipment.name}`}
-                                sx={{width: "150px", height: "200px", backgroundColor: "lightgray"}}
+                                sx={{width: "150px", height: "175px", backgroundColor: "lightgray"}}
                             />
                         </Box>
                     }

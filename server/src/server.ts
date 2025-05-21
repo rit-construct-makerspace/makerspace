@@ -33,6 +33,7 @@ import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repos
 import { setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 import { ReaderRow } from "./db/tables.js";
 import { ws_acs_api } from "./wsapi.js"
+import { copyProdDBToDev } from "./repositories/DevDatabaseSync.js";
 const require = createRequire(import.meta.url);
 
 const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -585,7 +586,7 @@ async function startServer() {
       const reader = await getReaderByName(req.params.MachineID);
 
       if (reader == undefined) {
-        if (API_DEBUG_LOGGING) createLog("Access Device State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 400, label: "Reader does not exist" });
+        if (API_DEBUG_LOGGING) createLog("Access Device {access_device} State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 400, label: "Reader does not exist" });
         return res.status(400).json({ error: "Reader does not exist" }).send();
       }
 
@@ -614,7 +615,7 @@ async function startServer() {
       }
 
       if (machineIDs.length == 0) {
-        if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 401, label: "Missing arguments" });
+        if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: 401, label: "Missing arguments" });
         return res.status(401).json({ error: "Missing arguments" }).send();
       }
 
@@ -622,7 +623,7 @@ async function startServer() {
       for (var x = 0; x < machineIDs.length; x++) {
         const machine = await getReaderByID(machineIDs[x]);
         if (!machine) {
-          if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 400, label: `Reader ${x + 1} does not exist` });
+          if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: 400, label: `Reader ${x + 1} does not exist` });
           return res.status(400).json({ error: `Reader ${x + 1} does not exist` }).send();
         }
       }
@@ -726,6 +727,8 @@ async function startServer() {
     console.log('Wiping daily records...');
     if (API_DEBUG_LOGGING) await createLog('It is now 4:00am. Daily Temp Records have been wiped.', "server")
     setDataPointValue(1, 0);
+
+    copyProdDBToDev();
   });
 
 
