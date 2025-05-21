@@ -23,20 +23,20 @@ export default function EventCard(props: EventCardProps) {
   const endDate = new Date(props.end ?? new Date());
 
   return (
-    <Card sx={{width: '100%', mx: 0, my: 2}}>
+    <Card sx={{maxWidth: "400px"}}>
       <CardActionArea onClick={() => {window.location.href = props.url ?? "";}}>
         <CardHeader title={props.name} subheader={`${format(startDate, "MMM do, h:mm bb")} - ${format(endDate, "MMM do, h:mm bb")}`} sx={{"h5": {fontSize: '2em'}}}></CardHeader>
-        {/* <CardMedia
+        <CardMedia
           component="img"
           height="194"
-          image={props.logoUrl}
+          image={props.logoUrl ? props.logoUrl : process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}
           alt={props.name + " Event Logo"}
         />
         <CardContent>
-          <Typography variant="body2">
+          <Typography variant="body1">
             {props.summary}...
           </Typography>
-        </CardContent> */}
+        </CardContent>
       </CardActionArea>
     </Card>
   );

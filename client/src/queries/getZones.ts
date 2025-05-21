@@ -31,19 +31,7 @@ export interface FullZone {
   rooms: {
     id: number;
     name: string;
-    equipment: {
-      id: number;
-      name: string;
-      imageUrl: string;
-      sopUrl: string;
-      trainingModules: {
-        id: number;
-        name: string;
-      }[];
-      numAvailable: number;
-      numInUse: number;
-      byReservationOnly: boolean;
-    }[];
+    equipment: Equipment[];
   }[]
 }
 
@@ -86,6 +74,39 @@ export const GET_FULL_ZONES = gql`
           numAvailable
           numInUse
           byReservationOnly
+        }
+      }
+    }
+  }
+`;
+
+export const GET_ZONE_BY_ID = gql`
+  query GetZoneByID($id: ID!) {
+    zoneByID(id: $id) {
+      id
+      name
+      hours {
+        type
+        dayOfTheWeek
+        time
+      }
+      rooms {
+        id
+        name
+        equipment {
+          id
+          name
+          imageUrl
+          sopUrl
+          trainingModules {
+            id
+            name
+          }
+          numAvailable
+          numInUse
+          byReservationOnly
+          notes
+          archived
         }
       }
     }

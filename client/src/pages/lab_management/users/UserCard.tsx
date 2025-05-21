@@ -2,6 +2,7 @@ import React from "react";
 import { Avatar, Card, CardActionArea, Chip, Stack, Typography, useTheme } from "@mui/material";
 import { PartialUser } from "../../../queries/getUsers";
 import PrivilegeChip from "./PrivilegeChip";
+import { stringAvatar } from "../../../common/avatarGenerator";
 
 interface UserCardProps {
   user: PartialUser;
@@ -19,18 +20,15 @@ export default function UserCard({ user, onClick }: UserCardProps) {
     const BORDER = ((
       user.activeHold
     ) ? `2px solid ${theme.palette.error.main}`
-      : "inherit");
+      : `2px solid lightgray`);
 
   return (
-    <Card elevation={2} sx={{ mr: 2, mb: 2, background: CARD_COLOR, border: BORDER }}>
+    <Card elevation={2} sx={{ mr: 2, mb: 2, background: CARD_COLOR, border: BORDER}}>
       <CardActionArea sx={{ p: 2, height: "100%" }} onClick={onClick}>
         <Stack alignItems="center" spacing={1.5} height="100%">
           <Avatar
-            alt=""
-            src={
-              "https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-            }
-            sx={{ width: 80, height: 80 }}
+            alt={`Profile picture for ${user.firstName} ${user.lastName}`}
+            {...stringAvatar(`${user.firstName} ${user.lastName}`, {width: "80px", height: "80px", fontSize: 36})}
           />
 
           <Typography

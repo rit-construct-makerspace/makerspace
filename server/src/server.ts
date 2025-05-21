@@ -466,7 +466,9 @@ async function startServer() {
 
       //If state change
       if (API_NORMAL_LOGGING && reader.state != req.body.State) {
-        await createLog(`{user} changed state of {access_device}: ${reader.state} -> ${req.body.State}`, "state", { id: newUser ? newUser.id : undefined, label: newUser ? getUsersFullName(newUser) : "NULL" }, { id: reader?.id, label: reader?.name });
+        //If no user responsible, dont print a user
+        if (!newUser) await createLog(`State of {access_device} changed: ${reader.state} -> ${req.body.State}`, "state", { id: reader?.id, label: reader?.name });
+        else await createLog(`{user} changed state of {access_device}: ${reader.state} -> ${req.body.State}`, "state", { id: newUser ? newUser.id : 0, label: newUser ? getUsersFullName(newUser) : "NULL" }, { id: reader?.id, label: reader?.name });
         // await createLog(`DEBUG: {Machine: ${req.body.Machine}, Time: ${req.body.Time}, Source: ${req.body.Source}}`, "status")
       }
 
@@ -482,7 +484,7 @@ async function startServer() {
         const equipment = await getEquipmentByID(parseInt(reader.machineType));
         await setLatestEquipmentSessionLength(parseInt(reader.machineType), req.body.Time, req.body.Machine);
         if (user != undefined) {
-          await createLog(`{user} signed out of {machine} - {equipment} (Session: ${req.body.Time} sec)`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: req.body.Machine ?? "undefined" }, { id: equipment.id, label: equipment.name });
+          await createLog(`{user} signed out of {machine} - {equipment} (Session: ${new Date(Number(req.body.Time) * 1000).toISOString().substring(11, 19)})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: req.body.Machine ?? "undefined" }, { id: equipment.id, label: equipment.name });
         }
       }
 

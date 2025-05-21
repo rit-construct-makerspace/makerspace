@@ -18,6 +18,10 @@ function getEntityUrl(entityType: string, id: string) {
       return "/admin/training/" + id;
     case "conceal":
       return "#";
+    case "access_device":
+      return "/admin/readers";
+    case "machine":
+      return "/admin/readers";
     default:
       return "/admin/history";
   }

@@ -1,3 +1,5 @@
+import Equipment from "./Equipment";
+
 export default interface Room {
   id: number;
   name: string;
@@ -14,4 +16,10 @@ export default interface ZoneHour {
   type: string;
   dayOfTheWeek: number;
   time: string;
+}
+
+export interface FullRoom {
+  id: number;
+  name: string;
+  equipment: Equipment[];
 }

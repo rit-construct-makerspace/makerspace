@@ -110,6 +110,7 @@ export async function getUserByUniversityID(
 export async function getUserByCardTagID(
   cardTagID: string
 ): Promise<UserRow | undefined> {
+  if (!cardTagID || cardTagID == "0" || cardTagID == "null" || cardTagID == "undefined") return undefined;
   return knex("Users").first().where("cardTagID", cardTagID);
 }
 

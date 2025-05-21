@@ -2,7 +2,7 @@ import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
 import { createZoneHours, deleteZoneHours, getHoursByZone, getZoneHours } from "../repositories/Zones/ZoneHoursRepository.js";
-import { createZone, deleteZone, getZones } from "../repositories/Zones/ZonesRespository.js";
+import { createZone, deleteZone, getZoneByID, getZones } from "../repositories/Zones/ZonesRespository.js";
 import { ZoneRow } from "../db/tables.js";
 import { getRooms, getRoomsByZone } from "../repositories/Rooms/RoomRepository.js";
 
@@ -43,6 +43,19 @@ const ZonesResolver = {
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
         return await getZones();
+      }),
+
+    /**
+     * Fetch a single Zone by ID
+     * @param id the id of the Zone to get
+     * @returns a single Zone
+     */
+    zoneByID: async (
+      _parent: any,
+      args: { id: number},
+      { ifAuthenticated }: ApolloContext ) =>
+        ifAuthenticated(async () => {
+          return await getZoneByID(args.id);
       }),
   },
 

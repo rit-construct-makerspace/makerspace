@@ -6,11 +6,9 @@ interface InventoryItemNamePicProps {
   item: InventoryItem;
 }
 
-export default function InvItemNamePic({ item }: InventoryItemNamePicProps) {
+export default function InvItemName({ item }: InventoryItemNamePicProps) {
   return (
     <Stack direction="row" spacing={2} flexGrow={1}>
-      <Avatar alt="" src={item.image} sx={{ width: 24, height: 24 }} />
-
       <Typography variant="body1">{item.name}</Typography>
     </Stack>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import InventoryItem from "../types/InventoryItem";
 import { Stack, Typography } from "@mui/material";
-import InvItemNamePic from "./InvItemNamePic";
+import InvItemName from "./InvItemNamePic";
 import InvItemCount from "./InvItemCount";
 
 interface InventoryRowProps {
@@ -17,7 +17,7 @@ export default function InventoryRow({ item }: InventoryRowProps) {
       spacing={8}
       height={50}
     >
-      <InvItemNamePic item={item} />
+      <InvItemName item={item} />
 
       <InvItemCount item={item} sx={{ width: 100 }} />
 

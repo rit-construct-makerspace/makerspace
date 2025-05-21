@@ -17,6 +17,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import GET_USERS from "../../../queries/getUsers";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LoadingButton from "@mui/lab/LoadingButton";
+import { InputLabel } from "@mui/material";
 
 
 const SET_ROOM_ZONE = gql`
@@ -66,8 +67,10 @@ export default function RoomZoneAssociation({
   return (
     <>
       <FormControl disabled={!isAdmin || setNewZoneResult.loading}>
+        <InputLabel sx={{fontWeight:"bold", color: "black"}} id="update-zone-label">Zone</InputLabel>
         <Select
           value={updatedZoneID}
+          id="update-zone-label"
           label="Zone"
           placeholder="Zone"
           onChange={(e) => setUpdatedZoneID(Number(e.target.value))}
@@ -76,16 +79,17 @@ export default function RoomZoneAssociation({
             <MenuItem selected={zone.id === zoneID} value={zone.id}>{zone.name}</MenuItem>
           ))}
         </Select>
-        <LoadingButton
-          loading={setNewZoneResult.loading}
-          size="large"
-          variant="contained"
-          onClick={handleSubmit}
-          sx={{ mt: 8, alignSelf: "flex-end" }}
-        >
-          Update Zone
-        </LoadingButton>
       </FormControl>
+      <LoadingButton
+        loading={setNewZoneResult.loading}
+        size="large"
+        variant="contained"
+        onClick={handleSubmit}
+        sx={{ mt: 8, alignSelf: "flex-end" }}
+      >
+        Update Zone
+      </LoadingButton>
+      
       {!isAdmin && (
         <Alert severity="info" sx={{ width: "max-content", mt: 1 }}>
           You do not have permission to change this.

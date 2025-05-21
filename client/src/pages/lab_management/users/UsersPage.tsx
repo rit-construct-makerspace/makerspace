@@ -64,7 +64,7 @@ export default function UsersPage() {
       loading={queryResult.loading}
       error={queryResult.error}
     >
-      <AdminPage title="People" maxWidth="1250px" noPadding={isMobile}>
+      <AdminPage title="People" noPadding={isMobile}>
         <Stack direction={"row"} spacing={1} sx={{mb: 2}}>
           <SearchBar 
             placeholder={"Search " + numUsersResult.data?.numUsers.count + " users"}
@@ -76,7 +76,7 @@ export default function UsersPage() {
           />
           <Button onClick={(e) => setUrlParam("q", searchText)} variant="contained" color="primary">Search</Button>
         </Stack>
-        <Stack direction="row" flexWrap="wrap">
+        <Stack direction="row" flexWrap="wrap" justifyContent="center">
           {safeUsers
             // .filter((m: { id: number; ritUsername: String; firstName: string; lastName: string }) =>
             //   (m.firstName + " " + m.lastName + " " + m.ritUsername)

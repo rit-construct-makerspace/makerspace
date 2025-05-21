@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { Alert, Box, Stack, Tab, Tabs } from "@mui/material";
-import Page from "../../Page";
+import { useEffect, useState } from "react";
+import { Alert, Box, Divider, IconButton, Stack } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
-import AccountBalanceCard from "./AccountBalanceCard";
-import OperationHoursCard from "./OperationHoursCard";
-import UpcomingEventsCard from "./UpcomingEventsCard";
-import IncompleteTrainingsCard from "./IncompleteTrainingsCard";
-import ExpiringSoonCard from "./ExpiringSoonCard";
-import AnnouncementsCard from "./AnnouncementsCard";
 import { useNavigate } from "react-router-dom";
-import { wrap } from "module";
-import ResourcesCard from "./ResourcesCard";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { FullZone, GET_FULL_ZONES, GET_ZONES_WITH_HOURS } from "../../../queries/getZones";
-import { ZoneDash } from "./ZoneDash";
-import { HomeDash } from "./HomeDash";
-// import RequestWrapper from "../../../common/RequestWrapper";
-// import { useQuery } from "@apollo/client";
-// import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/getAnnouncements";
-//import UpcomingEventsCard from "./GoogleCalendarAPI";
+import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
+import ZoneCard from "./ZoneCard";
+import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
+import AnnouncementCard from "./AnnouncementCard";
+import RequestWrapper2 from "../../../common/RequestWrapper2";
+import GET_EVENTS, { MakeEvent } from "../../../queries/eventQueries"
+import EventCard from "./EventCard";
+import EditIcon from '@mui/icons-material/Edit';
 
 const INCREMENT_SITE_VISITS = gql`
     query IncrementSiteVisits {
@@ -30,6 +22,7 @@ const INCREMENT_SITE_VISITS = gql`
 
 export function Dashboard() {
     const currentUser = useCurrentUser();
+    const isPriviledged = currentUser.privilege === "MENTOR" || currentUser.privilege === "STAFF";
     const navigate = useNavigate();
 
     const incrementSiteVisits = useQuery(INCREMENT_SITE_VISITS);
@@ -44,36 +37,92 @@ export function Dashboard() {
             window.removeEventListener('resize', handleWindowSizeChange);
         }
     }, []);
+
     const isMobile = width <= 1100;
 
-    const getZonesResult = useQuery(GET_FULL_ZONES);
-    const [currentTab, setCurrentTab] = useState(0);
-
+    const getZonesResult = useQuery(GET_ZONES_WITH_HOURS);
+    const getAnnouncementsResult = useQuery(GET_ANNOUNCEMENTS);
+    const getEvents = useQuery(GET_EVENTS);
 
     return (
-        <Page title="" noPadding={isMobile}>
+        <Box>
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
-            {(currentUser.cardTagID == null || currentUser.cardTagID == "") &&
-                <Alert variant="standard" color="warning">
-                    Your RIT ID has not been associated with your Makerspace account yet. Please speak to a member of staff in the makerspace to rectify this before using any makerspace equipment. Trainings and 3DPrinterOS will remain available.
-                </Alert>
-            }
-
+            {/* Zones */}
             <RequestWrapper loading={getZonesResult.loading} error={getZonesResult.error}>
-                <Box width={"100%"}>
-                    <Tabs sx={{'.MuiTab-root': {fontSize: isMobile ? "0.8em" : "1.3em"}, width: "100%"}} value={currentTab} onChange={((e, x) => setCurrentTab(x))} aria-label="Area Dashboards" variant={isMobile ? "fullWidth" : "scrollable"} scrollButtons="auto" allowScrollButtonsMobile >
-                        <Tab label={"Home"} id={"simple-tab-0"} aria-controls={"simple-tab-panel-0"} value={0} />
-                        {getZonesResult.data?.zones.map((zone: FullZone) => (
-                            <Tab label={zone.name} id={"simple-tab-" + zone.id} aria-controls={"simple-tab-panel-" + zone.id} value={zone.id} />
-                        ))}
-                    </Tabs>
-                    
-                    {currentTab == 0 && <HomeDash />}
-                    {getZonesResult.data?.zones.map((zone: FullZone) => (
-                        <ZoneDash zone={zone} open={currentTab == zone.id}/>
+                <Stack marginTop="30px" direction={isMobile ? "column" : "row"} justifyContent="space-evenly" alignItems="center" spacing={2}>
+                    {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
+                        <ZoneCard 
+                            id={zone.id}
+                            name={zone.name}
+                            hours={zone.hours}
+                            imageUrl={process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}
+                            isMobile={isMobile}
+                        />
                     ))}
+                </Stack>
+            </RequestWrapper>
+            {/* Announcments */}
+            <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
+                <Box>
+                    <Stack direction="row" spacing={2} alignItems="center" margin="30px 30px 10px 30px">
+                        <Typography variant={isMobile ? "h4" : "h3"}>Announcements</Typography>
+                        {
+                            isPriviledged
+                            ?  <IconButton onClick={() => navigate("/admin/announcements")} sx={{color: "gray"}}>
+                                <EditIcon />
+                            </IconButton>
+                            : undefined
+                        }
+                    </Stack>
+                    <Stack direction={isMobile ? "column" : "row"} alignItems="stretch" spacing={2}
+                        divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
+                        margin="0px 20px"
+                    >
+                        {getAnnouncementsResult.data?.getAllAnnouncements?.map((thisAnnouncement: Announcement) => (
+                            <AnnouncementCard announcement={thisAnnouncement}/>
+                        ))}
+                    </Stack>
                 </Box>
             </RequestWrapper>
-        </Page>
+            {/* Upcoming Events */}
+            <RequestWrapper2 result={getEvents} render={(data) => {
+
+                return (
+                    <Box>
+                        <Stack  direction="row" margin="30px 30px 10px 30px" justifyContent="space-between" alignItems="center">
+                            <Typography variant={isMobile ? "h4" : "h3"}>Upcoming Events</Typography>
+                            <Typography variant="h6">
+                                <a 
+                                    href="https://www.eventbrite.com/o/rit-shed-makerspace-92409962123" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                >
+                                    All Events
+                                </a>
+                            </Typography>
+                        </Stack>
+                        <Stack direction={isMobile ? "column" : "row"} justifyContent="flex-start" alignItems="stretch" spacing={2}
+                            divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
+                            margin="0px 20px 20px 20px"
+                        >
+                            {
+                                data.events.length == 0
+                                ? <Typography variant="body1">No Events!</Typography>
+                                : data.events.map((event: MakeEvent) => (
+                                <EventCard
+                                    name={event.name.text}
+                                    description={event.name.html}
+                                    summary={event.summary}
+                                    url={event.url}
+                                    start={event.start.local}
+                                    end={event.end.local}
+                                    logoUrl={event.logo.url} />
+                            ))}
+                        </Stack>
+                    </Box>
+                );
+            }} />
+            
+        </Box>
     );
 };
