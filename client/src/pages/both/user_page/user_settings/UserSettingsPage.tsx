@@ -128,7 +128,7 @@ export default function UserSettingsPage() {
                                 <InfoBlob label="Expected Graduation" value={user.expectedGraduation}/>
                             </Grid>
                         </Grid>
-                        <InfoBlob label="Member Since" value={user.registrationDate}/>
+                        <InfoBlob label="Member Since" value={user.registrationDate.slice(0, 10)}/>
                     </Stack>
                 );
             }}/>
