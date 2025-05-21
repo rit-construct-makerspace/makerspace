@@ -81,7 +81,8 @@ export default function UserSettingsPage() {
                                     alt={`Profile Picture for ${user.firstName} ${user.lastName}`}
                                     {
                                         ...stringAvatar(
-                                            `${user.firstName} ${user.lastName}`,
+                                            user.firstName,
+                                            user.lastName,
                                             {width: "60px", height: "60px", fontSize: 28}
                                         )
                                     }
