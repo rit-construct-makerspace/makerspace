@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { createTheme, CssBaseline, GlobalStyles, ThemeProvider } from "@mui/material";
 import { CurrentUserProvider } from "./common/CurrentUserProvider";
@@ -11,7 +11,6 @@ const apolloClient = new ApolloClient({
   credentials: "include",
   cache: new InMemoryCache(),
 });
-
 
 export default function App() {
   return (
