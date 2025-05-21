@@ -12,6 +12,9 @@ export const theme = createTheme({
             main: "#7D55C7",
             contrastText: "#FFFFFF",
         },
+        warning: {
+            main: '#FFAB00',
+        },
         mode: localStorage.getItem("themeMode") == "dark" ? "dark" : "light"
     },
     typography: {
