@@ -75,7 +75,7 @@ export default function TopNav() {
                 }
                 { // Lab training Alert
                     labTraining
-                    ? <Alert variant="standard" severity="info" onClose={() => setLabTraining(false)} sx={{borderRadius: 0}}>
+                    ? <Alert variant="filled" severity="info" onClose={() => setLabTraining(false)} sx={{borderRadius: 0}}>
                         All Makerspace users must complete the <a href="https://rit.sabacloud.com/Saba/Web_spf/NA3P1PRD0049/common/leclassview/dowbt-0000146117">Shop Safety training course</a> before using any equipment.
                     </Alert>
                     : null

@@ -31,7 +31,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
     );
 
     return (
-        <Card sx={{width: props.isMobile ? "350px" : "600px", minHeight: "350px", backgroundColor: props.equipment.archived ? "pink" : undefined}}>
+        <Card sx={{width: props.isMobile ? "350px" : "600px", minHeight: "350px", backgroundColor: props.equipment.archived ? theme.palette.error.light : undefined}}>
             <Stack>
                 <Stack direction="row" height="200px">
                     {props.isMobile ? null :
