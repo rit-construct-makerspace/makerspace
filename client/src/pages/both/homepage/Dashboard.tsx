@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Alert, Box, Divider, IconButton, Stack } from "@mui/material";
+import { Alert, Box, Divider, Grid, IconButton, Stack } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
@@ -63,7 +63,7 @@ export function Dashboard() {
             </RequestWrapper>
             {/* Announcments */}
             <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
-                <Box>
+                <>
                     <Stack direction="row" spacing={2} alignItems="center" margin="30px 30px 10px 30px">
                         <Typography variant={isMobile ? "h4" : "h3"}>Announcements</Typography>
                         {
@@ -74,15 +74,14 @@ export function Dashboard() {
                             : undefined
                         }
                     </Stack>
-                    <Stack direction={isMobile ? "column" : "row"} alignItems="stretch" spacing={2}
-                        divider={<Divider orientation={isMobile ? "horizontal" : "vertical"} flexItem/>}
-                        margin="0px 20px"
-                    >
+                    <Grid container justifyContent="space-around" margin="0px 20px" alignItems="stretch">
                         {getAnnouncementsResult.data?.getAllAnnouncements?.map((thisAnnouncement: Announcement) => (
-                            <AnnouncementCard announcement={thisAnnouncement}/>
+                            <Grid width="400px" margin="10px">
+                                <AnnouncementCard announcement={thisAnnouncement}/>
+                            </Grid>
                         ))}
-                    </Stack>
-                </Box>
+                    </Grid>
+                </>
             </RequestWrapper>
             {/* Upcoming Events */}
             <RequestWrapper2 result={getEvents} render={(data) => {
