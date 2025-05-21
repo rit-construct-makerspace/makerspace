@@ -106,7 +106,7 @@ export default function UserTraingingsPage() {
                             <Typography variant="h4">Approved Equipment</Typography>
                             <Grid container justifyContent="space-around" width="fit-content" rowSpacing={2}>
                                 {approved.map((ac: AccessCheck) => (
-                                    <Grid item key={ac.equipment.id}>
+                                    <Grid key={ac.equipment.id}>
                                         <EquipmentCard 
                                             equipment={ac.equipment} isMobile={isMobile}
                                         />
@@ -116,7 +116,7 @@ export default function UserTraingingsPage() {
                             <Typography variant="h4">Awaiting In-person Knowledge Check</Typography>
                             <Grid container justifyContent="space-around" width="fit-content"  rowSpacing={2}>
                                 {unapproved.map((ac: AccessCheck) => (
-                                    <Grid item key={ac.equipment.id}>
+                                    <Grid key={ac.equipment.id}>
                                         <EquipmentCard
                                             equipment={ac.equipment}
                                             isMobile={isMobile}

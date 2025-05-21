@@ -5,11 +5,10 @@ import {
   CardContent,
   CardHeader,
   IconButton,
+  makeStyles,
   Stack,
   Typography,
 } from "@mui/material";
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import { makeStyles } from '@material-ui/core/styles';
 import { GET_ANY_EQUIPMENT_BY_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
@@ -38,7 +37,7 @@ interface ReaderCardProps {
     HWVer?: string
 }
 
-const useStyles = makeStyles({
+const styles = {
   errorText: {
     color: "red",
     fontWeight: "bold"
@@ -49,7 +48,8 @@ const useStyles = makeStyles({
   notifCard: {
     border: "3px solid blue"
   }
-});
+};
+
 
 export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
@@ -64,8 +64,6 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
 
   const rooms = useQuery(GET_ROOMS);
 
-  const classes = useStyles();
-
   const now = new Date();
   const lastTimeDifference = now.getTime() - (new Date(lastStatusTime).getTime());
 
@@ -74,7 +72,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
+      <Card sx={{ width: 350, minHeight: 600, border: (lastStatusReason == "Error" || lastStatusReason == "Temperature" ? styles.errorCard : helpRequested ? styles.notifCard : "")}}>
         <CardHeader
           title={name}
           subheader={"Type: " + machineType}
@@ -163,7 +161,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               sx={{ lineHeight: 1, mb: 1 }}
               noWrap
           >
-              <b>Last Status:</b> <span style={{fontWeight: lastTimeDifference > 60000 ? 'bold' : 'regular', color:  lastTimeDifference > 60000 ? 'red' : 'inherit'}}><TimeAgo date={lastStatusTime} locale="en-US"/></span> - <b>Reason:</b> <span className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
+              <b>Last Status:</b> <span style={{fontWeight: lastTimeDifference > 60000 ? 'bold' : 'regular', color:  lastTimeDifference > 60000 ? 'red' : 'inherit'}}><TimeAgo date={lastStatusTime} locale="en-US"/></span> - <b>Reason:</b> <span style={(lastStatusReason == "Error" || lastStatusReason == "Temperature") ? styles.errorText : {}}>{lastStatusReason}</span><br></br>
               <b>Regular Status Interval:</b> {scheduledStatusFreq} sec
           </Typography>
           <Typography

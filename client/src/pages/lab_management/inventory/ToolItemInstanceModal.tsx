@@ -4,8 +4,7 @@ import { TOOL_ITEM_CONDITION_ARRAY, TOOL_ITEM_STATUS_ARRAY, ToolItemCondition, T
 import { useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, CircularProgress, Divider, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
-import { FormControlLabel, TextareaAutosize } from "@material-ui/core";
+import { Box, Button, CircularProgress, Divider, FormControl, InputLabel, MenuItem, Select, Stack, TextareaAutosize, TextField, Tooltip, Typography } from "@mui/material";
 import GET_ROOMS from "../../../queries/getRooms";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
@@ -107,7 +106,7 @@ export function ToolItemInstanceModal({ item, type }: { item?: ToolItemInstance,
           <RequestWrapper loading={getRooms.loading} error={getRooms.error}>
             <FormControl sx={{width: "50%"}}>
               <InputLabel id="room-label">Room</InputLabel>
-              <Select value={newItem.locationRoomID} id="room-label" label="Room" placeholder="Room" onChange={(e) => setNewItem({...newItem, locationRoomID: Number(e.target.value)})}>
+              <Select value={newItem.locationRoomID} id="room-label" label="Room" onChange={(e) => setNewItem({...newItem, locationRoomID: Number(e.target.value)})}>
                 {getRooms.data?.rooms.map((room: Room) => (
                   <MenuItem value={room.id}>{room.name}</MenuItem>
                 ))}
@@ -121,7 +120,7 @@ export function ToolItemInstanceModal({ item, type }: { item?: ToolItemInstance,
         <Stack direction={"row"} spacing={3}>
           <FormControl sx={{width: "50%"}}>
             <InputLabel id="status-label">Status</InputLabel>
-            <Select id="status-label" value={newItem.status} label="Status" placeholder="Status" onChange={(e) => setNewItem({...newItem, status: e.target.value})}>
+            <Select id="status-label" value={newItem.status} label="Status" onChange={(e) => setNewItem({...newItem, status: e.target.value})}>
               {TOOL_ITEM_STATUS_ARRAY.map((status: ToolItemStatus) => (
                 <MenuItem value={status}>{status}</MenuItem>
               ))}
@@ -129,7 +128,7 @@ export function ToolItemInstanceModal({ item, type }: { item?: ToolItemInstance,
           </FormControl>
           <FormControl sx={{width: "50%"}}>
             <InputLabel id="condition-label">Condition</InputLabel>
-            <Select id="condition-label" value={newItem.condition} label="Condition" placeholder="Condition" onChange={(e) => setNewItem({...newItem, condition: e.target.value})}>
+            <Select id="condition-label" value={newItem.condition} label="Condition" onChange={(e) => setNewItem({...newItem, condition: e.target.value})}>
               {TOOL_ITEM_CONDITION_ARRAY.map((condition: ToolItemCondition) => (
                 <MenuItem value={condition}>{condition}</MenuItem>
               ))}

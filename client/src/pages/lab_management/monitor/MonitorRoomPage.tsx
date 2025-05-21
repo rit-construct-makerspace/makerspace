@@ -146,7 +146,7 @@ export default function MonitorRoomPage() {
             <Grid container spacing={3} mt={2}>
               {queryResult.data?.room.equipment
                 .map((e: Equipment) => (
-                  <Grid key={e.id} item>
+                  <Grid key={e.id}>
                     <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} sopUrl={e.sopUrl} imageUrl={((e.imageUrl == undefined || e.imageUrl == null || e.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + e.imageUrl)} />
                   </Grid>
                 ))}

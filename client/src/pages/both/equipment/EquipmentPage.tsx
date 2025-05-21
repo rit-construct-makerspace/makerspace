@@ -39,7 +39,7 @@ export default function EquipmentPage() {
                 .toLocaleLowerCase()
                 .includes(searchText.toLocaleLowerCase())
             ).map((e: Equipment) => (
-              <Grid key={e.id} item>
+              <Grid key={e.id}>
                 <EquipmentCard id={e.id??0} name={e.name} to={url + e.id} sopUrl={e.sopUrl} trainingModules={e.trainingModules} numAvailable={e.numAvailable} numUnavailable={e.numInUse} byReservationOnly={e.byReservationOnly}
                 imageUrl={((e.imageUrl == undefined || e.imageUrl == null || e.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + e.imageUrl)} />
               </Grid>

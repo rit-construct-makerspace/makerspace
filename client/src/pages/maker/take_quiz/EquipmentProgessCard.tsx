@@ -8,9 +8,6 @@ import {
   CardHeader,
   Box
 } from "@mui/material";
-import { Module, Submission } from "../../../types/Quiz";
-import Markdown from "react-markdown";
-import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_ACCESS_PROGRESSES } from "../../../queries/trainingQueries";

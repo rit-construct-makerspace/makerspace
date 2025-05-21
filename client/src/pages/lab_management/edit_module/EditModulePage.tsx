@@ -115,9 +115,7 @@ export default function EditModulePage({
             alignItems="center"
             justifyContent="center"
           >
-            <Grid item
-              xs={12}
-              md={8}>
+            <Grid size={{xs: 12, md: 8}}>
               <TextField
                 label="Module title"
                 value={module.name}
@@ -127,10 +125,7 @@ export default function EditModulePage({
                 fullWidth
               />
             </Grid>
-            <Grid item
-              xs={12}
-              md={4}
-              justifySelf="center">
+            <Grid size={{xs: 12, md: 4}} justifySelf="center">
               {
                 module.archived
                   ? <PublishTrainingModuleButton moduleID={module.id} appearance="large" />

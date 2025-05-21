@@ -21,7 +21,7 @@ export default function RoomSection(props: RoomSectionProps) {
             <Typography variant="h4" sx={{padding: "15px"}}>{props.room.name}</Typography>
             <Grid container spacing={3} justifyContent="center">
                 {filteredEquipment.map((equipment: Equipment) => (
-                    <Grid key={equipment.id} item>
+                    <Grid key={equipment.id}>
                         <EquipmentCard equipment={equipment} isMobile={props.isMobile} />
                     </Grid>
                 ))}
