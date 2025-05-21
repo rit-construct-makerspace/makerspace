@@ -20,12 +20,12 @@ function stringToColor(string: string) {
     return color;
 }
 
-export function stringAvatar(name: string, props:SxProps={}) {
+export function stringAvatar(firstName: string, lastName: string, props:SxProps={}) {
     return {
         sx: {
-            bgcolor: stringToColor(name),
+            bgcolor: stringToColor(`${firstName} ${lastName}`),
             ...props
         },
-        children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+        children: `${firstName[0]}${lastName[0]}`,
     };
 }

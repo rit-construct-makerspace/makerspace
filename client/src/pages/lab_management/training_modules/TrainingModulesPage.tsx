@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import { Divider, Stack, Typography } from "@mui/material";
+import { Box, Divider, Stack, Typography } from "@mui/material";
 import CreateIcon from "@mui/icons-material/Create";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client"
@@ -26,87 +26,89 @@ export default function TrainingModulesPage() {
   };
 
   return (
-    <AdminPage title="Training modules" maxWidth="1250px">
-    <Stack direction="row" alignItems="center" spacing={1}>
-      <SearchBar
-        placeholder="Search training modules"
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
-      <LoadingButton
-        loading={false}
-        variant="outlined"
-        startIcon={<CreateIcon />}
-        onClick={handleNewModuleClicked}
-        sx={{ height: 40 }}
-      >
-        New module
-      </LoadingButton>
-    </Stack>
+    <AdminPage>
+      <Box margin="25px">
+        <Typography variant="h3">Training Modules</Typography>
+      <Stack direction="row" alignItems="center" spacing={1}>
+        <SearchBar
+          placeholder="Search training modules"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <LoadingButton
+          loading={false}
+          variant="outlined"
+          startIcon={<CreateIcon />}
+          onClick={handleNewModuleClicked}
+          sx={{ height: 40 }}
+        >
+          New module
+        </LoadingButton>
+      </Stack>
 
-    <Typography
-      variant="h5"
-      sx={{
-        mt: 2
-      }}
-    >
-        Active Modules
-    </Typography>
-
-    <RequestWrapper
-      loading={getModuleResults.loading}
-      error={getModuleResults.error}
-    >
-      <Stack
-        alignItems="stretch"
-        divider={<Divider flexItem />}
+      <Typography
+        variant="h5"
         sx={{
-          width: "100%",
-          mt: 1,
-          mb: 3
+          mt: 2
         }}
       >
-        {getModuleResults.data?.modules
-          ?.filter((m: ObjectSummary) =>
-            m.name
-              .toLocaleLowerCase()
-              .includes(searchText.toLocaleLowerCase())
-          )
-          .map((m: ObjectSummary) => (
-            <TrainingModuleRow key={m.id} module={m} />
-          ))}
-      </Stack>
-    </RequestWrapper>
+          Active Modules
+      </Typography>
 
-    <Typography variant="h5">
-        Archived Modules
-    </Typography>
-
-    <RequestWrapper
-      loading={getArchivedModuleResults.loading}
-      error={getArchivedModuleResults.error}
-    >
-      <Stack
-        alignItems="stretch"
-        divider={<Divider flexItem />}
-        sx={{
-          width: "100%",
-          mt: 0.75,
-          mb: 0.75
-        }}
+      <RequestWrapper
+        loading={getModuleResults.loading}
+        error={getModuleResults.error}
       >
-        {getArchivedModuleResults.data?.archivedModules
-          ?.filter((m: ObjectSummary) =>
-            m.name
-              .toLocaleLowerCase()
-              .includes(searchText.toLocaleLowerCase())
-          )
-          .map((m: ObjectSummary) => (
-            <TrainingModuleRow key={m.id} module={m} />
-          ))}
-      </Stack>
-    </RequestWrapper>
+        <Stack
+          alignItems="stretch"
+          divider={<Divider flexItem />}
+          sx={{
+            width: "100%",
+            mt: 1,
+            mb: 3
+          }}
+        >
+          {getModuleResults.data?.modules
+            ?.filter((m: ObjectSummary) =>
+              m.name
+                .toLocaleLowerCase()
+                .includes(searchText.toLocaleLowerCase())
+            )
+            .map((m: ObjectSummary) => (
+              <TrainingModuleRow key={m.id} module={m} />
+            ))}
+        </Stack>
+      </RequestWrapper>
 
-  </AdminPage>
+      <Typography variant="h5">
+          Archived Modules
+      </Typography>
+
+      <RequestWrapper
+        loading={getArchivedModuleResults.loading}
+        error={getArchivedModuleResults.error}
+      >
+        <Stack
+          alignItems="stretch"
+          divider={<Divider flexItem />}
+          sx={{
+            width: "100%",
+            mt: 0.75,
+            mb: 0.75
+          }}
+        >
+          {getArchivedModuleResults.data?.archivedModules
+            ?.filter((m: ObjectSummary) =>
+              m.name
+                .toLocaleLowerCase()
+                .includes(searchText.toLocaleLowerCase())
+            )
+            .map((m: ObjectSummary) => (
+              <TrainingModuleRow key={m.id} module={m} />
+            ))}
+        </Stack>
+      </RequestWrapper>
+      </Box>
+    </AdminPage>
   );
 }

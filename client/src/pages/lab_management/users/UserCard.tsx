@@ -28,7 +28,7 @@ export default function UserCard({ user, onClick }: UserCardProps) {
         <Stack alignItems="center" spacing={1.5} height="100%">
           <Avatar
             alt={`Profile picture for ${user.firstName} ${user.lastName}`}
-            {...stringAvatar(`${user.firstName} ${user.lastName}`, {width: "80px", height: "80px", fontSize: 36})}
+            {...stringAvatar(user.firstName, user.lastName, {width: "80px", height: "80px", fontSize: 36})}
           />
 
           <Typography

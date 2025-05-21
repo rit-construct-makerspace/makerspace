@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Page from "../../Page";
-import { Button, Divider, FormGroup, Stack, Switch, Typography } from "@mui/material";
+import { Box, Button, Divider, FormGroup, Stack, Switch, Typography } from "@mui/material";
 import InventoryRow from "../../../common/InventoryRow";
 import SearchBar from "../../../common/SearchBar";
 import InventoryItem from "../../../types/InventoryItem";
@@ -127,10 +127,9 @@ export default function StorefrontPage() {
 
   return (
     <RequestWrapper loading={loading} error={error}>
-      <AdminPage
-        title="Storefront"
-        maxWidth="1250px"
-      >
+      <AdminPage>
+        <Box margin="25px">
+        <Typography variant="h4">Storefront</Typography>
         <ShoppingCart
           entries={shoppingCart}
           removeEntry={removeFromShoppingCart}
@@ -188,6 +187,7 @@ export default function StorefrontPage() {
             item={activeItem}
           />
         )}
+      </Box>
       </AdminPage>
     </RequestWrapper>
   );
