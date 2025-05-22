@@ -11,7 +11,7 @@ export default function Footer() {
                 <Stack direction="row" width="auto" padding="25px">
                     <Stack>
                         <Typography variant="h4">Make Something Interesting</Typography>
-                        <Typography color="inherit">Contact us: <Link href="mailto:make@rit.edu" underline="hover">make@rit.edu</Link></Typography>
+                        <Typography color="inherit">Contact Us: <Link href="mailto:make@rit.edu" underline="hover" color="inherit">make@rit.edu</Link></Typography>
                     </Stack>
                 </Stack>
             </AppBar>
