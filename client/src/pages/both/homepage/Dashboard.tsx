@@ -74,7 +74,7 @@ export function Dashboard() {
                             : undefined
                         }
                     </Stack>
-                    <Grid container margin="0px 20px" alignItems="stretch">
+                    <Grid container margin="0px 20px" alignItems="stretch" width="auto">
                         {getAnnouncementsResult.data?.getAllAnnouncements?.map((thisAnnouncement: Announcement) => (
                             <Grid width="400px" margin="10px">
                                 <AnnouncementCard announcement={thisAnnouncement}/>
