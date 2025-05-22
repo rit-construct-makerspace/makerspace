@@ -1,4 +1,4 @@
-import { Button, Card, IconButton, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Autocomplete, Button, Card, IconButton, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { DELETE_EQUIPMENT_INSTANCE, EquipmentInstance, GET_EQUIPMENT_INSTANCES, InstanceStatus, SET_INSTANCE_NAME, SET_INSTANCE_STATUS } from "../../../queries/equipmentInstanceQueries";
 import { useState } from "react";
 import ActionButton from "../../../common/ActionButton";
@@ -89,7 +89,17 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                         <SendIcon/>
                     </IconButton>
                 </Stack>
-                <Typography variant="body1">placeholder-purple-slug</Typography>
+                {
+                    allowEdit
+                    ? <Autocomplete
+                        renderInput={
+                            (params: any) => (<TextField {...params} label="Slug" />)
+                        }
+                        options={[{label: "placeholder-purple-slug", id: 25}]}
+                        disableClearable
+                    />
+                    : <Typography variant="body1">placeholder-purple-slug</Typography>
+                }
                 {
                     allowEdit
                     ? <Stack direction="row" justifyContent="flex-end">

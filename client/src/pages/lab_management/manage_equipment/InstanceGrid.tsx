@@ -20,7 +20,7 @@ export default function InstanceGrid(props: InstanceGridProps) {
 
             return (
                 instances.length == 0
-                ? <Typography variant="body1">No Instances!</Typography>
+                ? <Typography variant="h6">No Instances!</Typography>
                 : <Grid container>
                     {
                         instances.map((instance: EquipmentInstance) => (
