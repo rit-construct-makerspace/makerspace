@@ -13,7 +13,6 @@ export async function up(knex: Knex): Promise<void> {
         t.bigInteger('readerID');
         t.foreign("readerID").references("id").inTable("Readers").onDelete('set null');
     }).alterTable("Readers", (t) => {
-        t.text("readerKey");
         t.integer("readerKeyCycle").notNullable().defaultTo(0);
     })
 
@@ -30,7 +29,7 @@ export async function down(knex: Knex): Promise<void> {
     }).alterTable("EquipmentInstances", (t) => {
         t.dropColumn("readerID")
     }).alterTable("Readers", (t) => {
-        t.dropColumns("readerKey", "readerKeyCycle");
+        t.dropColumns("readerKeyCycle");
     })
 
 }

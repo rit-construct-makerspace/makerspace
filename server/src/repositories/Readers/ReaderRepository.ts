@@ -29,12 +29,12 @@ export async function getReaderByName(
 
 /**
  * Fetch areader by its Serial number/Shlug ID
- * @param shlugID the shlug ID of the machine
+ * @param SN the serial number of the reader
  */
-export async function getReaderByShlugID(
-    shlugId: string
+export async function getReaderBySN(
+    SN: string
 ): Promise<ReaderRow | undefined> {
-    return await knex("Readers").from("Readers").first().where({ shlugID: shlugId });
+    return await knex("Readers").from("Readers").first().where({ SN: SN });
 }
 
 /**
@@ -91,11 +91,11 @@ export async function createReader(reader: {
 
 
 /**
- * Create a card reader from a shlug ID (on first pair) *
+ * Create a card reader from a SN (on first pair) 
  *  @param reader the static attribute of the card reader
  */
-export async function createReaderFromSID(reader: {
-    shlugID: string, name: string
+export async function createReaderFromSN(reader: {
+    SN: string, name: string
 }): Promise<ReaderRow | undefined> {
     const [newID] = await knex("Readers").insert(reader, "id");
     return await getReaderByID(newID.id);
@@ -121,7 +121,8 @@ export async function updateReaderStatus(reader: {
     FEVer?: string,
     HWVer?: string,
     sessionStartTime?: Date,
-    shlugID?: string,
+    SN?: string,
+    readerKeyCycle?: number,
 }): Promise<ReaderRow | undefined> {
     await knex("Readers").where({ id: reader.id }).update({
         machineID: reader.machineID,
@@ -139,7 +140,8 @@ export async function updateReaderStatus(reader: {
         FEVer: reader.FEVer,
         HWVer: reader.HWVer,
         sessionStartTime: reader.sessionStartTime,
-        shlugID: reader.shlugID,
+        SN: reader.SN,
+        readerKeyCycle: reader.readerKeyCycle,
     })
 
     return getReaderByID(reader.id);

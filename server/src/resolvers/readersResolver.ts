@@ -12,6 +12,45 @@ import { EntityNotFound } from "../EntityNotFound.js";
 import { ReaderRow } from "../db/tables.js";
 import * as ShlugControl from "../wsapi.js"
 
+import { scrypt, createCipheriv, randomInt } from "crypto";
+import { generateRandomHumanName } from "../data/humanReadableNames.js";
+const serverApiPass = process.env.SERVER_API_PASSWORD ?? 'unsecure_server_password';
+const serverApiPassBinary = Buffer.from(serverApiPass, 'utf-8');
+const algorithm = 'aes-192-cbc';
+// Usually an IV is random per message. We are using the encrpytion as an identifier so we want this constant
+const iv = new Uint8Array(16);
+
+function generateShlugKey(SN: string, keyCycle: number) {
+  const plainText = `shlug:${SN}:${keyCycle}`;
+  let encrypted = '';
+  scrypt(serverApiPass, 'salt', 24, (err, key) => {
+    if (err) throw err;
+
+    const cipher = createCipheriv(algorithm, key, iv);
+
+    cipher.setEncoding('hex');
+
+    cipher.on('data', (chunk) => encrypted += chunk);
+    cipher.on('end', () => console.log(encrypted));
+
+    cipher.write(plainText);
+    cipher.end();
+  });
+
+}
+
+async function generateUniqueHumanName() {
+  const RANDOM_TRIES = 10;
+  for (var i = 0; i < RANDOM_TRIES; i++) {
+    const name = generateRandomHumanName();
+    if (await ReaderRepo.getReaderByName(name) == null) {
+      return name;
+    }
+  }
+  return `${generateRandomHumanName()}-${randomInt(1000)}`
+}
+
+
 
 const ReadersResolver = {
   Reader: {
@@ -70,6 +109,38 @@ const ReadersResolver = {
       ifAllowed([Privilege.STAFF], async () => {
         return await ReaderRepo.createReader(args);
       }),
+
+    /**
+     * Pair a new Reader
+     * @argument SN serial number of the shlug
+     * @returns SerialNumber, ShlugKey, Certs, Domain
+     * @throws GraphQLError if not STAFF or is on hold
+     */
+    pairReader: async (
+      _parent: any,
+      args: { SN: string },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.STAFF], async () => {
+        var reader = await ReaderRepo.getReaderBySN(args.SN);
+        if (reader == null) {
+          const name = await generateUniqueHumanName();
+          reader = await ReaderRepo.createReaderFromSN({ SN: args.SN, name: name });
+        }
+        if (reader == null) {
+          // Not found and can't create a new one, we're really out of lukc
+          throw "Unable to pair new reader";
+        }
+
+        var keyCycle = (reader?.readerKeyCycle ?? 0) + 1;
+        reader.readerKeyCycle = keyCycle;
+
+        const newKey = generateShlugKey(args.SN, keyCycle);
+        await ReaderRepo.updateReaderStatus(reader);
+        return { readerKey: newKey, name: reader.name, certs: "Hold on, im going as fast as i can" }
+      }),
+
+
+
 
     /**
      * Update the name of a Reader

@@ -44,7 +44,7 @@ export const GET_READERS = gql`
       FEVer
       HWVer
       sessionStartTime
-      shlugID
+      SN
     }
   }
 `
@@ -72,6 +72,21 @@ export const CREATE_READER = gql`
     }
   }
 `;
+
+export const PAIR_READER = gql`
+  mutation PairReader(
+    $SN: string,
+  ) {
+    pairReader(
+      SN: $SN,
+    ) {
+      SN
+      readerKey
+      readerKeyCycle
+    }
+  }
+`;
+
 
 
 export const SET_READER_NAME = gql`

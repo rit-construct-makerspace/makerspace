@@ -1,7 +1,7 @@
 import { Request } from "express";
 import * as ws from "ws";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository.js";
-import { createReaderFromSID, getReaderByID, getReaderByName, getReaderByShlugID, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
+import { createReaderFromSN, getReaderByID, getReaderByName, getReaderBySN, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
 import { EquipmentRow, ReaderRow } from "./db/tables.js";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository.js";
 import { getEquipmentByID, getMissingTrainingModules, hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
@@ -352,11 +352,11 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         return false;
     }
 
-    var reader: ReaderRow | undefined = await getReaderByShlugID(message.SerialNumber ?? "");
+    var reader: ReaderRow | undefined = await getReaderBySN(message.SerialNumber ?? "");
     connData.readerId = reader?.id;
     if (reader == null) {
-        reader = await createReaderFromSID({
-            shlugID: message.SerialNumber, name: await generateUniqueHumanName(),
+        reader = await createReaderFromSN({
+            SN: message.SerialNumber, name: await generateUniqueHumanName(),
         });
         connData.readerId = reader?.id;
 
@@ -388,7 +388,7 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         BEVer: message.FWVersion ?? undefined,
         FEVer: message.FWVersion ?? undefined,
         HWVer: message.HWVersion ?? undefined,
-        shlugID: message.SerialNumber,
+        SN: message.SerialNumber,
     });
 
     return true;

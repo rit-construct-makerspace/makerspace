@@ -239,8 +239,10 @@ export interface ReaderRow {
   FEVer: string;
   HWVer: string;
   sessionStartTime: Date;
-  shlugID?: string;
+  SN?: string;
+  readerKeyCycle: number;
 }
+
 
 export interface AnnouncementRow {
   id: number;
