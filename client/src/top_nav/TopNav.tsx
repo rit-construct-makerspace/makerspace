@@ -14,6 +14,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import SettingsIcon from '@mui/icons-material/Settings';
 import { stringAvatar } from "../common/avatarGenerator";
 import MenuIcon from '@mui/icons-material/Menu';
+import Footer from "./Footer";
 
 const StyledLogo = styled.img`
   margin: 12px;
@@ -90,7 +91,7 @@ export default function TopNav() {
     }
 
     return (
-        <Stack>
+        <Stack minHeight={"100vh"}>
             { isMobile
             ? <AppBar position="static">
                 <Stack direction="row" justifyContent="space-between">
@@ -159,7 +160,7 @@ export default function TopNav() {
                     </Stack>
                 </Drawer>
             </AppBar>
-            :<Box width="100%" height="5%" sx={{flexGrow: 1}}>
+            :<Box width="100%" height="5%">
                 <AppBar position="static">
                     <Stack component="nav" direction="row" justifyContent="space-between">
                         <ButtonBase onClick={() => {navigate(`/`);}} sx={{width: "15%"}} focusRipple>
@@ -226,6 +227,7 @@ export default function TopNav() {
             }
             {makeAlerts()}
             <Outlet />
+            <Footer/>
         </Stack>
     );
 }
