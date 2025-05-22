@@ -19,6 +19,7 @@ import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import IssueLogModal from "./IssueLogModal";
 import PrettyModal from "../../../common/PrettyModal";
+import InstanceGrid from "./InstanceGrid";
 
 const StyledMachineImage = styled.img`
   width: 128px;
@@ -143,12 +144,13 @@ export default function EquipmentEditor({
 
   return (
     <RequestWrapper
-      loading={getRoomsResult.loading || getModulesResult.loading || equipmentInstancesResult.loading}
-      error={getRoomsResult.error || getModulesResult.error || equipmentInstancesResult.error}
+      loading={getRoomsResult.loading || getModulesResult.loading}
+      error={getRoomsResult.error || getModulesResult.error}
     >
       <AdminPage>
         <Stack padding="15px">
           <Stack direction={isMobile ? "column" : "row"} justifyContent="space-between" alignItems="baseline">
+            {/* Title & Header buttons */}
             <Typography variant="h3">{`${newEquipment ? "Create New" : "Manage"} Equipment`}</Typography>
             {
               !newEquipment
@@ -167,6 +169,39 @@ export default function EquipmentEditor({
               : null
             }
           </Stack>
+          { // Instances
+            newEquipment
+            ? null
+            : <Stack>
+                <Stack direction="row" spacing={2} alignItems="center" padding="10px">
+                  <Typography variant="h5">Instances</Typography>
+                  <Button variant="contained" startIcon={<AddIcon/>} color="success" onClick={() => {setNewInstanceModal(true)}}>
+                    Create New Instance
+                  </Button>
+                </Stack>
+                <PrettyModal open={newInstanceModal} onClose={handleCloseNewInstance}>
+                  <Stack width="auto" spacing={2}>
+                    <Typography variant="h4">Create New Instance</Typography>
+                    <TextField
+                      label="Name"
+                      value={newInstanceName}
+                      onChange={(e) => setNewInstanceName(e.target.value)}
+                    />
+                    <Stack direction="row" justifyContent="flex-end" spacing={1}>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        onClick={handleCloseNewInstance}
+                      >
+                        Cancel
+                      </Button>
+                      <Button variant="contained" color="success" onClick={handleSubmitNewInsatance}>Submit</Button>
+                    </Stack>
+                  </Stack>
+                </PrettyModal>
+                <InstanceGrid equipmentID={equipment.id ?? 0} isMobile={isMobile}/>
+              </Stack>
+          }
           
           <Stack
             direction={isMobile ? "column" : "row"}
@@ -259,38 +294,8 @@ export default function EquipmentEditor({
             </Stack>
             <Stack width={isMobile ? "100%" : "50%"} spacing={2}>
               <Stack direction="row" alignItems="center" spacing={4}>
-                <Typography variant="h5">Instances</Typography>
-                <Button variant="contained" startIcon={<AddIcon/>} color="success" onClick={() => {setNewInstanceModal(true)}}>
-                  Create New Instance
-                </Button>
-                <PrettyModal open={newInstanceModal} onClose={handleCloseNewInstance}>
-                  <Stack width="auto" spacing={2}>
-                    <Typography variant="h4">Create New Instance</Typography>
-                    <TextField
-                      label="Name"
-                      value={newInstanceName}
-                      onChange={(e) => setNewInstanceName(e.target.value)}
-                    />
-                    <Stack direction="row" justifyContent="flex-end" spacing={1}>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={handleCloseNewInstance}
-                      >
-                        Cancel
-                      </Button>
-                      <Button variant="contained" color="success" onClick={handleSubmitNewInsatance}>Submit</Button>
-                    </Stack>
-                  </Stack>
-                </PrettyModal>
+                
               </Stack>
-              {
-                equipmentInstancesResult.data?.equipmentInstances.length == 0
-                ? <Typography variant="body1">No Instances!</Typography>
-                : equipmentInstancesResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
-                  <EquipmentInstanceRow instance={instance} isMobile={isMobile}/>
-                ))
-              }
             </Stack>
           </Stack>
         </Stack>

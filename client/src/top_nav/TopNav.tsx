@@ -51,9 +51,14 @@ export default function TopNav() {
         setAnchorEl(null);
     };
 
-    const [labTraining, setLabTraining] = useState(true);
+    const [labTraining, setLabTraining] = useState(!(localStorage.getItem("showLabTraining") == "false"));
 
     const [mobileDrawer, setMobileDrawer] = useState(false);
+
+    function handleDismissLabTraining() {
+        setLabTraining(false);
+        localStorage.setItem("showLabTraining", "false");
+    }
 
     function makeAlerts() {
 
@@ -75,7 +80,7 @@ export default function TopNav() {
                 }
                 { // Lab training Alert
                     labTraining
-                    ? <Alert variant="filled" severity="info" onClose={() => setLabTraining(false)} sx={{borderRadius: 0}}>
+                    ? <Alert variant="filled" severity="info" onClose={handleDismissLabTraining} sx={{borderRadius: 0}}>
                         All Makerspace users must complete the <a href="https://rit.sabacloud.com/Saba/Web_spf/NA3P1PRD0049/common/leclassview/dowbt-0000146117">Shop Safety training course</a> before using any equipment.
                     </Alert>
                     : null
@@ -157,7 +162,9 @@ export default function TopNav() {
             :<Box width="100%" height="5%" sx={{flexGrow: 1}}>
                 <AppBar position="static">
                     <Stack component="nav" direction="row" justifyContent="space-between">
-                        <StyledLogo width="15%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
+                        <ButtonBase onClick={() => {navigate(`/`);}} sx={{width: "15%"}} focusRipple>
+                            <StyledLogo width="100%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo"/>
+                        </ButtonBase>
                         <NavLink
                             to="/maker/training/13"
                             primary="3D Printing Training"
@@ -187,7 +194,7 @@ export default function TopNav() {
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
-                        <ButtonBase onClick={handleUserMenuOpen}>
+                        <ButtonBase onClick={handleUserMenuOpen} focusRipple>
                             <Stack direction="row" alignItems="center" spacing={2} padding={2}>
                                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                                     {`${currentUser.firstName} ${currentUser.lastName}`}

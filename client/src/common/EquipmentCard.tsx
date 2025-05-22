@@ -35,14 +35,17 @@ export default function EquipmentCard(props: EquipmentCardProps) {
             <Stack>
                 <Stack direction="row" height="200px">
                     {props.isMobile ? null :
-                        <Box width="150px" height="175px">
-                            <CardMedia
-                                component="img"
-                                image={(props.equipment.imageUrl == undefined || props.equipment.imageUrl == null || props.equipment.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + props.equipment.imageUrl}
-                                alt={`Picture of ${props.equipment.name}`}
-                                sx={{width: "150px", height: "175px", backgroundColor: "lightgray"}}
-                            />
-                        </Box>
+                        <Stack alignItems="center">
+                            <Box width="150px" height="175px">
+                                <CardMedia
+                                    component="img"
+                                    image={(props.equipment.imageUrl == undefined || props.equipment.imageUrl == null || props.equipment.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + props.equipment.imageUrl}
+                                    alt={`Picture of ${props.equipment.name}`}
+                                    sx={{width: "150px", height: "175px", backgroundColor: "lightgray"}}
+                                />
+                            </Box>
+                            {isPriviledged ? <Typography variant="body2">ID {props.equipment.id}</Typography> : null}
+                        </Stack>
                     }
                     <CardContent sx={{width: "100%", height: "100%"}}>
                         <Stack height="100%">
@@ -56,7 +59,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                                         aria-label="edit button"
                                         sx={{width: "40px", height: "40px"}}
                                         variant="contained"
-                                        color="warning"
+                                        color="primary"
                                     >
                                         <ConstructionIcon />
                                     </Button>
@@ -89,7 +92,8 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                                     {
                                         !props.equipment.byReservationOnly
                                         ? <Stack direction={"row"} spacing={1} alignItems="center" padding="10px">
-                                            {hasApprovedAccessCheck
+                                            {
+                                                hasApprovedAccessCheck
                                                 ? <CheckCircleIcon color="success" />
                                                 : <CloseIcon color="error" />
                                             }
