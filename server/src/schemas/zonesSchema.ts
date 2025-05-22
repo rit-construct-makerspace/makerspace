@@ -6,6 +6,11 @@
 import { gql } from "graphql-tag";
 import { ZoneHoursRow } from "../db/tables.js";
 
+export interface ZoneInput {
+  name: string;
+  imageUrl: string;
+}
+
 export const ZonesTypeDefs = gql`
   type Zone {
     id: ID!
@@ -23,5 +28,6 @@ export const ZonesTypeDefs = gql`
   extend type Mutation {
     deleteZone(id: ID!): Zone
     addZone(name: String!): Zone
+    updateZone(id: ID!, newZone: ZoneInput): Zone
   }
 `;

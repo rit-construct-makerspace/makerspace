@@ -5,6 +5,7 @@
 
 import { knex } from "../../db/index.js";
 import { ZoneRow } from "../../db/tables.js";
+import { ZoneInput } from "../../schemas/zonesSchema.js";
 
 
 /**
@@ -31,6 +32,21 @@ export async function getZoneByID(id: number): Promise<ZoneRow | undefined> {
  */
 export async function createZone(name: string): Promise<ZoneRow> {
     return (await knex("Zones").insert({name}).returning("*"))[0];
+}
+
+/**
+ * Update an existing zone
+ * @param id id of the zone to update
+ * @param newZone ZoneInput the updated values
+ * @returns updated Zone entry
+ */
+export async function updateZone(id: number, newZone: ZoneInput): Promise<ZoneRow | undefined> {
+    await knex("Zones").where("id", id).update({
+        name: newZone.name,
+        imageUrl: newZone.imageUrl
+    });
+
+    return getZoneByID(id);
 }
 
 /**
