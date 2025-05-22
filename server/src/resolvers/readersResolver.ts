@@ -12,29 +12,26 @@ import { EntityNotFound } from "../EntityNotFound.js";
 import { ReaderRow } from "../db/tables.js";
 import * as ShlugControl from "../wsapi.js"
 
-import { scrypt, createCipheriv, randomInt } from "crypto";
+import { createCipheriv, randomInt, scryptSync } from "crypto";
 import { generateRandomHumanName } from "../data/humanReadableNames.js";
 const serverApiPass = process.env.SERVER_API_PASSWORD ?? 'unsecure_server_password';
 const algorithm = 'aes-192-cbc';
 // Usually an IV is random per message. We are using the encrpytion as an identifier so we want this constant
 const iv = new Uint8Array(16);
 
-function generateShlugKey(SN: string, keyCycle: number): string {
+async function generateShlugKey(SN: string, keyCycle: number): Promise<string> {
   const plainText = `shlug:${SN}:${keyCycle}`;
   let encrypted = '';
-  scrypt(serverApiPass, 'salt', 24, (err, key) => {
-    if (err) throw err;
+  const key = scryptSync(serverApiPass, 'salt', 24);
+  const cipher = createCipheriv(algorithm, key, iv);
 
-    const cipher = createCipheriv(algorithm, key, iv);
+  cipher.setEncoding('hex');
 
-    cipher.setEncoding('hex');
+  cipher.on('data', (chunk) => encrypted += chunk);
 
-    cipher.on('data', (chunk) => encrypted += chunk);
-    cipher.on('end', () => console.log(encrypted));
+  cipher.write(plainText);
+  cipher.end();
 
-    cipher.write(plainText);
-    cipher.end();
-  });
   return encrypted;
 }
 
@@ -133,8 +130,9 @@ const ReadersResolver = {
         var keyCycle = (reader?.readerKeyCycle ?? 0) + 1;
         reader.readerKeyCycle = keyCycle;
 
-        const newKey = generateShlugKey(args.SN, keyCycle);
+        const newKey = await generateShlugKey(args.SN, keyCycle);
         await ReaderRepo.updateReaderStatus(reader);
+        createLog(`Paired with new reader ${reader.name} (SN ${args.SN})`, "status");
         return { readerKey: newKey, name: reader.name, certs: "Hold on, im going as fast as i can" }
       }),
 

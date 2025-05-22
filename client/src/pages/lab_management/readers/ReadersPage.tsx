@@ -51,7 +51,7 @@ export default function ReadersPage() {
                 zone={e.zone} temp={e.temp} state={e.state} userID={e.user?.id} userName={e.user != null ? e.user.firstName + " " + e.user.lastName : null}
                 recentSessionLength={e.recentSessionLength} lastStatusReason={e.lastStatusReason} 
                 scheduledStatusFreq={e.scheduledStatusFreq} lastStatusTime={e.lastStatusTime} helpRequested={e.helpRequested}
-                BEVer={e.BEVer} FEVer={e.FEVer} HWVer={e.HWVer} />
+                BEVer={e.BEVer} FEVer={e.FEVer} HWVer={e.HWVer} SN={e.SN}/>
             </Grid>
           ))}
         </Grid>

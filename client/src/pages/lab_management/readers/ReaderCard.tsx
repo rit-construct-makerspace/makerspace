@@ -41,7 +41,8 @@ interface ReaderCardProps {
     helpRequested: boolean,
     BEVer?: string,
     FEVer?: string,
-    HWVer?: string
+    HWVer?: string,
+    SN?: string,
 }
 
 
@@ -58,7 +59,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer }: ReaderCardProps) {
+export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer, SN }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
     <p>Current User: <AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity><br></br>Session Length: {recentSessionLength} sec</p>
   ) : (
@@ -93,7 +94,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
       <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
         <CardHeader
           title={name}
-          subheader={"Type: " + machineType}
+          subheader={(machineType != null) ? ("Type: " + machineType) : `SN: ${SN}`}
         >
         </CardHeader>
         <CardContent>
@@ -107,7 +108,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
             <br></br>
             <b>Zone(s): </b>
             {
-              zone.split(",").map(function(zoneStr) {
+              zone?.split(",")?.map(function(zoneStr) {
                 const zoneNum = parseInt(zoneStr);
                 var code = "0:none:none:"
                 if (rooms.data != null && zone != null && zone !== ''){
