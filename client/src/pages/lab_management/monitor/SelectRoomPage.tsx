@@ -9,7 +9,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
 import ZoneHourOptions from "./ZoneHourOptions";
 import ZoneCard from "./ZoneCard";
-import { GET_ZONES } from "../../../queries/zoneQueries";
+import { GET_ZONES, UPDATE_ZONE } from "../../../queries/zoneQueries";
 import AdminPage from "../../AdminPage";
 
 const CREATE_ROOM = gql`
@@ -42,6 +42,7 @@ export default function SelectRoomPage() {
 
   const getZonesResult = useQuery(GET_ZONES);
   const [createZone] = useMutation(CREATE_ZONE);
+  const [updateZone] = useMutation(UPDATE_ZONE);
 
   const handleCreateZone = () => {
     const name = window.prompt("Enter zone name:");
