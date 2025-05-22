@@ -162,7 +162,9 @@ export default function TopNav() {
             :<Box width="100%" height="5%" sx={{flexGrow: 1}}>
                 <AppBar position="static">
                     <Stack component="nav" direction="row" justifyContent="space-between">
-                        <StyledLogo width="15%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
+                        <ButtonBase onClick={() => {navigate(`/`);}} sx={{width: "15%"}} focusRipple>
+                            <StyledLogo width="100%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo"/>
+                        </ButtonBase>
                         <NavLink
                             to="/maker/training/13"
                             primary="3D Printing Training"
@@ -192,7 +194,7 @@ export default function TopNav() {
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
-                        <ButtonBase onClick={handleUserMenuOpen}>
+                        <ButtonBase onClick={handleUserMenuOpen} focusRipple>
                             <Stack direction="row" alignItems="center" spacing={2} padding={2}>
                                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                                     {`${currentUser.firstName} ${currentUser.lastName}`}
