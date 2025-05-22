@@ -92,7 +92,8 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                                     {
                                         !props.equipment.byReservationOnly
                                         ? <Stack direction={"row"} spacing={1} alignItems="center" padding="10px">
-                                            {hasApprovedAccessCheck
+                                            {
+                                                hasApprovedAccessCheck
                                                 ? <CheckCircleIcon color="success" />
                                                 : <CloseIcon color="error" />
                                             }

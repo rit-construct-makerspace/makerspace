@@ -30,17 +30,22 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     }
 
     async function handlenameChangeCancel() {
-    setAllowEdit(false);
-    setName(props.instance.name)
+        setAllowEdit(false);
+        setName(props.instance.name);
     }
 
     function handleStatusChange(e: any) {
         setStatus(e.target.value);
-        setInstanceStatus({ variables: { id: props.instance.id, status: e.target.value } })
+        setInstanceStatus({ variables: { id: props.instance.id, status: e.target.value } });
     }
 
     function handleStateChange(e: any) {
         setState(e.target.value);
+    }
+
+    async function handleDeleteInstance() {
+        await deleteInstance({variables: {id: props.instance.id}});
+        window.location.reload();
     }
 
     return (
@@ -88,7 +93,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                 {
                     allowEdit
                     ? <Stack direction="row" justifyContent="flex-end">
-                        <Button color="error" variant="contained" startIcon={<DeleteIcon />}>Delete</Button>
+                        <Button color="error" variant="contained" startIcon={<DeleteIcon />} onClick={handleDeleteInstance}>Delete</Button>
                     </Stack>
                     : null
                 }
