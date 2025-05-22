@@ -59,7 +59,7 @@ export default function EquipmentCard(props: EquipmentCardProps) {
                                         aria-label="edit button"
                                         sx={{width: "40px", height: "40px"}}
                                         variant="contained"
-                                        color="warning"
+                                        color="primary"
                                     >
                                         <ConstructionIcon />
                                     </Button>
