@@ -15,12 +15,11 @@ import * as ShlugControl from "../wsapi.js"
 import { scrypt, createCipheriv, randomInt } from "crypto";
 import { generateRandomHumanName } from "../data/humanReadableNames.js";
 const serverApiPass = process.env.SERVER_API_PASSWORD ?? 'unsecure_server_password';
-const serverApiPassBinary = Buffer.from(serverApiPass, 'utf-8');
 const algorithm = 'aes-192-cbc';
 // Usually an IV is random per message. We are using the encrpytion as an identifier so we want this constant
 const iv = new Uint8Array(16);
 
-function generateShlugKey(SN: string, keyCycle: number) {
+function generateShlugKey(SN: string, keyCycle: number): string {
   const plainText = `shlug:${SN}:${keyCycle}`;
   let encrypted = '';
   scrypt(serverApiPass, 'salt', 24, (err, key) => {
@@ -36,7 +35,7 @@ function generateShlugKey(SN: string, keyCycle: number) {
     cipher.write(plainText);
     cipher.end();
   });
-
+  return encrypted;
 }
 
 async function generateUniqueHumanName() {

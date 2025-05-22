@@ -27,7 +27,6 @@ export const ReaderTypeDefs = gql`
     SN: String
   }
   type PairInfo {
-    SN: String
     readerKey: String
     name: String
     certs: String
