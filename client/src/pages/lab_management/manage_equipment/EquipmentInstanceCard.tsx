@@ -50,8 +50,8 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
 
     return (
         <Card sx={{padding: "15px"}}>
-            <Stack spacing={1}>
-                <Stack direction="row" alignItems="center" justifyContent={"space-between"} width="200px">
+            <Stack spacing={2}>
+                <Stack direction="row" alignItems="center" justifyContent={"space-between"} width="250px">
                     {
                         !allowEdit
                         ? <Typography variant="h6" fontWeight={"bold"}>{props.instance.name}</Typography>
@@ -98,7 +98,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                         options={[{label: "placeholder-purple-slug", id: 25}]}
                         disableClearable
                     />
-                    : <Typography variant="body1">placeholder-purple-slug</Typography>
+                    : <Typography variant="body1" align="center">placeholder-purple-slug</Typography>
                 }
                 {
                     allowEdit
