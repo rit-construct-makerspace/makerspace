@@ -12,6 +12,7 @@ export const ZonesTypeDefs = gql`
     name: String!
     rooms: [Room]
     hours: [ZoneHours]
+    imageUrl: String
   }
 
   extend type Query {
