@@ -55,7 +55,7 @@ export function Dashboard() {
                             id={zone.id}
                             name={zone.name}
                             hours={zone.hours}
-                            imageUrl={process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}
+                            imageUrl={zone.imageUrl == undefined || zone.imageUrl == null || zone.imageUrl == "" ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : zone.imageUrl}
                             isMobile={isMobile}
                         />
                     ))}

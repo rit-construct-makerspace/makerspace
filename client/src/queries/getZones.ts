@@ -6,6 +6,7 @@ export const GET_ZONES = gql`
   zones {
     id
     name
+    imageUrl
   }
  }
 `;
@@ -18,6 +19,7 @@ export interface ZoneWithHours {
     dayOfTheWeek: number;
     time: string;
   }];
+  imageUrl: string;
 }
 
 export interface FullZone {
@@ -45,6 +47,7 @@ export const GET_ZONES_WITH_HOURS = gql`
       dayOfTheWeek
       time
     }
+    imageUrl
   }
  }
 `;
@@ -59,6 +62,7 @@ export const GET_FULL_ZONES = gql`
         dayOfTheWeek
         time
       }
+      imageUrl
       rooms {
         id
         name
@@ -90,6 +94,7 @@ export const GET_ZONE_BY_ID = gql`
         dayOfTheWeek
         time
       }
+      imageUrl
       rooms {
         id
         name
