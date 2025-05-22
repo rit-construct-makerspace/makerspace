@@ -54,6 +54,7 @@ $BODY$
 language plpgsql volatile;
 
 select clone_schema('public','dev');
+
 `
 
 

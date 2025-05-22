@@ -31,11 +31,10 @@ export default function ThemeToggle() {
       }
     }}>
     <ListItemIcon><DarkModeIcon /></ListItemIcon>
-      <Stack direction={"row"}>
+      <Stack direction={"row"} alignItems="center">
         <Typography>
           Dark Mode (Experimental)
         </Typography>
-        <br />
         <Switch id="theme-toggle" aria-label="Dark Mode (Experimental)" checked={mode} onChange={(e) => {
           if (url.pathname.includes("/maker/training/") && !url.pathname.includes("results") && !window.confirm(
             `Are you sure you want to leave this quiz? Progress will not be saved.`

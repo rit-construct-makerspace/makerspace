@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
 import RoomCard from "./RoomCard";
-import { Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import GET_ROOMS from "../../../queries/getRooms";
 import RequestWrapper from "../../../common/RequestWrapper";
@@ -58,7 +58,8 @@ export default function SelectRoomPage() {
       loading={getRoomsResult.loading}
       error={getRoomsResult.error}
     >
-      <AdminPage title="" maxWidth="1250px">
+      <AdminPage>
+        <Box margin="25px">
         <Typography
           variant="h4"
           component="div"
@@ -96,6 +97,7 @@ export default function SelectRoomPage() {
             <ZoneCard key={zone.id} id={zone.id} name={zone.name} />
           ))}
         </Stack>
+        </Box>
       </AdminPage>
     </RequestWrapper>
   );

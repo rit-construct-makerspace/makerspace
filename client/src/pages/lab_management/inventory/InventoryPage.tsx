@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Page from "../../Page";
-import { Box, Button, Divider, Stack, Table, TableCell, TableHead, TableRow } from "@mui/material";
+import { Box, Button, Divider, Stack, Table, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
 import PageSectionHeader from "../../../common/PageSectionHeader";
 import { useNavigate } from "react-router-dom";
@@ -38,79 +38,86 @@ export default function InventoryPage() {
 
   return (
     <RequestWrapper loading={loading} error={error}>
-      <AdminPage title="Inventory" maxWidth="1250px" topRightAddons={(<Button variant="outlined" onClick={() => setTagsModalOpen(true)}>Manage Tags</Button>)}>
-        <PageSectionHeader top>Running Low</PageSectionHeader>
+      <AdminPage>
+        <Box margin="25px">
+          <Stack direction="row" justifyContent="space-between" alignItems="baseline">
+            <Typography variant="h4">Inventory</Typography>
+            <Button variant="outlined" onClick={() => setTagsModalOpen(true)}>Manage Tags</Button>
+          </Stack>
+          
+          <PageSectionHeader top>Running Low</PageSectionHeader>
 
-        <Box sx={{width: "100%", overflowX: "scroll"}}>
-          <Table>
-            <TableHead>
-              <TableCell>Item</TableCell>
-              <TableCell>Tags</TableCell>
-              <TableCell>Units Available</TableCell>
-              <TableCell>Price/Unit</TableCell>
-              <TableCell>Staff Only</TableCell>
-              <TableCell>Available on Storefront</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableHead>
-            {lowItems.map((item: InventoryItem) => (
-              <AdminInventoryRow
-                item={item}
-                key={item.id}
-                onClick={() => setModalItemId(item.id + "")}
-                allTags={inventoryTagsResult.data?.inventoryTags ?? []}              />
-            ))}
-          </Table>
-        </Box>
+          <Box sx={{width: "100%", overflowX: "scroll"}}>
+            <Table>
+              <TableHead>
+                <TableCell>Item</TableCell>
+                <TableCell>Tags</TableCell>
+                <TableCell>Units Available</TableCell>
+                <TableCell>Price/Unit</TableCell>
+                <TableCell>Staff Only</TableCell>
+                <TableCell>Available on Storefront</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableHead>
+              {lowItems.map((item: InventoryItem) => (
+                <AdminInventoryRow
+                  item={item}
+                  key={item.id}
+                  onClick={() => setModalItemId(item.id + "")}
+                  allTags={inventoryTagsResult.data?.inventoryTags ?? []}              />
+              ))}
+            </Table>
+          </Box>
 
-        <PageSectionHeader>All Materials</PageSectionHeader>
+          <PageSectionHeader>All Materials</PageSectionHeader>
 
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <SearchBar
-            placeholder="Search inventory"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            onClear={() => setSearchText("")}
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <SearchBar
+              placeholder="Search inventory"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              onClear={() => setSearchText("")}
+            />
+            <Button
+              variant="outlined"
+              startIcon={<CreateIcon />}
+              onClick={() => setModalItemId("new")}
+              sx={{ height: 40 }}
+            >
+              New material
+            </Button>
+          </Stack>
+
+          <Box sx={{width: "100%", overflowX: "scroll"}}>
+            <Table>
+              <TableHead>
+                <TableCell>Item</TableCell>
+                <TableCell>Tags</TableCell>
+                <TableCell>Units Available</TableCell>
+                <TableCell>Price/Unit</TableCell>
+                <TableCell>Staff Only</TableCell>
+                <TableCell>Available on Storefront</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableHead>
+              {matchingItems.map((item: InventoryItem) => (
+                <AdminInventoryRow
+                  item={item}
+                  key={item.id}
+                  onClick={() => setModalItemId(item.id + "")}
+                  allTags={inventoryTagsResult.data?.inventoryTags ?? []}
+                />
+              ))}
+            </Table>
+          </Box>
+
+          <Ledger></Ledger>
+
+          <MaterialModal
+            itemId={modalItemId}
+            onClose={() => setModalItemId("")}
           />
-          <Button
-            variant="outlined"
-            startIcon={<CreateIcon />}
-            onClick={() => setModalItemId("new")}
-            sx={{ height: 40 }}
-          >
-            New material
-          </Button>
-        </Stack>
 
-        <Box sx={{width: "100%", overflowX: "scroll"}}>
-          <Table>
-            <TableHead>
-              <TableCell>Item</TableCell>
-              <TableCell>Tags</TableCell>
-              <TableCell>Units Available</TableCell>
-              <TableCell>Price/Unit</TableCell>
-              <TableCell>Staff Only</TableCell>
-              <TableCell>Available on Storefront</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableHead>
-            {matchingItems.map((item: InventoryItem) => (
-              <AdminInventoryRow
-                item={item}
-                key={item.id}
-                onClick={() => setModalItemId(item.id + "")}
-                allTags={inventoryTagsResult.data?.inventoryTags ?? []}
-              />
-            ))}
-          </Table>
+          <InventoryTagsModal tagModalOpen={tagsModalOpen} setTagModalOpen={setTagsModalOpen} />
         </Box>
-
-        <Ledger></Ledger>
-
-        <MaterialModal
-          itemId={modalItemId}
-          onClose={() => setModalItemId("")}
-        />
-
-        <InventoryTagsModal tagModalOpen={tagsModalOpen} setTagModalOpen={setTagsModalOpen} />
       </AdminPage>
     </RequestWrapper>
   );
