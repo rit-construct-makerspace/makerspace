@@ -20,6 +20,11 @@ export const ZonesTypeDefs = gql`
     imageUrl: String
   }
 
+  input ZoneInput {
+    name: String!
+    imageUrl: String
+  }
+
   extend type Query {
     zones: [Zone]
     zoneByID(id: ID!): Zone
