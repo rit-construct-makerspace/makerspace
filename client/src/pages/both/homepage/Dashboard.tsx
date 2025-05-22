@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
+import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/zoneQueries";
 import ZoneCard from "./ZoneCard";
 import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import AnnouncementCard from "./AnnouncementCard";

@@ -3,7 +3,7 @@ import { Button, Card, CardActionArea, CardContent, CardMedia, Stack, Typography
 import { useNavigate } from "react-router-dom";
 import Room from "../../../types/Room";
 import { gql, useMutation } from "@apollo/client";
-import { GET_ZONES } from "../../../queries/getZones";
+import { GET_ZONES } from "../../../queries/zoneQueries";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Privilege from "../../../types/Privilege";
 import DeleteIcon from "@mui/icons-material/Delete";

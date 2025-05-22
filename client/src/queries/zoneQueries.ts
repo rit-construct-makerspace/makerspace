@@ -117,3 +117,18 @@ export const GET_ZONE_BY_ID = gql`
     }
   }
 `;
+
+export const UPDATE_ZONE = gql`
+  mutation UpdateZone(
+    $id: ID!
+    $name: String!
+    $imageUrl: String
+  ) {
+    updateZone(
+      id: $id
+      zone: { name: $name, imageUrl: $imageUrl }
+    ) {
+      id
+    }
+  }
+`;

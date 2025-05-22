@@ -9,7 +9,7 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
 import ZoneHourOptions from "./ZoneHourOptions";
 import ZoneCard from "./ZoneCard";
-import { GET_ZONES } from "../../../queries/getZones";
+import { GET_ZONES } from "../../../queries/zoneQueries";
 import AdminPage from "../../AdminPage";
 
 const CREATE_ROOM = gql`
