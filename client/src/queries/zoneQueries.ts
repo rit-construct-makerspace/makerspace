@@ -35,6 +35,7 @@ export interface FullZone {
     name: string;
     equipment: Equipment[];
   }[]
+  imageUrl: string;
 }
 
 export const GET_ZONES_WITH_HOURS = gql`
