@@ -50,7 +50,6 @@ export default function UserTraingingsPage() {
             spacing={2}
             margin={isMobile ? "10px" : "20px"}
             width="fit-content"
-            height="100vh"
             divider={<Divider orientation="horizontal" flexItem/>}
         >
             {/* Trainings */}
@@ -79,7 +78,7 @@ export default function UserTraingingsPage() {
                             direction={isMobile ? "column" : "row"}
                             justifyContent={isMobile ? "center" : "space-between"}
                             divider={isMobile ? <Divider orientation="horizontal" flexItem/> : <Divider orientation="vertical" flexItem/>}
-                            height={isMobile ? undefined : "30%"}
+                            height={isMobile ? undefined : "30vh"}
                             width="100%"
                         >
                             {/* Complete Trainings */}
