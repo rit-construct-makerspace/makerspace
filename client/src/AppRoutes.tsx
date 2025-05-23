@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
-import EquipmentPage from "./pages/both/equipment/EquipmentPage";
 import EditEquipmentPage from "./pages/lab_management/manage_equipment/EditEquipmentPage";
 import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
 import InventoryPage from "./pages/lab_management/inventory/InventoryPage";
@@ -61,9 +60,6 @@ export default function AppRoutes() {
           <Route path="/makerspace/:makerspaceID" element={<MakerspacePage />}/>
           <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
           <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
-
-          <Route path="/maker/equipment" element={<EquipmentPage />} />
-          <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
 
           <Route path="/maker/training" element={<TrainingPage />} />
           <Route path="/maker/training/:id" element={<QuizPage />} />

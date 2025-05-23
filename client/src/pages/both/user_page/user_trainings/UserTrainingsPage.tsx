@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Divider, Grid, Stack, Typography } from "@mui/material";
 import { useCurrentUser } from "../../../../common/CurrentUserProvider";
 import { GET_ALL_TRAINING_MODULES } from "../../../maker/training/TrainingPage";
 import { useQuery } from "@apollo/client";
@@ -7,9 +7,7 @@ import TrainingModuleRow from "../../../../common/TrainingModuleRow";
 import RequestWrapper2 from "../../../../common/RequestWrapper2";
 import { GET_ACCESS_CHECKS_BY_USERID } from "../../../../queries/accessChecksQueries";
 import AccessCheck from "../../../../types/AccessCheck";
-import UnpagedEquipmentCard from "../../equipment/UnpagedEquipmentCard";
 import { useEffect, useState } from "react";
-import UnpagedEquipmentModal from "../../../maker/equipment_modal/UnpagedEquipmentModal";
 import EquipmentCard from "../../../../common/EquipmentCard";
 
 export default function UserTraingingsPage() {
