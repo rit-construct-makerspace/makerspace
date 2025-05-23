@@ -91,7 +91,7 @@ export default function MonitorRoomPage() {
   const user = useCurrentUser();
   const navigate = useNavigate();
 
-  const queryResult = useQuery(GET_ROOM, { variables: { roomID } });
+  const queryResult = useQuery(GET_ROOM, { variables: { id: roomID } });
   const [updateRoomName] = useMutation(UPDATE_ROOM_NAME);
   const [deleteRoom] = useMutation(DELETE_ROOM);
 
@@ -160,8 +160,8 @@ export default function MonitorRoomPage() {
             </Stack>
             <Stack direction={isMobile ? "column" : "row"} width="auto" spacing={2}>
               <Stack spacing={2} width={isMobile ? "auto" : "50%"} alignItems="flex-end">
-                <TextField label="Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} fullWidth/>
-                <Button variant="contained" startIcon={<SaveIcon/>} size="large">Update Room Name</Button>
+                <TextField label="Name" defaultValue={roomName} onChange={(e) => setRoomName(e.target.value)} fullWidth/>
+                <Button variant="contained" startIcon={<SaveIcon/>} size="large" onClick={handleUpdateRoomName}>Update Room Name</Button>
               </Stack>
               <Stack spacing={2} width={isMobile ? "auto" : "50%"}>
                 <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(roomID)}></RoomZoneAssociation>
