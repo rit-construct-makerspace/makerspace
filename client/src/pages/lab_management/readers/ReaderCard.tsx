@@ -16,7 +16,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { GET_CORRESPONDING_BY_READER_ID_OR_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS from "../../../queries/roomQueries";
 import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
 import { blue } from "@mui/material/colors";

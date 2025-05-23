@@ -5,10 +5,11 @@ import { Box, Button, Card, CardContent, Stack, TextField, Typography } from "@m
 import RequestWrapper2 from "../../common/RequestWrapper2";
 import { useEffect, useState } from "react";
 import SaveIcon from '@mui/icons-material/Save';
-import ZoneCard from "../lab_management/monitor/ZoneCard";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AdminPage from "../AdminPage";
 import ZoneHourOptions from "../lab_management/monitor/ZoneHourOptions";
+import AddIcon from '@mui/icons-material/Add';
+import { CREATE_ROOM } from "../../queries/roomQueries";
 
 
 export default function ManageMakerspacePage() {
@@ -16,6 +17,8 @@ export default function ManageMakerspacePage() {
 
     const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: makerspaceID}});
     const [deleteZone] = useMutation(DELETE_ZONE);
+    
+    const [createRoom] = useMutation(CREATE_ROOM);
     
     const [name, setName] = useState("");
     const [imgUrl, setImgUrl] = useState("");
@@ -61,6 +64,14 @@ export default function ManageMakerspacePage() {
                     });
                 };
 
+                const handleCreateRoom = () => {
+                    const newRoomName = window.prompt("Enter room name:");
+                    createRoom({
+                        variables: { newRoomName },
+                        //refetchQueries: [{ }],
+                    });
+                };
+
             return (
                 <Stack spacing={3} padding="20px">
                     <Stack
@@ -73,10 +84,23 @@ export default function ManageMakerspacePage() {
                         <Button color="error" variant="contained" onClick={handleDeleteZone} startIcon={<DeleteIcon/>}>Delete Makerspace</Button>
                     </Stack>
                     <Stack direction={isMobile ? "column" : "row"} justifyContent="center" spacing={2} width="auto">
-                        <Stack spacing={2} width={isMobile ? "auto" :"800px"}>
-                            <TextField label="Name" value={name} onChange={(e) => (setName(e.target.value))}/>
-                            <TextField label="Image URL" value={imgUrl} onChange={(e) => (setImgUrl(e.target.value))}/>
-                            <Button color="primary" variant="contained" startIcon={<SaveIcon/>}>Update</Button>
+                        <Stack width={isMobile ? "auto" :"800px"} spacing={2}>
+                            <Stack spacing={2}>
+                                <TextField label="Name" value={name} onChange={(e) => (setName(e.target.value))}/>
+                                <TextField label="Image URL" value={imgUrl} onChange={(e) => (setImgUrl(e.target.value))}/>
+                                <Button color="primary" variant="contained" startIcon={<SaveIcon/>}>Update</Button>
+                            </Stack>
+                            <Stack spacing={2}>
+                                <Stack
+                                    direction={isMobile ? "column" : "row"}
+                                    justifyContent={isMobile ? undefined : "space-between"}
+                                    alignItems="center"
+                                    spacing={isMobile ? 2 : undefined}
+                                >
+                                    <Typography variant="h5" align="center">Rooms</Typography>
+                                    <Button color="success" variant="contained" startIcon={<AddIcon/>} onClick={handleCreateRoom}>New Room</Button>
+                                </Stack>
+                            </Stack>
                         </Stack>
                         <Box width={isMobile ? "350px" : "800px"}>
                             <ZoneHourOptions zoneID={zone.id} />

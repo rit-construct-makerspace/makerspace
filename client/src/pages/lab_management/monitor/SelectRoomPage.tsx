@@ -4,7 +4,7 @@ import SearchBar from "../../../common/SearchBar";
 import RoomCard from "./RoomCard";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS from "../../../queries/roomQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
 import ZoneHourOptions from "./ZoneHourOptions";
