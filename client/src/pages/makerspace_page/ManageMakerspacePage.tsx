@@ -12,6 +12,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { CREATE_ROOM } from "../../queries/roomQueries";
 import Room, { FullRoom } from "../../types/Room";
 import RoomCard from "../lab_management/monitor/RoomCard";
+import PrettyModal from "../../common/PrettyModal";
 
 
 export default function ManageMakerspacePage() {
@@ -23,8 +24,11 @@ export default function ManageMakerspacePage() {
 
     const [createRoom] = useMutation(CREATE_ROOM);
     
-    const [name, setName] = useState("");
+    const [zoneName, setZoneName] = useState("");
     const [imgUrl, setImgUrl] = useState("");
+
+    const [newRoomName, setNewRoomName] = useState("");
+    const [newRoomModal, setNewRoomModal] = useState(false);
 
     const [init, setInit] = useState(false);
 
@@ -43,7 +47,7 @@ export default function ManageMakerspacePage() {
     const isMobile = windowWidth <= 1100;
 
     function initState(zone: FullZone) {
-        setName(zone.name);
+        setZoneName(zone.name);
         setImgUrl(zone.imageUrl);
         setInit(true);
     }
@@ -69,17 +73,17 @@ export default function ManageMakerspacePage() {
 
                 const handleUpdateZone = async () => {
                     await updateZone({
-                        variables: {id: makerspaceID, name: name, imageUrl: imgUrl}
+                        variables: {id: makerspaceID, name: zoneName, imageUrl: imgUrl}
                     });
                     window.location.reload();
                 };
 
-                const handleCreateRoom = () => {
-                    const newRoomName = window.prompt("Enter room name:");
-                    createRoom({
-                        variables: { newRoomName },
+                const handleCreateRoom = async () => {
+                    await createRoom({
+                        variables: { name: newRoomName, zoneID: makerspaceID },
                         //refetchQueries: [{ }],
                     });
+                    window.location.reload();
                 };
 
             return (
@@ -96,7 +100,7 @@ export default function ManageMakerspacePage() {
                     <Stack direction={isMobile ? "column" : "row"} justifyContent="center" spacing={2} width="auto">
                         <Stack width={isMobile ? "auto" :"800px"} spacing={2} divider={<Divider orientation="horizontal" flexItem/>}>
                             <Stack spacing={2}>
-                                <TextField label="Name" value={name} onChange={(e) => (setName(e.target.value))}/>
+                                <TextField label="Name" value={zoneName} onChange={(e) => (setZoneName(e.target.value))}/>
                                 <TextField label="Image URL" value={imgUrl} onChange={(e) => (setImgUrl(e.target.value))}/>
                                 <Button color="primary" variant="contained" startIcon={<SaveIcon/>} onClick={handleUpdateZone}>Update</Button>
                             </Stack>
@@ -109,7 +113,17 @@ export default function ManageMakerspacePage() {
                                     width="100%"
                                 >
                                     <Typography variant="h5" align="center">Rooms</Typography>
-                                    <Button color="success" variant="contained" startIcon={<AddIcon/>} onClick={handleCreateRoom}>New Room</Button>
+                                    <Button color="success" variant="contained" startIcon={<AddIcon/>} onClick={() => (setNewRoomModal(true))}>New Room</Button>
+                                    <PrettyModal open={newRoomModal} onClose={() => {setNewRoomModal(false)}}>
+                                        <Stack spacing={2}>
+                                            <Typography variant="h5">Creating a new room in {zone.name} Makerspace</Typography>
+                                            <TextField label="Name" value={newRoomName} onChange={(e) => (setNewRoomName(e.target.value))}/>
+                                            <Stack direction="row" justifyContent="flex-end"  spacing={2}>
+                                                <Button color="error" variant="contained" onClick={() => {setNewRoomModal(false); setNewRoomName("");}}>Cancel</Button>
+                                                <Button color="success" variant="contained" onClick={handleCreateRoom}>Submit</Button>
+                                            </Stack>
+                                        </Stack>
+                                    </PrettyModal>
                                 </Stack>
                                 {
                                     zone.rooms.map((room: Room) => (

@@ -10,8 +10,8 @@ const GET_ROOMS = gql`
 `;
 
 export const CREATE_ROOM = gql`
-  mutation CreateRoom($name: String!) {
-    addRoom(room: { name: $name }) {
+  mutation CreateRoom($name: String!, $zoneID: ID!) {
+    addRoom(room: { name: $name, zoneID: $zoneID}) {
       id
     }
   }

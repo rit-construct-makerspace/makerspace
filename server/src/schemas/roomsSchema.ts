@@ -30,6 +30,7 @@ export const RoomTypeDefs = gql`
 
   input RoomInput {
     name: String!
+    zoneID: ID!
   }
 
   extend type Query {
