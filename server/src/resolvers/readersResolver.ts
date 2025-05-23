@@ -15,15 +15,17 @@ import * as ShlugControl from "../wsapi.js"
 import { createCipheriv, randomInt, scryptSync } from "crypto";
 import { generateRandomHumanName } from "../data/humanReadableNames.js";
 const serverApiPass = process.env.SERVER_API_PASSWORD ?? 'unsecure_server_password';
+const serverKey = scryptSync(serverApiPass, 'makerspace-salt¯\_(ツ)_/¯', 24);
 const algorithm = 'aes-192-cbc';
-// Usually an IV is random per message. We are using the encrpytion as an identifier so we want this constant
-const iv = new Uint8Array(16);
 
-async function generateShlugKey(SN: string, keyCycle: number): Promise<string> {
+export async function generateShlugKey(pairTime: Date, SN: string, keyCycle: number): Promise<string> {
   const plainText = `shlug:${SN}:${keyCycle}`;
+  // generate iv from pairTime so when a key differs only by its keyCycle the front part of the hash doesnt look the same
+  const iv: ArrayBuffer = (await crypto.subtle.digest('SHA-256', Buffer.from(pairTime.toISOString(), 'utf-8'))).slice(0, 16);
+
   let encrypted = '';
-  const key = scryptSync(serverApiPass, 'salt', 24);
-  const cipher = createCipheriv(algorithm, key, iv);
+  var cipher;
+  cipher = createCipheriv(algorithm, serverKey, Buffer.from(iv));
 
   cipher.setEncoding('hex');
 
@@ -116,7 +118,9 @@ const ReadersResolver = {
       _parent: any,
       args: { SN: string },
       { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      ifAllowed([Privilege.STAFF], async (user) => {
+        const timeOfPair = new Date();
+
         var reader = await ReaderRepo.getReaderBySN(args.SN);
         if (reader == null) {
           const name = await generateUniqueHumanName();
@@ -128,12 +132,21 @@ const ReadersResolver = {
         }
 
         var keyCycle = (reader?.readerKeyCycle ?? 0) + 1;
-        reader.readerKeyCycle = keyCycle;
 
-        const newKey = await generateShlugKey(args.SN, keyCycle);
+        reader.readerKeyCycle = keyCycle;
+        reader.pairTime = timeOfPair;
+
+        const newKey = await generateShlugKey(timeOfPair, args.SN, keyCycle);
         await ReaderRepo.updateReaderStatus(reader);
-        createLog(`Paired with new reader ${reader.name} (SN ${args.SN})`, "status");
-        return { readerKey: newKey, name: reader.name, certs: "Hold on, im going as fast as i can" }
+
+        const certCa = (await ReaderRepo.getReaderCertCA())?.value;
+        if (certCa == null) {
+          throw EntityNotFound;
+        }
+
+        createLog(`{user} Paired with new reader ${reader.name} (SN ${args.SN})`, "status", { id: user.id, label: getUsersFullName(user) });
+
+        return { readerKey: newKey, name: reader.name, siteName: process.env.READER_API_URL, certs: certCa }
       }),
 
 

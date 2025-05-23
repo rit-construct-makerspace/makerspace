@@ -241,6 +241,7 @@ export interface ReaderRow {
   sessionStartTime: Date;
   SN?: string;
   readerKeyCycle: number;
+  pairTime?: Date
 }
 
 

@@ -17,6 +17,7 @@ export interface Reader {
   BEVer: string,
   FEVer: string,
   HWVer: string,
+  SN: string,
   sessionStartTime: number,
 }
 
@@ -82,6 +83,7 @@ export const PAIR_READER = gql`
     ) {
       readerKey
       name
+      siteName
       certs
     }
   }

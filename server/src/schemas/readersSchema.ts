@@ -25,10 +25,13 @@ export const ReaderTypeDefs = gql`
     HWVer: String
     sessionStartTime: DateTime
     SN: String
+    readerKeyCycle: Int
+    pairTime: DateTime
   }
   type PairInfo {
     readerKey: String
     name: String
+    siteName: String
     certs: String
   }
 

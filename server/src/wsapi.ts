@@ -13,6 +13,7 @@ import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import { getInstanceByReaderID } from "./repositories/Equipment/EquipmentInstancesRepository.js";
 import { randomInt } from "crypto";
 import { generateRandomHumanName } from "./data/humanReadableNames.js";
+import { generateShlugKey } from "./resolvers/readersResolver.js";
 
 
 const API_NORMAL_LOGGING = process.env.API_NORMAL_LOGGING == "true";
@@ -346,13 +347,33 @@ async function generateUniqueHumanName() {
  * @param message the message that the shlug sent
  * @returns true on successful parse. False if missing fields or otherwise invalid
  */
-async function handleBootupMessage(connData: ConnectionData, message: ShlugMessage): Promise<boolean> {
+async function handleBootupMessage(connData: ConnectionData, message: ShlugMessage, ws: ws.WebSocket, srcIp: string): Promise<boolean> {
     if (message.SerialNumber == null || message.Key == null || message.FWVersion == null || message.HWVersion == null || message.HWType == null) {
+        if (message.Key) {
+            message.Key = "<sanitized>";
+        }
         wsApiDebugLog(`WSACS: Missing fields in boot message. Got ${JSON.stringify(message)}`, "status");
+        ws.close(4000, "Invalid Fields");
+        console.log("Invalid fields");
         return false;
     }
 
     var reader: ReaderRow | undefined = await getReaderBySN(message.SerialNumber ?? "");
+    if (reader?.pairTime == null || reader?.SN == null) {
+        wsApiLog(`WSACS: Request from unpaired shlug ${srcIp}. Denying`, "status");
+        ws.close(4001, "Unpaired Reader. Rejected");
+        return false;
+
+    }
+    const keyToMatch = await generateShlugKey(reader?.pairTime, reader?.SN, reader?.readerKeyCycle);
+    if (message.Key != keyToMatch) {
+        wsApiLog(`WSACS: Invalid key from SN ${reader?.SN} on connect.`, "status");
+        console.error(`WSACS: Invalid key from SN ${reader?.SN} on connect.`);
+        ws.close(4002, "Invalid Key. Rejected")
+        return false;
+    }
+
+
     connData.readerId = reader?.id;
     if (reader == null) {
         reader = await createReaderFromSN({
@@ -474,7 +495,7 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
             try {
                 if (connData.readerId == null) {
                     // Connection was never associated with a real reader (boot message never sent, probably something fishy)
-                    console.error(`WSACS: Websocket from non-reader ${req.ip} closed`);
+                    console.error(`WSACS: Websocket from non-reader ${req.ip} closed with code ${ev.code} ${ev.reason}`);
                     return;
                 }
                 let reader: ReaderRow | undefined = await getReaderByID(connData.readerId);
@@ -501,13 +522,8 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                 // First Message is special, identifies the shlug to the server
                 if (shlugMessage.Seq === 0) {
                     // Bootup message
-                    if (shlugMessage.Key != process.env.API_KEY) {
-                        wsApiLog(`WSACS: Invalid key from ${req.ip} on connect.`, "status");
-                        ws.close(4000, "Invalid Key. Rejected")
-                        return;
-                    }
-                    if (!await handleBootupMessage(connData, shlugMessage)) {
-                        // failed to setup
+                    if (!await handleBootupMessage(connData, shlugMessage, ws, req?.ip ?? "unknown ip")) {
+                    // failed to setup  
                         return;
                     }
                     // Successfully read bootup message. Add this to available connections
@@ -540,7 +556,7 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                     replyToShlug(connData, response, shlugMessage.Seq);
                 }
             } catch (e) {
-                console.error(`WSACS: Message Exception: ${e}`)
+                console.error(`WSACS: Message Exception: ${e}: ${e.stack}`)
             }
 
         }

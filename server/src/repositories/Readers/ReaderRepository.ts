@@ -4,7 +4,7 @@
  */
 
 import { knex } from "../../db/index.js";
-import { ReaderRow } from "../../db/tables.js";
+import { ReaderRow, TextFieldRow } from "../../db/tables.js";
 
 /**
  * Fetch a card ready buy it's primary key
@@ -123,6 +123,7 @@ export async function updateReaderStatus(reader: {
     sessionStartTime?: Date,
     SN?: string,
     readerKeyCycle?: number,
+    pairTime?: Date,
 }): Promise<ReaderRow | undefined> {
     await knex("Readers").where({ id: reader.id }).update({
         machineID: reader.machineID,
@@ -142,6 +143,7 @@ export async function updateReaderStatus(reader: {
         sessionStartTime: reader.sessionStartTime,
         SN: reader.SN,
         readerKeyCycle: reader.readerKeyCycle,
+        pairTime: reader.pairTime,
     })
 
     return getReaderByID(reader.id);
@@ -168,4 +170,13 @@ export async function setReaderName(
 export async function toggleHelpRequested(id: number): Promise<void> {
     const oldRow = await knex("Readers").select("*").where({ id: id }).first()
     return await knex("Readers").where({ id: id }).update({ helpRequested: !(oldRow?.helpRequested)})
+}
+
+
+const ReaderCertCAId = 34;
+export async function getReaderCertCA(): Promise<TextFieldRow | undefined> {
+    return await knex("TextFields").select().where({ id: ReaderCertCAId }).first();
+}
+export async function setReaderCertCA(value: string): Promise<number> {
+    return await knex("TextFields").update({ value }).where({ id: ReaderCertCAId });
 }
