@@ -95,6 +95,7 @@ export default function MonitorRoomPage() {
   const [updateRoomName] = useMutation(UPDATE_ROOM_NAME);
   const [deleteRoom] = useMutation(DELETE_ROOM);
 
+  const [roomName, setRoomName] = useState("");
 
   const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
   function handleWindowSizeChange() {
@@ -111,7 +112,7 @@ export default function MonitorRoomPage() {
 
   async function handleUpdateRoomName() {
     await updateRoomName({
-      variables: {id: roomID}
+      variables: {id: roomID, name: roomName}
     })
     navigate(`/makerspace/${makerspaceID}/edit`)
   }
@@ -126,14 +127,12 @@ export default function MonitorRoomPage() {
     }
   }
 
-  const [roomName, setRoomName] = useState("");
-
   const [init, setInit] = useState(false);
 
 
   function initState(room: any) {
     setRoomName(room.name);
-    setInit(init);
+    setInit(true);
   }
 
   return (
@@ -160,7 +159,7 @@ export default function MonitorRoomPage() {
             </Stack>
             <Stack direction={isMobile ? "column" : "row"} width="auto" spacing={2}>
               <Stack spacing={2} width={isMobile ? "auto" : "50%"} alignItems="flex-end">
-                <TextField label="Name" defaultValue={roomName} onChange={(e) => setRoomName(e.target.value)} fullWidth/>
+                <TextField label="Name" value={roomName} onChange={(e) => (setRoomName(e.target.value))} fullWidth/>
                 <Button variant="contained" startIcon={<SaveIcon/>} size="large" onClick={handleUpdateRoomName}>Update Room Name</Button>
               </Stack>
               <Stack spacing={2} width={isMobile ? "auto" : "50%"}>

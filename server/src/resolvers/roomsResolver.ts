@@ -95,8 +95,8 @@ const RoomResolvers = {
      * @returns updated Room
      * @throws GraphQLError if not STAFF or is on hold
      */
-    updateRoomName: async (_parent: any, args: {id: number, name: string}, { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], async () => await RoomRepo.updateRoomName(args.id, args.name));
+    updateRoomName: async (_parent: any, args: {roomID: number, name: string}, { ifAllowed }: ApolloContext) => {
+      return ifAllowed([Privilege.STAFF], async () => await RoomRepo.updateRoomName(args.roomID, args.name));
     },
 
     /**
