@@ -124,7 +124,7 @@ export const UPDATE_ZONE = gql`
   ) {
     updateZone(
       id: $id
-      zone: { name: $name, imageUrl: $imageUrl }
+      newZone: { name: $name, imageUrl: $imageUrl }
     ) {
       id
     }

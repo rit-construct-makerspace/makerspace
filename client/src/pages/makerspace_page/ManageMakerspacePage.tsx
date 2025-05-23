@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { FullZone, GET_ZONE_BY_ID, DELETE_ZONE } from "../../queries/zoneQueries";
+import { FullZone, GET_ZONE_BY_ID, DELETE_ZONE, UPDATE_ZONE } from "../../queries/zoneQueries";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 import RequestWrapper2 from "../../common/RequestWrapper2";
 import { useEffect, useState } from "react";
@@ -19,7 +19,8 @@ export default function ManageMakerspacePage() {
 
     const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: makerspaceID}});
     const [deleteZone] = useMutation(DELETE_ZONE);
-    
+    const [updateZone] = useMutation(UPDATE_ZONE);
+
     const [createRoom] = useMutation(CREATE_ROOM);
     
     const [name, setName] = useState("");
@@ -67,7 +68,10 @@ export default function ManageMakerspacePage() {
                 };
 
                 const handleUpdateZone = async () => {
-                    
+                    await updateZone({
+                        variables: {id: makerspaceID, name: name, imageUrl: imgUrl}
+                    });
+                    window.location.reload();
                 };
 
                 const handleCreateRoom = () => {
@@ -94,7 +98,7 @@ export default function ManageMakerspacePage() {
                             <Stack spacing={2}>
                                 <TextField label="Name" value={name} onChange={(e) => (setName(e.target.value))}/>
                                 <TextField label="Image URL" value={imgUrl} onChange={(e) => (setImgUrl(e.target.value))}/>
-                                <Button color="primary" variant="contained" startIcon={<SaveIcon/>}>Update</Button>
+                                <Button color="primary" variant="contained" startIcon={<SaveIcon/>} onClick={handleUpdateZone}>Update</Button>
                             </Stack>
                             <Stack spacing={2} alignItems="center">
                                 <Stack
