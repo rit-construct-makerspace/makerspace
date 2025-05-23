@@ -13,6 +13,7 @@ export const ZoneHoursTypeDefs = gql`
     type: String!
     dayOfTheWeek: String!
     time: String!
+    imageUrl: String
   }
 
   extend type Query {

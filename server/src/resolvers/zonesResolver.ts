@@ -2,9 +2,10 @@ import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
 import { createZoneHours, deleteZoneHours, getHoursByZone, getZoneHours } from "../repositories/Zones/ZoneHoursRepository.js";
-import { createZone, deleteZone, getZoneByID, getZones } from "../repositories/Zones/ZonesRespository.js";
+import { createZone, deleteZone, getZoneByID, getZones, updateZone } from "../repositories/Zones/ZonesRespository.js";
 import { ZoneRow } from "../db/tables.js";
 import { getRooms, getRoomsByZone } from "../repositories/Rooms/RoomRepository.js";
+import { ZoneInput } from "../schemas/zonesSchema.js";
 
 const ZonesResolver = {
   Zone: {
@@ -72,6 +73,15 @@ const ZonesResolver = {
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.STAFF], async () => {
         const res = await createZone(args.name);
+        return res
+      }),
+    
+    updateZone: async (
+      _parent: any,
+      args: { id: number, newZone: ZoneInput },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.STAFF], async () => {
+        const res = await updateZone(args.id, args.newZone);
         return res
       }),
 

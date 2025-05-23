@@ -4,12 +4,12 @@ import SearchBar from "../../../common/SearchBar";
 import RoomCard from "./RoomCard";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS from "../../../queries/roomQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
 import ZoneHourOptions from "./ZoneHourOptions";
 import ZoneCard from "./ZoneCard";
-import { GET_ZONES } from "../../../queries/getZones";
+import { GET_ZONES, UPDATE_ZONE } from "../../../queries/zoneQueries";
 import AdminPage from "../../AdminPage";
 
 const CREATE_ROOM = gql`
@@ -42,6 +42,7 @@ export default function SelectRoomPage() {
 
   const getZonesResult = useQuery(GET_ZONES);
   const [createZone] = useMutation(CREATE_ZONE);
+  const [updateZone] = useMutation(UPDATE_ZONE);
 
   const handleCreateZone = () => {
     const name = window.prompt("Enter zone name:");
@@ -75,7 +76,7 @@ export default function SelectRoomPage() {
         <Stack direction="column" flexWrap="nowrap">
           {getRoomsResult.data?.rooms
             .map((room: Room) => (
-            <RoomCard key={room.id} room={room} />
+            <RoomCard key={room.id} makerspaceID={0} room={room} />
           ))}
         </Stack>
 

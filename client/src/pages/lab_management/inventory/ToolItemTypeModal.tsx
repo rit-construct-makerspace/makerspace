@@ -6,7 +6,7 @@ import PrettyModal from "../../../common/PrettyModal";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Divider, InputLabel, FormControl, MenuItem, Select, Stack, Switch, TextField, Tooltip, Typography } from "@mui/material";
 import { FormControlLabel, TextareaAutosize } from "@material-ui/core";
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS from "../../../queries/roomQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
 

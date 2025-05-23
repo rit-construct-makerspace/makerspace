@@ -36,6 +36,7 @@ import UserSettingsPage from "./pages/both/user_page/user_settings/UserSettingsP
 import UserTraingingsPage from "./pages/both/user_page/user_trainings/UserTrainingsPage";
 import TopNav from "./top_nav/TopNav";
 import MakerspacePage from "./pages/makerspace_page/MakerspacePage";
+import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -59,7 +60,9 @@ export default function AppRoutes() {
           <Route path="/user/trainings" element={<UserTraingingsPage />}/>
           <Route path="/user/settings" element={<UserSettingsPage />}/>
 
-          <Route path="/makerspace/:id" element={<MakerspacePage />}/>
+          <Route path="/makerspace/:makerspaceID" element={<MakerspacePage />}/>
+          <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
+          <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<MonitorRoomPage />}/>
 
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
@@ -90,8 +93,8 @@ export default function AppRoutes() {
           <Route path="/admin/tools/instance/:instanceid" element={<ToolItemPage />} />
           <Route path="/admin/tools/instance" element={<ToolItemPage />} />
 
-          <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
-          <Route path="/admin/rooms" element={<SelectRoomPage />} />
+          {/* <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
+          <Route path="/admin/rooms" element={<SelectRoomPage />} /> */}
 
           <Route path="/admin/storefront" element={<StorefrontPage />} />
 

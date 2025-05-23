@@ -258,11 +258,13 @@ export interface ZoneHoursRow {
   type: string;
   dayOfTheWeek: number;
   time: string;
+  imageUrl: string;
 }
 
 export interface ZoneRow {
   id: number;
   name: string;
+  imageUrl: string;
 }
 
 export interface RoomsForZonesRow {

@@ -6,7 +6,7 @@ import { GET_USER_BY_USERNAME_OR_UID, PartialUser } from "../../../queries/getUs
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS from "../../../queries/roomQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";
 

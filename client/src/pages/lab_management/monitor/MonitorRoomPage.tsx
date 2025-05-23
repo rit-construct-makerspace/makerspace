@@ -1,32 +1,21 @@
-import React, { useState } from "react";
-import Page from "../../Page";
+import { useEffect, useState } from "react";
 import {
-  Alert,
-  Box,
   Button,
-  Card,
-  CardContent,
-  CardMedia,
-  CircularProgress,
-  Collapse,
-  Grid,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
-import PageSectionHeader from "../../../common/PageSectionHeader";
-import EmptyPageSection from "../../../common/EmptyPageSection";
-import CardReader from "./CardReader";
-import SwipedUserCard from "./SwipedUserCard";
 import styled from "styled-components";
-import HistoryIcon from "@mui/icons-material/History";
 import RoomZoneAssociation from "./RoomZoneAssociation";
 import AdminPage from "../../AdminPage";
-import RequestWrapper from "../../../common/RequestWrapper";
-import EditableEquipmentCard from "../manage_equipment/EditableEquipmentCard";
-import Equipment from "../../../types/Equipment";
+import { DELETE_ROOM, UPDATE_ROOM_NAME } from "../../../queries/roomQueries";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import SaveIcon from '@mui/icons-material/Save';
+import Privilege from "../../../types/Privilege";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -97,79 +86,89 @@ export interface Swipe {
 const url = "/admin/equipment/";
 
 export default function MonitorRoomPage() {
-  const { id } = useParams<{ id: string }>();
+  const { makerspaceID } = useParams<{ makerspaceID: string }>();
+  const { roomID } = useParams<{ roomID: string }>();
+  const user = useCurrentUser();
   const navigate = useNavigate();
-  const queryResult = useQuery(GET_ROOM, { variables: { id } });
-  const [loadingUser, setLoadingUser] = useState(false);
-  const [cardError, setCardError] = useState(false);
+
+  const queryResult = useQuery(GET_ROOM, { variables: { id: roomID } });
+  const [updateRoomName] = useMutation(UPDATE_ROOM_NAME);
+  const [deleteRoom] = useMutation(DELETE_ROOM);
+
+  const [roomName, setRoomName] = useState("");
+
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWindowWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+
+  const isMobile = windowWidth <= 1100;
+
+  async function handleUpdateRoomName() {
+    await updateRoomName({
+      variables: {id: roomID, name: roomName}
+    })
+    navigate(`/makerspace/${makerspaceID}/edit`)
+  }
+
+  async function handleDeleteRoom() {
+    const confirm = window.confirm("Are you sure you want to delete? This cannot be undone.");
+    if (confirm) {
+      await deleteRoom({
+        variables: {id: roomID}
+      })
+      navigate(`/makerspace/${makerspaceID}/edit`)
+    }
+  }
+
+  const [init, setInit] = useState(false);
+
+
+  function initState(room: any) {
+    setRoomName(room.name);
+    setInit(true);
+  }
 
   return (
     <RequestWrapper2
       result={queryResult}
-      render={({ room }) => (
+      render={({ room }) => {
+
+        if (!init) {
+          initState(room);
+        }
+
+        return (
         <AdminPage>
-          <Box margin="25px">
-          <Typography>{room.name}</Typography>
-          <Collapse in={cardError}>
-            <Alert
-              severity="error"
-              onClose={() => setCardError(false)}
-              sx={{ mb: 2 }}
-            >
-              <b>Unrecognized card.</b> Has this person registered with The
-              Construct? Have they entered their university ID correctly?
-            </Alert>
-          </Collapse>
-
-          <Stack direction="row" alignItems="flex-start" spacing={2}>
-            <PageSectionHeader top>Recent Swipes</PageSectionHeader>
-            {loadingUser && (
-              <CircularProgress size={20} sx={{ mt: "4px !important" }} />
-            )}
-            <CardReader
-              setLoadingUser={setLoadingUser}
-              onCardError={() => setCardError(true)}
-            />
+          <Stack direction="column" spacing={2} margin="25px">
+            <Stack direction={isMobile ? "column" : "row"} justifyContent={isMobile ? undefined : "space-between"} alignItems="flex-end" spacing={2}>
+              <Typography variant={isMobile ? "h4" : "h3"}>Manage {room.name} [ID: {roomID}]</Typography>
+              {
+                user.privilege === Privilege.STAFF
+                ? <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
+                  Delete Room
+                </Button>
+                : null
+              }
+            </Stack>
+            <Stack direction={isMobile ? "column" : "row"} width="auto" spacing={2}>
+              <Stack spacing={2} width={isMobile ? "auto" : "50%"} alignItems="flex-end">
+                <TextField label="Name" value={roomName} onChange={(e) => (setRoomName(e.target.value))} fullWidth/>
+                <Button variant="contained" startIcon={<SaveIcon/>} size="large" onClick={handleUpdateRoomName}>Update Room Name</Button>
+              </Stack>
+              <Stack spacing={2} width={isMobile ? "auto" : "50%"}>
+                <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(roomID)}></RoomZoneAssociation>
+              </Stack>
+            </Stack>
           </Stack>
-
-          <StyledRecentSwipes>
-            {room.recentSwipes.map((s: Swipe) => (
-              <SwipedUserCard key={s.id} swipe={s} />
-            ))}
-          </StyledRecentSwipes>
-
-          <PageSectionHeader>Equipment</PageSectionHeader>
-          {room.equipment.length === 0 && (
-            <EmptyPageSection label="No equipment found." />
-          )}
-          <RequestWrapper
-            loading={queryResult.loading}
-            error={queryResult.error}
-          >
-            <Grid container spacing={3} mt={2}>
-              {queryResult.data?.room.equipment
-                .map((e: Equipment) => (
-                  <Grid key={e.id} item>
-                    <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} sopUrl={e.sopUrl} imageUrl={((e.imageUrl == undefined || e.imageUrl == null || e.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + e.imageUrl)} />
-                  </Grid>
-                ))}
-            </Grid>
-          </RequestWrapper>
-
-          <PageSectionHeader>Actions</PageSectionHeader>
-          <Stack direction="column" spacing={2}>
-            <Button
-              variant="outlined"
-              startIcon={<HistoryIcon />}
-              onClick={() => navigate(`/admin/history?q=<room:${id}:`)}
-            >
-              View Logs
-            </Button>
-            <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(id)}></RoomZoneAssociation>
-          </Stack>
-          </Box>
         </AdminPage>
-      )}
+      )}}
     />
   );
 }

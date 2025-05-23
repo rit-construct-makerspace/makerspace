@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { GET_TRAINING_MODULES } from "../../../queries/trainingQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import styled from "styled-components";
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS from "../../../queries/roomQueries";
 import { Equipment } from "./EditEquipmentPage";
 import AttachedModule from "./AttachedModule";
 import ArchiveEquipmentButton from "./ArchiveEquipmentButton";
