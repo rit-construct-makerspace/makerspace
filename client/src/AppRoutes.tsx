@@ -62,6 +62,7 @@ export default function AppRoutes() {
 
           <Route path="/makerspace/:makerspaceID" element={<MakerspacePage />}/>
           <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
+          <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<MonitorRoomPage />}/>
 
           <Route path="/maker/equipment" element={<EquipmentPage />} />
           <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
@@ -92,8 +93,8 @@ export default function AppRoutes() {
           <Route path="/admin/tools/instance/:instanceid" element={<ToolItemPage />} />
           <Route path="/admin/tools/instance" element={<ToolItemPage />} />
 
-          <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
-          <Route path="/admin/rooms" element={<SelectRoomPage />} />
+          {/* <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
+          <Route path="/admin/rooms" element={<SelectRoomPage />} /> */}
 
           <Route path="/admin/storefront" element={<StorefrontPage />} />
 

@@ -76,7 +76,7 @@ export default function SelectRoomPage() {
         <Stack direction="column" flexWrap="nowrap">
           {getRoomsResult.data?.rooms
             .map((room: Room) => (
-            <RoomCard key={room.id} room={room} />
+            <RoomCard key={room.id} makerspaceID={0} room={room} />
           ))}
         </Stack>
 

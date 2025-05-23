@@ -135,7 +135,7 @@ export default function ManageMakerspacePage() {
                                 </Stack>
                                 {
                                     zone.rooms.map((room: Room) => (
-                                        <RoomCard key={room.id} room={room} />
+                                        <RoomCard key={room.id} makerspaceID={zone.id} room={room} />
                                     ))
                                 }
                             </Stack>

@@ -86,11 +86,12 @@ export interface Swipe {
 const url = "/admin/equipment/";
 
 export default function MonitorRoomPage() {
-  const { id } = useParams<{ id: string }>();
+  const { makerspaceID } = useParams<{ makerspaceID: string }>();
+  const { roomID } = useParams<{ roomID: string }>();
   const user = useCurrentUser();
   const navigate = useNavigate();
 
-  const queryResult = useQuery(GET_ROOM, { variables: { id } });
+  const queryResult = useQuery(GET_ROOM, { variables: { roomID } });
   const [updateRoomName] = useMutation(UPDATE_ROOM_NAME);
   const [deleteRoom] = useMutation(DELETE_ROOM);
 
@@ -109,16 +110,19 @@ export default function MonitorRoomPage() {
   const isMobile = windowWidth <= 1100;
 
   async function handleUpdateRoomName() {
-
+    await updateRoomName({
+      variables: {id: roomID}
+    })
+    navigate(`/makerspace/${makerspaceID}/edit`)
   }
 
   async function handleDeleteRoom() {
     const confirm = window.confirm("Are you sure you want to delete? This cannot be undone.");
     if (confirm) {
       await deleteRoom({
-        variables: {id: id}
+        variables: {id: roomID}
       })
-      navigate("/")
+      navigate(`/makerspace/${makerspaceID}/edit`)
     }
   }
 
@@ -145,7 +149,7 @@ export default function MonitorRoomPage() {
         <AdminPage>
           <Stack direction="column" spacing={2} margin="25px">
             <Stack direction={isMobile ? "column" : "row"} justifyContent={isMobile ? undefined : "space-between"} alignItems="flex-end" spacing={2}>
-              <Typography variant={isMobile ? "h4" : "h3"}>Manage {room.name} [ID: {id}]</Typography>
+              <Typography variant={isMobile ? "h4" : "h3"}>Manage {room.name} [ID: {roomID}]</Typography>
               {
                 user.privilege === Privilege.STAFF
                 ? <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
@@ -160,7 +164,7 @@ export default function MonitorRoomPage() {
                 <Button variant="contained" startIcon={<SaveIcon/>} size="large">Update Room Name</Button>
               </Stack>
               <Stack spacing={2} width={isMobile ? "auto" : "50%"}>
-                <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(id)}></RoomZoneAssociation>
+                <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(roomID)}></RoomZoneAssociation>
               </Stack>
             </Stack>
           </Stack>
