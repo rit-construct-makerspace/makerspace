@@ -133,3 +133,11 @@ export const UPDATE_ZONE = gql`
     }
   }
 `;
+
+export const DELETE_ZONE = gql`
+  mutation DeleteZone($id: ID!) {
+    deleteZone(id: $id) {
+      id
+    }
+  }
+`;
