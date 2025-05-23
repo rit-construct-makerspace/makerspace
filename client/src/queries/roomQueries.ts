@@ -17,4 +17,12 @@ export const CREATE_ROOM = gql`
   }
 `;
 
+export const DELETE_ROOM = gql`
+  mutation DeleteRoom($id: ID!) {
+    deleteRoom(roomID: $id) {
+      id
+    }
+  }
+`;
+
 export default GET_ROOMS;

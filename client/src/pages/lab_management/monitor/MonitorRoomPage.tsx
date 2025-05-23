@@ -13,7 +13,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import PageSectionHeader from "../../../common/PageSectionHeader";
@@ -27,6 +27,8 @@ import AdminPage from "../../AdminPage";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EditableEquipmentCard from "../manage_equipment/EditableEquipmentCard";
 import Equipment from "../../../types/Equipment";
+import { DELETE_ROOM } from "../../../queries/roomQueries";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -100,8 +102,19 @@ export default function MonitorRoomPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const queryResult = useQuery(GET_ROOM, { variables: { id } });
+  const [deleteRoom] = useMutation(DELETE_ROOM);
   const [loadingUser, setLoadingUser] = useState(false);
   const [cardError, setCardError] = useState(false);
+
+  async function handleDeleteRoom() {
+    const confirm = window.confirm("Are you sure you want to delete? This cannot be undone.");
+    if (confirm) {
+      await deleteRoom({
+        variables: {id: id}
+      })
+      navigate("/")
+    }
+  }
 
   return (
     <RequestWrapper2
@@ -109,7 +122,12 @@ export default function MonitorRoomPage() {
       render={({ room }) => (
         <AdminPage>
           <Box margin="25px">
-          <Typography>{room.name}</Typography>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Typography variant="h3">{room.name}</Typography>
+              <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
+                Delete Room
+              </Button>
+            </Stack>
           <Collapse in={cardError}>
             <Alert
               severity="error"
