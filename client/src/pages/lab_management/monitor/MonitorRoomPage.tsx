@@ -29,6 +29,7 @@ import EditableEquipmentCard from "../manage_equipment/EditableEquipmentCard";
 import Equipment from "../../../types/Equipment";
 import { DELETE_ROOM } from "../../../queries/roomQueries";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -100,6 +101,7 @@ const url = "/admin/equipment/";
 
 export default function MonitorRoomPage() {
   const { id } = useParams<{ id: string }>();
+  const user = useCurrentUser();
   const navigate = useNavigate();
   const queryResult = useQuery(GET_ROOM, { variables: { id } });
   const [deleteRoom] = useMutation(DELETE_ROOM);
@@ -124,9 +126,14 @@ export default function MonitorRoomPage() {
           <Box margin="25px">
             <Stack direction="row" justifyContent="space-between" alignItems="center">
               <Typography variant="h3">{room.name}</Typography>
-              <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
-                Delete Room
-              </Button>
+              {
+                user.privilege == "STAFF"
+                ? <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
+                  Delete Room
+                </Button>
+                : null
+              }
+              
             </Stack>
           <Collapse in={cardError}>
             <Alert

@@ -13,10 +13,13 @@ import { CREATE_ROOM } from "../../queries/roomQueries";
 import Room, { FullRoom } from "../../types/Room";
 import RoomCard from "../lab_management/monitor/RoomCard";
 import PrettyModal from "../../common/PrettyModal";
+import { useCurrentUser } from "../../common/CurrentUserProvider";
 
 
 export default function ManageMakerspacePage() {
     const { makerspaceID } = useParams<{ makerspaceID: string }>();
+
+    const user = useCurrentUser();
 
     const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: makerspaceID}});
     const [deleteZone] = useMutation(DELETE_ZONE);
@@ -95,7 +98,11 @@ export default function ManageMakerspacePage() {
                         spacing={isMobile ? 2 : undefined}
                     >
                         <Typography variant="h4" align="center">{`Edit ${zone.name} Makerspace [ID: ${zone.id}]`}</Typography>
-                        <Button color="error" variant="contained" onClick={handleDeleteZone} startIcon={<DeleteIcon/>}>Delete Makerspace</Button>
+                        {
+                            user.privilege == "STAFF"
+                            ? <Button color="error" variant="contained" onClick={handleDeleteZone} startIcon={<DeleteIcon/>}>Delete Makerspace</Button>
+                            : null
+                        }
                     </Stack>
                     <Stack direction={isMobile ? "column" : "row"} justifyContent="center" spacing={2} width="auto">
                         <Stack width={isMobile ? "auto" :"800px"} spacing={2} divider={<Divider orientation="horizontal" flexItem/>}>
