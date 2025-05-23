@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { FullZone, GET_ZONE_BY_ID, DELETE_ZONE } from "../../queries/zoneQueries";
-import { Box, Button, Card, CardContent, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 import RequestWrapper2 from "../../common/RequestWrapper2";
 import { useEffect, useState } from "react";
 import SaveIcon from '@mui/icons-material/Save';
@@ -55,7 +55,7 @@ export default function ManageMakerspacePage() {
 
                 if (!init) {
                     initState(zone);
-                }
+                };
 
                 const handleDeleteZone = () => {
                     const confirm = window.confirm("Are you sure you want to delete? This cannot be undone.");
@@ -64,6 +64,10 @@ export default function ManageMakerspacePage() {
                         variables: { id: zone.id },
                         refetchQueries: [{ query:  GET_ZONE_BY_ID, variables: {id: makerspaceID}}],
                     });
+                };
+
+                const handleUpdateZone = async () => {
+                    
                 };
 
                 const handleCreateRoom = () => {
@@ -86,18 +90,19 @@ export default function ManageMakerspacePage() {
                         <Button color="error" variant="contained" onClick={handleDeleteZone} startIcon={<DeleteIcon/>}>Delete Makerspace</Button>
                     </Stack>
                     <Stack direction={isMobile ? "column" : "row"} justifyContent="center" spacing={2} width="auto">
-                        <Stack width={isMobile ? "auto" :"800px"} spacing={2}>
+                        <Stack width={isMobile ? "auto" :"800px"} spacing={2} divider={<Divider orientation="horizontal" flexItem/>}>
                             <Stack spacing={2}>
                                 <TextField label="Name" value={name} onChange={(e) => (setName(e.target.value))}/>
                                 <TextField label="Image URL" value={imgUrl} onChange={(e) => (setImgUrl(e.target.value))}/>
                                 <Button color="primary" variant="contained" startIcon={<SaveIcon/>}>Update</Button>
                             </Stack>
-                            <Stack spacing={2}>
+                            <Stack spacing={2} alignItems="center">
                                 <Stack
-                                    direction={isMobile ? "column" : "row"}
-                                    justifyContent={isMobile ? undefined : "space-between"}
+                                    direction={"row"}
+                                    justifyContent="space-between"
                                     alignItems="center"
                                     spacing={isMobile ? 2 : undefined}
+                                    width="100%"
                                 >
                                     <Typography variant="h5" align="center">Rooms</Typography>
                                     <Button color="success" variant="contained" startIcon={<AddIcon/>} onClick={handleCreateRoom}>New Room</Button>

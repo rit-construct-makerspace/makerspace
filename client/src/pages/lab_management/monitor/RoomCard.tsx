@@ -11,7 +11,7 @@ export default function RoomCard({ room }: RoomCardProps) {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{ width: 800, mr: 2, mb: 2 }}>
+    <Card sx={{ width: "100%"}}>
       <CardActionArea onClick={() => navigate(`/admin/rooms/${room.id}`)}>
         <CardContent>
           <Stack direction={"row"} spacing={2} sx={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
