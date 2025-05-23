@@ -10,6 +10,8 @@ import AdminPage from "../AdminPage";
 import ZoneHourOptions from "../lab_management/monitor/ZoneHourOptions";
 import AddIcon from '@mui/icons-material/Add';
 import { CREATE_ROOM } from "../../queries/roomQueries";
+import Room, { FullRoom } from "../../types/Room";
+import RoomCard from "../lab_management/monitor/RoomCard";
 
 
 export default function ManageMakerspacePage() {
@@ -100,6 +102,11 @@ export default function ManageMakerspacePage() {
                                     <Typography variant="h5" align="center">Rooms</Typography>
                                     <Button color="success" variant="contained" startIcon={<AddIcon/>} onClick={handleCreateRoom}>New Room</Button>
                                 </Stack>
+                                {
+                                    zone.rooms.map((room: Room) => (
+                                        <RoomCard key={room.id} room={room} />
+                                    ))
+                                }
                             </Stack>
                         </Stack>
                         <Box width={isMobile ? "350px" : "800px"}>
