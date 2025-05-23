@@ -79,9 +79,14 @@ const RoomResolvers = {
         return newRoom;
       }),
 
-    removeRoom: async (_parent: any, args: any) => {
+    archiveRoom: async (_parent: any, args: any) => {
       return await RoomRepo.archiveRoom(args.id);
     },
+
+    deleteRoom: async (_parent: any, args: {roomID: number}, { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.STAFF], async () => {
+        await RoomRepo.deleteRomm(args.roomID);
+      }),
 
     /**
      * Update the name of a Room

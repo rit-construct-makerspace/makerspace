@@ -82,6 +82,14 @@ export async function archiveRoom(roomID: number): Promise<Room | null> {
 }
 
 /**
+ * Delete a room from the DB
+ * @param roomID the ID of the room to delete
+ */
+export async function deleteRomm(roomID: number): Promise<void> {
+  await knex("Rooms").delete().where({id: roomID})
+}
+
+/**
  * Update the name of an existing room
  * @param roomID the ID of the room to update
  * @param name the updated name
