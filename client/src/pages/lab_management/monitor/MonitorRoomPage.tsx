@@ -139,8 +139,8 @@ export default function MonitorRoomPage() {
         return (
         <AdminPage>
           <Stack direction="column" spacing={2} margin="25px">
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography variant="h3">Manage {room.name} [ID: {id}]</Typography>
+            <Stack direction={isMobile ? "column" : "row"} justifyContent={isMobile ? undefined : "space-between"} alignItems="flex-end" spacing={2}>
+              <Typography variant={isMobile ? "h4" : "h3"}>Manage {room.name} [ID: {id}]</Typography>
               {
                 user.privilege === Privilege.STAFF
                 ? <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
@@ -152,7 +152,7 @@ export default function MonitorRoomPage() {
             <Stack direction={isMobile ? "column" : "row"} width="auto" spacing={2}>
               <Stack spacing={2} width={isMobile ? "auto" : "50%"} alignItems="flex-end">
                 <TextField label="Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} fullWidth/>
-                <Button variant="contained" startIcon={<SaveIcon/>} size="medium">Update Room Name</Button>
+                <Button variant="contained" startIcon={<SaveIcon/>} size="large">Update Room Name</Button>
               </Stack>
               <Stack spacing={2} width={isMobile ? "auto" : "50%"}>
                 <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(id)}></RoomZoneAssociation>
