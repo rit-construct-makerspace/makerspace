@@ -14,6 +14,7 @@ import Room, { FullRoom } from "../../types/Room";
 import RoomCard from "../lab_management/monitor/RoomCard";
 import PrettyModal from "../../common/PrettyModal";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
+import Privilege from "../../types/Privilege";
 
 
 export default function ManageMakerspacePage() {
@@ -99,7 +100,7 @@ export default function ManageMakerspacePage() {
                     >
                         <Typography variant="h4" align="center">{`Edit ${zone.name} Makerspace [ID: ${zone.id}]`}</Typography>
                         {
-                            user.privilege == "STAFF"
+                            user.privilege === Privilege.STAFF
                             ? <Button color="error" variant="contained" onClick={handleDeleteZone} startIcon={<DeleteIcon/>}>Delete Makerspace</Button>
                             : null
                         }

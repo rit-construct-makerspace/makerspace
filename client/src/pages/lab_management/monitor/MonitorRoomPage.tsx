@@ -1,35 +1,21 @@
-import React, { useState } from "react";
-import Page from "../../Page";
+import { useEffect, useState } from "react";
 import {
-  Alert,
-  Box,
   Button,
-  Card,
-  CardContent,
-  CardMedia,
-  CircularProgress,
-  Collapse,
-  Grid,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
-import PageSectionHeader from "../../../common/PageSectionHeader";
-import EmptyPageSection from "../../../common/EmptyPageSection";
-import CardReader from "./CardReader";
-import SwipedUserCard from "./SwipedUserCard";
 import styled from "styled-components";
-import HistoryIcon from "@mui/icons-material/History";
 import RoomZoneAssociation from "./RoomZoneAssociation";
 import AdminPage from "../../AdminPage";
-import RequestWrapper from "../../../common/RequestWrapper";
-import EditableEquipmentCard from "../manage_equipment/EditableEquipmentCard";
-import Equipment from "../../../types/Equipment";
 import { DELETE_ROOM } from "../../../queries/roomQueries";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import SaveIcon from '@mui/icons-material/Save';
+import Privilege from "../../../types/Privilege";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -103,10 +89,23 @@ export default function MonitorRoomPage() {
   const { id } = useParams<{ id: string }>();
   const user = useCurrentUser();
   const navigate = useNavigate();
+
   const queryResult = useQuery(GET_ROOM, { variables: { id } });
   const [deleteRoom] = useMutation(DELETE_ROOM);
-  const [loadingUser, setLoadingUser] = useState(false);
-  const [cardError, setCardError] = useState(false);
+
+
+  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
+  function handleWindowSizeChange() {
+      setWindowWidth(window.innerWidth);
+  }
+  useEffect(() => {
+      window.addEventListener('resize', handleWindowSizeChange);
+      return () => {
+          window.removeEventListener('resize', handleWindowSizeChange);
+      }
+  }, []);
+
+  const isMobile = windowWidth <= 1100;
 
   async function handleDeleteRoom() {
     const confirm = window.confirm("Are you sure you want to delete? This cannot be undone.");
@@ -118,37 +117,50 @@ export default function MonitorRoomPage() {
     }
   }
 
+  const [roomName, setRoomName] = useState("");
+
+  const [init, setInit] = useState(false);
+
+
+  function initState(room: any) {
+    setRoomName(room.name);
+    setInit(init);
+  }
+
   return (
     <RequestWrapper2
       result={queryResult}
-      render={({ room }) => (
+      render={({ room }) => {
+
+        if (!init) {
+          initState(room);
+        }
+
+        return (
         <AdminPage>
-          <Box margin="25px">
+          <Stack direction="column" spacing={2} margin="25px">
             <Stack direction="row" justifyContent="space-between" alignItems="center">
-              <Typography variant="h3">{room.name}</Typography>
+              <Typography variant="h3">Manage {room.name} [ID: {id}]</Typography>
               {
-                user.privilege == "STAFF"
+                user.privilege === Privilege.STAFF
                 ? <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
                   Delete Room
                 </Button>
                 : null
               }
-              
             </Stack>
-
-          <Stack direction="column" spacing={2}>
-            <Button
-              variant="outlined"
-              startIcon={<HistoryIcon />}
-              onClick={() => navigate(`/admin/history?q=<room:${id}:`)}
-            >
-              View Logs
-            </Button>
-            <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(id)}></RoomZoneAssociation>
+            <Stack direction={isMobile ? "column" : "row"} width="auto" spacing={2}>
+              <Stack spacing={2} width={isMobile ? "auto" : "50%"} alignItems="flex-end">
+                <TextField label="Name" value={roomName} onChange={(e) => setRoomName(e.target.value)} fullWidth/>
+                <Button variant="contained" startIcon={<SaveIcon/>} size="medium">Update Room Name</Button>
+              </Stack>
+              <Stack spacing={2} width={isMobile ? "auto" : "50%"}>
+                <RoomZoneAssociation zoneID={room.zone?.id} roomID={Number(id)}></RoomZoneAssociation>
+              </Stack>
+            </Stack>
           </Stack>
-          </Box>
         </AdminPage>
-      )}
+      )}}
     />
   );
 }
