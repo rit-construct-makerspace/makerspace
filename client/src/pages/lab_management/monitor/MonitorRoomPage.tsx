@@ -11,7 +11,7 @@ import RequestWrapper2 from "../../../common/RequestWrapper2";
 import styled from "styled-components";
 import RoomZoneAssociation from "./RoomZoneAssociation";
 import AdminPage from "../../AdminPage";
-import { DELETE_ROOM } from "../../../queries/roomQueries";
+import { DELETE_ROOM, UPDATE_ROOM_NAME } from "../../../queries/roomQueries";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import SaveIcon from '@mui/icons-material/Save';
@@ -91,6 +91,7 @@ export default function MonitorRoomPage() {
   const navigate = useNavigate();
 
   const queryResult = useQuery(GET_ROOM, { variables: { id } });
+  const [updateRoomName] = useMutation(UPDATE_ROOM_NAME);
   const [deleteRoom] = useMutation(DELETE_ROOM);
 
 
@@ -106,6 +107,10 @@ export default function MonitorRoomPage() {
   }, []);
 
   const isMobile = windowWidth <= 1100;
+
+  async function handleUpdateRoomName() {
+
+  }
 
   async function handleDeleteRoom() {
     const confirm = window.confirm("Are you sure you want to delete? This cannot be undone.");

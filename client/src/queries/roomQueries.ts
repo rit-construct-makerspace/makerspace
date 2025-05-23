@@ -25,4 +25,12 @@ export const DELETE_ROOM = gql`
   }
 `;
 
+export const UPDATE_ROOM_NAME = gql`
+  mutation UpdateRoomName($id: ID!, $name: String) {
+    updateRoomName(roomID: $id, name: $name) {
+      id
+    }
+  }
+`;
+
 export default GET_ROOMS;
