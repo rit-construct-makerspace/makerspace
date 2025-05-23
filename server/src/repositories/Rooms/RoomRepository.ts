@@ -56,6 +56,7 @@ export async function addRoom(room: Room): Promise<Room> {
     await knex("Rooms").insert(
       {
         name: room.name,
+        zoneID: room.zoneID,
       },
       "id"
     )
