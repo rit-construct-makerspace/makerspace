@@ -135,53 +135,7 @@ export default function MonitorRoomPage() {
               }
               
             </Stack>
-          <Collapse in={cardError}>
-            <Alert
-              severity="error"
-              onClose={() => setCardError(false)}
-              sx={{ mb: 2 }}
-            >
-              <b>Unrecognized card.</b> Has this person registered with The
-              Construct? Have they entered their university ID correctly?
-            </Alert>
-          </Collapse>
 
-          <Stack direction="row" alignItems="flex-start" spacing={2}>
-            <PageSectionHeader top>Recent Swipes</PageSectionHeader>
-            {loadingUser && (
-              <CircularProgress size={20} sx={{ mt: "4px !important" }} />
-            )}
-            <CardReader
-              setLoadingUser={setLoadingUser}
-              onCardError={() => setCardError(true)}
-            />
-          </Stack>
-
-          <StyledRecentSwipes>
-            {room.recentSwipes.map((s: Swipe) => (
-              <SwipedUserCard key={s.id} swipe={s} />
-            ))}
-          </StyledRecentSwipes>
-
-          <PageSectionHeader>Equipment</PageSectionHeader>
-          {room.equipment.length === 0 && (
-            <EmptyPageSection label="No equipment found." />
-          )}
-          <RequestWrapper
-            loading={queryResult.loading}
-            error={queryResult.error}
-          >
-            <Grid container spacing={3} mt={2}>
-              {queryResult.data?.room.equipment
-                .map((e: Equipment) => (
-                  <Grid key={e.id} item>
-                    <EditableEquipmentCard id={e.id} name={e.name} to={url + e.id} archived={false} sopUrl={e.sopUrl} imageUrl={((e.imageUrl == undefined || e.imageUrl == null || e.imageUrl == "") ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : "" + process.env.REACT_APP_CDN_URL + process.env.REACT_APP_CDN_EQUIPMENT_DIR + "/" + e.imageUrl)} />
-                  </Grid>
-                ))}
-            </Grid>
-          </RequestWrapper>
-
-          <PageSectionHeader>Actions</PageSectionHeader>
           <Stack direction="column" spacing={2}>
             <Button
               variant="outlined"
