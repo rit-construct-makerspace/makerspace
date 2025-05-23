@@ -7,14 +7,14 @@ import { useEffect, useState } from "react";
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from "@mui/icons-material/Delete";
 import AdminPage from "../AdminPage";
-import ZoneHourOptions from "../lab_management/monitor/ZoneHourOptions";
 import AddIcon from '@mui/icons-material/Add';
 import { CREATE_ROOM } from "../../queries/roomQueries";
 import Room, { FullRoom } from "../../types/Room";
-import RoomCard from "../lab_management/monitor/RoomCard";
+import RoomCard from "./RoomCard";
 import PrettyModal from "../../common/PrettyModal";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
 import Privilege from "../../types/Privilege";
+import ZoneHourOptions from "./ZoneHourOptions";
 
 
 export default function ManageMakerspacePage() {
