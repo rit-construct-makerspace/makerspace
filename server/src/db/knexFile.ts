@@ -18,7 +18,7 @@ const config: any = { //remove ': any' if using --esm
   development: {
     client: "pg",
     connection: {
-      connectionString: process.env.DATABASE_URL + (process.env.DB_SCHEMA ? ('?currentSchema=' + process.env.DB_SCHEMA) : ""),
+      connectionString: process.env.DATABASE_URL,
       ssl: false,
 
     },
@@ -33,7 +33,6 @@ const config: any = { //remove ': any' if using --esm
         });
       }
     },
-    searchPath: process.env.DB_SCHEMA || "public",
     migrations: {
       tableName: "knex_migrations",
       directory: "migrations",
@@ -44,7 +43,7 @@ const config: any = { //remove ': any' if using --esm
   staging: {
     client: "pg",
     connection: {
-      connectionString: process.env.DATABASE_URL + (process.env.DB_SCHEMA ? ('?currentSchema=' + process.env.DB_SCHEMA) : ""),
+      connectionString: process.env.DATABASE_URL,
       ssl: {
         rejectUnauthorized: false,
         sslmode: 'require',
@@ -54,7 +53,6 @@ const config: any = { //remove ': any' if using --esm
       min: 2,
       max: 10,
     },
-    searchPath: process.env.DB_SCHEMA || "public",
     migrations: {
       tableName: "knex_migrations",
       directory: "migrations",

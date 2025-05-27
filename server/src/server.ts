@@ -31,7 +31,6 @@ import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursReposito
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 import { setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 import { ReaderRow } from "./db/tables.js";
-import { copyProdDBToDev } from "./repositories/DevDatabaseSync.js";
 const require = createRequire(import.meta.url);
 
 const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -714,8 +713,6 @@ async function startServer() {
     console.log('Wiping daily records...');
     if (API_DEBUG_LOGGING) await createLog('It is now 4:00am. Daily Temp Records have been wiped.', "server")
     setDataPointValue(1, 0);
-
-    copyProdDBToDev();
   });
 
 
