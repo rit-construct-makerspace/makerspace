@@ -7,15 +7,15 @@ import {
 } from "@mui/material";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useNavigate, useParams } from "react-router-dom";
-import RequestWrapper2 from "../../../common/RequestWrapper2";
+import RequestWrapper2 from "../../common/RequestWrapper2";
 import styled from "styled-components";
 import RoomZoneAssociation from "./RoomZoneAssociation";
-import AdminPage from "../../AdminPage";
-import { DELETE_ROOM, UPDATE_ROOM_NAME } from "../../../queries/roomQueries";
+import AdminPage from "../AdminPage";
+import { DELETE_ROOM, UPDATE_ROOM_NAME } from "../../queries/roomQueries";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import { useCurrentUser } from "../../common/CurrentUserProvider";
 import SaveIcon from '@mui/icons-material/Save';
-import Privilege from "../../../types/Privilege";
+import Privilege from "../../types/Privilege";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -85,7 +85,7 @@ export interface Swipe {
 
 const url = "/admin/equipment/";
 
-export default function MonitorRoomPage() {
+export default function ManageRoomPage() {
   const { makerspaceID } = useParams<{ makerspaceID: string }>();
   const { roomID } = useParams<{ roomID: string }>();
   const user = useCurrentUser();

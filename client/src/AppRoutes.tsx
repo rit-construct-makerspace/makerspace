@@ -1,12 +1,9 @@
 import { Route, Routes } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
-import LeftNav from "./left_nav/LeftNav";
-import EquipmentPage from "./pages/both/equipment/EquipmentPage";
 import EditEquipmentPage from "./pages/lab_management/manage_equipment/EditEquipmentPage";
 import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
 import InventoryPage from "./pages/lab_management/inventory/InventoryPage";
-import SelectRoomPage from "./pages/lab_management/monitor/SelectRoomPage";
-import MonitorRoomPage from "./pages/lab_management/monitor/MonitorRoomPage";
+import ManageRoomPage from "./pages/makerspace_page/MonitorRoomPage";
 import StorefrontPage from "./pages/lab_management/storefront/StorefrontPage";
 import TrainingPage from "./pages/maker/training/TrainingPage";
 import UsersPage from "./pages/lab_management/users/UsersPage";
@@ -62,10 +59,7 @@ export default function AppRoutes() {
 
           <Route path="/makerspace/:makerspaceID" element={<MakerspacePage />}/>
           <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
-          <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<MonitorRoomPage />}/>
-
-          <Route path="/maker/equipment" element={<EquipmentPage />} />
-          <Route path="/maker/equipment/:id" element={<EquipmentPage />} />
+          <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
 
           <Route path="/maker/training" element={<TrainingPage />} />
           <Route path="/maker/training/:id" element={<QuizPage />} />
@@ -92,9 +86,6 @@ export default function AppRoutes() {
           <Route path="/admin/tools/type" element={<ToolItemPage />} />
           <Route path="/admin/tools/instance/:instanceid" element={<ToolItemPage />} />
           <Route path="/admin/tools/instance" element={<ToolItemPage />} />
-
-          {/* <Route path="/admin/rooms/:id" element={<MonitorRoomPage />} />
-          <Route path="/admin/rooms" element={<SelectRoomPage />} /> */}
 
           <Route path="/admin/storefront" element={<StorefrontPage />} />
 
