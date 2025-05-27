@@ -60,7 +60,7 @@ export default function StaffBar(props: StaffBarProps) {
             />
             <NavLink
                 primary={"Tool Inventory"}
-                to={"/admin/tools"}
+                to={`/makerspace/${props.zoneID}/tools`}
                 icon={<ArchitectureIcon />}
             />
             <NavLink
