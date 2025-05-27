@@ -1,8 +1,8 @@
 import { gql, useMutation } from "@apollo/client";
 import { Button, TableCell, TableRow } from "@mui/material";
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import { useCurrentUser } from "../../common/CurrentUserProvider";
 import { GET_ZONE_HOURS } from "./ZoneHourOptions";
-import Privilege from "../../../types/Privilege";
+import Privilege from "../../types/Privilege";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const DELETE_ZONE_HOURS = gql`

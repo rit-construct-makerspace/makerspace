@@ -56,6 +56,7 @@ export async function addRoom(room: Room): Promise<Room> {
     await knex("Rooms").insert(
       {
         name: room.name,
+        zoneID: room.zoneID,
       },
       "id"
     )
@@ -78,6 +79,14 @@ export async function archiveRoom(roomID: number): Promise<Room | null> {
   if (updatedRooms.length < 1) throw new EntityNotFound(`Could not find room #${roomID}`);
 
   return updatedRooms[0];
+}
+
+/**
+ * Delete a room from the DB
+ * @param roomID the ID of the room to delete
+ */
+export async function deleteRomm(roomID: number): Promise<void> {
+  await knex("Rooms").delete().where({id: roomID})
 }
 
 /**

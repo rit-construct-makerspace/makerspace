@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material";
-import { FullZone } from "../../queries/getZones";
+import { FullZone } from "../../queries/zoneQueries";
 
 interface ZoneHoursProps {
     hours: FullZone["hours"];
