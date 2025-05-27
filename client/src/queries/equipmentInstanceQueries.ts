@@ -62,3 +62,10 @@ export const DELETE_EQUIPMENT_INSTANCE = gql`
         deleteInstance(id: $id)
     }
 `;
+
+
+export const ASSIGN_READER_TO_EQUIPMENT_INSTANCE = gql`
+  mutation AssignReaderToEquipmentInstance {
+    assignReaderToEquipmentInstance(instanceId: ID!, readerId: ID!)
+  }
+`

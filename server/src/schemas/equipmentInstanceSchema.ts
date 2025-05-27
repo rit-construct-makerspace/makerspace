@@ -28,5 +28,7 @@ export const EquipmentInstanceTypeDefs = gql`
         setInstanceStatus(id: ID!, status: String!): EquipmentInstance
         setInstanceName(id: ID!, name: String!): EquipmentInstance
         deleteInstance(id: ID!): Boolean
+        assignReaderToEquipmentInstance(id: ID!): Boolean
+        
     }
 `

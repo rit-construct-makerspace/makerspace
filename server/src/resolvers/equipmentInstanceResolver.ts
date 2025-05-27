@@ -1,6 +1,6 @@
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
-import { ApolloContext } from "../context.js";
+import { ApolloContext, ifAllowed } from "../context.js";
 import { getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository.js";
 import { getUserByID, getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { getEquipmentSessions } from "../repositories/Equipment/EquipmentSessionsRepository.js";
@@ -115,7 +115,15 @@ const EquipmentInstanceResolver = {
         await createLog(`{user} deleted instance "${orig.name}" on {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
         return await deleteInstance(args.id)
       }),
+    assignReaderToEquipmentInstance: async (
+      _parent: any,
+      args: { instanceId: number, readerId: number },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        return 0;
+      }),
   }
+
 };
 
 export default EquipmentInstanceResolver;

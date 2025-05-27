@@ -49,6 +49,7 @@ export const GET_EQUIPMENT_BY_ID = gql`
       numAvailable
       numInUse
       byReservationOnly
+      needsWelcome
     }
   }
 `;
@@ -73,6 +74,7 @@ export const GET_ANY_EQUIPMENT_BY_ID = gql`
       numAvailable
       numInUse
       byReservationOnly
+      needsWelcome
     }
   }
 `;
