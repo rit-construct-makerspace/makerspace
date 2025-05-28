@@ -44,7 +44,7 @@ const config: any = { //remove ': any' if using --esm
     client: "pg",
     connection: {
       connectionString: process.env.DATABASE_URL,
-      ssl: (process.env.DATABASE_URL?.includes('localhost')) ? false : {
+      ssl: {
         rejectUnauthorized: false,
         sslmode: 'require',
       },

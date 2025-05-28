@@ -1,7 +1,7 @@
 import { useQuery } from "@apollo/client";
 import { Box, Button, Divider, IconButton, Stack, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { FullZone, GET_ZONE_BY_ID } from "../../queries/getZones";
+import { FullZone, GET_ZONE_BY_ID } from "../../queries/zoneQueries";
 import RequestWrapper2 from "../../common/RequestWrapper2";
 import { useEffect, useState } from "react";
 import ZoneHours from "./ZoneHours";
@@ -14,12 +14,12 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 
 export default function MakerspacePage() {
-    const { id } = useParams<{ id: string }>();
+    const { makerspaceID } = useParams<{ makerspaceID: string }>();
 
     const user = useCurrentUser();
     const navigate = useNavigate();
 
-    const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: id}});
+    const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: makerspaceID}});
 
     const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
@@ -49,7 +49,7 @@ export default function MakerspacePage() {
                         {
                             user.privilege === "STAFF"
                             ? <IconButton
-                                onClick={() => {navigate("/admin/rooms")}}
+                                onClick={() => {navigate(`/makerspace/${makerspaceID}/edit`)}}
                                 sx={{color: "gray"}}
                             >
                                 <EditIcon/>

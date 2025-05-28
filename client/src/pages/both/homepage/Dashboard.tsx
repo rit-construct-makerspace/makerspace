@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { gql, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/getZones";
+import { GET_ZONES_WITH_HOURS, ZoneWithHours } from "../../../queries/zoneQueries";
 import ZoneCard from "./ZoneCard";
 import { Announcement, GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import AnnouncementCard from "./AnnouncementCard";
@@ -55,7 +55,7 @@ export function Dashboard() {
                             id={zone.id}
                             name={zone.name}
                             hours={zone.hours}
-                            imageUrl={process.env.PUBLIC_URL + "/shed_acronym_vert.jpg"}
+                            imageUrl={zone.imageUrl == undefined || zone.imageUrl == null || zone.imageUrl == "" ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : zone.imageUrl}
                             isMobile={isMobile}
                         />
                     ))}
@@ -74,7 +74,7 @@ export function Dashboard() {
                             : undefined
                         }
                     </Stack>
-                    <Grid container justifyContent="space-around" margin="0px 20px" alignItems="stretch">
+                    <Grid container margin="0px 20px" alignItems="stretch" width="auto">
                         {getAnnouncementsResult.data?.getAllAnnouncements?.map((thisAnnouncement: Announcement) => (
                             <Grid width="400px" margin="10px">
                                 <AnnouncementCard announcement={thisAnnouncement}/>

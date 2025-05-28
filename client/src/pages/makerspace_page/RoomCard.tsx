@@ -1,25 +1,25 @@
-import React from "react";
 import { Card, CardActionArea, CardContent, CardMedia, Stack, Typography, } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import Room from "../../../types/Room";
+import Room from "../../types/Room";
 
 interface RoomCardProps {
+  makerspaceID: number;
   room: Room;
 }
 
-export default function RoomCard({ room }: RoomCardProps) {
+export default function RoomCard(props: RoomCardProps) {
   const navigate = useNavigate();
 
   return (
-    <Card sx={{ width: 800, mr: 2, mb: 2 }}>
-      <CardActionArea onClick={() => navigate(`/admin/rooms/${room.id}`)}>
+    <Card sx={{ width: "100%"}}>
+      <CardActionArea onClick={() => navigate(`/makerspace/${props.makerspaceID}/edit/room/${props.room.id}`)}>
         <CardContent>
           <Stack direction={"row"} spacing={2} sx={{display:"flex", justifyContent:"space-between", alignItems:"center"}}>
             <Typography variant="h6" component="div">
-              {room.name}
+              {props.room.name}
             </Typography>
             <Typography variant="body2" component="div">
-              {"ID " + room.id}
+              {"ID " + props.room.id}
             </Typography>
           </Stack>
         </CardContent>

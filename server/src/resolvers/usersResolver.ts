@@ -130,7 +130,6 @@ const UsersResolvers = {
      * @argument firstName User's Preffered First Name
      * @argument lastName User's Last Name / Family Name
      * @argument ritUsername RIT ITS Username
-     * @argument universityID Unique University ID number
      * @returns User
      * @throws GraphQLError if not MENTOR or STAFF or is on hold
      */
@@ -140,7 +139,6 @@ const UsersResolvers = {
         firstName: string;
         lastName: string;
         ritUsername: string;
-        universityID: string;
       },
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {

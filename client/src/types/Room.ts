@@ -3,6 +3,7 @@ import Equipment from "./Equipment";
 export default interface Room {
   id: number;
   name: string;
+  equipment: Equipment[];
 }
 
 export default interface Zone {
@@ -18,6 +19,9 @@ export default interface ZoneHour {
   time: string;
 }
 
+/**
+ * Attempt to depreciate in favor of Room
+ */
 export interface FullRoom {
   id: number;
   name: string;

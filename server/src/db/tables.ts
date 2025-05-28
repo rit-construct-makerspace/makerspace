@@ -211,7 +211,6 @@ export interface UserRow {
   registrationDate: Date;
   expectedGraduation: string;
   college: string;
-  universityID: string;
   setupComplete: boolean;
   ritUsername: string;
   archived: boolean;
@@ -265,11 +264,13 @@ export interface ZoneHoursRow {
   type: string;
   dayOfTheWeek: number;
   time: string;
+  imageUrl: string;
 }
 
 export interface ZoneRow {
   id: number;
   name: string;
+  imageUrl: string;
 }
 
 export interface RoomsForZonesRow {

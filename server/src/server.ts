@@ -727,8 +727,6 @@ async function startServer() {
     console.log('Wiping daily records...');
     if (API_DEBUG_LOGGING) await createLog('It is now 4:00am. Daily Temp Records have been wiped.', "server")
     setDataPointValue(1, 0);
-
-    copyProdDBToDev();
   });
 
 

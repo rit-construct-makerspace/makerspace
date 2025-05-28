@@ -1,5 +1,5 @@
 import { Stack, Typography } from "@mui/material";
-import { FullZone } from "../../queries/getZones";
+import { FullZone } from "../../queries/zoneQueries";
 
 interface ZoneHoursProps {
     hours: FullZone["hours"];
@@ -72,31 +72,31 @@ export default function ZoneHours(props: ZoneHoursProps) {
 
     return (
         <Stack padding="10px 0px" direction={props.isMobile ? "column" : "row"} justifyContent={props.isMobile ? "center" : "space-around"}>
-            <Stack alignItems="center">
+            <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}>
                 <Typography color="darkorange" variant="h6">Sunday</Typography>
                 <Typography variant="body2">{makeHours(sunday)}</Typography>
             </Stack>
-            <Stack alignItems="center">
+            <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}>
                 <Typography color="darkorange" variant="h6">Monday</Typography>
                 <Typography variant="body2">{makeHours(monday)}</Typography>
             </Stack>
-            <Stack alignItems="center"> 
+            <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}> 
                 <Typography color="darkorange" variant="h6">Tuesday</Typography>
                 <Typography variant="body2">{makeHours(tuesday)}</Typography>
             </Stack>
-            <Stack alignItems="center">
+            <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}>
                 <Typography color="darkorange" variant="h6">Wednsday</Typography>
                 <Typography variant="body2">{makeHours(wednsday)}</Typography>
             </Stack>
-            <Stack alignItems="center">
+            <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}>
                 <Typography color="darkorange" variant="h6">Thursday</Typography>
                 <Typography variant="body2">{makeHours(thursday)}</Typography>
             </Stack>
-            <Stack alignItems="center">
+            <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}>
                 <Typography color="darkorange" variant="h6">Friday</Typography>
                 <Typography variant="body2">{makeHours(friday)}</Typography>
             </Stack>
-            <Stack alignItems="center">
+            <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}>
                 <Typography color="darkorange" variant="h6">Saturday</Typography>
                 <Typography variant="body2">{makeHours(saturday)}</Typography>
             </Stack>
