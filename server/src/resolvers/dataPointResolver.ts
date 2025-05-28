@@ -44,10 +44,9 @@ const DataPointsResolver = {
     incrementSiteVisits: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.MAKER, Privilege.STAFF], async () => {
-        return (await incrementDataPointValue(1, 1));
-      }),
+    ) => {
+      return (await incrementDataPointValue(1, 1));
+    }
   },
 
   Mutation: {

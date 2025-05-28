@@ -24,12 +24,10 @@ const ZonesResolver = {
     hours: async (
       parent: ZoneRow,
       _args: any,
-      { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
+      {
         return getHoursByZone(parent.id);
       }
-    ),
   },
 
   Query: {
@@ -41,10 +39,9 @@ const ZonesResolver = {
     zones: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await getZones();
-      }),
+    ) => {
+      return await getZones();
+    },
 
     /**
      * Fetch a single Zone by ID

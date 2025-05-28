@@ -18,10 +18,9 @@ const AnnouncementsResolver = {
     getAllAnnouncements: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
+      ) => {
         return await getAnnouncements();
-      }),
+      },
 
     /**
      * Fetch Announcement by ID
