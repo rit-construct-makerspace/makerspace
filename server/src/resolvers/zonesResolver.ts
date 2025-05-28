@@ -14,20 +14,17 @@ const ZonesResolver = {
       parent: ZoneRow,
       _args: any,
       { ifAllowed }: ApolloContext
-    ) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
-        return getRoomsByZone(parent.id);
-      }
-    ),
+    ) => {
+      return getRoomsByZone(parent.id);
+    },
     
     //Map hours field to array of ZoneHours
     hours: async (
       parent: ZoneRow,
       _args: any,
-    ) =>
-      {
-        return getHoursByZone(parent.id);
-      }
+    ) => {
+      return getHoursByZone(parent.id);
+    }
   },
 
   Query: {
@@ -51,10 +48,9 @@ const ZonesResolver = {
     zoneByID: async (
       _parent: any,
       args: { id: number},
-      { ifAuthenticated }: ApolloContext ) =>
-        ifAuthenticated(async () => {
+    ) => {
           return await getZoneByID(args.id);
-      }),
+      },
   },
 
   Mutation: {
