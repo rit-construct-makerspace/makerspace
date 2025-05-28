@@ -33,7 +33,6 @@ const __dirname = import.meta.dirname;
 interface RitSsoUser {
   firstName: string;
   lastName: string;
-  universityID: string
   ritUsername: string;
 }
 
@@ -51,7 +50,6 @@ function mapToDevUser(userID: string, password: string) {
     return {
       firstName: devUser.firstName,
       lastName: devUser.lastName,
-      universityID: devUser.email,
       ritUsername: devUser.ritUsername
     };
   }
@@ -64,7 +62,6 @@ function mapSamlTestToRit(testUser: any): RitSsoUser {
   return {
     firstName: testUser["urn:oid:2.5.4.42"],
     lastName: testUser["urn:oid:2.5.4.4"],
-    universityID: testUser.email,
     ritUsername: testUser.email.split("@")[0], // samltest format
   };
 }
@@ -234,7 +231,6 @@ export function setupStagingAuth(app: express.Application) {
   );
 
   passport.serializeUser(async (user: any, done) => {
-    console.log("SERIALIZE USER : "+ JSON.stringify(user));
     const ritUser =
       process.env.SAML_IDP === "TEST" ? mapSamlTestToRit(user) : user.attributes; //user is the full response data. attributes has the things we need
 
@@ -254,7 +250,6 @@ export function setupStagingAuth(app: express.Application) {
         firstName: ritUser["urn:oid:2.5.4.42"],
         lastName: ritUser["urn:oid:2.5.4.4"],
         ritUsername: ritUser["urn:oid:0.9.2342.19200300.100.1.1"],
-        universityID: ritUser["urn:oid:1.3.6.1.4.1.4447.1.20"]
       });
     }
 
@@ -268,7 +263,6 @@ export function setupStagingAuth(app: express.Application) {
 
   passport.deserializeUser(async (user: any, done) => {
     //Here, it is just the username string, not the full object
-    console.log("DESERIALIZE USER : "+ JSON.stringify(user)); 
     const currUser = (await getUserByRitUsername(user)) as unknown as CurrentUser;
 
     if (!user) throw new Error("Tried to deserialize user that doesn't exist");

@@ -22,11 +22,6 @@ const EquipmentResolvers = {
       return await RoomRepo.getRoomByID(parent.roomID);
     },
 
-    //Set true if listed user has all needed requirements to use equipment
-    hasAccess: async (parent: EquipmentRow, args: { uid: string }) => {
-      return await EquipmentRepo.hasAccess(args.uid, parent.id);
-    },
-
     //Map trainingModules field to array of associated TrainingModules
     trainingModules: async (parent: EquipmentRow) => {
       return await EquipmentRepo.getModulesByEquipment(parent.id);

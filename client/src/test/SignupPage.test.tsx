@@ -23,7 +23,6 @@ test("signup page happy path", async () => {
       pronouns: "test_pronouns",
       college: "GCCIS",
       expectedGraduation: "Spring 2026",
-      universityID: "123456789",
     },
     { updateStudentProfile: { id: 123 } }
   );

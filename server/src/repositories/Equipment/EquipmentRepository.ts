@@ -196,23 +196,6 @@ export async function UserIdHasTrainingModules(
 
 /**
  * Check if User is authorized to use Equipment
- * @param uid University ID of user to check
- * @param equipmentID Equipment ID to check
- * @returns true if user is authorized
- */
-export async function hasAccess(
-  uid: string,
-  equipmentID: number
-): Promise<boolean> {
-  console.log(uid);
-  const user = await UserRepo.getUserByUniversityID(uid);   // Get user for this university ID
-  return user !== undefined &&                              // Ensure user exists
-    !(await HoldsRepo.hasActiveHolds(user.id)) &&           // Ensure user has no holds
-    await hasTrainingModules(user, equipmentID);            // Ensure user has completed necessary training
-}
-
-/**
- * Check if User is authorized to use Equipment
  * @param userID id of user to check
  * @param equipmentID Equipment ID to check
  * @returns true if user is authorized

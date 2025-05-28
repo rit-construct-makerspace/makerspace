@@ -5,7 +5,6 @@ import * as ModuleRepo from "../../repositories/Training/ModuleRepository.js";
 import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository.js";
 import * as UserRepo from "../../repositories/Users/UserRepository.js";
 import * as Holdsrepo from "../../repositories/Holds/HoldsRepository.js";
-import { hashUniversityID } from "../../repositories/Users/UserRepository.js";
 import { TrainingModuleItem } from "../../db/tables.js";
 
 const tables = ["ModuleSubmissions", "ModulesForEquipment", "Equipment", "TrainingModule", "Holds", "Rooms", "Users"];
@@ -277,7 +276,6 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      universityID: "123456789",
     })).id;
 
     const uid = "000000000";
@@ -290,9 +288,7 @@ describe("EquipmentRepository tests", () => {
       expectedGraduation: "2050"
     });
 
-    //expect(user.universityID).toBe(hashUniversityID(uid));
 
-    //expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(true);
   });
 
   test("hasAcccess bad swipe", async () => {
@@ -322,7 +318,6 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      universityID: "234567890",
     })).id
 
     const uid = "000000000";
@@ -335,8 +330,6 @@ describe("EquipmentRepository tests", () => {
       expectedGraduation: "2050"
     });
 
-    //expect(user.universityID).toBe(hashUniversityID(uid));
-
     // Place a hold on themselves
     await Holdsrepo.createHold(
       userID,
@@ -345,7 +338,7 @@ describe("EquipmentRepository tests", () => {
     );
 
     // Check access for non-existent user
-    expect(await EquipmentRepo.hasAccess("111111111", equipmentID)).toBe(false);
+    expect(await EquipmentRepo.hasAccessByID(userID, equipmentID)).toBe(false);
   });
 
   test("hasAcccess with one module", async () => {
@@ -375,7 +368,6 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      universityID: "345678901",
     })).id;
 
     const uid = "000000000";
@@ -387,8 +379,6 @@ describe("EquipmentRepository tests", () => {
       college: "Test College",
       expectedGraduation: "2050"
     });
-
-    //expect(user.universityID).toBe(hashUniversityID(uid));
 
     const exampleQuiz: TrainingModuleItem[] = [{
       id: '6784b67f-10d0-4476-8a81-e30c5f537e4e',
@@ -405,7 +395,6 @@ describe("EquipmentRepository tests", () => {
     // Add passed attempt to user
     await SubmissionRepo.addSubmission(userID, moduleID, true, "");
 
-    //expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(true);
   });
 
   test("hasAcccess with hold", async () => {
@@ -435,7 +424,6 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      universityID: "123456789",
     })).id;
 
     const uid = "000000000";
@@ -448,8 +436,6 @@ describe("EquipmentRepository tests", () => {
       expectedGraduation: "2050"
     });
 
-    //expect(user.universityID).toBe(hashUniversityID(uid));
-
     // Place a hold on themselves
     await Holdsrepo.createHold(
       userID,
@@ -457,7 +443,7 @@ describe("EquipmentRepository tests", () => {
       "Test Hold"
     );
 
-    expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(false);
+    expect(await EquipmentRepo.hasAccessByID(userID, equipmentID)).toBe(false);
   });
 
   test("hasAcccess with insufficient training", async () => {
@@ -487,7 +473,6 @@ describe("EquipmentRepository tests", () => {
       firstName: "John",
       lastName: "Doe",
       ritUsername: "jd0000",
-      universityID: "123456789",
     })).id;
 
     const uid = "000000000";
@@ -500,7 +485,6 @@ describe("EquipmentRepository tests", () => {
       expectedGraduation: "2050"
     });
 
-    //expect(user.universityID).toBe(hashUniversityID(uid));
 
     const exampleQuiz: TrainingModuleItem[] = [{
       id: '6784b67f-10d0-4476-8a81-e30c5f537e4e',
@@ -514,7 +498,7 @@ describe("EquipmentRepository tests", () => {
     // Add module to equipment
     await EquipmentRepo.addModulesToEquipment(equipmentID, [moduleID]);
 
-    expect(await EquipmentRepo.hasAccess(uid, equipmentID)).toBe(false);
+    expect(await EquipmentRepo.hasAccessByID(userID, equipmentID)).toBe(false);
   });
 
 });
