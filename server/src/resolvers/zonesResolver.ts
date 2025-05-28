@@ -13,7 +13,6 @@ const ZonesResolver = {
     rooms: async (
       parent: ZoneRow,
       _args: any,
-      { ifAllowed }: ApolloContext
     ) => {
       return getRoomsByZone(parent.id);
     },
