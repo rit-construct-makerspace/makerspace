@@ -108,7 +108,7 @@ async function startServer() {
   app.use("/app/", express.static(path.join(__dirname, '../../client/build')));
 
   //verifies user logged in under all front-end urls and if not send to login
-  app.all("/app/*", (req, res, next) => {
+  app.all("/app/maker/training/*", (req, res, next) => {
     //process.env.USE_TEST_DEV_USER_DANGER=="TRUE" || 
     if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE" || req.user) {
       return next();
