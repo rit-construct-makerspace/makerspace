@@ -133,17 +133,23 @@ export default function TopNav() {
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
-                        <ButtonBase onClick={handleUserMenuOpen}>
-                            <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-                                <Avatar
-                                    alt="Profile picture"
-                                    {...stringAvatar(currentUser.firstName, currentUser.lastName, {height: "30px", width: "30px", fontSize: 16})}
-                                />
-                                <Typography variant="body1">
-                                    {`${currentUser.firstName} ${currentUser.lastName}`}
-                                </Typography>     
-                            </Stack>
-                        </ButtonBase>
+                        {
+                            currentUser.privilege === Privilege.VISITOR
+                            ? <Button sx={{height: "95%", marginRight: "10px"}} variant="contained" color="secondary" endIcon={<PersonIcon/>} onClick={() => window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")}>
+                                LOGIN
+                            </Button>
+                            : <ButtonBase onClick={handleUserMenuOpen}>
+                                <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+                                    <Avatar
+                                        alt="Profile picture"
+                                        {...stringAvatar(currentUser.firstName, currentUser.lastName, {height: "30px", width: "30px", fontSize: 16})}
+                                    />
+                                    <Typography variant="body1">
+                                        {`${currentUser.firstName} ${currentUser.lastName}`}
+                                    </Typography>     
+                                </Stack>
+                            </ButtonBase>
+                        }
 
                         <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
                             <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose(); setMobileDrawer(false);}}>
