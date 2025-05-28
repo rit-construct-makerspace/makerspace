@@ -78,6 +78,9 @@ export async function getUserByRitUsername(
   ritUsername: string
 ): Promise<UserRow | undefined> {
   console.log("Checking user: " + ritUsername);
+  if (!ritUsername) {
+    return undefined;
+  }
   return knex("Users").first().where("ritUsername", ritUsername);
 }
 
