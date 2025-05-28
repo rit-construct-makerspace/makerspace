@@ -107,10 +107,19 @@ async function startServer() {
   //serves built react app files under make.rit.edu/app
   app.use("/app/", express.static(path.join(__dirname, '../../client/build')));
 
-  //verifies user logged in under all front-end urls and if not send to login
-  app.all("/app/maker/training/*", (req, res, next) => {
+  
+  /**
+   * REGEX QUERY:
+   * matches to all urls EXCEPT:
+   *    /app/
+   *    /app/home
+   *    /app/makerspace/##
+   *      (# is a number)
+   * This is so some parts of the website can be publicly accessible w/o logging in.
+   */
+  app.all(/\/app(?!\/makerspace\/\d+|\/home)\/.+/gm, (req, res, next) => {
     //process.env.USE_TEST_DEV_USER_DANGER=="TRUE" || 
-    if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE" || req.user) {
+    if (process.env.USE_TEST_DEV_USER_DANGER != "TRUE" || req.user) {
       return next();
     }
     console.log("LOGIN REDIRECT");
