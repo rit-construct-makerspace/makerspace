@@ -103,7 +103,7 @@ export default function TopNav() {
                     </IconButton>
                 </Stack>
                 <Drawer anchor="top" open={mobileDrawer} onClose={() => setMobileDrawer(false)}>
-                    <Stack alignItems="center" spacing={2} paddingTop="10px">
+                    <Stack alignItems="center" spacing={2} paddingTop="10px" paddingBottom="10px">
                         <NavLink
                             to="/maker/training/13"
                             primary="3D Printing Training"
@@ -135,7 +135,7 @@ export default function TopNav() {
                         />
                         {
                             currentUser.privilege === Privilege.VISITOR
-                            ? <Button sx={{height: "95%", marginRight: "10px"}} variant="contained" color="secondary" endIcon={<PersonIcon/>} onClick={() => window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")}>
+                            ? <Button sx={{height: "95%"}} variant="contained" color="secondary" endIcon={<PersonIcon/>} onClick={() => window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")}>
                                 LOGIN
                             </Button>
                             : <ButtonBase onClick={handleUserMenuOpen}>
