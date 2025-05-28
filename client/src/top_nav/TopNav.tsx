@@ -1,8 +1,8 @@
-import { Alert, AppBar, Avatar, Box, ButtonBase, Container, Drawer, IconButton, List, Menu, MenuItem, Stack, Typography, useScrollTrigger } from "@mui/material";
+import { Alert, AppBar, Avatar, Box, Button, ButtonBase, Container, Drawer, IconButton, List, Menu, MenuItem, Stack, Typography, useScrollTrigger } from "@mui/material";
 import styled from "styled-components";
 import LogoSvgWhite from "../assets/acronym_logo_all_white.svg";
 import LogoSvgW from "../assets/acronym_logo_w.svg";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, redirect, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PrinterOsIcon from "../common/PrinterOSIcon";
 import SlackIcon from "../common/SlackIcon";
@@ -15,6 +15,8 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { stringAvatar } from "../common/avatarGenerator";
 import MenuIcon from '@mui/icons-material/Menu';
 import Footer from "./Footer";
+import Privilege from "../types/Privilege";
+import PersonIcon from '@mui/icons-material/Person';
 
 const StyledLogo = styled.img`
   margin: 12px;
@@ -162,7 +164,7 @@ export default function TopNav() {
             </AppBar>
             :<Box width="100%" height="5%">
                 <AppBar position="static">
-                    <Stack component="nav" direction="row" justifyContent="space-between">
+                    <Stack component="nav" direction="row" justifyContent="space-between" alignItems="center">
                         <ButtonBase onClick={() => {navigate(`/`);}} sx={{width: "15%"}} focusRipple>
                             <StyledLogo width="100%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo"/>
                         </ButtonBase>
@@ -195,17 +197,23 @@ export default function TopNav() {
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
-                        <ButtonBase onClick={handleUserMenuOpen} focusRipple>
-                            <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                                    {`${currentUser.firstName} ${currentUser.lastName}`}
-                                </Typography>
-                                <Avatar
-                                    alt="Profile picture"
-                                    {...stringAvatar(currentUser.firstName, currentUser.lastName)}
-                                />
-                            </Stack>
-                        </ButtonBase>
+                        {
+                            currentUser.privilege === Privilege.VISITOR
+                            ? <Button sx={{height: "95%", marginRight: "10px"}} variant="contained" color="secondary" endIcon={<PersonIcon/>} onClick={() => window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")}>
+                                LOGIN
+                            </Button>
+                            : <ButtonBase onClick={handleUserMenuOpen} focusRipple>
+                                <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+                                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                                        {`${currentUser.firstName} ${currentUser.lastName}`}
+                                    </Typography>
+                                    <Avatar
+                                        alt="Profile picture"
+                                        {...stringAvatar(currentUser.firstName, currentUser.lastName)}
+                                    />
+                                </Stack>
+                            </ButtonBase>
+                        }
 
                         <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
                             <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose();}}>

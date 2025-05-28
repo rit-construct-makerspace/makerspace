@@ -97,7 +97,7 @@ const visitor: CurrentUser = {
   hasHolds: false,
   passedModules: [],
   accessChecks: [],
-  cardTagID: "",
+  cardTagID: "nothing",
   trainingHolds: []
 }
 
