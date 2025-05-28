@@ -209,7 +209,6 @@ export interface UserRow {
   registrationDate: Date;
   expectedGraduation: string;
   college: string;
-  universityID: string;
   setupComplete: boolean;
   ritUsername: string;
   archived: boolean;

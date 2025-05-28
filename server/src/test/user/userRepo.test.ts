@@ -42,8 +42,7 @@ describe("UserRepository tests", () => {
     await UserRepo.createUser({
         firstName: "John",
         lastName: "Doe",
-        ritUsername: "jd0000",
-        universityID: "123456789"
+      ritUsername: "jd0000",
     });
 
     let userRows = await UserRepo.getUsers();
@@ -55,8 +54,7 @@ describe("UserRepository tests", () => {
     await UserRepo.createUser({
         firstName: "John",
         lastName: "Doe",
-        ritUsername: "jd0000",
-        universityID: "123456789"
+      ritUsername: "jd0000",
     });
 
     let userRows = await UserRepo.getUsers();
@@ -68,8 +66,7 @@ describe("UserRepository tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "John",
         lastName: "Doe",
-        ritUsername: "jd0000",
-        universityID: "123456789"
+      ritUsername: "jd0000",
     })).id;
 
     // Get by ID

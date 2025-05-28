@@ -74,13 +74,6 @@ export const UsersTypeDefs = gql`
     ritUsername: String!
 
     """
-    ID found on the eServices and/or myRIT portals.
-    Sensitive information. Stored as a SHA256 hash in the database.
-    Not to be confused with RIT usernames (ie. abc1234)
-    """
-    universityID: String
-
-    """
     Has the user completed the signup form?
     """
     setupComplete: Boolean
@@ -92,7 +85,6 @@ export const UsersTypeDefs = gql`
   }
 
   input StudentUserInput {
-    universityID: String!
     ritUsername: String!
     firstName: String!
     lastName: String!
@@ -124,7 +116,6 @@ export const UsersTypeDefs = gql`
       firstName: String
       lastName: String
       ritUsername: String
-      universityID: String
     ): User
 
     updateStudentProfile(
@@ -132,7 +123,6 @@ export const UsersTypeDefs = gql`
       pronouns: String
       college: String
       expectedGraduation: String
-      universityID: String
     ): User
 
     setPrivilege(userID: ID!, privilege: Privilege): User
