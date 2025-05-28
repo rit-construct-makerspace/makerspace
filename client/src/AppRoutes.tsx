@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
 import EditEquipmentPage from "./pages/lab_management/manage_equipment/EditEquipmentPage";
 import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
@@ -34,9 +34,21 @@ import UserTraingingsPage from "./pages/both/user_page/user_trainings/UserTraini
 import TopNav from "./top_nav/TopNav";
 import MakerspacePage from "./pages/makerspace_page/MakerspacePage";
 import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
+import { useCurrentUser } from "./common/CurrentUserProvider";
+import Privilege from "./types/Privilege";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
+
+const AuthedRoute = () => {
+  const user = useCurrentUser();
+  if (user.privilege === Privilege.VISITOR) {
+    window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")
+    return <></>;
+  } else {
+    return <Outlet />
+  }
+};
 
 export default function AppRoutes() {
   return (
@@ -45,66 +57,65 @@ export default function AppRoutes() {
     <Routes>
 
         <Route path="/signup" element={<SignupPage />} />
-
-
         <Route path="/admin/storefront/preview" element={<StorefrontPreviewPage />} />
-
 
         <Route path={"/"} element={<TopNav />}>
 
           <Route path="/" element={<Dashboard />} />
-
-          <Route path="/user/trainings" element={<UserTraingingsPage />}/>
-          <Route path="/user/settings" element={<UserSettingsPage />}/>
-
           <Route path="/makerspace/:makerspaceID" element={<MakerspacePage />}/>
-          <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
-          <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
-          <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
-
-          <Route path="/maker/training" element={<TrainingPage />} />
-          <Route path="/maker/training/:id" element={<QuizPage />} />
-          <Route path="/maker/training/:id/results" element={<QuizResults />} />
-
-          <Route path="/maker/materials" element={<InventoryPreviewPage />} />
-
           <Route path="/terms" element={<TermsPage />} />
 
-          <Route path="/admin/equipment" element={<ManageEquipmentPage />} />
-          <Route path="/admin/equipment/:id" element={<EditEquipmentPage archived={false} />} />
-          <Route path="/admin/equipment/archived/:id" element={<EditEquipmentPage archived={true} />} />
-          <Route path="/admin/equipment/issues/:logid" element={<ManageEquipmentPage showLogs={true} />} />
-          <Route path="/admin/equipment/logs/:logid" element={<ResolutionLogPage />} />
+          {/* Routes that need to be protected by auth */}
+          <Route element={<AuthedRoute />}> 
+            <Route path="/user/trainings" element={<UserTraingingsPage />}/>
+            <Route path="/user/settings" element={<UserSettingsPage />}/>
 
-          <Route path="/admin/training" element={<TrainingModulesPage />} />
-          <Route path="/admin/training/new" element={<EditNewModulePage />} />
-          <Route path="/admin/training/:id" element={<EditActiveModulePage />} />
-          <Route path="/admin/training/archived/:id" element={<EditArchivedModulePage />} />
+            
+            <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
+            <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
+            <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
 
-          <Route path="/admin/inventory" element={<InventoryPage />} />
-          {/* <Route path="/admin/tools" element={<ToolItemPage />} /> */}
-          <Route path="/admin/tools/type/:typeid" element={<ToolItemPage />} />
-          <Route path="/admin/tools/type" element={<ToolItemPage />} />
-          <Route path="/admin/tools/instance/:instanceid" element={<ToolItemPage />} />
-          <Route path="/admin/tools/instance" element={<ToolItemPage />} />
+            <Route path="/maker/training" element={<TrainingPage />} />
+            <Route path="/maker/training/:id" element={<QuizPage />} />
+            <Route path="/maker/training/:id/results" element={<QuizResults />} />
 
-          <Route path="/admin/storefront" element={<StorefrontPage />} />
+            <Route path="/maker/materials" element={<InventoryPreviewPage />} />
+            <Route path="/admin/equipment" element={<ManageEquipmentPage />} />
+            <Route path="/admin/equipment/:id" element={<EditEquipmentPage archived={false} />} />
+            <Route path="/admin/equipment/archived/:id" element={<EditEquipmentPage archived={true} />} />
+            <Route path="/admin/equipment/issues/:logid" element={<ManageEquipmentPage showLogs={true} />} />
+            <Route path="/admin/equipment/logs/:logid" element={<ResolutionLogPage />} />
 
-          <Route path="/admin/people/:id" element={<UsersPage />} />
-          <Route path="/admin/people" element={<UsersPage />} />
+            <Route path="/admin/training" element={<TrainingModulesPage />} />
+            <Route path="/admin/training/new" element={<EditNewModulePage />} />
+            <Route path="/admin/training/:id" element={<EditActiveModulePage />} />
+            <Route path="/admin/training/archived/:id" element={<EditArchivedModulePage />} />
 
-          <Route path="/admin/announcements" element={<AnnouncementsPage />} />
-          <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
-          <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
-          <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
+            <Route path="/admin/inventory" element={<InventoryPage />} />
+            <Route path="/admin/tools/type/:typeid" element={<ToolItemPage />} />
+            <Route path="/admin/tools/type" element={<ToolItemPage />} />
+            <Route path="/admin/tools/instance/:instanceid" element={<ToolItemPage />} />
+            <Route path="/admin/tools/instance" element={<ToolItemPage />} />
 
-          <Route path="/admin/history" element={<AuditLogsPage />} />
+            <Route path="/admin/storefront" element={<StorefrontPage />} />
 
-          <Route path="/admin/readers" element={<ReadersPage />} />
+            <Route path="/admin/people/:id" element={<UsersPage />} />
+            <Route path="/admin/people" element={<UsersPage />} />
 
-          <Route path="/admin/statistics" element={<StatisticsPage />} />
+            <Route path="/admin/announcements" element={<AnnouncementsPage />} />
+            <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
+            <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
+            <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
 
-          <Route path="/admin/terms" element={<EditTermsPage />} />
+            <Route path="/admin/history" element={<AuditLogsPage />} />
+
+            <Route path="/admin/readers" element={<ReadersPage />} />
+
+            <Route path="/admin/statistics" element={<StatisticsPage />} />
+
+            <Route path="/admin/terms" element={<EditTermsPage />} />
+          </Route>
+          {/* END OF PROTECTED ROUTES */}
 
           <Route path="/logoutprompt" element={<LogoutPromptPage />} />
 
