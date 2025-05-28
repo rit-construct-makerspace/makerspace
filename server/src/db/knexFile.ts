@@ -20,6 +20,7 @@ const config: any = { //remove ': any' if using --esm
     connection: {
       connectionString: process.env.DATABASE_URL,
       ssl: false,
+
     },
     pool: {
       min: 2,

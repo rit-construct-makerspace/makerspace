@@ -24,7 +24,6 @@ export const EquipmentTypeDefs = gql`
     trainingModules: [TrainingModule]
     addedAt: DateTime!
     inUse: Boolean!
-    hasAccess(uid: String): Boolean!
     imageUrl: String
     sopUrl: String
     notes: String

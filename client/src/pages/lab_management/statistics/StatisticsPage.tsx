@@ -8,7 +8,7 @@ import { Card } from "@material-ui/core";
 import { BarChart, Gauge, LineChart } from "@mui/x-charts";
 import RequestWrapper from "../../../common/RequestWrapper";
 import TimeAgo from 'react-timeago'
-import GET_ROOMS from "../../../queries/getRooms";
+import GET_ROOMS from "../../../queries/roomQueries";
 import { GET_EQUIPMENT_SESSIONS, GET_MODULE_SCORES, GET_NUM_EQUIPMENT_SESSIONS_TODAY, GET_NUM_NEW_USERS, GET_NUM_ROOM_SWIPES_TODAY, GET_NUM_SITE_VISITS, GET_ROOM_SWIPE_COUNTS, GET_ZONE_HOURS } from "./statisticsQueries";
 
 

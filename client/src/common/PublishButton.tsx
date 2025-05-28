@@ -1,4 +1,4 @@
-import SendIcon from "@mui/icons-material/Send";
+import PublishIcon from '@mui/icons-material/Publish';
 import ActionButton from "./ActionButton";
 
 interface PublishEquipmentButtonProps {
@@ -19,7 +19,7 @@ export default function PublishEquipmentButton(props: PublishEquipmentButtonProp
       handleClick={props.handleClick}
       loading={props.loading}
     >
-      <SendIcon />
+      <PublishIcon />
     </ActionButton>
   );
 }
