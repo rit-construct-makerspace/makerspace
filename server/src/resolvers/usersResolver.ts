@@ -129,7 +129,7 @@ const UsersResolvers = {
      * Create a User
      * @argument firstName User's Preffered First Name
      * @argument lastName User's Last Name / Family Name
-    * @argument ritUsername RIT ITS Username
+     * @argument ritUsername RIT ITS Username
      * @returns User
      * @throws GraphQLError if not MENTOR or STAFF or is on hold
      */

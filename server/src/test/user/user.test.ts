@@ -124,7 +124,7 @@ describe("User tests", () => {
         const userID = (await UserRepo.createUser({
             firstName: "John",
             lastName: "Doe",
-          ritUsername: "jd0000",
+            ritUsername: "jd0000",
         })).id;
 
         // Get by ID
@@ -190,7 +190,7 @@ describe("User tests", () => {
     let userRequestData = {
         firstName: "Jane",
         lastName: "Doe",
-      ritUsername: "jd1111",
+        ritUsername: "jd1111",
     }
 
     let createRes: GraphQLResponse = (await server.executeOperation(
@@ -199,7 +199,7 @@ describe("User tests", () => {
             variables: {
                 firstName: userRequestData.firstName,
                 lastName: userRequestData.lastName,
-              ritUsername: userRequestData.ritUsername,
+                ritUsername: userRequestData.ritUsername,
             }
         },
         {
@@ -230,7 +230,7 @@ describe("User tests", () => {
     const userID: number = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-      ritUsername: "jd1111",
+        ritUsername: "jd1111",
     })).id;
 
     const getUserRes = (await server.executeOperation(
@@ -262,7 +262,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-      ritUsername: "jd1111",
+        ritUsername: "jd1111",
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -315,7 +315,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-      ritUsername: "jd1111",
+        ritUsername: "jd1111",
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -382,7 +382,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-      ritUsername: "jd1111",
+        ritUsername: "jd1111",
     })).id;
 
     const user = await UserRepo.getUserByID(userID);
@@ -428,7 +428,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-      ritUsername: "jd1111",
+        ritUsername: "jd1111",
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -475,7 +475,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-      ritUsername: "jd1111",
+        ritUsername: "jd1111",
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
