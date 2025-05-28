@@ -22,15 +22,6 @@ export function getUsersFullName(user: UserRow) {
 }
 
 /**
- * Hash the university ID
- * @param universityID the universtiy ID to hash
- * @returns the userID as a sha256 hex
- */
-export function hashUniversityID(universityID: string) {
-  return createHash("sha256").update(universityID).digest("hex");
-}
-
-/**
  * Fetch all users in the table
  * @param searchText text to narrow by user name
  * @returns {UserRow[]} users
@@ -91,18 +82,6 @@ export async function getUserByRitUsername(
 }
 
 /**
- * Fetch a user by their University ID
- * @param universityID th user's university ID
- * @returns the user object
- */
-export async function getUserByUniversityID(
-  universityID: string
-): Promise<UserRow | undefined> {
-  const hashedUniversityID = hashUniversityID(universityID);
-  return knex("Users").first().where({ universityID: hashedUniversityID });
-}
-
-/**
  * Fetch a user by the hash on their RIT ID
  * @param cardTagID the hash retrieved from scanning an RIT ID
  * @returns the user object
@@ -132,10 +111,8 @@ export async function createUser(user: {
   firstName: string;
   lastName: string;
   ritUsername: string;
-  universityID: string;
 }): Promise<UserRow> {
   console.log("Creating user entry: " + user.ritUsername);
-  user.universityID = hashUniversityID(user.universityID);
   const [newID] = await knex("Users").insert(user, "id");
   return await getUserByID(newID.id);
 }
@@ -152,7 +129,6 @@ export async function updateStudentProfile(args: {
   expectedGraduation: string;
 }): Promise<UserRow> {
   const user = await getUserByID(args.userID);
-  //user.universityID = hashUniversityID(user.universityID);
 
   if (!user.setupComplete) {
     await createLog("{user} has joined The SHED!", 

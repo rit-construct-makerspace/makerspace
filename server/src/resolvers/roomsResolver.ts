@@ -110,34 +110,6 @@ const RoomResolvers = {
       return ifAllowed([Privilege.STAFF], async () => await RoomRepo.updateZone(args.roomID, args.zoneID));
     },
 
-    /**
-     * Swipe into a Room
-     * @argument roomID ID of room to swipe into
-     * @argument universityID user's Card Tag ID
-     * @returns user or null if failure
-     */
-    swipeIntoRoom: async (
-      _parent: any,
-      args: { roomID: string; universityID: string }
-    ) => {
-      const room = await RoomRepo.getRoomByID(Number(args.roomID));
-      assert(room);
-
-      const user = await UserRepo.getUserByUniversityID(args.universityID);
-
-      if (!user) return null;
-
-      await RoomRepo.swipeIntoRoom(Number(args.roomID), user.id);
-
-      await createLog(
-        "{user} swiped into the {room}.",
-        "welcome",
-        { id: user.id, label: getUsersFullName(user) },
-        { id: room.id, label: room.name }
-      );
-
-      return user;
-    },
     swipeIntoRoomWithID: async (
       _parent: any,
       args: { roomID: string; id: number }

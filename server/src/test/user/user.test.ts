@@ -24,7 +24,6 @@ const GET_USERS = `
             pronouns
             college
             expectedGraduation
-            universityID
         }
     }
 `;
@@ -39,18 +38,16 @@ const GET_USER_BY_ID = `
             pronouns
             college
             expectedGraduation
-            universityID
         }
     }
 `;
 
 const CREATE_USER = `
-    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String, $universityID: String) {
+    mutation CreateUser($firstName: String, $lastName: String, $ritUsername: String) {
         createUser(
             firstName: $firstName
             lastName: $lastName
             ritUsername: $ritUsername
-            universityID: $universityID
           ) {
             id
             firstName
@@ -66,14 +63,12 @@ const UPDATE_STUDENT_PROFILE = `
     $pronouns: String
     $college: String
     $expectedGraduation: String
-    $universityID: String
   ) {
     updateStudentProfile(
       userID: $userID
       pronouns: $pronouns
       college: $college
       expectedGraduation: $expectedGraduation
-      universityID: $universityID
     ) {
       id
     }
@@ -129,8 +124,7 @@ describe("User tests", () => {
         const userID = (await UserRepo.createUser({
             firstName: "John",
             lastName: "Doe",
-            ritUsername: "jd0000",
-            universityID: "123456789"
+          ritUsername: "jd0000",
         })).id;
 
         // Get by ID
@@ -196,8 +190,7 @@ describe("User tests", () => {
     let userRequestData = {
         firstName: "Jane",
         lastName: "Doe",
-        ritUsername: "jd1111",
-        universityID: "123456789"
+      ritUsername: "jd1111",
     }
 
     let createRes: GraphQLResponse = (await server.executeOperation(
@@ -206,8 +199,7 @@ describe("User tests", () => {
             variables: {
                 firstName: userRequestData.firstName,
                 lastName: userRequestData.lastName,
-                ritUsername: userRequestData.ritUsername,
-                universityID: userRequestData.universityID
+              ritUsername: userRequestData.ritUsername,
             }
         },
         {
@@ -238,8 +230,7 @@ describe("User tests", () => {
     const userID: number = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-        ritUsername: "jd1111",
-        universityID: "123456789"
+      ritUsername: "jd1111",
     })).id;
 
     const getUserRes = (await server.executeOperation(
@@ -271,8 +262,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-        ritUsername: "jd1111",
-        universityID: "123456789"
+      ritUsername: "jd1111",
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -295,8 +285,7 @@ describe("User tests", () => {
                 userID: userID,
                 pronouns: "she/her",
                 college: "CAD",
-                expectedGraduation: "2027",
-                universityID: "000000000"
+              expectedGraduation: "2027",
             }
         },
         {
@@ -315,7 +304,6 @@ describe("User tests", () => {
     expect(updatedUser.pronouns).toBe("she/her");
     expect(updatedUser.college).toBe("CAD");
     expect(updatedUser.expectedGraduation).toBe("2027");
-    //expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
   test("MAKER cannot update others", async () => {
@@ -327,8 +315,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-        ritUsername: "jd1111",
-        universityID: "123456789"
+      ritUsername: "jd1111",
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -350,8 +337,7 @@ describe("User tests", () => {
                 userID: userZero.id, // tries to update a different user
                 pronouns: "she/her",
                 college: "CAD",
-                expectedGraduation: "2027",
-                universityID: "222222222"
+              expectedGraduation: "2027",
             }
         },
         {
@@ -396,8 +382,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-        ritUsername: "jd1111",
-        universityID: "123456789"
+      ritUsername: "jd1111",
     })).id;
 
     const user = await UserRepo.getUserByID(userID);
@@ -411,8 +396,7 @@ describe("User tests", () => {
                 userID: userID,
                 pronouns: "she/her",
                 college: "CAD",
-                expectedGraduation: "2027",
-                universityID: "000000000"
+              expectedGraduation: "2027",
             }
         },
         {
@@ -431,7 +415,6 @@ describe("User tests", () => {
     expect(updatedUser.pronouns).toBe("she/her");
     expect(updatedUser.college).toBe("CAD");
     expect(updatedUser.expectedGraduation).toBe("2027");
-    //expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
   test("STAFF update user", async () => {
@@ -445,8 +428,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-        ritUsername: "jd1111",
-        universityID: "123456789"
+      ritUsername: "jd1111",
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
@@ -461,8 +443,7 @@ describe("User tests", () => {
                 userID: userID,
                 pronouns: "she/her",
                 college: "CAD",
-                expectedGraduation: "2027",
-                universityID: "000000000"
+              expectedGraduation: "2027",
             }
         },
         {
@@ -481,7 +462,6 @@ describe("User tests", () => {
     expect(updatedUser.pronouns).toBe("she/her");
     expect(updatedUser.college).toBe("CAD");
     expect(updatedUser.expectedGraduation).toBe("2027");
-    //expect(updatedUser.universityID).toBe(UserRepo.hashUniversityID("000000000"));
   });
 
   test("STAFF archive user", async () => {
@@ -495,8 +475,7 @@ describe("User tests", () => {
     const userID = (await UserRepo.createUser({
         firstName: "Jane",
         lastName: "Doe",
-        ritUsername: "jd1111",
-        universityID: "123456789"
+      ritUsername: "jd1111",
     })).id;
 
     let user = await UserRepo.getUserByID(userID);
