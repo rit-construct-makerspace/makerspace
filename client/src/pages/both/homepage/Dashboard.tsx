@@ -54,17 +54,26 @@ export function Dashboard() {
                 const sortedZones = filteredZone.sort((a: ZoneWithHours, b: ZoneWithHours) => (a.name.toLowerCase().localeCompare(b.name.toLowerCase())));
 
                 return (
-                    <Stack marginTop="30px" direction={isMobile ? "column" : "row"} justifyContent="space-evenly" alignItems="center" spacing={2}>
+                    <Grid
+                        container
+                        marginTop="30px"
+                        justifyContent={isMobile ? "center" : "space-evenly"}
+                        alignItems="center" spacing={2}
+                        width="auto"
+                        marginLeft="0px"
+                    >
                         {sortedZones.map((zone: ZoneWithHours) => (
-                            <ZoneCard 
-                                id={zone.id}
-                                name={zone.name}
-                                hours={zone.hours}
-                                imageUrl={zone.imageUrl == undefined || zone.imageUrl == null || zone.imageUrl == "" ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : zone.imageUrl}
-                                isMobile={isMobile}
-                            />
+                            <Grid marginTop={isMobile ? "10px" : undefined}>
+                                <ZoneCard 
+                                    id={zone.id}
+                                    name={zone.name}
+                                    hours={zone.hours}
+                                    imageUrl={zone.imageUrl == undefined || zone.imageUrl == null || zone.imageUrl == "" ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : zone.imageUrl}
+                                    isMobile={isMobile}
+                                />
+                            </Grid>
                         ))}
-                    </Stack>
+                    </Grid>
                 );
             } }/>
                 
