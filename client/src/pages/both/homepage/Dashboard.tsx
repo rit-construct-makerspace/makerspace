@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Alert, Box, Divider, Grid, IconButton, Stack } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Typography from "@mui/material/Typography";
@@ -48,19 +48,26 @@ export function Dashboard() {
         <Box>
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
             {/* Zones */}
-            <RequestWrapper loading={getZonesResult.loading} error={getZonesResult.error}>
-                <Stack marginTop="30px" direction={isMobile ? "column" : "row"} justifyContent="space-evenly" alignItems="center" spacing={2}>
-                    {getZonesResult.data?.zones.map((zone: ZoneWithHours) => (
-                        <ZoneCard 
-                            id={zone.id}
-                            name={zone.name}
-                            hours={zone.hours}
-                            imageUrl={zone.imageUrl == undefined || zone.imageUrl == null || zone.imageUrl == "" ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : zone.imageUrl}
-                            isMobile={isMobile}
-                        />
-                    ))}
-                </Stack>
-            </RequestWrapper>
+            <RequestWrapper2 result={getZonesResult} render={(data) => {
+                const zones: ZoneWithHours[] = data.zones;
+                const filteredZone: ZoneWithHours[] = zones.filter((zone: ZoneWithHours) => true); // TODO: grab the 'archieved' field from the db and check it (more logic than that required)
+                const sortedZones = filteredZone.sort((a: ZoneWithHours, b: ZoneWithHours) => (a.name.toLowerCase().localeCompare(b.name.toLowerCase())));
+
+                return (
+                    <Stack marginTop="30px" direction={isMobile ? "column" : "row"} justifyContent="space-evenly" alignItems="center" spacing={2}>
+                        {sortedZones.map((zone: ZoneWithHours) => (
+                            <ZoneCard 
+                                id={zone.id}
+                                name={zone.name}
+                                hours={zone.hours}
+                                imageUrl={zone.imageUrl == undefined || zone.imageUrl == null || zone.imageUrl == "" ? process.env.PUBLIC_URL + "/shed_acronym_vert.jpg" : zone.imageUrl}
+                                isMobile={isMobile}
+                            />
+                        ))}
+                    </Stack>
+                );
+            } }/>
+                
             {/* Announcments */}
             <RequestWrapper loading={getAnnouncementsResult.loading} error={getAnnouncementsResult.error}>
                 <>
