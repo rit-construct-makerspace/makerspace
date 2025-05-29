@@ -90,6 +90,8 @@ export default function AnnouncementModalContents({
               value={announcementDraft.description ?? ""}
               error={inputErrors.description}
               onChange={handleStringChange("description")}
+              multiline
+              minRows={3}
             />
           </Stack>
         </Stack>
