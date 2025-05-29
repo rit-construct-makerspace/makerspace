@@ -216,6 +216,7 @@ export interface UserRow {
   cardTagID: string;
   notes: string;
   activeHold: boolean;
+  admin: boolean;
 }
 
 export interface ReaderRow {
@@ -310,6 +311,30 @@ export interface ToolItemInstancesRow {
   borrowedAt: Date | null;
 }
 
+export interface ManagerRow {
+  userID: number;
+  makerspaceID: number;
+}
+
+export interface StaffRow {
+  userID: number;
+  makerspaceID: number;
+}
+
+export interface TrainerRow {
+  userID: number;
+  equipmentID: number;
+}
+
+export interface RestrictionRow {
+  id: number;
+  creatorID: number | null;
+  userID: number;
+  makerspaceID: number;
+  reason: string;
+  createDate: Date | null;
+}
+
 declare module "knex/types/tables.js" {
   interface Tables {
     AuditLogs: AuditLogRow;
@@ -340,5 +365,9 @@ declare module "knex/types/tables.js" {
     MaintenanceTags: MaintenanceTagRow;
     ToolItemTypes: ToolItemTypesRow;
     ToolItemInstances: ToolItemInstancesRow;
+    Managers: ManagerRow;
+    Staff: StaffRow;
+    Trainers: TrainerRow;
+    Restrictions: RestrictionRow;
   }
 }
