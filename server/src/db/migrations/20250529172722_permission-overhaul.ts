@@ -31,7 +31,7 @@ export async function up(knex: Knex): Promise<void> {
             t.integer("makerspaceID").references("id").inTable("Zones").notNullable()
                 .onUpdate("CASCADE")
                 .onDelete("CASCADE");
-            t.primary(["userID, makerspaceID"]);
+            t.primary(["userID", "makerspaceID"]);
         })
     }
     
