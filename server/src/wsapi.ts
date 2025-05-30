@@ -113,12 +113,8 @@ interface ConnectionData {
 function sendToShlugRaw(connData: ConnectionData, data: string) {
 
     const now = new Date();
-    const sinceSentMillis = now.getUTCMilliseconds() - (connData.timeLastSent?.getUTCMilliseconds() ?? 0)
-    if (sinceSentMillis < 1000) {
-        setTimeout(() => connData.ws.send(data), (1000 - sinceSentMillis));
-    } else {
-        connData.ws.send(data);
-    }
+    connData.timeLastSent = now;
+    connData.ws.send(data);
 
 }
 
@@ -169,6 +165,7 @@ function initConnectionData(ws: ws.WebSocket): ConnectionData {
  * @returns the response message
  */
 async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResponse): Promise<ShlugResponse> {
+    console.log("Start AUtorizing", new Date().getUTCMilliseconds());
     try {
         const reader = await getReaderByID(readerId);
         if (reader == null) {
