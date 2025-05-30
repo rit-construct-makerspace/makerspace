@@ -26,6 +26,9 @@ const MIN_SESSION_LENGTH = 15
  */
 var slugPool: Map<number, ConnectionData> = new Map();
 
+function stringSlugPool() {
+    return JSON.stringify(Array.from(slugPool.entries()))
+}
 
 /** 
  * adds a connection to the pool such that it can be communicated with
@@ -33,8 +36,8 @@ var slugPool: Map<number, ConnectionData> = new Map();
  */
 async function addOrUpdateConnection(connData: ConnectionData) {
     if (connData.readerId == null) {
-        console.error(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${slugPool}`)
-        wsApiDebugLog(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${slugPool}`, "status");
+        console.error(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${stringSlugPool()}`)
+        wsApiDebugLog(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${stringSlugPool()}`, "status");
         return;
     }
     slugPool.set(connData.readerId, connData);
@@ -46,8 +49,8 @@ async function addOrUpdateConnection(connData: ConnectionData) {
  */
 function removeConnection(connData: ConnectionData): boolean {
     if (connData.readerId == null || !slugPool.has(connData.readerId)) {
-        console.error(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${JSON.stringify(slugPool.entries())}`);
-        wsApiDebugLog(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${JSON.stringify(slugPool.entries())}`, "status");
+        console.error(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`);
+        wsApiDebugLog(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`, "status");
         return false;
     }
     return slugPool.delete(connData.readerId);
@@ -62,7 +65,7 @@ function removeConnection(connData: ConnectionData): boolean {
 export function sendState(readerId: number, state: string): string {
     let connData = slugPool.get(readerId);
     if (connData == null) {
-        console.error(`WSACS: Couldn't find shlug with id ${readerId} \n in pool ${JSON.stringify(slugPool.entries())}`)
+        console.error(`WSACS: Couldn't find shlug with id ${readerId} \n in pool ${stringSlugPool()}`)
         return "not found";
     }
     sendToShlugUnprompted(connData, { "State": state });
