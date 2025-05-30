@@ -34,11 +34,13 @@ var slugPool: Map<number, ConnectionData> = new Map();
 async function addConnection(connData: ConnectionData) {
     if (connData.readerId == null) {
         console.error(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${slugPool}`)
+        wsApiDebugLog(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${slugPool}`, "status");
         return;
     }
     if (connData.readerId in slugPool.keys()) {
         const reader = await getReaderByID(connData.readerId);
         console.error(`WSACS: Attempted to add duplicate id to slug pool (id: ${connData.readerId}, name: ${reader?.name ?? "unknown name"}). Possible shlug configuration issue?`);
+        wsApiDebugLog(`WSACS: Attempted to add duplicate id to slug pool (id: ${connData.readerId}, name: ${reader?.name ?? "unknown name"}). Possible shlug configuration issue?`, deb);
         return;
     }
     slugPool.set(connData.readerId, connData);
@@ -51,6 +53,7 @@ async function addConnection(connData: ConnectionData) {
 function removeConnection(connData: ConnectionData): boolean {
     if (connData.readerId == null || !slugPool.has(connData.readerId)) {
         console.error(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${slugPool}`);
+        wsApiDebugLog(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${slugPool}`, "status");
         return false;
     }
     return slugPool.delete(connData.readerId);
@@ -220,7 +223,7 @@ async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResp
         //Staff bypass. Skip Welcome and training check.
         if (user.privilege == Privilege.STAFF) {
             wsApiLog("{user} has activated {access_device} - {equipment} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: reader?.id, label: reader?.name }, { id: machine.id, label: machine.name });
-            createEquipmentSession(machine.id, user.id, reader.machineID?.toString() ?? undefined);
+            createEquipmentSession(machine.id, user.id, reader.name ?? undefined);
             inResponse.Verified = 1;
             return inResponse;
         }
@@ -278,10 +281,10 @@ async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResp
         // Success
         wsApiLog("{user} has activated {machine} - {equipment}", "auth",
             { id: user.id, label: getUsersFullName(user) },
-            { id: machine.id, label: reader.machineID?.toString() ?? "undefined" },
+            { id: machine.id, label: reader?.machineID?.toString() ?? "undefined" },
             { id: machine.id, label: machine.name });
 
-        createEquipmentSession(machine.id, user.id, reader.machineID.toString());
+        createEquipmentSession(machine.id, user.id, reader.name);
         inResponse.Verified = 1;
         return inResponse;
     } catch (err) {
@@ -567,6 +570,7 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
         };
 
         ws.onerror = function (ev: ws.ErrorEvent) {
+            wsApiDebugLog(`WSACS: Websocket unrecoverable: ${e}`, "status")
             console.error(`WSACS: websocket error ${ev.error} - ${ev.type}: ${ev.message}`)
             ws.close(4000, "got unrecoverable error");
         }
@@ -615,12 +619,14 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                     replyToShlug(connData, response, shlugMessage.Seq);
                 }
             } catch (e: any) {
+                wsApiDebugLog(`WSACS: Message Exception: ${e}`, "status");
                 console.error(`WSACS: Message Exception: ${e}: ${e?.stack}`)
             }
 
         }
 
     } catch (e) {
+        wsApiDebugLog(`WSACS: Exception: ${e}`, "status");
         console.error(`WSACS: Exception: ${e}`)
     }
 }
