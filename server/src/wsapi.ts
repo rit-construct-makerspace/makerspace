@@ -33,7 +33,7 @@ var slugPool: Map<number, ConnectionData> = new Map();
  */
 async function addConnection(connData: ConnectionData) {
     if (connData.readerId == null) {
-        console.error("WSACS: Attempting to add invalid connection to active connections")
+        console.error(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${slugPool}`)
         return;
     }
     if (connData.readerId in slugPool.keys()) {
@@ -50,7 +50,7 @@ async function addConnection(connData: ConnectionData) {
  */
 function removeConnection(connData: ConnectionData): boolean {
     if (connData.readerId == null || !slugPool.has(connData.readerId)) {
-        console.error("WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool")
+        console.error(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${slugPool}`);
         return false;
     }
     return slugPool.delete(connData.readerId);
@@ -65,6 +65,7 @@ function removeConnection(connData: ConnectionData): boolean {
 export function sendState(readerId: number, state: string): string {
     let connData = slugPool.get(readerId);
     if (connData == null) {
+        console.error(`WSACS: Couldn't find shlug with id ${readerId} \n in pool ${JSON.stringify(slugPool)}`)
         return "not found";
     }
     sendToShlugUnprompted(connData, { "State": state });
@@ -165,7 +166,6 @@ function initConnectionData(ws: ws.WebSocket): ConnectionData {
  * @returns the response message
  */
 async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResponse): Promise<ShlugResponse> {
-    console.log("Start AUtorizing", new Date().getUTCMilliseconds());
     try {
         const reader = await getReaderByID(readerId);
         if (reader == null) {
@@ -402,7 +402,6 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         }
         wsApiDebugLog(`WSACS: Missing fields in boot message. Got ${JSON.stringify(message)}`, "status");
         ws.close(4000, "Invalid Fields");
-        console.log("Invalid fields");
         return false;
     }
 
