@@ -5,13 +5,14 @@
 
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository.js";
-import { ApolloContext } from "../context.js";
+import { ApolloContext, CurrentUser } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { EquipmentRow } from "../db/tables.js";
 import { EquipmentInput } from "../schemas/equipmentSchema.js";
 import { getNumUnavailableReadersByEquipment, getNumIdleReadersByEquipment } from "../repositories/Readers/ReaderRepository.js";
+import { GraphQLError } from "graphql";
 
 
 const EquipmentResolvers = {
@@ -61,8 +62,8 @@ const EquipmentResolvers = {
      * @returns all hidden Equipment
      * @throws GraphQLError if not MENTOR or STAFF or is on hold
      */
-    archivedEquipments: async (_parent: any, _args: any, { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+    archivedEquipments: async (_parent: any, _args: any, { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await EquipmentRepo.getEquipmentWhereArchived(true);
       }),
 
@@ -72,8 +73,8 @@ const EquipmentResolvers = {
      * @returns Equipment
      * @throws GraphQLError if not MENTOR or STAFF or is on hold
      */
-    archivedEquipment: async (_parent: any, args: { id: string }, { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+    archivedEquipment: async (_parent: any, args: { id: string }, { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await EquipmentRepo.getEquipmentByIDWhereArchived(Number(args.id), true);
       }),
 
@@ -124,9 +125,14 @@ const EquipmentResolvers = {
     addEquipment: async (
       _parent: any,
       args: { equipment: EquipmentInput },
-      { ifAllowed }: ApolloContext
+      { isManager }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async (user: any) => {
+      isManager(async (user: CurrentUser) => {
+        const room = await RoomRepo.getRoomByID(args.equipment.roomID);
+        if (!user.manager.includes(room?.zoneID ?? -1) && !user.admin) {
+          throw new GraphQLError(`No Privilege for Makerspace ${room?.zoneID ?? -1}`);
+        }
+
         const equipment = await EquipmentRepo.addEquipment(args.equipment);
 
         await createLog(
@@ -149,8 +155,12 @@ const EquipmentResolvers = {
     updateEquipment: async (
       _: any,
       args: { id: string; equipment: EquipmentInput },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async (user: CurrentUser) => {
+        const room = await RoomRepo.getRoomByID(args.equipment.roomID);
+        if (!user.manager.includes(room?.zoneID ?? -1) && !user.admin) {
+          throw new GraphQLError(`Insufficent Privilege for Makerspace ${room?.zoneID}`)
+        }
         console.log(args.equipment)
         return await EquipmentRepo.updateEquipment(Number(args.id), args.equipment);
     }),
@@ -162,8 +172,8 @@ const EquipmentResolvers = {
      * @throws GraphQLError if not STAFF or MENTOR or is on hold
      */
     archiveEquipment: async (_: any, args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async (user: CurrentUser) => {
         return await EquipmentRepo.setEquipmentArchived(args.id, true);
     }),
 
@@ -174,8 +184,8 @@ const EquipmentResolvers = {
      * @throws GraphQLError if not STAFF or MENTOR or is on hold
      */
     publishEquipment: async (_: any, args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async (user: CurrentUser) => {
         return await EquipmentRepo.setEquipmentArchived(args.id, false);
     }),
   },
