@@ -7,9 +7,6 @@ import { knex } from "../../db/index.js";
 import { createLog } from "../AuditLogs/AuditLogRepository.js";
 import { EntityNotFound } from "../../EntityNotFound.js";
 import { UserRow } from "../../db/tables.js";
-import { createHash } from "crypto";
-import { use } from "passport";
-import { User } from "@node-saml/passport-saml/lib/types.js";
 
 
 /**
@@ -231,4 +228,31 @@ export async function archiveUser(userID: number): Promise<UserRow> {
  */
 export async function getNumUsers(): Promise<string> {
   return (await knex("Users").count("*"))[0];
+}
+
+/**
+ * Get all the makerspaceIDs for which the given user is a manager
+ * @param userID the user to get all the manager perms for
+ * @returns number[] of makerspaceIDs
+ */
+export async function getUserManagerPerms(userID: number): Promise<number[]> {
+  return await knex("Managers").where({userID: userID}).select("makerspaceID");
+}
+
+/**
+ * Get all makerspaceIDs for which the given user is a staff
+ * @param userID the user to get all the staff perms for
+ * @returns number[] of makerpsaceIDs
+ */
+export async function getUserStaffPerms(userID: number): Promise<number[]> {
+  return await knex("Staff").where({userID: userID}).select("makerspaceID");
+}
+
+/**
+ * Get all equipmentIDs for which the given user is a trainer
+ * @param userID the user to get all the trainer perms for
+ * @returns number[] of equipmentIDs
+ */
+export async function getUserTrainerPerms(userID: number): Promise<number[]> {
+  return await knex("Trainers").where({userID: userID}).select("equipmentID");
 }
