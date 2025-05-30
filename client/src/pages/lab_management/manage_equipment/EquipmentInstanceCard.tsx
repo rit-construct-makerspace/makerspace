@@ -18,6 +18,7 @@ import HourglassFullIcon from '@mui/icons-material/HourglassFull';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ReportProblemIcon from '@mui/icons-material/ReportProblemSharp';
 import StarsIcon from '@mui/icons-material/Stars';
+import PendingIcon from '@mui/icons-material/Pending';
 
 interface EquipmentInstanceCardProps {
     instance: EquipmentInstance;
@@ -109,6 +110,8 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                 return <Tooltip title="Restart"><ReportProblemIcon color="error" /></Tooltip>;
             case "AlwaysOn":
                 return <Tooltip title="Restart"><StarsIcon color="success" /></Tooltip>;
+            case "Startup":
+                return <Tooltip title="Startup"><PendingIcon color="info" /></Tooltip>;
             default:
                 return <Tooltip title="Unknown State"><QuestionMarkIcon color="secondary" /></Tooltip>
         }
@@ -135,14 +138,6 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                             </>
                     }
                 </Stack>
-                <Select size="small" defaultValue={props.instance.status} value={status} onChange={handleStatusChange}>
-                    <MenuItem value={InstanceStatus.ACTIVE}>{InstanceStatus.ACTIVE}</MenuItem>
-                    <MenuItem value={InstanceStatus.NEEDS_REPAIRS}>{InstanceStatus.NEEDS_REPAIRS}</MenuItem>
-                    <MenuItem value={InstanceStatus.UNDER_REPAIRS}>{InstanceStatus.UNDER_REPAIRS}</MenuItem>
-                    <MenuItem value={InstanceStatus.TESTING}>{InstanceStatus.TESTING}</MenuItem>
-                    <MenuItem value={InstanceStatus.UNDEPLOYED}>{InstanceStatus.UNDEPLOYED}</MenuItem>
-                    <MenuItem value={InstanceStatus.RETIRED}>{InstanceStatus.RETIRED}</MenuItem>
-                </Select>
                 {
                     allowEdit
                         ? <Autocomplete
@@ -161,9 +156,6 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                                 <span>Paired with: <Link href="/app/admin/readers">{reader.name}</Link></span>
                                 : <Alert severity="warning" variant="filled">No Reader Paired</Alert>}
                         </Typography>
-                }
-                {
-                    currentState
                 }
                 <Stack direction="row" justifyContent="space-between" alignItems={"center"} spacing={1}>
                     {
