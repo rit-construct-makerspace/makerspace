@@ -165,7 +165,6 @@ function initConnectionData(ws: ws.WebSocket): ConnectionData {
  * @returns the response message
  */
 async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResponse): Promise<ShlugResponse> {
-    console.log("Start AUtorizing", new Date().getUTCMilliseconds());
     try {
         const reader = await getReaderByID(readerId);
         if (reader == null) {
@@ -402,7 +401,6 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         }
         wsApiDebugLog(`WSACS: Missing fields in boot message. Got ${JSON.stringify(message)}`, "status");
         ws.close(4000, "Invalid Fields");
-        console.log("Invalid fields");
         return false;
     }
 
