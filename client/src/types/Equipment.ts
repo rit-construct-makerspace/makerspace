@@ -9,6 +9,8 @@ export default interface Equipment {
   numAvailable: number;
   numInUse: number;
   byReservationOnly: boolean;
+  needsWelcome?: boolean;
+  readerID?: number;
   notes: string;
   archived: boolean;
 }

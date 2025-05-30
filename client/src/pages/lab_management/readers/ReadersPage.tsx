@@ -1,20 +1,23 @@
 import { useQuery } from "@apollo/client";
 import { GET_READERS, Reader } from "../../../queries/readersQueries";
-import { Grid, Stack } from "@mui/material";
+import { Button, Grid, Stack } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { ObjectSummary } from "../../../types/Common";
 import { useState } from "react";
 import ReaderCard from "./ReaderCard";
 import AdminPage from "../../AdminPage";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import AddIcon from '@mui/icons-material/Add';
 
 
 export default function ReadersPage() {
   const getReadersResult = useQuery(GET_READERS, {pollInterval: 2000});
 
   const url = "/admin/readers";
+  const user = useCurrentUser();
+  const navigate = useNavigate();
 
   const [searchText, setSearchText] = useState("");
 
@@ -26,6 +29,11 @@ export default function ReadersPage() {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
+        {
+          user.privilege === "STAFF" ? 
+          <Button color="success" variant="contained" onClick={()=>{navigate("/admin/newreader")}}><AddIcon/>Pair New Reader</Button> 
+          : null
+        }
       </Stack>
 
       <RequestWrapper
@@ -43,7 +51,7 @@ export default function ReadersPage() {
                 zone={e.zone} temp={e.temp} state={e.state} userID={e.user?.id} userName={e.user != null ? e.user.firstName + " " + e.user.lastName : null}
                 recentSessionLength={e.recentSessionLength} lastStatusReason={e.lastStatusReason} 
                 scheduledStatusFreq={e.scheduledStatusFreq} lastStatusTime={e.lastStatusTime} helpRequested={e.helpRequested}
-                BEVer={e.BEVer} FEVer={e.FEVer} HWVer={e.HWVer} />
+                BEVer={e.BEVer} FEVer={e.FEVer} HWVer={e.HWVer} SN={e.SN}/>
             </Grid>
           ))}
         </Grid>

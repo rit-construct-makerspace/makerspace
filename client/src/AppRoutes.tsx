@@ -33,6 +33,7 @@ import UserSettingsPage from "./pages/both/user_page/user_settings/UserSettingsP
 import UserTraingingsPage from "./pages/both/user_page/user_trainings/UserTrainingsPage";
 import TopNav from "./top_nav/TopNav";
 import MakerspacePage from "./pages/makerspace_page/MakerspacePage";
+import NewReaderPage from "./pages/newreaderpage/NewReaderPage";
 import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
 
 // This is where we map the browser's URL to a
@@ -101,6 +102,7 @@ export default function AppRoutes() {
           <Route path="/admin/history" element={<AuditLogsPage />} />
 
           <Route path="/admin/readers" element={<ReadersPage />} />
+          <Route path="/admin/newreader" element={<NewReaderPage />} />
 
           <Route path="/admin/statistics" element={<StatisticsPage />} />
 
