@@ -31,16 +31,10 @@ var slugPool: Map<number, ConnectionData> = new Map();
  * adds a connection to the pool such that it can be communicated with
  * @param connData connection data associated with the shlug
  */
-async function addConnection(connData: ConnectionData) {
+async function addOrUpdateConnection(connData: ConnectionData) {
     if (connData.readerId == null) {
         console.error(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${slugPool}`)
         wsApiDebugLog(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${slugPool}`, "status");
-        return;
-    }
-    if (connData.readerId in slugPool.keys()) {
-        const reader = await getReaderByID(connData.readerId);
-        console.error(`WSACS: Attempted to add duplicate id to slug pool (id: ${connData.readerId}, name: ${reader?.name ?? "unknown name"}). Possible shlug configuration issue?`);
-        wsApiDebugLog(`WSACS: Attempted to add duplicate id to slug pool (id: ${connData.readerId}, name: ${reader?.name ?? "unknown name"}). Possible shlug configuration issue?`, "status");
         return;
     }
     slugPool.set(connData.readerId, connData);
@@ -52,8 +46,8 @@ async function addConnection(connData: ConnectionData) {
  */
 function removeConnection(connData: ConnectionData): boolean {
     if (connData.readerId == null || !slugPool.has(connData.readerId)) {
-        console.error(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${slugPool}`);
-        wsApiDebugLog(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${slugPool}`, "status");
+        console.error(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${JSON.stringify(slugPool.entries())}`);
+        wsApiDebugLog(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${JSON.stringify(slugPool.entries())}`, "status");
         return false;
     }
     return slugPool.delete(connData.readerId);
@@ -68,7 +62,7 @@ function removeConnection(connData: ConnectionData): boolean {
 export function sendState(readerId: number, state: string): string {
     let connData = slugPool.get(readerId);
     if (connData == null) {
-        console.error(`WSACS: Couldn't find shlug with id ${readerId} \n in pool ${JSON.stringify(slugPool)}`)
+        console.error(`WSACS: Couldn't find shlug with id ${readerId} \n in pool ${JSON.stringify(slugPool.entries())}`)
         return "not found";
     }
     sendToShlugUnprompted(connData, { "State": state });
@@ -281,7 +275,7 @@ async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResp
         // Success
         wsApiLog("{user} has activated {machine} - {equipment}", "auth",
             { id: user.id, label: getUsersFullName(user) },
-            { id: machine.id, label: reader?.machineID?.toString() ?? "undefined" },
+            { id: reader.id, label: reader.name ?? "undefined" },
             { id: machine.id, label: machine.name });
 
         createEquipmentSession(machine.id, user.id, reader.name);
@@ -590,9 +584,10 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                         return;
                     }
                     // Successfully read bootup message. Add this to available connections
-                    addConnection(connData);
+                    addOrUpdateConnection(connData);
                 }
 
+                addOrUpdateConnection(connData);
                 // Get reader that was setup by handleBootupMessage
                 var reader = await getReaderByID(connData.readerId ?? 0);
                 if (reader == null) {
