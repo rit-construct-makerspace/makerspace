@@ -46,9 +46,12 @@ export default function NewReaderPage() {
             return;
         }
         var obj: any = {};
-        obj["Site"] = resp.data.pairReader.siteName;
+        obj["Server"] = resp.data.pairReader.siteName;
         obj["Key"] = resp.data.pairReader.readerKey;
-        
+
+        obj["SSID"] = SSID;
+        obj["Password"] = Password;
+
         setServerJSON(JSON.stringify(obj));
         setCert(resp.data.pairReader.certs);
         setHumanName(resp.data.pairReader.name);
