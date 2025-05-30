@@ -32,7 +32,7 @@ export interface EquipmentInstancesRow {
   equipmentID: number;
   name: string;
   status: string;
-  readerId?: number
+  readerID: number | null
 }
 
 export interface MaintenanceLogRow {

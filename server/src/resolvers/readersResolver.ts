@@ -76,6 +76,19 @@ const ReadersResolver = {
       }),
 
     /**
+     * Fetch all Websocket Readers that are not paired with a machine instance
+     * @returns non paired readers
+     * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     */
+    unpairedReaders: async (
+      _parent: any,
+      _args: any,
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await ReaderRepo.getUnpairedReaders();
+      }),
+
+      /**
      * Fetch Reader by ID
      * @argument id ID of Reader
      * @returns Reader

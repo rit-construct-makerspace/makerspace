@@ -48,6 +48,64 @@ export const GET_READERS = gql`
       SN
     }
   }
+`;
+export const GET_READER_BY_ID = gql`
+  query GetReaderByID($id: ID!) {
+    reader(id: $id) {
+      id
+      machineID
+      machineType
+      name
+      zone
+      temp
+      state
+      user {
+        id
+        firstName
+        lastName
+      }
+      recentSessionLength
+      lastStatusReason
+      scheduledStatusFreq
+      lastStatusTime
+      helpRequested
+      BEVer
+      FEVer
+      HWVer
+      sessionStartTime
+      SN
+    }
+  }
+`;
+
+
+export const GET_UNPAIRED_READERS = gql`
+  query GetUnpairedReaders {
+    unpairedReaders {
+      id
+      machineID
+      machineType
+      name
+      zone
+      temp
+      state
+      user {
+        id
+        firstName
+        lastName
+      }
+      recentSessionLength
+      lastStatusReason
+      scheduledStatusFreq
+      lastStatusTime
+      helpRequested
+      BEVer
+      FEVer
+      HWVer
+      sessionStartTime
+      SN
+    }
+  }
 `
 
 export const CREATE_READER = gql`

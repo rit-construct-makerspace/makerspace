@@ -21,6 +21,9 @@ const API_DEBUG_LOGGING = process.env.API_DEBUG_LOGGING == "true";
 
 const MIN_SESSION_LENGTH = 15
 
+/**
+ * Pool of active shlugs to send info to
+ */
 var slugPool: Map<number, ConnectionData> = new Map();
 
 
@@ -53,6 +56,12 @@ function removeConnection(connData: ConnectionData): boolean {
     return slugPool.delete(connData.readerId);
 }
 
+/**
+ * Sends a state to a shlug
+ * @param readerId reader to send the state to
+ * @param state the string representing the target state
+ * @returns text description of success or failure
+ */
 export function sendState(readerId: number, state: string): string {
     let connData = slugPool.get(readerId);
     if (connData == null) {
@@ -98,6 +107,27 @@ interface ConnectionData {
     toShlugSeqNum: number
     timeLastSent?: Date
 }
+
+// Sends a message to the shlug taking into account the time between messages 
+// The shlug cannot handle messages more often than ~1 a second
+function sendToShlugRaw(connData: ConnectionData, data: string) {
+
+    const now = new Date();
+    const sinceSentMillis = now.getUTCMilliseconds() - (connData.timeLastSent?.getUTCMilliseconds() ?? 0)
+    if (sinceSentMillis < 1000) {
+        setTimeout(() => connData.ws.send(data), (1000 - sinceSentMillis));
+    } else {
+        connData.ws.send(data);
+    }
+
+}
+
+/**
+ * Send a message from the server to the shlug
+ * Used for things such as sending state, reconfiguring
+ * @param connData State data for this connection
+ * @param data the data to send. A sequence number will be added to this
+ */
 function sendToShlugUnprompted(connData: ConnectionData, data: any) {
 
     const seqNum = connData.toShlugSeqNum;
@@ -105,23 +135,39 @@ function sendToShlugUnprompted(connData: ConnectionData, data: any) {
     connData.toShlugSeqNum++;
     const s: string = JSON.stringify(data);
 
-    connData.timeLastSent = new Date();
-    connData.ws.send(s);
+    sendToShlugRaw(connData, s);
 }
 
+/**
+ * 
+ * @param connData State data for this connection
+ * @param data the data to send. A sequence number will be added to this 
+ * @param replyTo the message number to respond to
+ */
 function replyToShlug(connData: ConnectionData, data: any, replyTo: number) {
     connData.timeLastSent = new Date();
     var toSend = data as ShlugResponse;
     toSend.Seq = replyTo;
 
-    connData.ws.send(JSON.stringify(toSend));
+    sendToShlugRaw(connData, JSON.stringify(toSend));
 }
 
+/**
+ * Create a new connection state for a web socket
+ * @param ws the websocket handle for this reader
+ * @returns the new ConnectionData to work with
+ */
 function initConnectionData(ws: ws.WebSocket): ConnectionData {
     return { ws: ws, toShlugSeqNum: 0, currentState: "Idle", alreadyComplainedAboutInvalidReader: false };
 }
 
-
+/**
+ * Check if a user is authorized to use a machine
+ * @param uid the *CARD* UID to check for
+ * @param readerId the ID of the reader that is being checked
+ * @param inResponse the response so far to add to
+ * @returns the response message
+ */
 async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResponse): Promise<ShlugResponse> {
     try {
         const reader = await getReaderByID(readerId);
@@ -163,8 +209,13 @@ async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResp
 
         // Find Machine
         if (machine == null) {
-            wsApiLog("{user} failed to swipe into  a machine with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: 406, label: `Machine ${reader.machineID} does not exist` });
-            inResponse.Error = "Machine does not exist";
+            if (reader?.SN == null) {
+                wsApiLog("{user} failed to swipe into a machine with error '{error}'", "auth", { id: user.id, label: getUsersFullName(user) }, { id: reader.machineID, label: `Machine ${reader.machineID} does not exist` });
+                inResponse.Error = "Machine does not exist";
+            } else {
+                wsApiLog("{user} failed to swipe into a machine: Reader {access_device} is not paired with a machine instance", "auth", { id: user.id, label: getUsersFullName(user) }, { id: readerId, label: reader?.name });
+                inResponse.Error = "Reader not paired with a machine instance";
+            }
             inResponse.Reason = "unknown-machine";
             return inResponse;
         }
@@ -226,8 +277,6 @@ async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResp
             inResponse.Reason = "no-approval";
             return inResponse;
         }
-
-
 
         // Success
         wsApiLog("{user} has activated {machine} - {equipment}", "auth",
@@ -328,7 +377,10 @@ function validateShlugMessage(ev: ws.MessageEvent, req: Request): ShlugMessage |
     return jdata;
 }
 
-
+/**
+ * Generates a human readable name for a reader
+ * @returns a uniquely generated adjective-color-slug name
+ */
 async function generateUniqueHumanName() {
     const RANDOM_TRIES = 10;
     for (var i = 0; i < RANDOM_TRIES; i++) {
@@ -339,7 +391,6 @@ async function generateUniqueHumanName() {
     }
     return `${generateRandomHumanName()}-${randomInt(1000)}`
 }
-
 
 /**
  * Parses and handles the initial informational message sent by the shlug identifying itself
@@ -390,7 +441,6 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
             wsApiLog("New Access Device {access_device} registered", "status", { id: reader?.id, label: reader?.name })
         }
     }
-    wsApiLog(`WSACS: Opened connection to {access_device}`, "status", { id: reader?.id ?? 0, label: reader?.name ?? "unknown name" })
     connData.readerId = reader.id;
 
     // update with new info
@@ -452,12 +502,20 @@ async function handleStateTransition(reader: ReaderRow, newState: string, active
         if (oldState == "Unlocked" && reader.recentSessionLength > MIN_SESSION_LENGTH) {
             // end last session normally
             reader.currentUID = activeUID ?? '';
-            const equipment = await getEquipmentByID(parseInt(reader.machineType));
+            const timeString = new Date(reader.recentSessionLength * 1000).toISOString().slice(11, 19);
+
+            const instance = await getInstanceByReaderID(reader.id);
+            if (instance == null) {
+                if (user != null) {
+                    await createLog(`{user} signed out of reader that was not paired with any instance (Unpaired while in use) (Session: ${timeString})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: reader.name ?? "undefined" });
+                }
+            } else {
+                const equipment = await getEquipmentByID(instance?.equipmentID);
             // Update equipment session that was created when we authed
-            await setLatestEquipmentSessionLength(parseInt(reader.machineType), reader.recentSessionLength, reader.name);
-            if (user != null) {
-                const timeString = new Date(reader.recentSessionLength * 1000).toISOString().slice(11, 19);
-                await createLog(`{user} signed out of {machine} - {equipment} (Session: ${timeString})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: reader.name ?? "undefined" }, { id: equipment.id, label: equipment.name });
+                await setLatestEquipmentSessionLength(equipment.id, reader.recentSessionLength, reader.name);
+                if (user != null) {
+                    await createLog(`{user} signed out of {machine} - {equipment} (Session: ${timeString})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: reader.name ?? "undefined" }, { id: equipment.id, label: equipment.name });
+                }
             }
         }
     }
@@ -473,7 +531,12 @@ async function handleStateTransition(reader: ReaderRow, newState: string, active
     await updateReaderStatus(reader);
 
 }
-
+/**
+ * Check if we need to send a response
+ * If nothing was asked for, no need to send it
+ * @param resp the message to check
+ * @returns true if we should send this message to the reader
+ */
 function isReplyWorthSending(resp: ShlugResponse): boolean {
     if (resp.Verified || resp.Auth || resp.Error || resp.Reason || resp.Role || resp.State || resp.Time) {
         return true
@@ -523,7 +586,7 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                 if (shlugMessage.Seq === 0) {
                     // Bootup message
                     if (!await handleBootupMessage(connData, shlugMessage, ws, req?.ip ?? "unknown ip")) {
-                    // failed to setup  
+                        // failed to setup  
                         return;
                     }
                     // Successfully read bootup message. Add this to available connections
@@ -555,8 +618,8 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                 if (isReplyWorthSending(response)) {
                     replyToShlug(connData, response, shlugMessage.Seq);
                 }
-            } catch (e) {
-                console.error(`WSACS: Message Exception: ${e}: ${e.stack}`)
+            } catch (e: any) {
+                console.error(`WSACS: Message Exception: ${e}: ${e?.stack}`)
             }
 
         }

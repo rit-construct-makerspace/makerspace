@@ -55,6 +55,17 @@ export async function getReaders(): Promise<ReaderRow[]> {
 }
 
 /**
+ * Fetch unpaired card readers
+ * @return list of readers that are not paired with an instance 
+ */
+export async function getUnpairedReaders(): Promise<ReaderRow[]> {
+    return await knex("Readers").select("Readers.*")
+        .leftJoin("EquipmentInstances", "Readers.id", "EquipmentInstances.readerID")
+        .whereNotNull("SN").andWhere(function () { this.whereNull("EquipmentInstances.readerID") })
+        .orderBy("Readers.name", "desc").orderBy("Readers.id", "asc")
+}
+
+/**
  * Get number of idle ACS readers
  * @param machineID the equipment ID to find readers for
  * @returns number of reader rows where status="Idle"

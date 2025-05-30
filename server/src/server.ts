@@ -33,7 +33,6 @@ import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repos
 import { setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 import { ReaderRow } from "./db/tables.js";
 import { ws_acs_api } from "./wsapi.js"
-import { copyProdDBToDev } from "./repositories/DevDatabaseSync.js";
 const require = createRequire(import.meta.url);
 
 const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];

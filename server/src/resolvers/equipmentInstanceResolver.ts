@@ -1,15 +1,12 @@
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import * as InstanceRepo from "../repositories/Equipment/EquipmentInstancesRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext, ifAllowed } from "../context.js";
-import { getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository.js";
-import { getUserByID, getUsersFullName } from "../repositories/Users/UserRepository.js";
-import { getEquipmentSessions } from "../repositories/Equipment/EquipmentSessionsRepository.js";
-import { getRoomByID } from "../repositories/Rooms/RoomRepository.js";
-import { getZoneByID } from "../repositories/Zones/ZonesRespository.js";
 import { EquipmentInstancesRow } from "../db/tables.js";
 import { createInstance, deleteInstance, getInstanceByID, getInstancesByEquipment, setInstanceName, setInstanceStatus } from "../repositories/Equipment/EquipmentInstancesRepository.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { GraphQLError } from "graphql";
+import { getReaderByID } from "../repositories/Readers/ReaderRepository.js";
 
 const EquipmentInstanceResolver = {
   EquipmentInstance: {
@@ -19,6 +16,13 @@ const EquipmentInstanceResolver = {
       _args: any,
       _context: ApolloContext) => {
       return EquipmentRepo.getEquipmentByID(Number(parent.equipmentID));
+    },
+    //Fetch full data for equipment field
+    reader: async (
+      parent: EquipmentInstancesRow,
+      _args: any,
+      _context: ApolloContext) => {
+      return getReaderByID(Number(parent.readerID));
     },
   },
 
@@ -36,6 +40,23 @@ const EquipmentInstanceResolver = {
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return await getInstancesByEquipment(args.equipmentID)
       }),
+
+    getInstanceByID: async (
+      _parent: any,
+      args: { id: number },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await getInstanceByID(args.id)
+      }),
+
+    getReaderPairedWithInstanceByInstanceId: async (
+      _parent: any,
+      args: { instanceID: number },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        return await InstanceRepo.getReaderByInstanceId(args.instanceID)
+      }),
+
   },
 
   Mutation: {
@@ -55,6 +76,60 @@ const EquipmentInstanceResolver = {
         if (!equipment) throw new GraphQLError("Equipment does not exist");
         await createLog(`{user} created instance "${args.name}" on {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
         return await createInstance(args.equipmentID, args.name)
+      }),
+
+    /**
+     * Update an equipment instance
+     * @argument instanceID ID of the instance to modify
+     * @argument name name of the instance
+     * @argument status status of the instance (active, undeployed, etc)
+     * @argument reader id of reader to pair with or null
+     */
+    updateInstance: async (
+      _parent: any,
+      args: { id: number, name: string, status: string, readerID: number | null },
+      { ifAllowed }: ApolloContext) =>
+      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+
+        const instance = await InstanceRepo.getInstanceByID(args.id);
+
+        if (!instance) throw new GraphQLError("Instance does not exist");
+
+        const equipment = await EquipmentRepo.getEquipmentByID(instance.equipmentID);
+        if (!equipment) throw new GraphQLError("Instance does not have associate Machine");
+
+        const newInstance = await InstanceRepo.updateInstance(args.id, args.name, args.status, args.readerID);
+
+        if (instance?.name != newInstance?.name) {
+          await createLog(`{user} renamed instance '${instance?.name}' of equipment {equipment} to '${newInstance?.name}'`, 'admin', { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
+        }
+
+        if (instance?.status != newInstance?.status) {
+          await createLog(`{user} changed status of '${newInstance?.name}' of equipment {equipment} to '${newInstance?.status}'`, 'admin', { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: equipment.name });
+        }
+
+        var oldReader = null;
+        if (instance?.readerID) {
+          oldReader = await getReaderByID(instance.readerID);
+        }
+
+        var newReader = null;
+        if (args.readerID == oldReader?.id) {
+          newReader = oldReader;
+        } if (args.readerID && args.readerID != args.id) {
+          newReader = await getReaderByID(args.readerID);
+        }
+        if (newReader == null && oldReader != null) {
+          await createLog(`{user} unpaired {access_device} from instance {equipment}: ${newInstance?.name}`, 'admin', { id: user.id, label: getUsersFullName(user) }, { id: oldReader.id, label: oldReader?.name ?? "unknown reader" }, { id: equipment.id, label: equipment.name });
+        } else if (newReader != null && oldReader?.id != newReader?.id) {
+          await createLog(`{user} paired {access_device} to {equipment}: ${newInstance?.name}`, 'admin', { id: user.id, label: getUsersFullName(user) }, { id: newReader?.id, label: newReader?.name ?? "unknown reader" }, { id: equipment.id, label: equipment.name });
+        }
+
+        if (newInstance?.readerID) {
+          newInstance.readerID = Number(newInstance.readerID)
+        }
+
+        return newInstance;
       }),
 
     /**
@@ -117,10 +192,11 @@ const EquipmentInstanceResolver = {
       }),
     assignReaderToEquipmentInstance: async (
       _parent: any,
-      args: { instanceId: number, readerId: number },
+      args: { instanceId: number, readerId: number | undefined },
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
-        return 0;
+
+        return InstanceRepo.assignReaderToEquipmentInstance(args.instanceId, args.readerId);
       }),
   }
 

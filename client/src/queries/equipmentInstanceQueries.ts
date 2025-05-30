@@ -1,22 +1,26 @@
 import { gql } from "@apollo/client";
 
 export enum InstanceStatus {
-    UNDEPLOYED = "UNDEPLOYED",
-    ACTIVE = "ACTIVE",
-    NEEDS_REPAIRS = "NEEDS REPAIRS",
-    UNDER_REPAIRS = "UNDER REPAIRS",
-    TESTING = "TESTING",
-    RETIRED = "RETIRED"
+  UNDEPLOYED = "UNDEPLOYED",
+  ACTIVE = "ACTIVE",
+  NEEDS_REPAIRS = "NEEDS REPAIRS",
+  UNDER_REPAIRS = "UNDER REPAIRS",
+  TESTING = "TESTING",
+  RETIRED = "RETIRED"
 }
 
 export interface EquipmentInstance {
+  id: number;
+  equipment: {
     id: number;
-    equipment: {
-        id: number;
-        name: string;
-    }
     name: string;
-    status: InstanceStatus;
+  }
+  name: string;
+  status: InstanceStatus;
+  reader: {
+    id: number;
+    name: string;
+  } | null;
 }
 
 export const GET_EQUIPMENT_INSTANCES = gql`
@@ -29,6 +33,28 @@ export const GET_EQUIPMENT_INSTANCES = gql`
       }
       name
       status
+      reader {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_EQUIPMENT_INSTANCE_BY_ID = gql`
+  query GetInstanceByID($id: ID!){
+    getInstanceByID(id: $id){
+      id
+      equipment {
+        id
+        name
+      }
+      name
+      status
+      reader {
+        id
+        name
+      }
     }
   }
 `;
@@ -57,6 +83,26 @@ export const SET_INSTANCE_NAME = gql`
     }
 `;
 
+
+export const UPDATE_INSTANCE = gql`
+  mutation UpdateInstance($id: ID!, $name: String!, $status: String!, $readerID: ID) {
+      updateInstance(id: $id, name: $name, status: $status, readerID: $readerID) {
+          id
+          equipment {
+            id
+            name
+          }
+          name
+          status
+          reader{
+            id
+            name
+          }
+      }
+  }
+`;
+
+
 export const DELETE_EQUIPMENT_INSTANCE = gql`
     mutation DeleteInstance($id: ID!) {
         deleteInstance(id: $id)
@@ -65,7 +111,37 @@ export const DELETE_EQUIPMENT_INSTANCE = gql`
 
 
 export const ASSIGN_READER_TO_EQUIPMENT_INSTANCE = gql`
-  mutation AssignReaderToEquipmentInstance {
-    assignReaderToEquipmentInstance(instanceId: ID!, readerId: ID!)
+  mutation AssignReaderToEquipmentInstance($instanceId: ID!, $readerId: ID) {
+    assignReaderToEquipmentInstance(instanceId: $instanceId, readerId: $readerId){
+        id
+    }
   }
 `
+
+export const GET_READER_PAIRED_WITH_INSTANCE_BY_INSTANCE_ID = gql`
+    query GetReaderPairedWithInstanceByInstanceId($instanceID: ID!){
+        getReaderPairedWithInstanceByInstanceId(instanceID: $instanceID){
+      id
+      machineID
+      machineType
+      name
+      zone
+      temp
+      state
+      user {
+        id
+        firstName
+        lastName
+      }
+      recentSessionLength
+      lastStatusReason
+      scheduledStatusFreq
+      lastStatusTime
+      helpRequested
+      BEVer
+      FEVer
+      HWVer
+      sessionStartTime
+      SN
+      }
+    }`

@@ -11,8 +11,12 @@ export const EquipmentInstanceTypeDefs = gql`
         equipment: Equipment!
         name: String!
         status: String
+        reader: Reader
     }
-
+    type Reader {
+        id: ID!
+        name: String!
+    }
     type Equipment {
         id: ID!
         name: String
@@ -21,6 +25,8 @@ export const EquipmentInstanceTypeDefs = gql`
 
     extend type Query {
         equipmentInstances(equipmentID: ID!): [EquipmentInstance]
+        getReaderPairedWithInstanceByInstanceId(instanceID: ID!): Reader
+        getInstanceByID(id: ID!): EquipmentInstance
     }
 
     extend type Mutation {
@@ -28,7 +34,7 @@ export const EquipmentInstanceTypeDefs = gql`
         setInstanceStatus(id: ID!, status: String!): EquipmentInstance
         setInstanceName(id: ID!, name: String!): EquipmentInstance
         deleteInstance(id: ID!): Boolean
-        assignReaderToEquipmentInstance(id: ID!): Boolean
-        
+        assignReaderToEquipmentInstance(instanceId: ID!, readerId: ID): EquipmentInstance
+        updateInstance(id: ID!, name: String!, status: String!, readerID: ID): EquipmentInstance
     }
 `

@@ -1,28 +1,22 @@
-import { useNavigate } from "react-router-dom";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardHeader,
-  IconButton,
+  Link,
   MenuItem,
   Select,
   Stack,
   Typography,
 } from "@mui/material";
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { makeStyles } from '@material-ui/core/styles';
-import { GET_CORRESPONDING_BY_READER_ID_OR_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
+import { GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/roomQueries";
 import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
-import { blue } from "@mui/material/colors";
 import { SET_READER_STATE } from "../../../queries/readersQueries";
-import Equipment from "../../../types/Equipment";
-import Room from "../../../types/Room";
 
 interface ReaderCardProps {
     id: number,
@@ -66,10 +60,10 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     <p>Last User: {userID != null ? (<AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity>) : "NULL"}<br></br>Session Length: {recentSessionLength} sec</p>
   );
   
-  const machineResult = useQuery(GET_CORRESPONDING_BY_READER_ID_OR_ID, {
+  const machineResult = useQuery(GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID, {
       variables: {readerid: id, id: machineID }
     });
-
+  const machine = machineResult?.data?.correspondingEquipment;
     
   const rooms = useQuery(GET_ROOMS);
     
@@ -91,10 +85,10 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
+      <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason === "Error" || lastStatusReason === "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
         <CardHeader
           title={name}
-          subheader={(machineType != null) ? ("Type: " + machineType) : `SN: ${SN}`}
+          subheader={(machineType != null && machineType !== "") ? ("Type: " + machineType) : `SN: ${SN}`}
         >
         </CardHeader>
         <CardContent>
@@ -104,7 +98,6 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
             sx={{ lineHeight: 1, mb: 1 }}
           >
             <b>Device ID: </b>{id}
-            <br></br>
             <br></br>
             <b>Zone(s): </b>
             {
@@ -116,12 +109,17 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
                   code = `room:${zoneNum}:${room.name}`    
                 }
                 return (
-                  <div><AuditLogEntity entityCode={code}></AuditLogEntity><br></br></div>
+                  <span><AuditLogEntity entityCode={code}></AuditLogEntity><br></br></span>
                 )
               })
             }
             <br></br>
-            <b>Machine: </b> <AuditLogEntity entityCode={(machineID == null || machineResult?.data?.correspondingEquipment == null) ? "0:none:none" : ("equipment:" + (machineResult.data?.correspondingEquipment?.id) + ":" + machineResult.data?.correspondingEquipment?.name)}></AuditLogEntity>
+            <b>Machine: </b> 
+            {
+              (machine) ? 
+                <Link href={"/app/admin/equipment/"+(machine.archived ? "/archived" : "")+(machine.id)}> {machine.name}</Link>
+                : "Not paired"
+            }
 
             <br></br>
           </Typography>

@@ -37,6 +37,7 @@ export const ReaderTypeDefs = gql`
 
   extend type Query {
     readers: [Reader]
+    unpairedReaders: [Reader]
     reader(id: ID!): Reader
   }
 
