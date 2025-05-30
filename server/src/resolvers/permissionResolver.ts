@@ -4,7 +4,7 @@
  */
 
 import { Privilege } from "../schemas/usersSchema.js";
-import { ApolloContext } from "../context.js";
+import { ApolloContext, CurrentUser } from "../context.js";
 import { getDataPointByID, incrementDataPointValue, setDataPointValue } from "../repositories/DataPoints/DataPointsRepository.js";
 
 const PermissionResolver = {
@@ -17,8 +17,8 @@ const PermissionResolver = {
     isMentorOrHigher: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async (user: CurrentUser) => {
         return true;
       }),
   },
