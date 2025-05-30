@@ -40,7 +40,7 @@ async function addConnection(connData: ConnectionData) {
     if (connData.readerId in slugPool.keys()) {
         const reader = await getReaderByID(connData.readerId);
         console.error(`WSACS: Attempted to add duplicate id to slug pool (id: ${connData.readerId}, name: ${reader?.name ?? "unknown name"}). Possible shlug configuration issue?`);
-        wsApiDebugLog(`WSACS: Attempted to add duplicate id to slug pool (id: ${connData.readerId}, name: ${reader?.name ?? "unknown name"}). Possible shlug configuration issue?`, deb);
+        wsApiDebugLog(`WSACS: Attempted to add duplicate id to slug pool (id: ${connData.readerId}, name: ${reader?.name ?? "unknown name"}). Possible shlug configuration issue?`, "status");
         return;
     }
     slugPool.set(connData.readerId, connData);
@@ -570,7 +570,7 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
         };
 
         ws.onerror = function (ev: ws.ErrorEvent) {
-            wsApiDebugLog(`WSACS: Websocket unrecoverable: ${e}`, "status")
+            wsApiDebugLog(`WSACS: Websocket unrecoverable: ${ev}`, "status")
             console.error(`WSACS: websocket error ${ev.error} - ${ev.type}: ${ev.message}`)
             ws.close(4000, "got unrecoverable error");
         }
