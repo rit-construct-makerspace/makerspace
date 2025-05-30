@@ -4,7 +4,7 @@
  */
 
 import { knex } from "../../db/index.js";
-import { ReaderRow } from "../../db/tables.js";
+import { ReaderRow, TextFieldRow } from "../../db/tables.js";
 
 /**
  * Fetch a card ready buy it's primary key
@@ -26,6 +26,17 @@ export async function getReaderByName(
     return await knex("Readers").from("Readers").first().where({ name: name });
 }
 
+
+/**
+ * Fetch areader by its Serial number/Shlug ID
+ * @param SN the serial number of the reader
+ */
+export async function getReaderBySN(
+    SN: string
+): Promise<ReaderRow | undefined> {
+    return await knex("Readers").from("Readers").first().where({ SN: SN });
+}
+
 /**
  * Fetch areader by the id of the machine it is associated with
  * @param machineID the machine ID of the machine
@@ -41,6 +52,17 @@ export async function getReaderByMachineID(
  */
 export async function getReaders(): Promise<ReaderRow[]> {
     return await knex("Readers").select("*").orderBy("helpRequested", "desc").orderBy("id", "asc"); //Order them to prevent random ordering everytime the client polls, also prioritize help
+}
+
+/**
+ * Fetch unpaired card readers
+ * @return list of readers that are not paired with an instance 
+ */
+export async function getUnpairedReaders(): Promise<ReaderRow[]> {
+    return await knex("Readers").select("Readers.*")
+        .leftJoin("EquipmentInstances", "Readers.id", "EquipmentInstances.readerID")
+        .whereNotNull("SN").andWhere(function () { this.whereNull("EquipmentInstances.readerID") })
+        .orderBy("Readers.name", "desc").orderBy("Readers.id", "asc")
 }
 
 /**
@@ -77,14 +99,27 @@ export async function createReader(reader: {
     return await getReaderByID(newID.id);
 }
 
+
+
+/**
+ * Create a card reader from a SN (on first pair) 
+ *  @param reader the static attribute of the card reader
+ */
+export async function createReaderFromSN(reader: {
+    SN: string, name: string
+}): Promise<ReaderRow | undefined> {
+    const [newID] = await knex("Readers").insert(reader, "id");
+    return await getReaderByID(newID.id);
+}
+
 /**
  * Modify a reader row
  * @param reader the reader attributes
  */
 export async function updateReaderStatus(reader: {
     id: number,
-    machineID: number,
-    machineType: string,
+    machineID: number | undefined,
+    machineType: string | undefined,
     zone: string,
     temp: number,
     state: string,
@@ -95,7 +130,11 @@ export async function updateReaderStatus(reader: {
     helpRequested: boolean,
     BEVer?: string,
     FEVer?: string,
-    HWVer?: string
+    HWVer?: string,
+    sessionStartTime?: Date,
+    SN?: string,
+    readerKeyCycle?: number,
+    pairTime?: Date,
 }): Promise<ReaderRow | undefined> {
     await knex("Readers").where({ id: reader.id }).update({
         machineID: reader.machineID,
@@ -112,6 +151,10 @@ export async function updateReaderStatus(reader: {
         BEVer: reader.BEVer,
         FEVer: reader.FEVer,
         HWVer: reader.HWVer,
+        sessionStartTime: reader.sessionStartTime,
+        SN: reader.SN,
+        readerKeyCycle: reader.readerKeyCycle,
+        pairTime: reader.pairTime,
     })
 
     return getReaderByID(reader.id);
@@ -138,4 +181,13 @@ export async function setReaderName(
 export async function toggleHelpRequested(id: number): Promise<void> {
     const oldRow = await knex("Readers").select("*").where({ id: id }).first()
     return await knex("Readers").where({ id: id }).update({ helpRequested: !(oldRow?.helpRequested)})
+}
+
+
+const ReaderCertCAId = 34;
+export async function getReaderCertCA(): Promise<TextFieldRow | undefined> {
+    return await knex("TextFields").select().where({ id: ReaderCertCAId }).first();
+}
+export async function setReaderCertCA(value: string): Promise<number> {
+    return await knex("TextFields").update({ value }).where({ id: ReaderCertCAId });
 }

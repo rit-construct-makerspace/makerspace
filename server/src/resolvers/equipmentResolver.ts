@@ -4,6 +4,7 @@
  */
 
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import * as EquipmentInstanceRepo from "../repositories/Equipment/EquipmentInstancesRepository.js";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository.js";
 import { ApolloContext } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
@@ -99,9 +100,12 @@ const EquipmentResolvers = {
       } catch (EntityNotFound) {
         // try with readerid
       }
-      // coming soon when we give instances shlugs
-      // response = await EquipmentRepo.getEquipmentByReaderId(readerid);
-      return null
+      const inst = await EquipmentInstanceRepo.getInstanceByReaderID(args.readerid);
+      if (!inst) {
+        return null;
+      }
+      return await EquipmentRepo.getEquipmentByID(inst.equipmentID);
+
     },
 
     /**
