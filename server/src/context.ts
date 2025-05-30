@@ -39,16 +39,15 @@ const testuser: CurrentUser = {
 export interface ApolloContext {
   user: CurrentUser | undefined;
   logout: () => void;
-  ifAllowed: (
-    allowedPrivileges: Privilege[],
-    callback: (user: CurrentUser) => any
-  ) => any;
   ifAuthenticated: (callback: (user: CurrentUser) => any) => any;
-  ifAllowedOrSelf: (
-    targetedUserID: number,
-    allowedPrivileges: Privilege[],
-    callback: (user: CurrentUser) => any
-  ) => any;
+  ifSelf: (callback: (user: CurrentUser) => any) => any;
+  isAdmin: (callback: (user: CurrentUser) => any) => any;
+  isManager: (callback: (user: CurrentUser) => any) => any;
+  isStaff: (callback: (user: CurrentUser) => any) => any;
+  isTrainer: (callback: (user: CurrentUser) => any) => any;
+  isManagerFor: (makerspaceID: number, callback: (user: CurrentUser) => any) => any;
+  isStaffFor: (makerspaceID: number, callback: (user: CurrentUser) => any) => any;
+  isTrainerFor: (equipmentID: number, callback: (user: CurrentUser) => any) => any;
 }
 
 function authenticated(expressUser: Express.User | undefined) {
@@ -57,94 +56,106 @@ function authenticated(expressUser: Express.User | undefined) {
   } 
 }
 
-export const ifAdmin =
+export const isAdmin =
   (expressUser: Express.User | undefined) =>
   (callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
     const user = expressUser as CurrentUser;
 
     if (!user.admin) {
-      throw new GraphQLError("Insufficent Privilege | Admin Only")
+      throw new GraphQLError("Insufficent Privilege | Not an Admin")
     }
 
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
-export const ifManager =
+export const isManagerFor =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
     const user = expressUser as CurrentUser;
 
-    if (!user.manager.includes(makerspaceID) || user.admin) {
-      throw new GraphQLError(`Insufficent Priviledge | Not Manager of Makerspace ${makerspaceID}`);
+    if (!user.manager.includes(makerspaceID) && !user.admin) {
+      throw new GraphQLError(`Insufficent Privilege | Not Manager of Makerspace ${makerspaceID}`);
     }
 
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
-export const ifStaff =
+export const isStaffFor =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
     const user = expressUser as CurrentUser;
-    if (!user.staff.includes(makerspaceID) || !user.manager.includes(makerspaceID) || !user.admin) {
-      throw new GraphQLError(`Insufficent Priviledge | Not Staff of Makersapce ${makerspaceID}`);
+    if (!user.staff.includes(makerspaceID) && !user.manager.includes(makerspaceID) && !user.admin) {
+      throw new GraphQLError(`Insufficent Privilege | Not Staff of Makersapce ${makerspaceID}`);
     }
 
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
-export const ifTrainer = 
+export const isTrainerFor = 
   (expressUser: Express.User | undefined) =>
   (equipmentID: number, callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
     const user = expressUser as CurrentUser;
 
-    if (!user.trainer.includes(equipmentID) || !user.admin) {
-      throw new GraphQLError(`Insufficent Priviledge | Not Trainer for Equipment ${equipmentID}`);
+    if (!user.trainer.includes(equipmentID) && !user.admin) {
+      throw new GraphQLError(`Insufficent Privilege | Not Trainer for Equipment ${equipmentID}`);
     }
 
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
-export const ifAllowed =
+export const isManager =
   (expressUser: Express.User | undefined) =>
-  (allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
-    if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE") expressUser = testuser;
-    if (!expressUser) {
-      throw new GraphQLError("Unauthenticated");
-    }
-
+  (makerspaceID: number, callback: (user: CurrentUser) => any) => {
+    authenticated(expressUser);
     const user = expressUser as CurrentUser;
 
-    const sufficientPrivilege = allowedPrivileges.includes(user.privilege);
-    if (!sufficientPrivilege) {
-      throw new GraphQLError("Insufficient privilege");
+    if (user.manager.length <= 0 && !user.admin) {
+      throw new GraphQLError("Insufficent Privilege | Not a Manager");
     }
 
-    if (user.hasHolds) {
-      throw new GraphQLError("User has outstanding account holds");
+    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+  }
+
+export const isStaff =
+  (expressUser: Express.User | undefined) =>
+  (makerspaceID: number, callback: (user: CurrentUser) => any) => {
+    authenticated(expressUser);
+    const user = expressUser as CurrentUser;
+
+    if (user.staff.length <= 0 && user.manager.length <= 0 && !user.admin) {
+      throw new GraphQLError("Insufficent Privilege | Not a Staff");
     }
 
-    return callback(user);
-  };
+    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+  }
 
-export const ifAllowedOrSelf =
+export const isTrainer =
+  (expressUser: Express.User | undefined) =>
+  (makerspaceID: number, callback: (user: CurrentUser) => any) => {
+    authenticated(expressUser);
+    const user = expressUser as CurrentUser;
+
+    if (user.trainer.length <= 0 && user.staff.length <= 0 && user.manager.length <= 0 && !user.admin) {
+      throw new GraphQLError("Insufficent Privilege | Not a Trainer");
+    }
+
+    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+  }
+
+export const ifSelf =
   (expressUser: Express.User | undefined) =>
   (targetedUserID: number, allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
-    if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE") expressUser = testuser;
-    if (!expressUser) {
-      throw new GraphQLError("Unauthenticated - ifallowedorself");
-    }
-
+    authenticated(expressUser);
     const user = expressUser as CurrentUser;
 
     if (user.id === targetedUserID) {
       return callback(user);
-    }
-    else {
-      return ifAllowed(expressUser)(allowedPrivileges, callback);
+    } else {
+      throw new GraphQLError(`Forbidden | Not User ${targetedUserID}`);
     }
   };
 
@@ -163,8 +174,13 @@ export const ifAuthenticated =
 const context = async ({ req }: { req: any }) => ({
   user: process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? req.user : testuser,
   logout: () => req.logout(),
-  ifAllowed: ifAllowed(req.user),
-  ifAllowedOrSelf: ifAllowedOrSelf(req.user),
+  isAdmin: isAdmin(req.user),
+  isManager: isManager(req.user),
+  isStaff: isStaff(req.user),
+  isTrainer: isTrainer(req.user),
+  isManagerFor: isManagerFor(req.user),
+  isStaffFor: isStaffFor(req.user),
+  isTrainerFor: isTrainerFor(req.user),
   ifAuthenticated: ifAuthenticated(req.user)
 });
 
