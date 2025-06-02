@@ -557,14 +557,6 @@ function isReplyWorthSending(resp: ShlugResponse): boolean {
  */
 export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
     var connData: ConnectionData = initConnectionData(ws);
-    // let pinger = setInterval(() => {
-    // if (ws.readyState == ws.CLOSED) {
-    // console.log("Closed");
-    // clearInterval(pinger);
-    // }
-    // ws.ping("hello", undefined, (e) => console.log("Ping resp", e)); console.log("Pinging")
-    // }, 1000);
-
     console.log(`WSACS: Websocket opened to ${req.ip}`);
 
     try {
@@ -610,7 +602,6 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                 // Get reader that was setup by handleBootupMessage
                 var reader = await getReaderByID(connData.readerId ?? 0);
                 if (reader == null) {
-                    console.log("Reader was null", connData.readerId);
                     if (!connData.alreadyComplainedAboutInvalidReader) {
                         wsApiDebugLog(`Failed to find entry for device ${connData.readerId}. Error '{error}'`, "status", { id: 400, label: "Reader does not exist" });
                         connData.alreadyComplainedAboutInvalidReader = true;

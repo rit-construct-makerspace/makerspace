@@ -47,7 +47,6 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     const [status, setStatus] = useState<InstanceStatus>(props.instance.status);
     const [reader, setReader] = useState<{ id: number, name: string } | null>(props.instance.reader);
 
-    let [bisOffline, setbisOffline] = useState(false);
     function isOffline(lastStatusTime: string) {
         if (lastStatusTime != null) {
             const OFFLINE_CUTOFF_MS = 30 * 1000;
@@ -59,11 +58,10 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
         return false;
     }
 
-    const currentReaderResp = useQuery(GET_READER_BY_ID, {
+    const currentReader = useQuery(GET_READER_BY_ID, {
         pollInterval: 2000,
         variables: { id: props.instance.reader?.id },
     });
-    const currentReader: Reader = currentReaderResp.data?.reader;
 
     const [sendCommandedState] = useMutation(SET_READER_STATE);
     const [commandedState, setCommandedState] = useState<string>("Idle");
@@ -109,7 +107,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     }
 
     function renderCurrentState() {
-        switch (currentReader?.state) {
+        switch (currentReader.data?.reader?.state) {
             case "Idle":
                 return <Tooltip title="Lockout"><HourglassFullIcon color="warning" /></Tooltip>;
             case "Unlocked":
@@ -170,7 +168,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                         </Typography>
                 }
                 {
-                    bisOffline ?
+                    isOffline(currentReader.data?.reader?.lastStatusTime) ?
                         <Alert severity="warning" variant="filled" icon={<WifiOffIcon />}>Offline</Alert>
                         :
                         <Stack direction="row" justifyContent="space-between" alignItems={"center"} spacing={1}>
