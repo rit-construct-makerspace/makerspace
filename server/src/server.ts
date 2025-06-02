@@ -4,6 +4,7 @@
  */
 
 import express from "express";
+import expressWs from 'express-ws';
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { createServer } from "http";
@@ -30,6 +31,7 @@ import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursReposito
 import { createEquipmentSession, pruneNullLengthEquipmentSessions, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 import { setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 import { ReaderRow } from "./db/tables.js";
+import { ws_acs_api } from "./wsapi.js"
 const require = createRequire(import.meta.url);
 
 const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -51,7 +53,9 @@ async function startServer() {
   require("dotenv").config({ path: __dirname + "/./../.env" });
 
   //Init with Node Express
-  const app = express();
+  var exp = express();
+  var wsserver = expressWs(exp);
+  var app = wsserver.app;
 
   //Configure CORS
   app.use(cors(CORS_CONFIG));
@@ -154,6 +158,15 @@ async function startServer() {
   ===================================================================================================*/
   const API_NORMAL_LOGGING = process.env.API_NORMAL_LOGGING == "true";
   const API_DEBUG_LOGGING = process.env.API_DEBUG_LOGGING == "true";
+
+
+  /**
+   * Websocket
+   * Handler for upgrading api call to websocket connection
+   * Details of protocol are handled in wsapi.ts
+   */
+  // Websocket ACS Handler
+  app.ws("/api/ws", ws_acs_api)
 
   /**
    * WELCOME----
@@ -571,7 +584,7 @@ async function startServer() {
       const reader = await getReaderByName(req.params.MachineID);
 
       if (reader == undefined) {
-        if (API_DEBUG_LOGGING) createLog("Access Device State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 400, label: "Reader does not exist" });
+        if (API_DEBUG_LOGGING) createLog("Access Device {access_device} State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 400, label: "Reader does not exist" });
         return res.status(400).json({ error: "Reader does not exist" }).send();
       }
 
@@ -600,7 +613,7 @@ async function startServer() {
       }
 
       if (machineIDs.length == 0) {
-        if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 401, label: "Missing arguments" });
+        if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: 401, label: "Missing arguments" });
         return res.status(401).json({ error: "Missing arguments" }).send();
       }
 
@@ -608,7 +621,7 @@ async function startServer() {
       for (var x = 0; x < machineIDs.length; x++) {
         const machine = await getReaderByID(machineIDs[x]);
         if (!machine) {
-          if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: req.body.ID, label: req.body.ID }, { id: 400, label: `Reader ${x + 1} does not exist` });
+          if (API_DEBUG_LOGGING) createLog("Access Device Batch State fetch failed. Error '{error}'", "state", { id: 400, label: `Reader ${x + 1} does not exist` });
           return res.status(400).json({ error: `Reader ${x + 1} does not exist` }).send();
         }
       }
@@ -732,13 +745,11 @@ async function startServer() {
     expressMiddleware(server, { context: context })
   );
 
-  const httpServer = createServer(app);
-
   const PORT = process.env.PORT || 3000;
 
   console.log(process.env.ID_FORMAT);
 
-  httpServer.listen({ port: PORT }, (): void =>
+  app.listen({ port: PORT }, (): void =>
     console.log(
       `🚀 GraphQL-Server is running on https://localhost:${PORT}/graphql`
     )

@@ -19,7 +19,6 @@ export default function NavLink({
   icon,
   primary,
   to,
-  notificationCount,
   newTab,
   toggleDrawer
 }: NavLinkProps) {
@@ -48,7 +47,8 @@ export default function NavLink({
         if (toggleDrawer) toggleDrawer();
       }}
       startIcon={icon}
-      sx={{color: "grey"}}
+      color="inherit"
+      sx={{fontSize: 16}}
     >
         {primary}
     </Button>

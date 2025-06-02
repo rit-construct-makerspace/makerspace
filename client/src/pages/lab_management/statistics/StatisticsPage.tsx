@@ -5,8 +5,9 @@ import CountCard from "./CountCard";
 import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import AdminPage from "../../AdminPage";
 import RequestWrapper from "../../../common/RequestWrapper";
-import { GET_NUM_EQUIPMENT_SESSIONS_TODAY, GET_NUM_NEW_USERS, GET_NUM_ROOM_SWIPES_TODAY, GET_NUM_SITE_VISITS, GET_ROOM_SWIPE_COUNTS, GET_ZONE_HOURS } from "./statisticsQueries";
-import { EquipmentStats } from "./equipment/EquipmentStats";
+import TimeAgo from 'react-timeago'
+import GET_ROOMS from "../../../queries/roomQueries";
+import { GET_EQUIPMENT_SESSIONS, GET_MODULE_SCORES, GET_NUM_EQUIPMENT_SESSIONS_TODAY, GET_NUM_NEW_USERS, GET_NUM_ROOM_SWIPES_TODAY, GET_NUM_SITE_VISITS, GET_ROOM_SWIPE_COUNTS, GET_ZONE_HOURS } from "./statisticsQueries";
 
 
 function getMonthToPresentBounds(): { startOfMonth: Date, today: Date } {
@@ -62,7 +63,9 @@ export default function StatisticsPage() {
   }
 
   return (
-    <AdminPage title="Statistics">
+    <AdminPage>
+      <Box margin="25px">
+      <Typography variant="h4">Statisitcs</Typography>
       <Box>
         <Typography variant="h4">Today's Numbers</Typography>
         <Stack direction={"row"} flexWrap={"wrap"}>

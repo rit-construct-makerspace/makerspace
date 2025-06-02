@@ -1,11 +1,13 @@
 import { gql } from "@apollo/client";
 import Equipment from "../types/Equipment";
+import Room, { FullRoom } from "../types/Room";
 
 export const GET_ZONES = gql`
  query GetZones {
   zones {
     id
     name
+    imageUrl
   }
  }
 `;
@@ -18,6 +20,7 @@ export interface ZoneWithHours {
     dayOfTheWeek: number;
     time: string;
   }];
+  imageUrl: string;
 }
 
 export interface FullZone {
@@ -28,23 +31,8 @@ export interface FullZone {
     dayOfTheWeek: number;
     time: string;
   }[];
-  rooms: {
-    id: number;
-    name: string;
-    equipment: {
-      id: number;
-      name: string;
-      imageUrl: string;
-      sopUrl: string;
-      trainingModules: {
-        id: number;
-        name: string;
-      }[];
-      numAvailable: number;
-      numInUse: number;
-      byReservationOnly: boolean;
-    }[];
-  }[]
+  rooms: Room[]
+  imageUrl: string;
 }
 
 export const GET_ZONES_WITH_HOURS = gql`
@@ -57,6 +45,7 @@ export const GET_ZONES_WITH_HOURS = gql`
       dayOfTheWeek
       time
     }
+    imageUrl
   }
  }
 `;
@@ -71,6 +60,7 @@ export const GET_FULL_ZONES = gql`
         dayOfTheWeek
         time
       }
+      imageUrl
       rooms {
         id
         name
@@ -102,6 +92,7 @@ export const GET_ZONE_BY_ID = gql`
         dayOfTheWeek
         time
       }
+      imageUrl
       rooms {
         id
         name
@@ -117,8 +108,33 @@ export const GET_ZONE_BY_ID = gql`
           numAvailable
           numInUse
           byReservationOnly
+          notes
+          archived
         }
       }
+    }
+  }
+`;
+
+export const UPDATE_ZONE = gql`
+  mutation UpdateZone(
+    $id: ID!
+    $name: String!
+    $imageUrl: String
+  ) {
+    updateZone(
+      id: $id
+      newZone: { name: $name, imageUrl: $imageUrl }
+    ) {
+      id
+    }
+  }
+`;
+
+export const DELETE_ZONE = gql`
+  mutation DeleteZone($id: ID!) {
+    deleteZone(id: $id) {
+      id
     }
   }
 `;

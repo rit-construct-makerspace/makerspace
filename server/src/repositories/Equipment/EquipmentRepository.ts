@@ -89,7 +89,7 @@ export async function setEquipmentArchived(equipmentID: number, archived: boolea
 /**
  * Fetch equipment filtered by room ID and archival status
  * @param roomID room ID to filter equipment by
- * @param archived archival state to filter by
+ * @param archived archival state to filter by (Depreceated)
  * @returns filtered Equipment entries
  */
 export async function getEquipmentWithRoomID(
@@ -100,7 +100,6 @@ export async function getEquipmentWithRoomID(
           .select()
           .where({
             roomID: roomID,
-            archived: archived
           });
 }
 
@@ -193,23 +192,6 @@ export async function UserIdHasTrainingModules(
     }
   }
   return hasTraining;
-}
-
-/**
- * Check if User is authorized to use Equipment
- * @param uid University ID of user to check
- * @param equipmentID Equipment ID to check
- * @returns true if user is authorized
- */
-export async function hasAccess(
-  uid: string,
-  equipmentID: number
-): Promise<boolean> {
-  console.log(uid);
-  const user = await UserRepo.getUserByUniversityID(uid);   // Get user for this university ID
-  return user !== undefined &&                              // Ensure user exists
-    !(await HoldsRepo.hasActiveHolds(user.id)) &&           // Ensure user has no holds
-    await hasTrainingModules(user, equipmentID);            // Ensure user has completed necessary training
 }
 
 /**

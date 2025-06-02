@@ -1,19 +1,25 @@
 import { useQuery } from "@apollo/client";
-import { Box, Divider, Stack, Typography } from "@mui/material";
-import { useParams } from "react-router-dom";
-import { FullZone, GET_ZONE_BY_ID } from "../../queries/getZones";
+import { Box, Button, Divider, IconButton, Stack, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { FullZone, GET_ZONE_BY_ID } from "../../queries/zoneQueries";
 import RequestWrapper2 from "../../common/RequestWrapper2";
 import { useEffect, useState } from "react";
 import ZoneHours from "./ZoneHours";
-import RoomSection from "../both/homepage/RoomSection";
+import RoomSection from "./RoomSection";
 import { FullRoom } from "../../types/Room";
 import SearchBar from "../../common/SearchBar";
 import StaffBar from "./StaffBar";
+import { useCurrentUser } from "../../common/CurrentUserProvider";
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function MakerspacePage() {
-    const { id } = useParams<{ id: string }>();
+    const { makerspaceID } = useParams<{ makerspaceID: string }>();
 
-    const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: id}});
+    const user = useCurrentUser();
+    const navigate = useNavigate();
+
+    const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: makerspaceID}});
 
     const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
 
@@ -38,16 +44,37 @@ export default function MakerspacePage() {
 
             return (
                 <Stack spacing={"2"} padding="20px" divider={<Divider orientation="horizontal" flexItem/>}>
-                    <Typography variant="h3" align="center">{fullZone.name}</Typography>
+                    <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} width="auto">
+                        <Typography variant="h3" align="center">{fullZone.name}</Typography>
+                        {
+                            user.privilege === "STAFF"
+                            ? <IconButton
+                                onClick={() => {navigate(`/makerspace/${makerspaceID}/edit`)}}
+                                sx={{color: "gray"}}
+                            >
+                                <EditIcon/>
+                            </IconButton>
+                            : null
+                        }
+                        
+                    </Stack>
                     <ZoneHours hours={fullZone.hours} isMobile={isMobile}/>
                     <StaffBar isMobile={isMobile} zoneID={fullZone.id}/>
-                    <Box padding="10px">
+                    <Stack padding="10px" direction="row" spacing={2}>
                         <SearchBar
                             placeholder="Search Equipment"
                             value={equipmentSearch}
                             onChange={(e) => setEquipmentSearch(e.target.value)}
+                            onClear={() => setEquipmentSearch("")}
                         />
-                    </Box>
+                        {
+                            user.privilege === "STAFF"
+                            ? <Button variant="contained" color="success" startIcon={<AddIcon/>} onClick={() => (navigate("/admin/equipment/new"))}>
+                                Create New Equipment
+                            </Button>
+                            : null
+                        }
+                    </Stack>
                     {fullZone.rooms.map((room: FullRoom) => (
                         <RoomSection room={room} equipmentSearch={equipmentSearch} isMobile={isMobile} />
                     ))}

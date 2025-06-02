@@ -20,12 +20,15 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import { EquipmentInstance, GET_EQUIPMENT_INSTANCES, SET_INSTANCE_STATUS } from "../../../queries/equipmentInstanceQueries";
 import AutoAwesomeMotionIcon from '@mui/icons-material/AutoAwesomeMotion';
 import EquipmentInstancesModal from "./EquipmentInstancesModal";
+import CloseIcon from '@mui/icons-material/Close';
 
+interface IsseueLogModalProps {
+  open: boolean;
+  equipmentID: string;
+  onClose: () => void;
+}
 
-
-
-
-export default function IssueLogModal({ equipmentID }: { equipmentID: string }) {
+export default function IssueLogModal(props: IsseueLogModalProps) {
   const [newContent, setNewContent] = useState<string>("");
   const [newInstance, setNewInstance] = useState<number>();
   const [markInstanceNeedsRepairs, setMarkInstanceNeedsRepairs] = useState<boolean>(true);
@@ -46,12 +49,12 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
 
   const navigate = useNavigate();
 
-  const maintenanceLogsQueryResult = useQuery(GET_MAINTENANCE_LOGS, { variables: { equipmentID } });
-  const maintenanceTagsResult = useQuery(GET_MAINTENANCE_TAGS, { variables: { equipmentID } });
-  const instancesQueryResult = useQuery(GET_EQUIPMENT_INSTANCES, { variables: { equipmentID } });
+  const maintenanceLogsQueryResult = useQuery(GET_MAINTENANCE_LOGS, { variables: { equipmentID: props.equipmentID } });
+  const maintenanceTagsResult = useQuery(GET_MAINTENANCE_TAGS, { variables: { equipmentID: props.equipmentID } });
+  const instancesQueryResult = useQuery(GET_EQUIPMENT_INSTANCES, { variables: { equipmentID: props.equipmentID } });
 
-  const [createLog] = useMutation(CREATE_MAINTENANCE_LOG, { refetchQueries: [{ query: GET_MAINTENANCE_LOGS, variables: { equipmentID } }] });
-  const [setInstanceNeedsRepairs] = useMutation(SET_INSTANCE_STATUS, {variables: {id: newInstance, status: "NEEDS REPAIRS"}, refetchQueries: [{query: GET_EQUIPMENT_INSTANCES, variables: { equipmentID } }]}) 
+  const [createLog] = useMutation(CREATE_MAINTENANCE_LOG, { refetchQueries: [{ query: GET_MAINTENANCE_LOGS, variables: { equipmentID: props.equipmentID } }] });
+  const [setInstanceNeedsRepairs] = useMutation(SET_INSTANCE_STATUS, {variables: {id: newInstance, status: "NEEDS REPAIRS"}, refetchQueries: [{query: GET_EQUIPMENT_INSTANCES, variables: { equipmentID: props.equipmentID } }]}) 
 
   const [tagModalOpen, setTagModalOpen] = useState(false);
 
@@ -60,7 +63,7 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
   const [instanceSort, setInstanceSort] = useState<'asc' | 'desc'>('desc');
 
   function handleSubmit() {
-    createLog({ variables: { equipmentID, content: newContent, instanceID: newInstance } });
+    createLog({ variables: { equipmentID: props.equipmentID, content: newContent, instanceID: newInstance } });
     if (newInstance && markInstanceNeedsRepairs) {
       setInstanceNeedsRepairs();
     }
@@ -74,17 +77,19 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
 
   return (
     <PrettyModal
-      open={!!equipmentID}
-      onClose={() => navigate("/admin/equipment")}
+      open={props.open}
+      onClose={props.onClose}
       width={800}
     >
       <RequestWrapper loading={maintenanceLogsQueryResult.loading} error={maintenanceLogsQueryResult.error}>
         <Box width={"100%"}>
           <Stack direction={"row"} justifyContent={"space-between"}>
             <Typography variant="h5">Issue Log</Typography>
-            <Stack direction={"row"}>
-              <Button variant="outlined" color="info" startIcon={<AutoAwesomeMotionIcon />} onClick={() => {setInstancesModalOpen(true)}}>Manage Instances</Button>
-              <Button variant="outlined" startIcon={<CheckCircleOutlineIcon />} color="secondary" onClick={() => navigate(`/admin/equipment/logs/${equipmentID}`)}>Resolution Log</Button>
+            <Stack direction={"row"} spacing={2} alignItems="center">
+              <Button variant="outlined" startIcon={<CheckCircleOutlineIcon />} color="secondary" onClick={() => navigate(`/admin/equipment/logs/${props.equipmentID}`)}>Resolution Log</Button>
+              <IconButton onClick={props.onClose}>
+                <CloseIcon/>
+              </IconButton>
             </Stack>
           </Stack>
           <Box width={"100%"}>
@@ -188,9 +193,7 @@ export default function IssueLogModal({ equipmentID }: { equipmentID: string }) 
         </Box>
       </RequestWrapper>
 
-      <MaintenanceTagsModal tagModalOpen={tagModalOpen} setTagModalOpen={setTagModalOpen} equipmentID={Number(equipmentID)} />
-
-      <EquipmentInstancesModal equipmentID={Number(equipmentID)} equipmentName={""} isOpen={instancesModalOpen} setIsOpen={setInstancesModalOpen} />
+      <MaintenanceTagsModal tagModalOpen={tagModalOpen} setTagModalOpen={setTagModalOpen} equipmentID={Number(props.equipmentID)} />
     </PrettyModal>
   );
 }

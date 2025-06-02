@@ -1,6 +1,6 @@
 import { Alert, AppBar, Avatar, Box, ButtonBase, Container, Drawer, IconButton, List, Menu, MenuItem, Stack, Typography, useScrollTrigger } from "@mui/material";
 import styled from "styled-components";
-import LogoSvg from "../assets/acronym_logo.svg";
+import LogoSvgWhite from "../assets/acronym_logo_all_white.svg";
 import LogoSvgW from "../assets/acronym_logo_w.svg";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -14,6 +14,7 @@ import SchoolIcon from "@mui/icons-material/School";
 import SettingsIcon from '@mui/icons-material/Settings';
 import { stringAvatar } from "../common/avatarGenerator";
 import MenuIcon from '@mui/icons-material/Menu';
+import Footer from "./Footer";
 
 const StyledLogo = styled.img`
   margin: 12px;
@@ -39,6 +40,7 @@ export default function TopNav() {
     const navigate = useNavigate();
 
     const currentUser = useCurrentUser();
+    const isPriviledged = currentUser.privilege === "MENTOR" || currentUser.privilege === "STAFF";
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const userMenuOpen = Boolean(anchorEl);
 
@@ -50,9 +52,14 @@ export default function TopNav() {
         setAnchorEl(null);
     };
 
-    const [labTraining, setLabTraining] = useState(true);
+    const [labTraining, setLabTraining] = useState(!(localStorage.getItem("showLabTraining") == "false"));
 
     const [mobileDrawer, setMobileDrawer] = useState(false);
+
+    function handleDismissLabTraining() {
+        setLabTraining(false);
+        localStorage.setItem("showLabTraining", "false");
+    }
 
     function makeAlerts() {
 
@@ -74,7 +81,7 @@ export default function TopNav() {
                 }
                 { // Lab training Alert
                     labTraining
-                    ? <Alert variant="standard" severity="info" onClose={() => setLabTraining(false)} sx={{borderRadius: 0}}>
+                    ? <Alert variant="filled" severity="info" onClose={handleDismissLabTraining} sx={{borderRadius: 0}}>
                         All Makerspace users must complete the <a href="https://rit.sabacloud.com/Saba/Web_spf/NA3P1PRD0049/common/leclassview/dowbt-0000146117">Shop Safety training course</a> before using any equipment.
                     </Alert>
                     : null
@@ -84,11 +91,11 @@ export default function TopNav() {
     }
 
     return (
-        <Stack>
-            {isMobile
-            ?<Box width="100%">
+        <Stack minHeight={"100vh"}>
+            { isMobile
+            ? <AppBar position="static">
                 <Stack direction="row" justifyContent="space-between">
-                    <StyledLogo width="75%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
+                    <StyledLogo width="75%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
                     <IconButton onClick={() => setMobileDrawer(true)}>
                         <MenuIcon />
                     </IconButton>
@@ -119,8 +126,8 @@ export default function TopNav() {
                             newTab={true}
                         />
                         <NavLink
-                            to="https://rit0.sharepoint.com/sites/shed-makerspace-public"
-                            primary="Knowledge Base"
+                            to={isPriviledged ? "https://rit0.sharepoint.com/sites/shed-makerspace-internal/SitePages/TrainingHome.aspx" : "https://rit0.sharepoint.com/sites/shed-makerspace-public"}
+                            primary={isPriviledged ? "Internal Wiki" : "Knowledge Base"}
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
@@ -128,9 +135,9 @@ export default function TopNav() {
                             <Stack direction="row" alignItems="center" spacing={2} padding={2}>
                                 <Avatar
                                     alt="Profile picture"
-                                    {...stringAvatar(`${currentUser.firstName} ${currentUser.lastName}`, {height: "30px", width: "30px", fontSize: 16})}
+                                    {...stringAvatar(currentUser.firstName, currentUser.lastName, {height: "30px", width: "30px", fontSize: 16})}
                                 />
-                                <Typography variant="body1" color="grey">
+                                <Typography variant="body1">
                                     {`${currentUser.firstName} ${currentUser.lastName}`}
                                 </Typography>     
                             </Stack>
@@ -152,11 +159,13 @@ export default function TopNav() {
                         </Menu>
                     </Stack>
                 </Drawer>
-            </Box>
-            :<Box width="100%" height="5%" sx={{flexGrow: 1}}>
-                <AppBar sx={{backgroundColor: "white"}} position="static">
+            </AppBar>
+            :<Box width="100%" height="5%">
+                <AppBar position="static">
                     <Stack component="nav" direction="row" justifyContent="space-between">
-                        <StyledLogo width="15%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvg} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
+                        <ButtonBase onClick={() => {navigate(`/`);}} sx={{width: "15%"}} focusRipple>
+                            <StyledLogo width="100%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo"/>
+                        </ButtonBase>
                         <NavLink
                             to="/maker/training/13"
                             primary="3D Printing Training"
@@ -181,19 +190,19 @@ export default function TopNav() {
                             newTab={true}
                         />
                         <NavLink
-                            to="https://rit0.sharepoint.com/sites/shed-makerspace-public"
-                            primary="Knowledge Base"
+                            to={isPriviledged ? "https://rit0.sharepoint.com/sites/shed-makerspace-internal/SitePages/TrainingHome.aspx" : "https://rit0.sharepoint.com/sites/shed-makerspace-public"}
+                            primary={isPriviledged ? "Internal Wiki" : "Knowledge Base"}
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
-                        <ButtonBase onClick={handleUserMenuOpen}>
+                        <ButtonBase onClick={handleUserMenuOpen} focusRipple>
                             <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-                                <Typography variant="body1" color="grey" sx={{ fontWeight: "bold" }}>
+                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
                                     {`${currentUser.firstName} ${currentUser.lastName}`}
                                 </Typography>
                                 <Avatar
                                     alt="Profile picture"
-                                    {...stringAvatar(`${currentUser.firstName} ${currentUser.lastName}`)}
+                                    {...stringAvatar(currentUser.firstName, currentUser.lastName)}
                                 />
                             </Stack>
                         </ButtonBase>
@@ -201,13 +210,13 @@ export default function TopNav() {
                         <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
                             <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose();}}>
                                 <Stack direction="row" spacing={2} alignItems="center" width="100%">
-                                <SchoolIcon sx={{color: "gray"}}/>
+                                <SchoolIcon/>
                                 <Typography variant="body1">User Trainings</Typography>
                                 </Stack>
                             </MenuItem>
                             <MenuItem onClick={() => {navigate("/user/settings"); handleUserMenuClose();}}>
                                 <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-                                <SettingsIcon sx={{color: "gray"}}/>
+                                <SettingsIcon/>
                                 <Typography variant="body1">User Settings</Typography>
                                 </Stack>
                             </MenuItem>
@@ -218,6 +227,7 @@ export default function TopNav() {
             }
             {makeAlerts()}
             <Outlet />
+            <Footer/>
         </Stack>
     );
 }

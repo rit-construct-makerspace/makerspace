@@ -24,6 +24,7 @@ export interface EquipmentRow {
   sopUrl: string;
   notes: string;
   byReservationOnly: boolean;
+  needsWelcome?: boolean;
 }
 
 export interface EquipmentInstancesRow {
@@ -31,6 +32,7 @@ export interface EquipmentInstancesRow {
   equipmentID: number;
   name: string;
   status: string;
+  readerID: number | null
 }
 
 export interface MaintenanceLogRow {
@@ -209,7 +211,6 @@ export interface UserRow {
   registrationDate: Date;
   expectedGraduation: string;
   college: string;
-  universityID: string;
   setupComplete: boolean;
   ritUsername: string;
   archived: boolean;
@@ -236,7 +237,12 @@ export interface ReaderRow {
   BEVer: string;
   FEVer: string;
   HWVer: string;
+  sessionStartTime: Date;
+  SN?: string;
+  readerKeyCycle: number;
+  pairTime?: Date
 }
+
 
 export interface AnnouncementRow {
   id: number;
@@ -258,11 +264,13 @@ export interface ZoneHoursRow {
   type: string;
   dayOfTheWeek: number;
   time: string;
+  imageUrl: string;
 }
 
 export interface ZoneRow {
   id: number;
   name: string;
+  imageUrl: string;
 }
 
 export interface RoomsForZonesRow {

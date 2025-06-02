@@ -1,4 +1,4 @@
-import { Box, Divider, Grid, Stack, Typography } from "@mui/material";
+import { Divider, Grid, Stack, Typography } from "@mui/material";
 import { useCurrentUser } from "../../../../common/CurrentUserProvider";
 import { GET_ALL_TRAINING_MODULES } from "../../../maker/training/TrainingPage";
 import { useQuery } from "@apollo/client";
@@ -7,9 +7,7 @@ import TrainingModuleRow from "../../../../common/TrainingModuleRow";
 import RequestWrapper2 from "../../../../common/RequestWrapper2";
 import { GET_ACCESS_CHECKS_BY_USERID } from "../../../../queries/accessChecksQueries";
 import AccessCheck from "../../../../types/AccessCheck";
-import UnpagedEquipmentCard from "../../equipment/UnpagedEquipmentCard";
 import { useEffect, useState } from "react";
-import UnpagedEquipmentModal from "../../../maker/equipment_modal/UnpagedEquipmentModal";
 import EquipmentCard from "../../../../common/EquipmentCard";
 
 export default function UserTraingingsPage() {
@@ -33,12 +31,23 @@ export default function UserTraingingsPage() {
 
     const isMobile = width <= 1100;
 
+    const [manageEquipment, setManageEquipment] = useState(false);
+    const [curEquipID, setCurEquipID] = useState(0);
+
+    function handleOpen(id: number) {
+        setCurEquipID(id);
+        setManageEquipment(true);
+    }
+
+    function handleClose() {
+        setManageEquipment(false);
+    }
+
     return (
         <Stack
             spacing={2}
             margin={isMobile ? "10px" : "20px"}
             width="fit-content"
-            height="100vh"
             divider={<Divider orientation="horizontal" flexItem/>}
         >
             {/* Trainings */}
@@ -67,7 +76,7 @@ export default function UserTraingingsPage() {
                             direction={isMobile ? "column" : "row"}
                             justifyContent={isMobile ? "center" : "space-between"}
                             divider={isMobile ? <Divider orientation="horizontal" flexItem/> : <Divider orientation="vertical" flexItem/>}
-                            height={isMobile ? undefined : "30%"}
+                            height={isMobile ? undefined : "30vh"}
                             width="100%"
                         >
                             {/* Complete Trainings */}
@@ -93,11 +102,15 @@ export default function UserTraingingsPage() {
                 result={getAccessChecks}
                 render={({accessChecksByUserID}) => {
 
-                    const approved = accessChecksByUserID.filter(
+                    const unarchived = accessChecksByUserID.filter(
+                        (ac: AccessCheck) => !ac.equipment.archived
+                    );
+
+                    const approved = unarchived.filter(
                         (ac: AccessCheck) => ac.approved
                     );
 
-                    const unapproved = accessChecksByUserID.filter(
+                    const unapproved = unarchived.filter(
                         (ac: AccessCheck) => !ac.approved && !ac.equipment.byReservationOnly
                     );
 
@@ -108,7 +121,8 @@ export default function UserTraingingsPage() {
                                 {approved.map((ac: AccessCheck) => (
                                     <Grid key={ac.equipment.id}>
                                         <EquipmentCard 
-                                            equipment={ac.equipment} isMobile={isMobile}
+                                            equipment={ac.equipment}
+                                            isMobile={isMobile}
                                         />
                                     </Grid>
                                 ))}
@@ -124,7 +138,6 @@ export default function UserTraingingsPage() {
                                     </Grid>
                                 ))}
                             </Grid>
-                            <UnpagedEquipmentModal equipmentID={modalID} setEquipmentID={setModalID}/>
                         </Stack>
                     );
                 }}

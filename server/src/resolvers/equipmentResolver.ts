@@ -4,6 +4,7 @@
  */
 
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import * as EquipmentInstanceRepo from "../repositories/Equipment/EquipmentInstancesRepository.js";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository.js";
 import { ApolloContext } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
@@ -20,11 +21,6 @@ const EquipmentResolvers = {
     //Map room field to Room
     room: async (parent: EquipmentRow) => {
       return await RoomRepo.getRoomByID(parent.roomID);
-    },
-
-    //Set true if listed user has all needed requirements to use equipment
-    hasAccess: async (parent: EquipmentRow, args: { uid: string }) => {
-      return await EquipmentRepo.hasAccess(args.uid, parent.id);
     },
 
     //Map trainingModules field to array of associated TrainingModules
@@ -89,6 +85,27 @@ const EquipmentResolvers = {
      */
     anyEquipment: async (_parent: any, args: { id: string }, _context: any) => {
       return await EquipmentRepo.getEquipmentByID(Number(args.id));
+    },
+
+    /**
+     * Fetch specific Equipment based on EITHER an equipment ID or by finding it based on the shlug id
+     * @argument readerid the id of the corresponding reader, possibly null
+     * @argument id ID of equipment, possibly null
+     * @returns Equipment
+     */
+    correspondingEquipment: async (_parent: any, args: { readerid: number, id: string }, _context: any) => {
+      // Try via equipment ID
+      try {
+        return await EquipmentRepo.getEquipmentByID(Number(args.id));
+      } catch (EntityNotFound) {
+        // try with readerid
+      }
+      const inst = await EquipmentInstanceRepo.getInstanceByReaderID(args.readerid);
+      if (!inst) {
+        return null;
+      }
+      return await EquipmentRepo.getEquipmentByID(inst.equipmentID);
+
     },
 
     /**

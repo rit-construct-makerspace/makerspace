@@ -1,20 +1,17 @@
-import { AppBar, Box, ButtonBase, IconButton, Stack, Typography } from "@mui/material";
+import { Box, ButtonBase, Stack, Typography } from "@mui/material";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
 import NavLink from "../../top_nav/NavLink";
-import SharepointIcon from "../../common/SharepointIcon";
-import HandymanIcon from "@mui/icons-material/Handyman";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import SchoolIcon from "@mui/icons-material/School";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import PeopleIcon from "@mui/icons-material/People";
 import HistoryIcon from "@mui/icons-material/History";
-import AnnouncementIcon from '@mui/icons-material/Announcement';
-import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import BarChartIcon from '@mui/icons-material/BarChart';
 import ArchitectureIcon from '@mui/icons-material/Architecture';
 import { useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import ScannerIcon from '@mui/icons-material/Scanner';
 
 interface StaffBarProps {
     isMobile: boolean;
@@ -49,12 +46,7 @@ export default function StaffBar(props: StaffBarProps) {
                 : null
             }
             <NavLink
-                primary={"Manage Equipment"}
-                to={"/admin/equipment"}
-                icon={<HandymanIcon />}
-            />
-            <NavLink
-                primary={"Manage Training"}
+                primary={"Manage Trainings"}
                 to={"/admin/training"}
                 icon={<SchoolIcon />}
             />
@@ -65,23 +57,13 @@ export default function StaffBar(props: StaffBarProps) {
             />
             <NavLink
                 primary={"Tool Inventory"}
-                to={"/admin/tools"}
+                to={`/makerspace/${props.zoneID}/tools`}
                 icon={<ArchitectureIcon />}
             />
             <NavLink
                 primary={"Storefront"}
                 to={"/admin/storefront"}
                 icon={<StorefrontIcon />}
-            />
-            <NavLink
-                primary={"Rooms"}
-                to={"/admin/rooms"}
-                icon={<MeetingRoomIcon />}
-            />
-            <NavLink
-                primary={"Announcements"}
-                to={"/admin/announcements"}
-                icon={<AnnouncementIcon />}
             />
             <NavLink
                 primary={"People"}
@@ -94,15 +76,14 @@ export default function StaffBar(props: StaffBarProps) {
                 icon={<HistoryIcon />}
             />
             <NavLink
+                primary={"Readers"}
+                to={"/admin/readers"}
+                icon={<ScannerIcon />}
+            />
+            <NavLink
                 primary={"Statistics"}
                 to={"/admin/statistics"}
                 icon={<BarChartIcon />}
-            />
-            <NavLink
-                primary={"Internal Wiki"}
-                to={"https://rit0.sharepoint.com/sites/shed-makerspace-internal/SitePages/TrainingHome.aspx"}
-                icon={<SharepointIcon />}
-                newTab={true}
             />
         </Stack>
     );

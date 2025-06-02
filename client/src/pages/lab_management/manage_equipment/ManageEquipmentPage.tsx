@@ -88,7 +88,6 @@ export default function ManageEquipmentPage({ showLogs }: { showLogs?: boolean }
               ))}
           </Grid>
         </RequestWrapper>
-        {showLogs && logid && <IssueLogModal equipmentID={logid} />}
       </Stack>
     </AdminPage>
   );

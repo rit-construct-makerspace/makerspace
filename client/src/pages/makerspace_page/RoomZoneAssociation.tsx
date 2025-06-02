@@ -1,21 +1,13 @@
-import React, { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   FormControl,
-  FormControlLabel,
   MenuItem,
-  Radio,
-  RadioGroup,
   Select,
-  Stack,
-  TextField,
-  Typography,
 } from "@mui/material";
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
+import { useCurrentUser } from "../../common/CurrentUserProvider";
+import Privilege from "../../types/Privilege";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import GET_USERS from "../../../queries/getUsers";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { InputLabel } from "@mui/material";
 
@@ -67,7 +59,7 @@ export default function RoomZoneAssociation({
   return (
     <>
       <FormControl disabled={!isAdmin || setNewZoneResult.loading}>
-        <InputLabel sx={{fontWeight:"bold", color: "black"}} id="update-zone-label">Zone</InputLabel>
+        <InputLabel id="update-zone-label">Zone</InputLabel>
         <Select
           value={updatedZoneID}
           id="update-zone-label"

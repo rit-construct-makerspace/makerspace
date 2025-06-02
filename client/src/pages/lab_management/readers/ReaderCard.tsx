@@ -1,21 +1,22 @@
-import { useNavigate } from "react-router-dom";
 import {
   Box,
   Card,
   CardContent,
   CardHeader,
-  IconButton,
-  makeStyles,
+  Link,
+  MenuItem,
+  Select,
   Stack,
   Typography,
 } from "@mui/material";
-import { GET_ANY_EQUIPMENT_BY_ID, GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
+import { makeStyles } from '@material-ui/core/styles';
+import { GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
-import GET_ROOMS from "../../../queries/getRooms";
-import { useQuery } from "@apollo/client";
+import GET_ROOMS from "../../../queries/roomQueries";
+import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
-import { blue } from "@mui/material/colors";
+import { SET_READER_STATE } from "../../../queries/readersQueries";
 
 interface ReaderCardProps {
     id: number,
@@ -34,10 +35,13 @@ interface ReaderCardProps {
     helpRequested: boolean,
     BEVer?: string,
     FEVer?: string,
-    HWVer?: string
+    HWVer?: string,
+    SN?: string,
 }
 
-const styles = {
+
+
+const useStyles = makeStyles({
   errorText: {
     color: "red",
     fontWeight: "bold"
@@ -48,34 +52,45 @@ const styles = {
   notifCard: {
     border: "3px solid blue"
   }
-};
+});
 
 
-export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer }: ReaderCardProps) {
+export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer, SN }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
     <p>Current User: <AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity><br></br>Session Length: {recentSessionLength} sec</p>
   ) : (
     <p>Last User: {userID != null ? (<AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity>) : "NULL"}<br></br>Session Length: {recentSessionLength} sec</p>
   );
-
-  const machineResult = useQuery(GET_ANY_EQUIPMENT_BY_ID, {
-    variables: { id: machineID }
-  });
-
+  
+  const machineResult = useQuery(GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID, {
+      variables: {readerid: id, id: machineID }
+    });
+  const machine = machineResult?.data?.correspondingEquipment;
+    
   const rooms = useQuery(GET_ROOMS);
+    
+  const classes = useStyles();
 
   const now = new Date();
   const lastTimeDifference = now.getTime() - (new Date(lastStatusTime).getTime());
 
+  const [setReaderState]= useMutation(SET_READER_STATE);
+  const handleChange = (event: any) => {
+    // If the value was the informational one, ignore it
+    if (event.target.value === "State"){
+      return;
+    }
+    setReaderState({variables: {id: id, state: event.target.value}});
+  };
   return (
     <RequestWrapper
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card sx={{ width: 350, minHeight: 600, border: (lastStatusReason == "Error" || lastStatusReason == "Temperature" ? styles.errorCard : helpRequested ? styles.notifCard : "")}}>
+      <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason === "Error" || lastStatusReason === "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
         <CardHeader
           title={name}
-          subheader={"Type: " + machineType}
+          subheader={(machineType != null && machineType !== "") ? ("Type: " + machineType) : `SN: ${SN}`}
         >
         </CardHeader>
         <CardContent>
@@ -86,19 +101,27 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
           >
             <b>Device ID: </b>{id}
             <br></br>
-            <br></br>
             <b>Zone(s): </b>
             {
-              zone.split(",").map(function(zoneStr) {
+              zone?.split(",")?.map(function(zoneStr) {
                 const zoneNum = parseInt(zoneStr);
-                const code = rooms.data == undefined ? "0:none:none" : "room:" + zoneNum + ":" + rooms.data.rooms.find((room: { id: number; }) => room.id == zoneNum).name;
+                var code = "0:none:none:"
+                if (rooms.data != null && zone != null && zone !== ''){
+                  const room = rooms.data.rooms.find((room: { id: number; }) => Number(room.id) === zoneNum)
+                  code = `room:${zoneNum}:${room.name}`    
+                }
                 return (
-                  <div><AuditLogEntity entityCode={code}></AuditLogEntity><br></br></div>
+                  <span><AuditLogEntity entityCode={code}></AuditLogEntity><br></br></span>
                 )
               })
             }
             <br></br>
-            <b>Machine: </b> <AuditLogEntity entityCode={machineID == undefined || machineResult.data == undefined ? "0:none:none" : "equipment:" + machineResult.data.anyEquipment.id + ":" + machineResult.data.anyEquipment.name}></AuditLogEntity>
+            <b>Machine: </b> 
+            {
+              (machine) ? 
+                <Link href={"/app/admin/equipment/"+(machine.archived ? "/archived" : "")+(machine.id)}> {machine.name}</Link>
+                : "Not paired"
+            }
 
             <br></br>
           </Typography>
@@ -172,13 +195,25 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
           >
               {stateContent}
           </Typography>
-          <Box>
-            <Stack direction={"column"} spacing={0.5} color={"secondary"} mt={1}>
-              <Typography variant="body2"><b>BEVer:</b> {BEVer ?? "NULL"}</Typography>
-              <Typography variant="body2"><b>FEVer:</b> {FEVer ?? "NULL"}</Typography>
-              <Typography variant="body2"><b>HWVer:</b> {HWVer ?? "NULL"}</Typography>
-            </Stack>
-          </Box>
+          <Stack direction={"row"}>
+            <Select defaultValue={"State"} onChange={handleChange}>
+              <MenuItem value="State">State</MenuItem>
+              <MenuItem value="Idle">Idle</MenuItem>
+              <MenuItem value="Unlocked">Unlocked</MenuItem>
+              <MenuItem value="AlwaysOn">Always On</MenuItem>
+              <MenuItem value="Lockout">Lockout</MenuItem>
+              <MenuItem value="Fault">Fault</MenuItem>
+              <MenuItem value="Startup">Startup</MenuItem>
+              <MenuItem value="Restart">Restart</MenuItem>
+            </Select>
+            <Box>
+              <Stack direction={"column"} spacing={0.5} color={"secondary"} mt={1}>
+                <Typography variant="body2"><b>BEVer:</b> {BEVer ?? "NULL"}</Typography>
+                <Typography variant="body2"><b>FEVer:</b> {FEVer ?? "NULL"}</Typography>
+                <Typography variant="body2"><b>HWVer:</b> {HWVer ?? "NULL"}</Typography>
+              </Stack>
+            </Box>
+          </Stack>
         </CardContent>
       </Card>
     </RequestWrapper>

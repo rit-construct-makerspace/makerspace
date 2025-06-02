@@ -49,6 +49,7 @@ export const GET_EQUIPMENT_BY_ID = gql`
       numAvailable
       numInUse
       byReservationOnly
+      needsWelcome
     }
   }
 `;
@@ -73,9 +74,36 @@ export const GET_ANY_EQUIPMENT_BY_ID = gql`
       numAvailable
       numInUse
       byReservationOnly
+      needsWelcome
     }
   }
 `;
+
+export const GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID = gql`
+  query GetCorrespondingEquipment($readerid: ID, $id: ID) {
+    correspondingEquipment(readerid: $readerid, id: $id) {
+      id
+      name
+      archived
+      imageUrl
+      sopUrl
+      room {
+        id
+        name
+      }
+      trainingModules {
+        id
+        name
+      }
+      notes
+      numAvailable
+      numInUse
+      byReservationOnly
+    }
+  }
+`;
+
+
 
 export const GET_ARCHIVED_EQUIPMENTS = gql`
   query GetArchivedEquipment {

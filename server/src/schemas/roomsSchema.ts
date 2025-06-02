@@ -30,6 +30,7 @@ export const RoomTypeDefs = gql`
 
   input RoomInput {
     name: String!
+    zoneID: ID!
   }
 
   extend type Query {
@@ -39,12 +40,12 @@ export const RoomTypeDefs = gql`
 
   extend type Mutation {
     addRoom(room: RoomInput): Room
-    removeRoom(roomID: ID!): Room
+    archiveRoom(roomID: ID!): Room
+    deleteRoom(roomID: ID!): Room
 
     updateRoomName(roomID: ID!, name: String): Room
     setZone(roomID: ID!, zoneID: ID!): Room
 
-    swipeIntoRoom(roomID: ID!, universityID: String!): User
     swipeIntoRoomWithID(roomID: ID!, id: ID!): User
 
   }

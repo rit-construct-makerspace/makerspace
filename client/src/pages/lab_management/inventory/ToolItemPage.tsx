@@ -1,4 +1,4 @@
-import { Button, Stack } from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import Privilege from "../../../types/Privilege";
 import AdminPage from "../../AdminPage";
@@ -16,16 +16,19 @@ import { LoanToolItemModal } from "./LoanToolItemModal";
 import { ReturnToolItemModal } from "./ReturnToolItemModal";
 import { CreateToolItemInstanceModal, EditToolItemInstanceModal } from "./EditCreateToolItemInstanceModal";
 import { ToolItemsByUser } from "./ToolItemsByUser";
+import { GET_ZONE_BY_ID } from "../../../queries/zoneQueries";
+import Room from "../../../types/Room";
 
 
 export function ToolItemPage() {
-  const { typeid, instanceid } = useParams<{ typeid: string, instanceid: string }>();
+  const { typeid, instanceid, makerspaceID } = useParams<{ typeid: string, instanceid: string, makerspaceID: string }>();
   const [searchParams] = useSearchParams()
   const location = useLocation();
   const navigate = useNavigate();
   const currentUser = useCurrentUser();
 
   const getToolItemTypes = useQuery(GET_TOOL_ITEM_TYPES_WITH_INSTANCES);
+  const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: makerspaceID}});
 
   const [currentType, setCurrentType] = useState<ToolItemType>();
 
@@ -42,14 +45,17 @@ export function ToolItemPage() {
   }
   
   return (
-    <AdminPage title="Tools" 
-      topRightAddons={currentUser.privilege == Privilege.STAFF && <Button startIcon={<AddIcon />} variant="outlined" color="primary" onClick={() => navigate(`/admin/tools/type`)}>Create Type</Button>}>
-
+    <AdminPage>
+      <Box padding="25px">
       {/* <ToolItemsByUser handleReturnItemClick={handleReturnInstanceClick} /> */}
+      <Stack direction="row" justifyContent="space-between" alignItems="baseline" paddingBottom="10px">
+        <Typography variant="h4">Tools</Typography>
+        {currentUser.privilege == Privilege.STAFF && <Button startIcon={<AddIcon />} variant="outlined" color="primary" onClick={() => navigate(`/admin/tools/type`)}>Create Type</Button>}
+      </Stack>
 
-      <RequestWrapper loading={getToolItemTypes.loading} error={getToolItemTypes.error}>
+      <RequestWrapper loading={getToolItemTypes.loading || getZone.loading} error={getToolItemTypes.error || getZone.error}>
         <Stack direction={"column"} spacing={4}>
-          {getToolItemTypes.data?.toolItemTypes.map((type: ToolItemType) => (
+          {getToolItemTypes.data?.toolItemTypes.filter((type: ToolItemType) => getZone.data?.zoneByID.rooms.find((room: Room) => room.id == type.defaultLocationRoom.id)).map((type: ToolItemType) => (
             <ToolItemTypeCard type={type} handleLoanInstanceClick={handleLoanInstanceClick} handleReturnInstanceClick={handleReturnInstanceClick} />
           ))}
 
@@ -62,6 +68,7 @@ export function ToolItemPage() {
 
       {loanItem && currentType && <LoanToolItemModal item={loanItem} setItem={setLoanItem} type={currentType} />}
       {returnItem && currentType && <ReturnToolItemModal item={returnItem} setItem={setReturnItem} type={currentType} />}
+      </Box>
     </AdminPage>
   );
 }

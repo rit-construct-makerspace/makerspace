@@ -62,7 +62,7 @@ export default function EquipmentInstancesModal({equipmentID, equipmentName, isO
           <Typography variant="h5">{equipmentName} Instances</Typography>
           <Stack direction={"column"}>
             {equipmentInstancesResult.data?.equipmentInstances.map((instance: EquipmentInstance) => (
-              <EquipmentInstanceRow instance={instance} />
+              <EquipmentInstanceRow instance={instance} isMobile={isMobile}/>
             ))}
             {equipmentInstancesResult.data?.equipmentInstances.length == 0 && <Typography m={3} color={"secondary"}>No Instances.</Typography>}
           </Stack>

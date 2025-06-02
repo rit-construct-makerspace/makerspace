@@ -1,9 +1,14 @@
 import QuizBuilder from "./quiz/QuizBuilder";
 import {
+  Box,
+  Button,
   CircularProgress,
   Fab,
   Grid,
+  IconButton,
+  Stack,
   TextField,
+  Typography,
 } from "@mui/material";
 import Page from "../../Page";
 import SaveIcon from "@mui/icons-material/Save";
@@ -107,53 +112,41 @@ export default function EditModulePage({
   };
 
   return (
-    <AdminPage title="Edit training module" maxWidth="600px">
-          <Grid container
-            rowSpacing={2}
-            columnSpacing={2}
-            sx={{ mb: 4 }}
+    <AdminPage>
+      <Box margin="25px">
+        <Typography variant="h4">Edit Training Module</Typography>
+          <Stack
+            direction="row"
             alignItems="center"
             justifyContent="center"
+            spacing={2}
+            padding="15px"
           >
-            <Grid size={{xs: 12, md: 8}}>
-              <TextField
-                label="Module title"
-                value={module.name}
-                onChange={(e) => setModule((draft) => {
-                  draft.name = e.target.value;
-                })}
-                fullWidth
-              />
-            </Grid>
-            <Grid size={{xs: 12, md: 4}} justifySelf="center">
-              {
-                module.archived
-                  ? <PublishTrainingModuleButton moduleID={module.id} appearance="large" />
-                  : <ArchiveTrainingModuleButton moduleID={module.id} appearance="large" />
-              }
-            </Grid>
-          </Grid>
+            <TextField
+              label="Module title"
+              value={module.name}
+              onChange={(e) => setModule((draft) => {
+                draft.name = e.target.value;
+              })}
+              sx={{width: "600px"}}
+            />
+            {
+              module.archived
+                ? <PublishTrainingModuleButton moduleID={module.id} appearance="large" />
+                : <ArchiveTrainingModuleButton moduleID={module.id} appearance="large" />
+            }
+            <Button onClick={handleSaveClicked} color="primary" variant="contained">
+            {
+            updateLoading ? (
+              <CircularProgress size={20} sx={{ color: "white" }} />
+            ) : (
+              <SaveIcon />
+            )}
+            </Button>
+          </Stack>
 
           <QuizBuilder quiz={module.quiz ? module.quiz : []} handleAdd={handleAddQuizItem} handleRemove={handleRemoveQuizItem} handleUpdate={handleUpdateQuizItem} handleOnDragEnd={handleOnDragEnd}/>
-
-
-          <Fab
-            color="primary"
-            onClick={handleSaveClicked}
-            sx={{
-              position: "absolute",
-              bottom: 40,
-              mr: -12,
-              alignSelf: "flex-end",
-            }}
-          >
-            {
-              updateLoading ? (
-                <CircularProgress size={20} sx={{ color: "white" }} />
-              ) : (
-                <SaveIcon />
-              )}
-          </Fab>
+          </Box>
     </AdminPage>
   );
 }

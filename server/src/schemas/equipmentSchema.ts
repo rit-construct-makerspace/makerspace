@@ -24,13 +24,13 @@ export const EquipmentTypeDefs = gql`
     trainingModules: [TrainingModule]
     addedAt: DateTime!
     inUse: Boolean!
-    hasAccess(uid: String): Boolean!
     imageUrl: String
     sopUrl: String
     notes: String
     numAvailable: Int
     numInUse: Int
     byReservationOnly: Boolean
+    needsWelcome: Boolean
   }
 
   input EquipmentInput {
@@ -49,6 +49,7 @@ export const EquipmentTypeDefs = gql`
     archivedEquipments: [Equipment]
     archivedEquipment(id: ID!): Equipment
     anyEquipment(id: ID!): Equipment
+    correspondingEquipment(readerid: ID, id: ID): Equipment
     allEquipment: [Equipment]
   }
 

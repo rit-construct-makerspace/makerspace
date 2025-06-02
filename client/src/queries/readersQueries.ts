@@ -1,5 +1,4 @@
 import { gql } from "@apollo/client";
-import Equipment from "../types/Equipment";
 
 export interface Reader {
   helpRequested: boolean;
@@ -17,7 +16,9 @@ export interface Reader {
   lastStatusTime: string,
   BEVer: string,
   FEVer: string,
-  HWVer: string
+  HWVer: string,
+  SN: string,
+  sessionStartTime: number,
 }
 
 export const GET_READERS = gql`
@@ -43,12 +44,13 @@ export const GET_READERS = gql`
       BEVer
       FEVer
       HWVer
+      sessionStartTime
+      SN
     }
   }
-`
-
-export const GET_READER = gql`
-  query GetReader($id: ID!) {
+`;
+export const GET_READER_BY_ID = gql`
+  query GetReaderByID($id: ID!) {
     reader(id: $id) {
       id
       machineID
@@ -57,14 +59,54 @@ export const GET_READER = gql`
       zone
       temp
       state
-      currentUID
+      user {
+        id
+        firstName
+        lastName
+      }
       recentSessionLength
       lastStatusReason
       scheduledStatusFreq
       lastStatusTime
+      helpRequested
+      BEVer
+      FEVer
+      HWVer
+      sessionStartTime
+      SN
     }
   }
 `;
+
+
+export const GET_UNPAIRED_READERS = gql`
+  query GetUnpairedReaders {
+    unpairedReaders {
+      id
+      machineID
+      machineType
+      name
+      zone
+      temp
+      state
+      user {
+        id
+        firstName
+        lastName
+      }
+      recentSessionLength
+      lastStatusReason
+      scheduledStatusFreq
+      lastStatusTime
+      helpRequested
+      BEVer
+      FEVer
+      HWVer
+      sessionStartTime
+      SN
+    }
+  }
+`
 
 export const CREATE_READER = gql`
   mutation CreateReader(
@@ -90,6 +132,23 @@ export const CREATE_READER = gql`
   }
 `;
 
+export const PAIR_READER = gql`
+  mutation PairReader(
+    $SN: String!,
+  ) {
+    pairReader(
+      SN: $SN,
+    ) {
+      readerKey
+      name
+      siteName
+      certs
+    }
+  }
+`;
+
+
+
 export const SET_READER_NAME = gql`
   mutation SetReaderName($id: ID!, $name: string) {
     setName(id: $id, name: $name) {
@@ -106,5 +165,11 @@ export const SET_READER_NAME = gql`
       scheduledStatusFreq
       lastStatusTime
     }
+  }
+`;
+
+export const SET_READER_STATE = gql`
+  mutation SetReaderState($id: ID!, $state: String) {
+    setState(id: $id, state: $state)
   }
 `;

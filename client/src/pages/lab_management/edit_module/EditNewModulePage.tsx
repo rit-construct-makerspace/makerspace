@@ -5,10 +5,13 @@ import {GET_TRAINING_MODULES, GET_ARCHIVED_TRAINING_MODULES, CREATE_TRAINING_MOD
 import 'react-toastify/dist/ReactToastify.css';
 import Page from "../../Page";
 import {
+    Button,
     CircularProgress,
     Fab,
     Grid,
+    Stack,
     TextField,
+    Typography,
 } from "@mui/material";
 import { useImmer } from "use-immer";
 import QuizBuilder from "./quiz/QuizBuilder";
@@ -109,43 +112,31 @@ export default function EditNewModulePage() {
     };
 
     return (
-        <AdminPage title="New training module" maxWidth="600px">
-            <Grid container
-                rowSpacing={2}
-                columnSpacing={2}
-                sx={{ mb: 4 }}
-                alignItems="center"
-                justifyContent="center"
-            >
-            <Grid size={{xs: 12, md: 8}}>
-                <TextField
-                label="Module title"
-                value={moduleDraft.name}
-                onChange={handleNameChanged}
-                fullWidth
-                />
-            </Grid>
-            </Grid>
+        <AdminPage>
+            <Stack padding="20px" spacing={2}>
+                <Stack direction="row" spacing={2} justifyContent="center">
+                    <Typography variant="h4">New Training Module</Typography>
+                    <Button startIcon={<SaveIcon/>} color="success" variant="contained" onClick={handleSaveClicked} size="large">Save</Button>
+                </Stack>
+                <Grid container
+                    rowSpacing={2}
+                    columnSpacing={2}
+                    sx={{ mb: 4 }}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                <Grid size={{xs: 12, md: 8}}>
+                    <TextField
+                    label="Module title"
+                    value={moduleDraft.name}
+                    onChange={handleNameChanged}
+                    fullWidth
+                    />
+                </Grid>
+                </Grid>
 
-            <QuizBuilder quiz={moduleDraft.quiz ? moduleDraft.quiz : []} handleAdd={handleAddQuizItem} handleRemove={handleRemoveQuizItem} handleUpdate={handleUpdateQuizItem} handleOnDragEnd={handleOnDragEnd}/>
-
-            <Fab
-                color="primary"
-                onClick={handleSaveClicked}
-                sx={{
-                    position: "absolute",
-                    bottom: 40,
-                    mr: -12,
-                    alignSelf: "flex-end",
-                }}
-            >
-            {
-                updateResult.loading ? (
-                    <CircularProgress size={20} sx={{ color: "white" }} />
-                ) : (
-                    <SaveIcon />
-                )}
-            </Fab>
+                <QuizBuilder quiz={moduleDraft.quiz ? moduleDraft.quiz : []} handleAdd={handleAddQuizItem} handleRemove={handleRemoveQuizItem} handleUpdate={handleUpdateQuizItem} handleOnDragEnd={handleOnDragEnd}/>
+            </Stack>
         </AdminPage>
     );
 }
