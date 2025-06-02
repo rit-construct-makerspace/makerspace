@@ -42,8 +42,9 @@ export async function createRestriction(
  * Function to delete a restriction
  * @param id id of the restriciton to delete
  */
-export async function deleteRestriction(id: number): Promise<void> {
+export async function deleteRestriction(id: number): Promise<boolean> {
     await knex("Restrictions").delete().where({id: id});
+    return true;
 }
 
 /**
