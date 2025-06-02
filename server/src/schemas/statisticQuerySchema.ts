@@ -59,7 +59,7 @@ export const StatisticQueryTypeDefs = gql`
         moduleName: String!
         makerID: ID!
         makerName: String!
-        summary: String!
+        summary: JSON!
         submissionDate: DateTime!
         passed: Boolean!
         expirationDate: DateTime!
