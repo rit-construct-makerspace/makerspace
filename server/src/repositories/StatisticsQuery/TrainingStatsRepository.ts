@@ -17,7 +17,7 @@ export interface VerboseTrainingSubmission {
   makerName: string;
 }
 
-export async function getTrainingSubmissionsWithAttachedEntities(startDate?: string, endDate?: string, moduleIDs?: number[]): Promise<VerboseTrainingSubmission[]> {
+export async function getTrainingSubmissionsWithAttachedEntities(startDate?: string, endDate?: string, moduleIDs?: number[]): Promise<{rows: VerboseTrainingSubmission[]}> {
   var numWhereCaluses = 0;
   var startDateSearchString = "";
   if (startDate) {
@@ -36,12 +36,12 @@ export async function getTrainingSubmissionsWithAttachedEntities(startDate?: str
   var moduleSearchString = "";
   if (moduleIDs && moduleIDs.length > 0) {
     numWhereCaluses++;
-    moduleSearchString = `WHERE tm.id = ANY(ARRAY ${moduleIDs})`;
+    moduleSearchString = `tm.id = ANY(ARRAY ${moduleIDs})`;
   }
 
 
-  return await knex(knex.raw(`
-    SELECT ms.*, tm."name" AS "moduleName", concat(substr(u."firstName", 0, 2), '. ', u."lastName") AS "userName"
+  return await knex.raw(`
+    SELECT ms.*, tm."name" AS "moduleName", concat(substr(u."firstName", 0, 2), '. ', u."lastName") AS "makerName"
     FROM "ModuleSubmissions" ms 
     INNER JOIN "TrainingModule" tm ON ms."moduleID" = tm.id
     INNER JOIN "Users" u ON ms."makerID" = u.id
@@ -52,5 +52,5 @@ export async function getTrainingSubmissionsWithAttachedEntities(startDate?: str
     ${moduleSearchString.length > 0 ? " AND " : ""}
     ${moduleSearchString}
     ORDER BY ms."submissionDate" DESC 
-  `));
+  `);
 }

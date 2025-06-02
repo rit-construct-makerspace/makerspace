@@ -14,7 +14,7 @@ export interface VerboseRoomSwipe {
   userName: string;
 }
 
-export async function getRoomSwipesWithAttachedEntities(startDate?: string, endDate?: string): Promise<VerboseRoomSwipe[]> {
+export async function getRoomSwipesWithAttachedEntities(startDate?: string, endDate?: string): Promise<{rows: VerboseRoomSwipe[]}> {
   var numWhereCaluses = 0;
   var startDateSearchString = "";
   if (startDate) {
@@ -30,7 +30,7 @@ export async function getRoomSwipesWithAttachedEntities(startDate?: string, endD
     if (!isNaN(new Date(endDate).getDate())) endDateSearchString = `ms."submissionDate" < '${endDate}'`;
   }
 
-  return await knex(knex.raw(`
+  return await knex.raw(`
     SELECT rs.*, r.name AS "roomName", concat(substr(u."firstName", 0, 2), '. ', u."lastName") AS "userName"
     FROM "RoomSwipes" rs 
     INNER JOIN "Rooms" r ON rs."roomID" = r.id
@@ -40,5 +40,5 @@ export async function getRoomSwipesWithAttachedEntities(startDate?: string, endD
     ${endDateSearchString.length > 0 ? " AND " : ""}
     ${endDateSearchString}
     ORDER BY rs."dateTime" DESC 
-  `));
+  `);
 }
