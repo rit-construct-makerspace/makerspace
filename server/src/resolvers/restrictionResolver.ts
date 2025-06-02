@@ -3,7 +3,7 @@ import { RestrictionRow } from "../db/tables.js";
 import * as UsersRepo from "../repositories/Users/UserRepository.js";
 import * as RestrictionRepository from "../repositories/Restrictions/RestrictionsRepository.js";
 
-const RestrictionResolver = {
+export const RestrictionResolver = {
     Restriction: {
         creator: async (
             parent: RestrictionRow,
