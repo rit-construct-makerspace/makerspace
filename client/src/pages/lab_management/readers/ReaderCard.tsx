@@ -4,12 +4,12 @@ import {
   CardContent,
   CardHeader,
   Link,
+  makeStyles,
   MenuItem,
   Select,
   Stack,
   Typography,
 } from "@mui/material";
-import { makeStyles } from '@material-ui/core/styles';
 import { GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
@@ -41,7 +41,7 @@ interface ReaderCardProps {
 
 
 
-const useStyles = makeStyles({
+const styles = {
   errorText: {
     color: "red",
     fontWeight: "bold"
@@ -52,7 +52,7 @@ const useStyles = makeStyles({
   notifCard: {
     border: "3px solid blue"
   }
-});
+};
 
 
 export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer, SN }: ReaderCardProps) {
@@ -69,8 +69,6 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     
   const rooms = useQuery(GET_ROOMS);
     
-  const classes = useStyles();
-
   const now = new Date();
   const lastTimeDifference = now.getTime() - (new Date(lastStatusTime).getTime());
 
@@ -87,7 +85,7 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason === "Error" || lastStatusReason === "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
+      <Card sx={{ width: 350, minHeight: 600, border: (lastStatusReason == "Error" || lastStatusReason == "Temperature" ? styles.errorCard : helpRequested ? styles.notifCard : "")}}>
         <CardHeader
           title={name}
           subheader={(machineType != null && machineType !== "") ? ("Type: " + machineType) : `SN: ${SN}`}
