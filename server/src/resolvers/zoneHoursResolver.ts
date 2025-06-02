@@ -14,10 +14,9 @@ const ZoneHoursResolver = {
     zoneHours: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
+      { }: ApolloContext) => {
         return await getZoneHours();
-      }),
+      },
 
     /**
      * Fetch all ZoneHours for a specified Zone
@@ -28,10 +27,9 @@ const ZoneHoursResolver = {
     zoneHoursByZone: async (
       _parent: any,
       args: { zoneID: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
+      { }: ApolloContext) => {
         return await getHoursByZone(Number(args.zoneID));
-      }),
+      },
   },
 
   Mutation: {
@@ -47,8 +45,8 @@ const ZoneHoursResolver = {
     addZoneHours: async (
       _parent: any,
       args: { zoneID: string, type: string, dayOfTheWeek: string, time: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async () => {
         const time = args.time.replace(":", "") + "00";
         //console.log(`${args.zone}, ${args.type}, ${(args.dayOfTheWeek)}, ${time}`)
         return await createZoneHours(Number(args.zoneID), args.type, Number(args.dayOfTheWeek), time);
@@ -63,8 +61,8 @@ const ZoneHoursResolver = {
     deleteZoneHours: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async () => {
         await deleteZoneHours(args.id);
         return (await getZoneHours())[0];
       }),
