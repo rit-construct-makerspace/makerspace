@@ -26,7 +26,7 @@ const testuser: CurrentUser = {
   expectedGraduation: "June 2077",
   college: "GCCIS",
   setupComplete: true,
-  ritUsername: "jxh6319",
+  ritUsername: "tu1000",
   archived: false,
   balance: "0",
   manager: [],
