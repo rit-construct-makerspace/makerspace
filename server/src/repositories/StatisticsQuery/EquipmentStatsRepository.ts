@@ -29,20 +29,20 @@ export async function getEquipmentSessionsWithAttachedEntities(startDate?: strin
   if (startDate) {
     numWhereCaluses++;
     //To prevent SQL Injection, Make sure JS sees it as a Date
-    if (!isNaN(new Date(startDate).getDate())) startDateSearchString = `ms."submissionDate" >= '${startDate}'`;
+    if (!isNaN(new Date(startDate).getDate())) startDateSearchString = `es."start" >= '${startDate}'`;
   }
 
   var endDateSearchString = "";
   if (endDate) {
     numWhereCaluses++;
     //To prevent SQL Injection, Make sure JS sees it as a Date
-    if (!isNaN(new Date(endDate).getDate())) endDateSearchString = `ms."submissionDate" < '${endDate}'`;
+    if (!isNaN(new Date(endDate).getDate())) endDateSearchString = `es."start" < '${endDate}'`;
   }
 
   var equipmentSearchString = "";
   if (equipmentIDs && equipmentIDs.length > 0) {
     numWhereCaluses++;
-    equipmentSearchString = `WHERE tm.id = ANY(ARRAY ${equipmentIDs})`;
+    equipmentSearchString = `e.id = ANY(ARRAY ${equipmentIDs})`;
   }
 
   return await knex.raw(`
@@ -53,7 +53,7 @@ export async function getEquipmentSessionsWithAttachedEntities(startDate?: strin
     INNER JOIN "Rooms" r ON e."roomID" = r.id
     INNER JOIN "Zones" z ON r."zoneID" = z.id
     WHERE es."sessionLength" != 0
-    ${numWhereCaluses > 0 ? "AND WHERE " : ""}
+    ${numWhereCaluses > 0 ? "AND " : ""}
     ${startDateSearchString}
     ${endDateSearchString.length > 0 ? " AND " : ""}
     ${endDateSearchString}
