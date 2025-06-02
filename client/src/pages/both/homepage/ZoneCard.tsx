@@ -112,7 +112,7 @@ export default function ZoneCard(props: ZoneCardProps) {
             <CardActionArea onClick={() => {navigate(`/makerspace/${props.id}`)}}>
                 <CardMedia
                     component="img"
-                    height="200px"
+                    height={props.isMobile ? "197px" : "281px"}
                     image={props.imageUrl}
                 />
                 <CardContent>

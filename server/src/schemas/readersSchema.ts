@@ -23,10 +23,21 @@ export const ReaderTypeDefs = gql`
     BEVer: String
     FEVer: String
     HWVer: String
+    sessionStartTime: DateTime
+    SN: String
+    readerKeyCycle: Int
+    pairTime: DateTime
+  }
+  type PairInfo {
+    readerKey: String
+    name: String
+    siteName: String
+    certs: String
   }
 
   extend type Query {
     readers: [Reader]
+    unpairedReaders: [Reader]
     reader(id: ID!): Reader
   }
 
@@ -37,6 +48,12 @@ export const ReaderTypeDefs = gql`
       name: String
       zone: String
     ): Reader
+
+
+    pairReader(
+      SN: String!
+    ): PairInfo
+
 
     updateReader(
       id: ID!
@@ -49,8 +66,10 @@ export const ReaderTypeDefs = gql`
       recentSessionLength: String
       lastStatusReason: String
       scheduledStatusFreq: String
+      SN: String
     ): Reader
 
     setName(id: ID!, name: String): Reader
+    setState(id: ID!, state: String): String
   }
 `;

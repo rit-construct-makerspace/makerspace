@@ -30,6 +30,7 @@ export const EquipmentTypeDefs = gql`
     numAvailable: Int
     numInUse: Int
     byReservationOnly: Boolean
+    needsWelcome: Boolean
   }
 
   input EquipmentInput {
