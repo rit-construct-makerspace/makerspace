@@ -44,7 +44,10 @@ const config: any = { //remove ': any' if using --esm
     client: "pg",
     connection: {
       connectionString: process.env.DATABASE_URL + (process.env.DB_SCHEMA ? ('?currentSchema=' + process.env.DB_SCHEMA) : ""),
-      ssl: false,
+      ssl: {
+        rejectUnauthorized: false,
+        sslmode: 'require',
+      },
     },
     pool: {
       min: 2,
