@@ -70,7 +70,7 @@ export const StatisticQueryTypeDefs = gql`
         numRoomSwipesToday: Int
         numEquipmentSessionsToday: Int
         getEquipmentSessionsWithAttachedEntities(startDate: String, endDate: String, equipmentIDs: [String]): [VerboseEquipmentSession]
-        getRoomSwipesWithAttachedEntities(startDate: String, endDate: String): [VerboseRoomSwipe]
+        getRoomSwipesWithAttachedEntities(startDate: String, endDate: String, roomIDs: [String]): [VerboseRoomSwipe]
         getTrainingSubmissionsWithAttachedEntities(startDate: String, endDate: String, moduleIDs: [String]): [VerboseTrainingSubmission]
     }
 `;

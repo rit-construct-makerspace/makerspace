@@ -56,10 +56,10 @@ const StatisticQueryResolver = {
      */
     getRoomSwipesWithAttachedEntities: async (
       _parent: any,
-      args: {startDate: string, endDate: string},
+      args: {startDate: string, endDate: string, roomIDs: string[]},
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
-        return (await getRoomSwipesWithAttachedEntities(args.startDate, args.endDate)).rows;
+        return (await getRoomSwipesWithAttachedEntities(args.startDate, args.endDate, args.roomIDs)).rows;
       }),
 
     /**
