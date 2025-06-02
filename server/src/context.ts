@@ -26,7 +26,7 @@ const testuser: CurrentUser = {
   expectedGraduation: "June 2077",
   college: "GCCIS",
   setupComplete: true,
-  ritUsername: "tu1000",
+  ritUsername: "jxh6319",
   archived: false,
   balance: "0",
   manager: [],
@@ -135,7 +135,7 @@ export const isTrainerFor =
  */
 export const isManager =
   (expressUser: Express.User | undefined) =>
-  (makerspaceID: number, callback: (user: CurrentUser) => any) => {
+  (callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
     const user = expressUser as CurrentUser;
 
@@ -153,11 +153,11 @@ export const isManager =
  * ^ Staff
  */
 export const isStaff =
-  (expressUser: Express.User | undefined) =>
-  (makerspaceID: number, callback: (user: CurrentUser) => any) => {
+  (expressUser: Express.User) =>
+  (callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
     const user = expressUser as CurrentUser;
-
+    console.log(user)
     if (user.staff.length <= 0 && user.manager.length <= 0 && !user.admin) {
       throw new GraphQLError("Insufficent Privilege | Not a Staff");
     }
@@ -174,7 +174,7 @@ export const isStaff =
  */
 export const isTrainer =
   (expressUser: Express.User | undefined) =>
-  (makerspaceID: number, callback: (user: CurrentUser) => any) => {
+  (callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
     const user = expressUser as CurrentUser;
 

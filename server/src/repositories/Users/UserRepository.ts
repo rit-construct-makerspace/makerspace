@@ -236,7 +236,13 @@ export async function getNumUsers(): Promise<string> {
  * @returns number[] of makerspaceIDs
  */
 export async function getUserManagerPerms(userID: number): Promise<number[]> {
-  return await knex("Managers").where({userID: userID}).select("makerspaceID");
+  var makerspaceIDs: number[] = [];
+  
+  (await knex("Managers").where({userID: userID}).select("makerspaceID")).map((row) => {
+    makerspaceIDs.push(row.makerspaceID);
+  })
+
+  return makerspaceIDs;
 }
 
 /**
@@ -245,7 +251,13 @@ export async function getUserManagerPerms(userID: number): Promise<number[]> {
  * @returns number[] of makerpsaceIDs
  */
 export async function getUserStaffPerms(userID: number): Promise<number[]> {
-  return await knex("Staff").where({userID: userID}).select("makerspaceID");
+  var makerspaceIDs: number[] = [];
+  
+  (await knex("Staff").where({userID: userID}).select("makerspaceID")).map((row) => {
+    makerspaceIDs.push(row.makerspaceID);
+  })
+
+  return makerspaceIDs;
 }
 
 /**
@@ -254,5 +266,11 @@ export async function getUserStaffPerms(userID: number): Promise<number[]> {
  * @returns number[] of equipmentIDs
  */
 export async function getUserTrainerPerms(userID: number): Promise<number[]> {
-  return await knex("Trainers").where({userID: userID}).select("equipmentID");
+  var equipmentIDs: number[] = [];
+  
+  (await knex("Trainers").where({userID: userID}).select("equipmentID")).map((row) => {
+    equipmentIDs.push(row.equipmentID);
+  })
+
+  return equipmentIDs;
 }
