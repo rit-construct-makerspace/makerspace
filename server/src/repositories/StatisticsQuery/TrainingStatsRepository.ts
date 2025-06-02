@@ -17,7 +17,7 @@ export interface VerboseTrainingSubmission {
   makerName: string;
 }
 
-export async function getTrainingSubmissionsWithAttachedEntities(startDate?: string, endDate?: string, moduleIDs?: number[]): Promise<{rows: VerboseTrainingSubmission[]}> {
+export async function getTrainingSubmissionsWithAttachedEntities(startDate?: string, endDate?: string, moduleIDs?: string[]): Promise<{rows: VerboseTrainingSubmission[]}> {
   var numWhereCaluses = 0;
   var startDateSearchString = "";
   if (startDate) {
@@ -36,7 +36,7 @@ export async function getTrainingSubmissionsWithAttachedEntities(startDate?: str
   var moduleSearchString = "";
   if (moduleIDs && moduleIDs.length > 0) {
     numWhereCaluses++;
-    moduleSearchString = `tm.id = ANY(ARRAY ${moduleIDs})`;
+    moduleSearchString = `tm.id = ANY(ARRAY [${moduleIDs}])`;
   }
 
 
@@ -47,9 +47,9 @@ export async function getTrainingSubmissionsWithAttachedEntities(startDate?: str
     INNER JOIN "Users" u ON ms."makerID" = u.id
     ${numWhereCaluses > 0 ? " WHERE " : ""}
     ${startDateSearchString}
-    ${endDateSearchString.length > 0 ? " AND " : ""}
+    ${startDateSearchString != "" && endDateSearchString.length > 0 ? " AND " : ""}
     ${endDateSearchString}
-    ${moduleSearchString.length > 0 ? " AND " : ""}
+    ${numWhereCaluses > 1 && moduleSearchString.length > 0 ? " AND " : ""}
     ${moduleSearchString}
     ORDER BY ms."submissionDate" DESC 
   `);

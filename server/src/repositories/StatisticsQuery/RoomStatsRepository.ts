@@ -37,7 +37,7 @@ export async function getRoomSwipesWithAttachedEntities(startDate?: string, endD
     INNER JOIN "Users" u ON rs."userID" = u.id
     ${numWhereCaluses > 0 ? " WHERE " : ""}
     ${startDateSearchString}
-    ${endDateSearchString.length > 0 ? " AND " : ""}
+    ${startDateSearchString != "" && endDateSearchString.length > 0 ? " AND " : ""}
     ${endDateSearchString}
     ORDER BY rs."dateTime" DESC 
   `);

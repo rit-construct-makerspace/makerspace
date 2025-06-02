@@ -42,7 +42,7 @@ const StatisticQueryResolver = {
      */
     getEquipmentSessionsWithAttachedEntities: async (
       _parent: any,
-      args: {startDate: string, endDate: string, equipmentIDs: number[]},
+      args: {startDate: string, endDate: string, equipmentIDs: string[]},
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return (await getEquipmentSessionsWithAttachedEntities(args.startDate, args.endDate, args.equipmentIDs)).rows;
@@ -71,7 +71,7 @@ const StatisticQueryResolver = {
      */
     getTrainingSubmissionsWithAttachedEntities: async (
       _parent: any,
-      args: {startDate: string, endDate: string, moduleIDs: number[]},
+      args: {startDate: string, endDate: string, moduleIDs: string[]},
       { ifAllowed }: ApolloContext) =>
       ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
         return (await getTrainingSubmissionsWithAttachedEntities(args.startDate, args.endDate, args.moduleIDs)).rows;

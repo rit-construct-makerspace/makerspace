@@ -23,7 +23,7 @@ export interface VerboseEquipmentSession {
   zoneName: string;
 }
 
-export async function getEquipmentSessionsWithAttachedEntities(startDate?: string, endDate?: string, equipmentIDs?: number[]): Promise<{rows: VerboseEquipmentSession[]}> {
+export async function getEquipmentSessionsWithAttachedEntities(startDate?: string, endDate?: string, equipmentIDs?: string[]): Promise<{rows: VerboseEquipmentSession[]}> {
   var numWhereCaluses = 0;
   var startDateSearchString = "";
   if (startDate) {
@@ -42,7 +42,7 @@ export async function getEquipmentSessionsWithAttachedEntities(startDate?: strin
   var equipmentSearchString = "";
   if (equipmentIDs && equipmentIDs.length > 0) {
     numWhereCaluses++;
-    equipmentSearchString = `e.id = ANY(ARRAY ${equipmentIDs})`;
+    equipmentSearchString = `e.id = ANY(ARRAY [${equipmentIDs}])`;
   }
 
   return await knex.raw(`
@@ -55,9 +55,9 @@ export async function getEquipmentSessionsWithAttachedEntities(startDate?: strin
     WHERE es."sessionLength" != 0
     ${numWhereCaluses > 0 ? "AND " : ""}
     ${startDateSearchString}
-    ${endDateSearchString.length > 0 ? " AND " : ""}
+    ${startDateSearchString != "" && endDateSearchString.length > 0 ? " AND " : ""}
     ${endDateSearchString}
-    ${equipmentSearchString.length > 0 ? " AND " : ""}
+    ${numWhereCaluses > 1 && equipmentSearchString.length > 0 ? " AND " : ""}
     ${equipmentSearchString}
     ORDER BY es."start" DESC
 `);
