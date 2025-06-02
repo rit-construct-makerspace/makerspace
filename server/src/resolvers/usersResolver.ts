@@ -53,8 +53,8 @@ const UsersResolvers = {
     users: async (
       _parent: any,
       args: { searchText: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         const searchText = args.searchText ?? "";
         return await UserRepo.getUsers(searchText);
       }),
@@ -67,8 +67,8 @@ const UsersResolvers = {
     usersLimit: async (
       _parent: any,
       args: { searchText: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         const searchText = args.searchText ?? "";
         return await UserRepo.getUsersLimit(searchText);
       }),
@@ -81,8 +81,8 @@ const UsersResolvers = {
     user: async (
       _parent: any,
       args: { id: string },
-      { ifAllowedOrSelf }: ApolloContext) =>
-      ifAllowedOrSelf(Number(args.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
+      { ifAuthenticated }: ApolloContext) =>
+      ifAuthenticated(async () => {
         return await UserRepo.getUserByID(Number(args.id));
       }),
 
@@ -105,8 +105,8 @@ const UsersResolvers = {
     numUsers: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await UserRepo.getNumUsers();
       }),
 
@@ -118,8 +118,8 @@ const UsersResolvers = {
     userByUsernameorUID: async (
       _parent: any,
       args: { value: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await UserRepo.getUserByUsernameOrUID(args.value);
       }),
   },
@@ -140,8 +140,8 @@ const UsersResolvers = {
         lastName: string;
         ritUsername: string;
       },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await UserRepo.createUser(args);
       }),
 
@@ -162,8 +162,8 @@ const UsersResolvers = {
         college: string;
         expectedGraduation: string;
       },
-      { ifAllowedOrSelf }: ApolloContext) =>
-      ifAllowedOrSelf(Number(args.userID), [Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { ifStaffOrSelf }: ApolloContext) =>
+      ifStaffOrSelf(async (user) => {
         return await UserRepo.updateStudentProfile({
           userID: Number(args.userID),
           pronouns: args.pronouns,
@@ -182,9 +182,9 @@ const UsersResolvers = {
     setCardTagID: async (
       _parent: any,
       args: { userID: string, cardTagID: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser: any) => {
+      isStaff(async (executingUser: any) => {
         const userSubject = await UserRepo.setCardTagID(Number(args.userID), args.cardTagID);
 
         await createLog(
@@ -205,10 +205,9 @@ const UsersResolvers = {
     setNotes: async (
       _parent: any,
       args: { userID: string, notes: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (executingUser: any) => {
-        console.log("test")
+      isStaff(async (executingUser: any) => {
         const userSubject = await UserRepo.setNotes(Number(args.userID), args.notes);
       }),
 
@@ -222,9 +221,9 @@ const UsersResolvers = {
     setPrivilege: async (
       _parent: any,
       args: { userID: string; privilege: Privilege },
-      { ifAllowed }: ApolloContext
+      { isManager }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async (executingUser: any) => {
+      isManager(async (executingUser: any) => {
         const userSubject = await UserRepo.setPrivilege(Number(args.userID), args.privilege);
 
         await createLog(
@@ -244,10 +243,9 @@ const UsersResolvers = {
     archiveUser: async (
       _parent: any,
       args: { userID: string },
-      { ifAllowed }: ApolloContext
+      { isManager }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.STAFF],
+      isManager(
         async (user: any) => {
 
           const userSubject = await UserRepo.getUserByID(Number(args.userID));

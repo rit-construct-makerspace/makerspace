@@ -21,9 +21,9 @@ const ToolItemResolver = {
     instances: async (
       parent: ToolItemTypesRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemInstancesByType(parent.id);
       }
     ),
@@ -32,9 +32,9 @@ const ToolItemResolver = {
     defaultLocationRoom: async (
       parent: ToolItemTypesRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getRoomByID(parent.defaultLocationRoomID);
       }
     ),
@@ -45,9 +45,9 @@ const ToolItemResolver = {
     type: async (
       parent: ToolItemInstancesRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemTypeByID(parent.typeID);
       }
     ),
@@ -56,9 +56,9 @@ const ToolItemResolver = {
     borrower: async (
       parent: ToolItemInstancesRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         if (!parent.borrowerUserID) return null;
         return getUserByID(parent.borrowerUserID);
       }
@@ -68,9 +68,9 @@ const ToolItemResolver = {
     locationRoom: async (
       parent: ToolItemInstancesRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getRoomByID(parent.locationRoomID);
       }
     ),
@@ -85,9 +85,9 @@ const ToolItemResolver = {
     toolItemTypes: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemTypes();
       }
     ),
@@ -100,9 +100,9 @@ const ToolItemResolver = {
     toolItemTypesAllowCheckout: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemTypesWhereAllowCheckout();
       }
     ),
@@ -116,9 +116,9 @@ const ToolItemResolver = {
     toolItemType: async (
       _parent: any,
       args: {id: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemTypeByID(args.id);
       }
     ),
@@ -131,9 +131,9 @@ const ToolItemResolver = {
     toolItemInstances: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemInstances();
       }
     ),
@@ -147,9 +147,9 @@ const ToolItemResolver = {
     toolItemInstancesByType: async (
       _parent: any,
       args: {id: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemInstancesByType(args.id);
       }
     ),
@@ -163,9 +163,9 @@ const ToolItemResolver = {
     toolItemInstance: async (
       _parent: any,
       args: {id: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemInstanceByID(args.id);
       }
     ),
@@ -179,9 +179,9 @@ const ToolItemResolver = {
     toolItemInstancesByBorrower: async (
       _parent: any,
       args: {id: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return getToolItemInstancesByBorrower(args.id);
       }
     ),
@@ -197,9 +197,9 @@ const ToolItemResolver = {
     createToolItemType: async (
       _parent: any,
       args: {toolItemType: ToolItemTypeInput},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         await createLog(`{user} created tool item type '${args.toolItemType.name}'`, 'admin', {id: user.id, label: getUsersFullName(user)});
         return await createToolItemType(args.toolItemType.name, args.toolItemType.defaultLocationRoomID, 
           args.toolItemType.defaultLocationDescription, args.toolItemType.description, args.toolItemType.checkoutNote, 
@@ -217,9 +217,9 @@ const ToolItemResolver = {
     updateToolItemType: async (
       _parent: any,
       args: {id: number, toolItemType: ToolItemTypeInput},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         const orig = await getToolItemTypeByID(args.id);
         if (!orig) throw new GraphQLError("Type does not exist");
         await createLog(`{user} updated tool item type '${orig.name}'`, 'admin', {id: user.id, label: getUsersFullName(user)});
@@ -238,9 +238,9 @@ const ToolItemResolver = {
     createToolItemInstance: async (
       _parent: any,
       args: {toolItemInstance: ToolItemInstanceInput},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         await createLog(`{user} created tool item instance '${args.toolItemInstance.uniqueIdentifier}'`, 'admin', {id: user.id, label: getUsersFullName(user)});
         return createToolItemInstance(Number(args.toolItemInstance.typeID), args.toolItemInstance.uniqueIdentifier, 
           Number(args.toolItemInstance.locationRoomID), args.toolItemInstance.locationDescription, args.toolItemInstance.condition, 
@@ -258,9 +258,9 @@ const ToolItemResolver = {
     updateToolItemInstance: async (
       _parent: any,
       args: {id: number, toolItemInstance: ToolItemInstanceInput},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         const orig = await getToolItemInstanceByID(args.id);
         if (!orig) throw new GraphQLError("Instance does not exist");
         if (!(args.toolItemInstance.status == orig.status)
@@ -292,9 +292,9 @@ const ToolItemResolver = {
     borrowInstance: async (
       _parent: any,
       args: {userID: number, instanceID: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         const reciever = await getUserByID(args.userID);
         if (!reciever) throw new GraphQLError("Recieving User does not exist");
         const orig = await getToolItemInstanceByID(args.instanceID);
@@ -313,9 +313,9 @@ const ToolItemResolver = {
     returnInstance: async (
       _parent: any,
       args: {instanceID: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         const orig = await getToolItemInstanceByID(args.instanceID);
         if (!orig) throw new GraphQLError("Type does not exist");
         const reciever = orig.borrowerUserID ? await getUserByID(orig.borrowerUserID) : undefined;
@@ -334,9 +334,9 @@ const ToolItemResolver = {
     deleteToolItemType: async (
       _parent: any,
       args: {id: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         const orig = await getToolItemTypeByID(args.id);
         if (!orig) throw new GraphQLError("Type does not exist");
         await createLog(`{user} deleted tool item type '${orig.name}'`, 'admin', {id: user.id, label: getUsersFullName(user)});
@@ -353,9 +353,9 @@ const ToolItemResolver = {
     deleteToolItemInstance: async (
       _parent: any,
       args: {id: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         const orig = await getToolItemInstanceByID(args.id);
         if (!orig) throw new GraphQLError("Instance does not exist");
         await createLog(`{user} deleted tool item instance '${orig.uniqueIdentifier}'`, 'admin', {id: user.id, label: getUsersFullName(user)});

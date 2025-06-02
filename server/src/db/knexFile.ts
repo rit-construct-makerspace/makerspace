@@ -43,7 +43,7 @@ const config: any = { //remove ': any' if using --esm
   staging: {
     client: "pg",
     connection: {
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.DATABASE_URL + (process.env.DB_SCHEMA ? ('?currentSchema=' + process.env.DB_SCHEMA) : ""),
       ssl: {
         rejectUnauthorized: false,
         sslmode: 'require',

@@ -18,6 +18,9 @@ import express from "express";
 import {
   createUser,
   getUserByRitUsername,
+  getUserManagerPerms,
+  getUserStaffPerms,
+  getUserTrainerPerms,
   updateUserName
 } from "./repositories/Users/UserRepository.js";
 import { getHoldsByUser } from "./repositories/Holds/HoldsRepository.js";
@@ -272,6 +275,20 @@ export function setupStagingAuth(app: express.Application) {
     const holds = await getHoldsByUser(currUser.id);
     currUser.hasHolds = holds.some((hold) => !hold.removeDate);
     currUser.hasCardTag = (currUser.cardTagID != null && currUser.cardTagID != "");
+
+    // Populate user.manager
+    const managerPerms: number[] = await getUserManagerPerms(currUser.id);
+    currUser.manager = managerPerms;
+
+    // Populate user.staff
+    const staffPerms: number[] = await getUserStaffPerms(currUser.id);
+    currUser.staff = staffPerms;
+
+    // Populate user.trainer
+    const trainerPerms: number[] = await getUserTrainerPerms(currUser.id);
+    currUser.trainer = trainerPerms;
+
+    // Populate user.restrictions
 
     /* @ts-ignore */
     done(null, currUser);

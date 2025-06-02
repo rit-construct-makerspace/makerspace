@@ -1,7 +1,6 @@
-import { ApolloContext, ifAllowed } from "../context.js";
+import { ApolloContext, CurrentUser, isManager, isStaff } from "../context.js";
 import * as InventoryRepo from "../repositories/Store/InventoryRepository.js";
 import { InventoryItem, InventoryItemInput } from "../schemas/storeFrontSchema.js";
-import { Privilege } from "../schemas/usersSchema.js";
 import { deleteInventoryItem } from "../repositories/Store/InventoryRepository.js";
 import { createLedger, deleteLedger, getLedgers } from "../repositories/Store/InventoryLedgerRepository.js";
 import { GraphQLError } from "graphql";
@@ -44,11 +43,11 @@ const StorefrontResolvers = {
     InventoryItems: async (
       _: any,
       args: { storefrontVisible?: boolean },
-      { ifAllowed }: ApolloContext) => {
+      { isStaff }: ApolloContext) => {
       if (args.storefrontVisible == null || args.storefrontVisible == undefined)
         return await InventoryRepo.getItems();
       if (args.storefrontVisible)
-        ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+        isStaff(async () => {
           return await InventoryRepo.getItemsWhereStorefront(true);
         })
       return await InventoryRepo.getItemsWhereStorefront(false);
@@ -63,9 +62,9 @@ const StorefrontResolvers = {
     InventoryItem: async (
       _: any,
       args: { id: string },
-      { ifAllowed }: ApolloContext) => {
+      { isStaff }: ApolloContext) => {
       const item = await InventoryRepo.getItemById(Number(args.id));
-      if (!item?.storefrontVisible) return ifAllowed([Privilege.MENTOR, Privilege.STAFF], () => {
+      if (!item?.storefrontVisible) return isStaff(() => {
         return item;
       })
       else {
@@ -84,8 +83,8 @@ const StorefrontResolvers = {
     Ledgers: async (
       _: any,
       args: { startDate: string, stopDate: string, searchText: string },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF, Privilege.MENTOR], () => {
+      { isStaff }: ApolloContext) => {
+      return isStaff(() => {
         const startDate = args.startDate ?? "2020-01-01";
         const stopDate = args.stopDate ?? "2200-01-01";
         const searchText = args.searchText ?? "";
@@ -101,8 +100,8 @@ const StorefrontResolvers = {
     inventoryTags: async (
       _: any,
       _args: any,
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF, Privilege.MENTOR], async () => {
+      { isStaff }: ApolloContext) => {
+      return isStaff(async () => {
         return await InventoryRepo.getTags();
       })
     },
@@ -118,8 +117,8 @@ const StorefrontResolvers = {
     createInventoryItem: async (
       _: any,
       args: { item: InventoryItemInput },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async (user) => {
         const result = await InventoryRepo.addItem(args.item);
         await createLedger(user.id, "Create", Number(args.item.pricePerUnit) * Number(args.item.count), undefined, "", [{ name: args.item.name, quantity: Number(args.item.count) }]);
         return result;
@@ -135,11 +134,11 @@ const StorefrontResolvers = {
     updateInventoryItem: async (
       _: any,
       args: { itemId: string; item: InventoryItemInput },
-      { ifAllowed }: ApolloContext) => {
+      { isStaff, isManager }: ApolloContext) => {
       const orig = await InventoryRepo.getItemById(Number(args.itemId))
       //If item is STAFF ONLY, only allow edits by staff
       if (!(orig)?.staffOnly) {
-        return ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (user) => {
+        return isStaff(async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemId + " does not exist");
           const result = await InventoryRepo.updateItemById(Number(args.itemId), args.item).then(async (item) => {
             if (item && (item.count < item.threshold) && (orig.count >= item.threshold)) {
@@ -151,7 +150,7 @@ const StorefrontResolvers = {
           return result;
         })
       }
-      return ifAllowed([Privilege.STAFF], async (user) => {
+      return isManager(async (user) => {
         const result = await InventoryRepo.updateItemById(Number(args.itemId), args.item).then(async (item) => {
           if (item && (item.count < item.threshold) && (orig.count >= item.threshold)) {
             await notifyInventoryItemBelowThreshold(item.name, item.count)
@@ -173,17 +172,17 @@ const StorefrontResolvers = {
     addItemAmount: async (
       _: any,
       args: { itemId: string; count: number },
-      { ifAllowed }: ApolloContext) => {
+      { isStaff, isManager }: ApolloContext) => {
       const orig = await InventoryRepo.getItemById(Number(args.itemId));
       if (!(orig)?.staffOnly) {
-        return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        return isStaff(async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemId + " does not exist");
           const result = await InventoryRepo.addItemAmount(Number(args.itemId), args.count);
           await createLedger(user.id, "Modify", orig.pricePerUnit * args.count, undefined, "", [{ name: orig.name, quantity: Number(args.count) }]);
           return result;
         })
       }
-      return ifAllowed([Privilege.STAFF], async (user) => {
+      return isManager(async (user) => {
         if (!orig) throw new GraphQLError("Item at" + args.itemId + " does not exist");
         const result = await InventoryRepo.addItemAmount(Number(args.itemId), args.count);
         await createLedger(user.id, "Modify", orig.pricePerUnit * args.count, undefined, "", [{ name: orig.name, quantity: Number(args.count) }]);
@@ -201,10 +200,10 @@ const StorefrontResolvers = {
     removeItemAmount: async (
       _: any,
       args: { itemID: string; count: number },
-      { ifAllowed }: ApolloContext) => {
+      { isStaff, isManager }: ApolloContext) => {
       const orig = await InventoryRepo.getItemById(Number(args.itemID));
       if (!(orig)?.staffOnly) {
-        return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        return isStaff(async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemID + " does not exist");
           const result = await InventoryRepo.addItemAmount(Number(args.itemID), args.count).then(async (item) => {
             if (item && (item.count < item.threshold) && (orig.count >= item.threshold)) {
@@ -215,7 +214,7 @@ const StorefrontResolvers = {
           return result;
         })
       }
-      return ifAllowed([Privilege.STAFF], async (user) => {
+      return isManager(async (user) => {
         if (!orig) throw new GraphQLError("Item at" + args.itemID + " does not exist");
         const result = await InventoryRepo.addItemAmount(Number(args.itemID), args.count);
         await createLedger(user.id, "Modify", orig.pricePerUnit * args.count, undefined, "", [{ name: orig.name, quantity: Number(args.count) * -1 }]);
@@ -232,13 +231,13 @@ const StorefrontResolvers = {
     archiveInventoryItem: async (
       _: any,
       args: { itemID: string },
-      { ifAllowed }: ApolloContext) => {
+      { isManager }: ApolloContext) => {
       if (!(await InventoryRepo.getItemById(Number(args.itemID)))?.staffOnly) {
-        return ifAllowed([Privilege.STAFF], async () => {
+        return isManager(async () => {
           return await InventoryRepo.archiveItem(Number(args.itemID));
         })
       }
-      return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      return isStaff(async () => {
         return InventoryRepo.archiveItem(Number(args.itemID));
       })
     },
@@ -252,17 +251,17 @@ const StorefrontResolvers = {
     deleteInventoryItem: async (
       _parent: any,
       args: any,
-      { ifAllowed }: ApolloContext) => {
+      { isStaff, isManager }: ApolloContext) => {
       const orig = await InventoryRepo.getItemById(Number(args.id));
       if (!(orig)?.staffOnly) {
-        return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+        return isStaff(async (user) => {
           if (!orig) throw new GraphQLError("Item at" + args.itemID + " does not exist");
           const result = await InventoryRepo.deleteInventoryItem(Number(args.id));
           await createLedger(user.id, "Delete", -orig.pricePerUnit * Number(orig.count), undefined, "", [{ name: orig.name, quantity: Number(orig.count) * -1 }]);
           return result;
         })
       }
-      return ifAllowed([Privilege.STAFF], async () => {
+      return isManager(async () => {
         return await deleteInventoryItem(args.id);
       }
       )
@@ -279,11 +278,11 @@ const StorefrontResolvers = {
     checkoutItems: async (
       _parent: any,
       args: { items: { id: number, count: number }[], notes: string | null, recievingUserID: number | null },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { isStaff }: ApolloContext) => {
+      return isStaff(async (user) => {
         const allItems = await InventoryRepo.getItems();
         for (var i = 0; i < args.items.length; i++) {
-          if (allItems.find((item) => item.id = args.items[i].id)?.staffOnly && user.privilege != Privilege.STAFF) {
+          if (allItems.find((item) => item.id = args.items[i].id)?.staffOnly && user.manager.length <= 0) {
             //Fail if user is trying to checkout a staff item
             throw new GraphQLError("Unauthorized")
           }
@@ -317,14 +316,14 @@ const StorefrontResolvers = {
     setStorefrontVisible: async (
       _parent: any,
       args: { id: string, storefrontVisible: boolean },
-      { ifAllowed }: ApolloContext) => {
+      { isManager, isStaff }: ApolloContext) => {
       if (!(await InventoryRepo.getItemById(Number(args.id)))?.staffOnly) {
-        return ifAllowed([Privilege.STAFF], async () => {
+        return isManager(async () => {
           await InventoryRepo.setStorefrontVisible(Number(args.id), args.storefrontVisible);
           return await InventoryRepo.getItemById(Number(args.id));
         })
       }
-      return ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      return isStaff(async () => {
         await InventoryRepo.setStorefrontVisible(Number(args.id), args.storefrontVisible);
         return await InventoryRepo.getItemById(Number(args.id));
       }
@@ -341,8 +340,8 @@ const StorefrontResolvers = {
     setStaffOnly: async (
       _parent: any,
       args: { id: string, staffOnly: boolean },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) => {
+      return isManager(async () => {
         await InventoryRepo.setStaffOnly(Number(args.id), args.staffOnly);
         return await InventoryRepo.getItemById(Number(args.id));
       });
@@ -357,8 +356,8 @@ const StorefrontResolvers = {
     deleteLedger: async (
       _parent: any,
       args: { id: string },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], () => deleteLedger(Number(args.id)));
+      { isManager }: ApolloContext) => {
+      return isManager(() => deleteLedger(Number(args.id)));
     },
 
     /**
@@ -371,8 +370,8 @@ const StorefrontResolvers = {
     createTag: async (
       _parent: any,
       args: { label: string, color: string },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], () => InventoryRepo.createTag(args.label, args.color));
+      { isManager }: ApolloContext) => {
+      return isManager(() => InventoryRepo.createTag(args.label, args.color));
     },
 
     /**
@@ -386,8 +385,8 @@ const StorefrontResolvers = {
     updateTag: async (
       _parent: any,
       args: { id: number, label: string, color: string },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], () => InventoryRepo.updateTag(args.id, args.label, args.color));
+      { isManager }: ApolloContext) => {
+      return isManager(() => InventoryRepo.updateTag(args.id, args.label, args.color));
     },
 
     /**
@@ -399,8 +398,8 @@ const StorefrontResolvers = {
     deleteTag: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], () => InventoryRepo.deleteTag(args.id));
+      { isManager }: ApolloContext) => {
+      return isManager(() => InventoryRepo.deleteTag(args.id));
     },
 
     /**
@@ -413,8 +412,8 @@ const StorefrontResolvers = {
     addTagToItem: async (
       _parent: any,
       args: { itemID: number, tagID: number },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], () => InventoryRepo.addTagToItem(args.itemID, args.tagID));
+      { isManager }: ApolloContext) => {
+      return isManager(() => InventoryRepo.addTagToItem(args.itemID, args.tagID));
     },
 
     /**
@@ -427,8 +426,8 @@ const StorefrontResolvers = {
     removeTagFromItem: async (
       _parent: any,
       args: { itemID: number, tagID: number },
-      { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], () => InventoryRepo.removeTagFromItem(args.itemID, args.tagID));
+      { isManager }: ApolloContext) => {
+      return isManager(() => InventoryRepo.removeTagFromItem(args.itemID, args.tagID));
     },
   }
 };

@@ -86,19 +86,34 @@ interface CurrentUserProviderProps {
   children: ReactElement;
 }
 
+const visitor: CurrentUser = {
+  id: "-1",
+  ritUsername: "",
+  firstName: "",
+  lastName: "",
+  privilege: Privilege.VISITOR,
+  setupComplete: true,
+  balance: "",
+  hasHolds: false,
+  passedModules: [],
+  accessChecks: [],
+  cardTagID: "nothing",
+  trainingHolds: []
+}
+
 export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
   const result = useQuery(GET_CURRENT_USER);
   const location = useLocation();
 
   // If the current user is null, redirect to SSO login
-  if (
-    result &&
-    !result.loading &&
-    !result.data?.currentUser
-  ) {
-    window.location.replace(loginUrl);
-    return null;
-  }
+  // if (
+  //   result &&
+  //   !result.loading &&
+  //   !result.data?.currentUser
+  // ) {
+  //   window.location.replace(loginUrl);
+  //   return null;
+  // }
 
   // If the user exists but setupComplete is false,
   // redirect to them to the signup form
@@ -111,7 +126,7 @@ export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
   }
 
   return (
-    <CurrentUserContext.Provider value={mapUser(result.data)}>
+    <CurrentUserContext.Provider value={result.data?.currentUser ? mapUser(result.data) : visitor}>
       <RequestWrapper2 result={result} render={() => children} />
     </CurrentUserContext.Provider>
   );
