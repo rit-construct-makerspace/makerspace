@@ -27,9 +27,9 @@ export const TrainingHoldResolver = {
     user: async (
       parent: TrainingHoldsRow,
       _: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async () => {
         return await getUserByID(parent.userID)
       }),
   },
@@ -44,9 +44,9 @@ export const TrainingHoldResolver = {
     deleteTrainingHold: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      isStaff(async (user) => {
         const hold = await getTrainingHoldByID(args.id);
         if (!hold) throw Error("Training hold does not exist.");
         const recipient = await getUserByID(hold.userID)
