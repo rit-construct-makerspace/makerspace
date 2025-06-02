@@ -6,7 +6,7 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import { useMutation, useQuery } from "@apollo/client";
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { GET_READER_BY_ID, GET_UNPAIRED_READERS, Reader, SET_READER_STATE } from "../../../queries/readersQueries";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import BlockIcon from '@mui/icons-material/Block';
 import SaveIcon from '@mui/icons-material/Save';
@@ -62,23 +62,8 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     const currentReaderResp = useQuery(GET_READER_BY_ID, {
         pollInterval: 2000,
         variables: { id: props.instance.reader?.id },
-        fetchPolicy: "no-cache",
-        onCompleted: (data) => {
-            console.log("Completed", data);
-            setbisOffline(isOffline(data?.reader?.lastStatusTime));
-            console.log("bisOffline", bisOffline);
-
-        }
     });
     const currentReader: Reader = currentReaderResp.data?.reader;
-    const currentState = currentReader?.state ?? "";
-
-
-
-    // useEffect(() => {
-    // setbisOffline(isOffline(currentReaderResp?.data?.reader?.lastStatusTime));
-    // console.log("bisOffline", bisOffline);
-    // }, [bisOffline, currentReaderResp]);
 
     const [sendCommandedState] = useMutation(SET_READER_STATE);
     const [commandedState, setCommandedState] = useState<string>("Idle");
@@ -122,7 +107,6 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
         await deleteInstance({ variables: { id: props.instance.id } });
         window.location.reload();
     }
-    console.log("Offline", bisOffline);
 
     function renderCurrentState() {
         switch (currentReader?.state) {

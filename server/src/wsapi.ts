@@ -606,7 +606,6 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                     }
                 }
 
-                console.log("UPDATING", connData);
                 addOrUpdateConnection(connData);
                 // Get reader that was setup by handleBootupMessage
                 var reader = await getReaderByID(connData.readerId ?? 0);

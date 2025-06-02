@@ -71,8 +71,12 @@ export async function getUnpairedReaders(): Promise<ReaderRow[]> {
  * @returns number of reader rows where status="Idle"
  */
 export async function getNumIdleReadersByEquipment(machineID: number): Promise<number> {
-    return (await knex("Readers").select("*").where({machineID}).andWhere({state: "Idle"})
-        .whereRaw(`"lastStatusTime" > now() - interval '5 min'`)).length;
+    return (await knex("Readers")
+        .select("*")
+        .leftJoin("EquipmentInstances", "EquipmentInstances.readerID", "Readers.id")
+        .where({ equipmentID: machineID })
+        .andWhere({ state: "Idle" })
+        .andWhereRaw(`"lastStatusTime" > now() - interval '5 min'`)).length;
 }
 
 /**
@@ -81,8 +85,14 @@ export async function getNumIdleReadersByEquipment(machineID: number): Promise<n
  * @returns number of reader rows where status != "Idle"
  */
 export async function getNumUnavailableReadersByEquipment(machineID: number): Promise<number> {
-    return (await knex("Readers").select("*").where({machineID}).andWhere("state", "!=", "Idle")
-        .orWhereRaw(`"machineID" = ${machineID} AND "lastStatusTime" < now() - interval '5 min'`)).length;
+    return (await knex("Readers")
+        .select("*")
+        .leftJoin("EquipmentInstances", "EquipmentInstances.readerID", "Readers.id")
+        .where({ equipmentID: machineID })
+        .andWhere(q =>
+            q.where("state", "!=", "Idle")
+                .orWhereRaw(`"lastStatusTime" < now() - interval '5 min'`)
+        )).length;
 }
 
 /**
