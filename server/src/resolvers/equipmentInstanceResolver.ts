@@ -2,7 +2,7 @@ import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js
 import * as InstanceRepo from "../repositories/Equipment/EquipmentInstancesRepository.js";
 import * as RoomRepo from "../repositories/Rooms/RoomRepository.js"
 import { Privilege } from "../schemas/usersSchema.js";
-import { ApolloContext, ifAllowed } from "../context.js";
+import { ApolloContext } from "../context.js";
 import { EquipmentInstancesRow } from "../db/tables.js";
 import { createInstance, deleteInstance, getInstanceByID, getInstancesByEquipment, setInstanceName, setInstanceStatus } from "../repositories/Equipment/EquipmentInstancesRepository.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
@@ -46,16 +46,16 @@ const EquipmentInstanceResolver = {
     getInstanceByID: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await getInstanceByID(args.id)
       }),
 
     getReaderPairedWithInstanceByInstanceId: async (
       _parent: any,
       args: { instanceID: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await InstanceRepo.getReaderByInstanceId(args.instanceID)
       }),
 
@@ -90,8 +90,8 @@ const EquipmentInstanceResolver = {
     updateInstance: async (
       _parent: any,
       args: { id: number, name: string, status: string, readerID: number | null },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async (user) => {
 
         const instance = await InstanceRepo.getInstanceByID(args.id);
 
@@ -207,8 +207,8 @@ const EquipmentInstanceResolver = {
     assignReaderToEquipmentInstance: async (
       _parent: any,
       args: { instanceId: number, readerId: number | undefined },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async (user) => {
 
         return InstanceRepo.assignReaderToEquipmentInstance(args.instanceId, args.readerId);
       }),
