@@ -274,3 +274,44 @@ export async function getUserTrainerPerms(userID: number): Promise<number[]> {
 
   return equipmentIDs;
 }
+
+export async function setUserAdmin(userID: number, admin: boolean): Promise<boolean> {
+  await knex("Users").where({id: userID}).update({admin: admin});
+  return admin;
+}
+
+export async function makeUserManager(userID: number, makerspaceID: number): Promise<number[]> {
+  await knex("Managers").insert({userID, makerspaceID});
+
+  return await getUserManagerPerms(userID);
+}
+
+export async function makeUserStaff(userID: number, makerspaceID: number): Promise<number[]> {
+  await knex("Staff").insert({userID, makerspaceID});
+
+  return await getUserStaffPerms(userID);
+}
+
+export async function makeUserTrainer(userID: number, equipmentID: number): Promise<number[]> {
+  await knex("Trainers").insert({userID, equipmentID});
+
+  return await getUserTrainerPerms(userID);
+}
+
+export async function revokeUserManager(userID: number, makerspaceID: number): Promise<number[]> {
+  await knex("Managers").where({userID: userID, makerspaceID: makerspaceID}).delete();
+
+  return await getUserManagerPerms(userID);
+}
+
+export async function revokeUserStaff(userID: number, makerspaceID: number): Promise<number[]> {
+  await knex("Staff").where({userID: userID, makerspaceID: makerspaceID}).delete();
+
+  return await getUserStaffPerms(userID);
+}
+
+export async function revokeUserTrainer(userID: number, equipmentID: number): Promise<number[]> {
+  await knex("Trainers").where({userID: userID, equipmentID: equipmentID}).delete();
+
+  return await getUserTrainerPerms(userID);
+}
