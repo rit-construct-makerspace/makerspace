@@ -54,6 +54,7 @@ export const UsersTypeDefs = gql`
     isStudent: Boolean!
     privilege: Privilege!
     registrationDate: DateTime!
+    admin: Boolean!
     holds: [Hold]
     passedModules: [PassedModule]
     accessChecks: [UserAccessCheck]
@@ -65,6 +66,9 @@ export const UsersTypeDefs = gql`
     notes: String
     activeHold: Boolean
     trainingHolds: [TrainingHold]
+    manager: [Int]
+    staff: [Int]
+    trainer: [Int]
 
     """
     The number-letter combination that is attached to your RIT email

@@ -40,7 +40,31 @@ const UsersResolvers = {
       _args: any,
       _context: ApolloContext) => {
       return getActiveTrainingHoldsByUser(Number(parent.id));
-    }
+    },
+
+    manager: async (
+      parent: {id: string},
+      _args: any,
+      _context: ApolloContext
+    ) => {
+      return UserRepo.getUserManagerPerms(Number(parent.id))
+    },
+
+    staff: async (
+      parent: {id: string},
+      _args: any,
+      _context: ApolloContext
+    ) => {
+      return UserRepo.getUserStaffPerms(Number(parent.id))
+    },
+
+    trainer: async (
+      parent: {id: string},
+      _args: any,
+      _context: ApolloContext
+    ) => {
+      return UserRepo.getUserTrainerPerms(Number(parent.id))
+    },
 
   },
 
