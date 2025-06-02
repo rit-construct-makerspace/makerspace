@@ -17,6 +17,7 @@ export const GET_CURRENT_USER = gql`
       privilege
       setupComplete
       balance
+      admin
       holds {
         removeDate
       }
@@ -34,6 +35,9 @@ export const GET_CURRENT_USER = gql`
         moduleID
         expires
       }
+      manager
+      staff
+      trainer
     }
   }
 `;
@@ -62,6 +66,10 @@ export interface CurrentUser {
   accessChecks: AccessCheck[];
   cardTagID: string;
   trainingHolds: TrainingHold[];
+  admin: boolean;
+  manager: number[];
+  staff: number[];
+  trainer: number[];
 }
 
 const CurrentUserContext = createContext<CurrentUser | undefined>(undefined);
@@ -98,7 +106,11 @@ const visitor: CurrentUser = {
   passedModules: [],
   accessChecks: [],
   cardTagID: "nothing",
-  trainingHolds: []
+  trainingHolds: [],
+  admin: false,
+  manager: [],
+  staff: [],
+  trainer: []
 }
 
 export function CurrentUserProvider({ children }: CurrentUserProviderProps) {
@@ -138,6 +150,8 @@ export function useCurrentUser() {
   if (context === undefined) {
     throw new Error("useCurrentUser must be used within a CurrentUserProvider");
   }
+
+  console.log(context);
 
   return context;
 }

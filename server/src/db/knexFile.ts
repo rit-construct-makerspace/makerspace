@@ -13,6 +13,8 @@ const __dirname = import.meta.dirname;
 
 require("dotenv").config({ path: __dirname + "/./../../.env" });
 
+export const isdevdb = process.env.IS_DEV ?? false
+
 // Update with your config settings.
 const config: any = { //remove ': any' if using --esm
   development: {
@@ -43,11 +45,8 @@ const config: any = { //remove ': any' if using --esm
   staging: {
     client: "pg",
     connection: {
-      connectionString: process.env.DATABASE_URL + (process.env.DB_SCHEMA ? ('?currentSchema=' + process.env.DB_SCHEMA) : ""),
-      ssl: {
-        rejectUnauthorized: false,
-        sslmode: 'require',
-      },
+      connectionString: process.env.DATABASE_URL,
+      ssl: isdevdb ? false : { rejectUnauthorized: false, sslmode: 'require' },
     },
     pool: {
       min: 2,
