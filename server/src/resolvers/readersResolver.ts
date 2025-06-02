@@ -83,8 +83,8 @@ const ReadersResolver = {
     unpairedReaders: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await ReaderRepo.getUnpairedReaders();
       }),
 
@@ -130,8 +130,8 @@ const ReadersResolver = {
     pairReader: async (
       _parent: any,
       args: { SN: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async (user) => {
+      { isManager }: ApolloContext) =>
+      isManager(async (user) => {
         const timeOfPair = new Date();
 
         var reader = await ReaderRepo.getReaderBySN(args.SN);
@@ -195,9 +195,9 @@ const ReadersResolver = {
     setState: async (
       _parent: any,
       args: { id: number; state: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async (executingUser: any) => {
+      isStaff(async (executingUser: any) => {
         try {
           const reader = await ReaderRepo.getReaderByID(args.id);
           if (reader == undefined) {
