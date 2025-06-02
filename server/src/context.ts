@@ -60,18 +60,26 @@ function authenticated(expressUser: Express.User | undefined) {
   } 
 }
 
+function determineUser(expressUser: Express.User | undefined) {
+  if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE") {
+    return testuser;
+  } else {
+    return expressUser as CurrentUser;
+  }
+}
+
 // Checks if a user is an admin
 export const isAdmin =
   (expressUser: Express.User | undefined) =>
   (callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
-    const user = expressUser as CurrentUser;
+    const user = determineUser(expressUser);
 
     if (!user.admin) {
       throw new GraphQLError("Insufficent Privilege | Not an Admin")
     }
 
-    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+    return callback(user);
   }
 
 /**
@@ -83,13 +91,13 @@ export const isManagerFor =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
-    const user = expressUser as CurrentUser;
+    const user = determineUser(expressUser);
 
     if (!user.manager.includes(makerspaceID) && !user.admin) {
       throw new GraphQLError(`Insufficent Privilege | Not Manager of Makerspace ${makerspaceID}`);
     }
 
-    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+    return callback(user);
   }
 
 /**
@@ -102,12 +110,12 @@ export const isStaffFor =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
-    const user = expressUser as CurrentUser;
+    const user = determineUser(expressUser);
     if (!user.staff.includes(makerspaceID) && !user.manager.includes(makerspaceID) && !user.admin) {
       throw new GraphQLError(`Insufficent Privilege | Not Staff of Makersapce ${makerspaceID}`);
     }
 
-    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+    return callback(user);
   }
 
 /**
@@ -119,13 +127,13 @@ export const isTrainerFor =
   (expressUser: Express.User | undefined) =>
   (equipmentID: number, callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
-    const user = expressUser as CurrentUser;
+    const user = determineUser(expressUser);
 
     if (!user.trainer.includes(equipmentID) && !user.admin) {
       throw new GraphQLError(`Insufficent Privilege | Not Trainer for Equipment ${equipmentID}`);
     }
 
-    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+    return callback(user);
   }
 
 /**
@@ -137,13 +145,13 @@ export const isManager =
   (expressUser: Express.User | undefined) =>
   (callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
-    const user = expressUser as CurrentUser;
+    const user = determineUser(expressUser);
 
     if (user.manager.length <= 0 && !user.admin) {
       throw new GraphQLError("Insufficent Privilege | Not a Manager");
     }
 
-    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+    return callback(user);
   }
 
 /**
@@ -156,13 +164,13 @@ export const isStaff =
   (expressUser: Express.User) =>
   (callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
-    const user = expressUser as CurrentUser;
-    console.log(user)
+    const user = determineUser(expressUser);
+
     if (user.staff.length <= 0 && user.manager.length <= 0 && !user.admin) {
       throw new GraphQLError("Insufficent Privilege | Not a Staff");
     }
 
-    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+    return callback(user);
   }
 
 /**
@@ -176,13 +184,13 @@ export const isTrainer =
   (expressUser: Express.User | undefined) =>
   (callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
-    const user = expressUser as CurrentUser;
+    const user = determineUser(expressUser);
 
     if (user.trainer.length <= 0 && user.staff.length <= 0 && user.manager.length <= 0 && !user.admin) {
       throw new GraphQLError("Insufficent Privilege | Not a Trainer");
     }
 
-    return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
+    return callback(user);
   }
 
 /**
@@ -195,7 +203,7 @@ export const ifStaffOrSelf =
   (expressUser: Express.User | undefined) =>
   (targetedUserID: number, callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
-    const user = expressUser as CurrentUser;
+    const user = determineUser(expressUser);
 
     if (user.id === targetedUserID) {
       return callback(user);

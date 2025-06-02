@@ -290,7 +290,6 @@ export function setupStagingAuth(app: express.Application) {
 
     // Populate user.restrictions
 
-    /* @ts-ignore */
     done(null, currUser);
   });
 

@@ -3,9 +3,7 @@
  * GraphQL endpoint implmenentations for Permissions
  */
 
-import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext, CurrentUser } from "../context.js";
-import { getDataPointByID, incrementDataPointValue, setDataPointValue } from "../repositories/DataPoints/DataPointsRepository.js";
 
 const PermissionResolver = {
   Query: {
