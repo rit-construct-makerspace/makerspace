@@ -2,9 +2,11 @@ import * as UserRepo from "../repositories/Users/UserRepository.js";
 import * as ModuleRepo from "../repositories/Training/ModuleRepository.js";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository.js";
 import * as AccessCheckRepo from "../repositories/Equipment/AccessChecksRepository.js";
+import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import * as RoomRepo from "../repositories/Rooms/RoomRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
-import { ApolloContext } from "../context.js";
+import { ApolloContext, CurrentUser } from "../context.js";
 import { getUsersFullName } from "../repositories/Users/UserRepository.js";
 import { getActiveTrainingHoldsByUser, getTrainingHoldsByUser } from "../repositories/Training/TrainingHoldsRespository.js";
 
@@ -284,6 +286,72 @@ const UsersResolvers = {
           return await UserRepo.archiveUser(Number(args.userID));
         }
       ),
+    
+    setUserAdmin: async (
+      _parent: any,
+      args: { userID: number, admin: boolean},
+      { isAdmin }: ApolloContext
+    ) => isAdmin(async (user: CurrentUser) => {
+      return await UserRepo.setUserAdmin(args.userID, args.admin);
+    }),
+
+    makeUserManager: async (
+      _parent: any,
+      args: {userID: number, makerspaceID: number},
+      { isAdmin }: ApolloContext
+    ) => isAdmin(async (user: CurrentUser) => {
+      return await UserRepo.makeUserManager(args.userID, args.makerspaceID);
+    }),
+
+    makeUserStaff: async (
+      _parent: any,
+      args: {userID: number, makerspaceID: number},
+      {isManagerFor}: ApolloContext
+    ) => isManagerFor(args.makerspaceID, async (user: CurrentUser) => {
+      return await UserRepo.makeUserStaff(args.userID, args.makerspaceID);
+    }),
+
+    makeUserTrainer: async (
+      _parent: any,
+      args: {userID: number, equipmentID: number},
+      {isManagerFor}: ApolloContext
+    ) => {
+      const equipment = await EquipmentRepo.getEquipmentByID(args.equipmentID);
+      const room = await RoomRepo.getRoomByID(equipment.roomID);
+      return await isManagerFor(room?.zoneID ?? -1, async (user: CurrentUser) => {
+        return await UserRepo.makeUserTrainer(args.userID, args.equipmentID);
+      })
+    },
+
+    revokeUserManager: async (
+      _parent: any,
+      args: {userID: number, makerspaceID: number},
+      { isAdmin }: ApolloContext
+    ) => isAdmin(async (user: CurrentUser) => {
+      return await UserRepo.revokeUserManager(args.userID, args.makerspaceID);
+    }),
+
+    revokeUserStaff: async (
+      _parent: any,
+      args: {userID: number, makerspaceID: number},
+      {isManagerFor}: ApolloContext
+    ) => isManagerFor(args.makerspaceID, async (user: CurrentUser) => {
+      return await UserRepo.revokeUserStaff(args.userID, args.makerspaceID);
+    }),
+
+    revokeUserTrainer: async (
+      _parent: any,
+      args: {userID: number, equipmentID: number},
+      {isManagerFor}: ApolloContext
+    ) => {
+      const equipment = await EquipmentRepo.getEquipmentByID(args.equipmentID);
+      const room = await RoomRepo.getRoomByID(equipment.roomID);
+      return await isManagerFor(room?.zoneID ?? -1, async (user: CurrentUser) => {
+        return await UserRepo.revokeUserTrainer(args.userID, args.equipmentID);
+      })
+    }
+
+
   }
 };
 
