@@ -6,7 +6,7 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import { useMutation, useQuery } from "@apollo/client";
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { GET_READER_BY_ID, GET_UNPAIRED_READERS, Reader, SET_READER_STATE } from "../../../queries/readersQueries";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import BlockIcon from '@mui/icons-material/Block';
 import SaveIcon from '@mui/icons-material/Save';
@@ -19,6 +19,7 @@ import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ReportProblemIcon from '@mui/icons-material/ReportProblemSharp';
 import StarsIcon from '@mui/icons-material/Stars';
 import PendingIcon from '@mui/icons-material/Pending';
+import WifiOffIcon from '@mui/icons-material/WifiOff';
 
 interface EquipmentInstanceCardProps {
     instance: EquipmentInstance;
@@ -46,7 +47,38 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     const [status, setStatus] = useState<InstanceStatus>(props.instance.status);
     const [reader, setReader] = useState<{ id: number, name: string } | null>(props.instance.reader);
 
-    const currentState = useQuery(GET_READER_BY_ID, { pollInterval: 2000, variables: { id: props.instance.reader?.id } }).data?.reader?.state ?? "";
+    let [bisOffline, setbisOffline] = useState(false);
+    function isOffline(lastStatusTime: string) {
+        if (lastStatusTime != null) {
+            const OFFLINE_CUTOFF_MS = 30 * 1000;
+            const msSinceLastStatus = Date.now() - new Date(lastStatusTime).getTime()
+            if (msSinceLastStatus > OFFLINE_CUTOFF_MS) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    const currentReaderResp = useQuery(GET_READER_BY_ID, {
+        pollInterval: 2000,
+        variables: { id: props.instance.reader?.id },
+        fetchPolicy: "no-cache",
+        onCompleted: (data) => {
+            console.log("Completed", data);
+            setbisOffline(isOffline(data?.reader?.lastStatusTime));
+            console.log("bisOffline", bisOffline);
+
+        }
+    });
+    const currentReader: Reader = currentReaderResp.data?.reader;
+    const currentState = currentReader?.state ?? "";
+
+
+
+    // useEffect(() => {
+    // setbisOffline(isOffline(currentReaderResp?.data?.reader?.lastStatusTime));
+    // console.log("bisOffline", bisOffline);
+    // }, [bisOffline, currentReaderResp]);
 
     const [sendCommandedState] = useMutation(SET_READER_STATE);
     const [commandedState, setCommandedState] = useState<string>("Idle");
@@ -77,16 +109,11 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
         setReader(props.instance.reader);
     }
 
-    function handleStatusChange(e: any) {
-        setStatus(e.target.value);
-    }
-
     function handleStateChange(e: any) {
         setCommandedState(e.target.value);
     }
     function setStateClicked(e: any) {
         if (reader != null) {
-            console.log(commandedState);
             sendCommandedState({ variables: { id: reader.id, state: commandedState } });
         }
     }
@@ -95,9 +122,10 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
         await deleteInstance({ variables: { id: props.instance.id } });
         window.location.reload();
     }
+    console.log("Offline", bisOffline);
 
     function renderCurrentState() {
-        switch (currentState) {
+        switch (currentReader?.state) {
             case "Idle":
                 return <Tooltip title="Lockout"><HourglassFullIcon color="warning" /></Tooltip>;
             case "Unlocked":
@@ -109,7 +137,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
             case "Fault":
                 return <Tooltip title="Restart"><ReportProblemIcon color="error" /></Tooltip>;
             case "AlwaysOn":
-                return <Tooltip title="Restart"><StarsIcon color="success" /></Tooltip>;
+                return <Tooltip title="AlwaysOn"><StarsIcon color="success" /></Tooltip>;
             case "Startup":
                 return <Tooltip title="Startup"><PendingIcon color="info" /></Tooltip>;
             default:
@@ -157,20 +185,25 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                                 : <Alert severity="warning" variant="filled">No Reader Paired</Alert>}
                         </Typography>
                 }
-                <Stack direction="row" justifyContent="space-between" alignItems={"center"} spacing={1}>
-                    {
-                        renderCurrentState()
-                    }
-                    <Select disabled={allowEdit || reader == null} size="small" defaultValue={"Idle"} value={commandedState} onChange={handleStateChange} fullWidth>
-                        <MenuItem value="Idle">Idle</MenuItem>
-                        <MenuItem value="Lockout">Lockout</MenuItem>
-                        <MenuItem value="AlwaysOn">Always On</MenuItem>
-                        <MenuItem value="Restart">Restart</MenuItem>
-                    </Select>
-                    <IconButton disabled={allowEdit || reader == null} onClick={setStateClicked} color="secondary">
-                        <SendIcon />
-                    </IconButton>
-                </Stack>
+                {
+                    bisOffline ?
+                        <Alert severity="warning" variant="filled" icon={<WifiOffIcon />}>Offline</Alert>
+                        :
+                        <Stack direction="row" justifyContent="space-between" alignItems={"center"} spacing={1}>
+                            {
+                                renderCurrentState()
+                            }
+                            <Select disabled={allowEdit || reader == null} size="small" defaultValue={"Idle"} value={commandedState} onChange={handleStateChange} fullWidth>
+                                <MenuItem value="Idle">Idle</MenuItem>
+                                <MenuItem value="Lockout">Lockout</MenuItem>
+                                <MenuItem value="AlwaysOn">Always On</MenuItem>
+                                <MenuItem value="Restart">Restart</MenuItem>
+                            </Select>
+                            <IconButton disabled={allowEdit || reader == null} onClick={setStateClicked} color="secondary">
+                                <SendIcon />
+                            </IconButton>
+                        </Stack>
+                }
                 {
                     allowEdit
                         ? <Stack direction="row" justifyContent="space-between">

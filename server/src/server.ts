@@ -167,7 +167,7 @@ async function startServer() {
    * Details of protocol are handled in wsapi.ts
    */
   // Websocket ACS Handler
-  app.ws("/api/ws", ws_acs_api)
+  app.ws("/api/ws", ws_acs_api);
 
   /**
    * WELCOME----

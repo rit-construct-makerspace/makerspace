@@ -197,7 +197,7 @@ const ReadersResolver = {
       args: { id: number; state: string },
       { ifAllowed }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async (executingUser: any) => {
+      ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (executingUser: any) => {
         try {
           const reader = await ReaderRepo.getReaderByID(args.id);
           if (reader == undefined) {

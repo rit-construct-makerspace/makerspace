@@ -27,7 +27,9 @@ const MIN_SESSION_LENGTH = 15
 var slugPool: Map<number, ConnectionData> = new Map();
 
 function stringSlugPool() {
-    return JSON.stringify(Array.from(slugPool.entries()))
+    var entries = Array.from(slugPool.entries());
+    var entriesNoWs = entries.map(([_, data]) => ({ "id": data?.readerId, "timeLastSent": data?.timeLastSent, "state": data?.currentState }));
+    return JSON.stringify(entriesNoWs)
 }
 
 /** 
@@ -36,8 +38,7 @@ function stringSlugPool() {
  */
 async function addOrUpdateConnection(connData: ConnectionData) {
     if (connData.readerId == null) {
-        console.error(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${stringSlugPool()}`)
-        wsApiDebugLog(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${stringSlugPool()}`, "status");
+        console.error(`WSACS: Attempting to add invalid connection to active connections\Connection: ${JSON.stringify(connData)}`)
         return;
     }
     slugPool.set(connData.readerId, connData);
@@ -48,10 +49,12 @@ async function addOrUpdateConnection(connData: ConnectionData) {
  * @returns true if the item was removed. false if it wasn't found
  */
 function removeConnection(connData: ConnectionData): boolean {
-    if (connData.readerId == null || !slugPool.has(connData.readerId)) {
-        console.error(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`);
-        wsApiDebugLog(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`, "status");
+    if (connData.readerId == null) {
+        console.error(`WSACS: Attempting to remove invalid connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`);
         return false;
+    } else if (!slugPool.has(connData.readerId)) {
+        console.error(`WSACS: Attempting to remove nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`);
+        return false;    
     }
     return slugPool.delete(connData.readerId);
 }
@@ -400,7 +403,7 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         if (message.Key) {
             message.Key = "<sanitized>";
         }
-        wsApiDebugLog(`WSACS: Missing fields in boot message. Got ${JSON.stringify(message)}`, "status");
+        wsApiDebugLog(`WSACS: Missing fields in boot message from ${srcIp}. Got ${JSON.stringify(message)}`, "status");
         ws.close(4000, "Invalid Fields");
         return false;
     }
@@ -436,6 +439,13 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         else {
             wsApiLog("New Access Device {access_device} registered", "status", { id: reader?.id, label: reader?.name })
         }
+    }
+    if (reader?.lastStatusTime) {
+        let offlineMs = new Date().getTime() - reader.lastStatusTime.getTime();
+        const timeString = new Date(offlineMs).toISOString().slice(11, 19);
+        wsApiLog(`Opened WS to {access_device}. Offline for ${timeString}`, "status", { id: reader?.id, label: reader?.name })
+    } else {
+        wsApiLog("Opened WS to {access_device}", "status", { id: reader?.id, label: reader?.name })
     }
     connData.readerId = reader.id;
 
@@ -547,7 +557,15 @@ function isReplyWorthSending(resp: ShlugResponse): boolean {
  */
 export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
     var connData: ConnectionData = initConnectionData(ws);
-    console.log(`WSACS: Websocket opened to ${req.ip}`)
+    // let pinger = setInterval(() => {
+    // if (ws.readyState == ws.CLOSED) {
+    // console.log("Closed");
+    // clearInterval(pinger);
+    // }
+    // ws.ping("hello", undefined, (e) => console.log("Ping resp", e)); console.log("Pinging")
+    // }, 1000);
+
+    console.log(`WSACS: Websocket opened to ${req.ip}`);
 
     try {
         ws.onclose = async function (ev: ws.CloseEvent) {
@@ -586,14 +604,14 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                         // failed to setup  
                         return;
                     }
-                    // Successfully read bootup message. Add this to available connections
-                    addOrUpdateConnection(connData);
                 }
 
+                console.log("UPDATING", connData);
                 addOrUpdateConnection(connData);
                 // Get reader that was setup by handleBootupMessage
                 var reader = await getReaderByID(connData.readerId ?? 0);
                 if (reader == null) {
+                    console.log("Reader was null", connData.readerId);
                     if (!connData.alreadyComplainedAboutInvalidReader) {
                         wsApiDebugLog(`Failed to find entry for device ${connData.readerId}. Error '{error}'`, "status", { id: 400, label: "Reader does not exist" });
                         connData.alreadyComplainedAboutInvalidReader = true;
