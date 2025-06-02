@@ -56,6 +56,7 @@ function authenticated(expressUser: Express.User | undefined) {
   } 
 }
 
+// Checks if a user is an admin
 export const isAdmin =
   (expressUser: Express.User | undefined) =>
   (callback: (user: CurrentUser) => any) => {
@@ -69,6 +70,11 @@ export const isAdmin =
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
+/**
+ * Checks if a user is a manager for a specific makerspace or higher
+ * Admin
+ * ^ Manager
+ */
 export const isManagerFor =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
@@ -82,6 +88,12 @@ export const isManagerFor =
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
+/**
+ * Checks if a user is staff for a specific makerspace or higher
+ * Admin
+ * ^ Manager
+ * ^ Staff
+ */
 export const isStaffFor =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
@@ -94,6 +106,11 @@ export const isStaffFor =
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
+/**
+ * Checks if a user is a trainer for a specific piece of equipment or if they are an admin
+ * Admin
+ * ^ Trainer
+ */
 export const isTrainerFor = 
   (expressUser: Express.User | undefined) =>
   (equipmentID: number, callback: (user: CurrentUser) => any) => {
@@ -107,6 +124,11 @@ export const isTrainerFor =
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
+/**
+ * Checks if a user is a manager or higher
+ * Admin
+ * ^ Manager
+ */
 export const isManager =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
@@ -120,6 +142,12 @@ export const isManager =
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
+/**
+ * Checks if a user is staff or higher
+ * Admin
+ * ^ Manager
+ * ^ Staff
+ */
 export const isStaff =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
@@ -133,6 +161,13 @@ export const isStaff =
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
+/**
+ * Checks if a user is a trainer or higher
+ * Admin
+ * ^ Manager
+ * ^ Staff
+ * ^ Trainer
+ */
 export const isTrainer =
   (expressUser: Express.User | undefined) =>
   (makerspaceID: number, callback: (user: CurrentUser) => any) => {
@@ -146,6 +181,12 @@ export const isTrainer =
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
+/**
+ * Checks if a user is staff or self
+ * Admin
+ * ^ Manager
+ * ^ Staff
+ */
 export const ifStaffOrSelf =
   (expressUser: Express.User | undefined) =>
   (targetedUserID: number, callback: (user: CurrentUser) => any) => {
