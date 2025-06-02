@@ -40,7 +40,7 @@ export interface ApolloContext {
   user: CurrentUser | undefined;
   logout: () => void;
   ifAuthenticated: (callback: (user: CurrentUser) => any) => any;
-  ifSelf: (callback: (user: CurrentUser) => any) => any;
+  ifStaffOrSelf: (callback: (user: CurrentUser) => any) => any;
   isAdmin: (callback: (user: CurrentUser) => any) => any;
   isManager: (callback: (user: CurrentUser) => any) => any;
   isStaff: (callback: (user: CurrentUser) => any) => any;
@@ -146,16 +146,18 @@ export const isTrainer =
     return callback(process.env.USE_TEST_DEV_USER_DANGER != "TRUE" ? user : testuser);
   }
 
-export const ifSelf =
+export const ifStaffOrSelf =
   (expressUser: Express.User | undefined) =>
-  (targetedUserID: number, allowedPrivileges: Privilege[], callback: (user: CurrentUser) => any) => {
+  (targetedUserID: number, callback: (user: CurrentUser) => any) => {
     authenticated(expressUser);
     const user = expressUser as CurrentUser;
 
     if (user.id === targetedUserID) {
       return callback(user);
+    } else if (user.staff.length > 0 || user.manager.length > 0 || user.admin) {
+      return callback(user);
     } else {
-      throw new GraphQLError(`Forbidden | Not User ${targetedUserID}`);
+      throw new GraphQLError(`Forbidden | Not User ${targetedUserID} or Staff`);
     }
   };
 
