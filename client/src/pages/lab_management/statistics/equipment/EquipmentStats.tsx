@@ -1,5 +1,5 @@
 import { useLazyQuery, useQuery } from "@apollo/client";
-import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField, Tooltip } from "@mui/material";
+import { Box, Button, Collapse, CollapseProps, FormControl, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, styled, TextField, Tooltip } from "@mui/material";
 import gql from "graphql-tag";
 import { ReactElement, useEffect, useState } from "react";
 import PageSectionHeader from "../../../../common/PageSectionHeader";
@@ -13,9 +13,13 @@ import AuditLogEntity from "../../audit_logs/AuditLogEntity";
 import { format } from "date-fns";
 import DownloadIcon from '@mui/icons-material/Download';
 import { EquipmentStatCard } from "./EquipmentStatCard";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { JSX } from "react/jsx-runtime";
+import { secondsToHumanString } from "../StatisticsFunctions";
 
 const GET_VERBOSE_EQUIPMENT_SESSIONS = gql`
-  query GetEquipmentSessionsWithAttachedEntities($startDate: String, $endDate: String, $equipmentIDs: [Int]) {
+  query GetEquipmentSessionsWithAttachedEntities($startDate: String, $endDate: String, $equipmentIDs: [String]) {
     getEquipmentSessionsWithAttachedEntities(startDate: $startDate, endDate: $endDate, equipmentIDs: $equipmentIDs) {
       id
       start
@@ -55,31 +59,6 @@ function joinEquipmentSession(obj: VerboseEquipmentSession) {
 }
 
 
-
-/**
- * Translates seconds into human readable format of seconds, minutes, hours, days, and years
- * 
- * @param  {number} seconds The number of seconds to be processed
- * @return {string}         The phrase describing the amount of time
- */
-export function secondsToHumanString(seconds: number) {
-  var levels = [
-    [Math.floor(seconds / 31536000), 'years'],
-    [Math.floor((seconds % 31536000) / 86400), 'days'],
-    [Math.floor(((seconds % 31536000) % 86400) / 3600), 'hours'],
-    [Math.floor((((seconds % 31536000) % 86400) % 3600) / 60), 'minutes'],
-    [(((seconds % 31536000) % 86400) % 3600) % 60, 'seconds'],
-  ];
-  var returntext = '';
-
-  for (var i = 0, max = levels.length; i < max; i++) {
-    if (levels[i][0] === 0) continue;
-    returntext += ' ' + levels[i][0] + ' ' + (levels[i][0] === 1 ? levels[i][1].toString().substring(0, levels[i][1].toString().length - 1) : levels[i][1]);
-  };
-  return returntext.trim();
-}
-
-
 export function EquipmentStats() {
   const [width, setWidth] = useState<number>(window.innerWidth);
   function handleWindowSizeChange() {
@@ -98,6 +77,7 @@ export function EquipmentStats() {
   const [equipmentIDs, setEquipmentIDs] = useState<string[]>([]);
 
   const [showClearButton, setShowClearButton] = useState<boolean>(false);
+  const [cardContainerCollapsed, setCardContainerCollapsed] = useState<boolean>(true);
 
   const [getEquipmentSessions, getEquipmentSessionsResult] = useLazyQuery(GET_VERBOSE_EQUIPMENT_SESSIONS);
 
@@ -222,7 +202,7 @@ export function EquipmentStats() {
 
         <Button onClick={handleSubmit} variant="contained" color="primary" sx={{width: '10em'}}>Fetch</Button>
 
-        <Tooltip title={getEquipmentSessionsResult.data ? "User, Equipment, Room, and Zone rows will be split into Names and IDs" : "Must Fetch data before exporting"}>
+        <Tooltip title={getEquipmentSessionsResult.data ? "User, Equipment, Room, and Zone columns will be split into Names and IDs" : "Must Fetch data before exporting"}>
           <Button onClick={handleCSVExport} startIcon={<DownloadIcon />} variant="outlined" color="secondary" sx={{width: '10em'}} disabled={!getEquipmentSessionsResult.data}>Export as CSV</Button>
         </Tooltip>
 
@@ -233,7 +213,7 @@ export function EquipmentStats() {
         )}
       </Stack>
 
-      <Box sx={{ height: 400, width: '100%' }}>
+      <Box sx={{ width: '100%' }}>
         <RequestWrapper2 result={getEquipmentSessionsResult} render={function (data: any): ReactElement {
           const rows = data.getEquipmentSessionsWithAttachedEntities;
 
@@ -309,12 +289,18 @@ export function EquipmentStats() {
               disableRowSelectionOnClick
               />
 
-              <Box>
-                <Stack direction={"row"} flexWrap={"wrap"}>
-                  {Object.keys(groupedRows).map((key,index) => (
-                    <EquipmentStatCard relevantEquipmentSessions={groupedRows[key]} />
-                  ))}
-                </Stack>
+              <Box width={"100%"}>
+                <IconButton sx={{width: "100%"}} onClick={() => setCardContainerCollapsed(!cardContainerCollapsed)}>
+                  {cardContainerCollapsed ? "Show Cards" : "Hide Cards"}
+                  {cardContainerCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
+                </IconButton>
+                <Collapse in={!cardContainerCollapsed}>
+                  <Stack direction={"row"} flexWrap={"wrap"} justifyContent={"center"} alignItems={"center"}>
+                    {Object.keys(groupedRows).map((key) => (
+                      <EquipmentStatCard relevantEquipmentSessions={groupedRows[key]} />
+                    ))}
+                  </Stack>
+                </Collapse>
               </Box>
             </Box>
           )

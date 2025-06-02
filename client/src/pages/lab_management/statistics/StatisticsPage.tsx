@@ -8,6 +8,8 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import TimeAgo from 'react-timeago'
 import GET_ROOMS from "../../../queries/roomQueries";
 import { GET_EQUIPMENT_SESSIONS, GET_MODULE_SCORES, GET_NUM_EQUIPMENT_SESSIONS_TODAY, GET_NUM_NEW_USERS, GET_NUM_ROOM_SWIPES_TODAY, GET_NUM_SITE_VISITS, GET_ROOM_SWIPE_COUNTS, GET_ZONE_HOURS } from "./statisticsQueries";
+import { EquipmentStats } from "./equipment/EquipmentStats";
+import { TrainingStats } from "./training/TrainingStats";
 
 
 function getMonthToPresentBounds(): { startOfMonth: Date, today: Date } {
@@ -65,27 +67,29 @@ export default function StatisticsPage() {
   return (
     <AdminPage>
       <Box margin="25px">
-      <Typography variant="h4">Statisitcs</Typography>
-      <Box>
-        <Typography variant="h4">Today's Numbers</Typography>
-        <Stack direction={"row"} flexWrap={"wrap"}>
-          <RequestWrapper loading={getNumSiteVisitsTodayResult.loading} error={getNumSiteVisitsTodayResult.error}>
-            <CountCard label="Site Visits" count={getNumSiteVisitsTodayResult.data?.dailySiteVisits.value} unit="visits"></CountCard>
-          </RequestWrapper>
-          <RequestWrapper loading={getNumRoomSwipesToday.loading} error={getNumRoomSwipesToday.error}>
-            <CountCard label="Room Sign-ins" count={getNumRoomSwipesToday.data?.numRoomSwipesToday} unit="sign-ins"></CountCard>
-          </RequestWrapper>
-          <RequestWrapper loading={getNumEquipmentSessionsToday.loading} error={getNumEquipmentSessionsToday.error}>
-            <CountCard label="Equipment Uses*" count={getNumEquipmentSessionsToday.data?.numEquipmentSessionsToday} unit="activations"></CountCard>
-          </RequestWrapper>
-          <RequestWrapper loading={getNumNewUsersToday.loading} error={getNumNewUsersToday.error}>
-            <CountCard label="New users" count={getNumNewUsersToday.data?.numNewUsersToday} unit="users"></CountCard>
-          </RequestWrapper>
-        </Stack>
-        <Typography variant="body2">* Only counts ACS-connected equipment</Typography>
-      </Box>
+        <Typography variant="h4">Statistics</Typography>
+        <Box>
+          <Typography variant="h4">Today's Numbers</Typography>
+          <Stack direction={"row"} flexWrap={"wrap"}>
+            <RequestWrapper loading={getNumSiteVisitsTodayResult.loading} error={getNumSiteVisitsTodayResult.error}>
+              <CountCard label="Site Visits" count={getNumSiteVisitsTodayResult.data?.dailySiteVisits.value} unit="visits"></CountCard>
+            </RequestWrapper>
+            <RequestWrapper loading={getNumRoomSwipesToday.loading} error={getNumRoomSwipesToday.error}>
+              <CountCard label="Room Sign-ins" count={getNumRoomSwipesToday.data?.numRoomSwipesToday} unit="sign-ins"></CountCard>
+            </RequestWrapper>
+            <RequestWrapper loading={getNumEquipmentSessionsToday.loading} error={getNumEquipmentSessionsToday.error}>
+              <CountCard label="Equipment Uses*" count={getNumEquipmentSessionsToday.data?.numEquipmentSessionsToday} unit="activations"></CountCard>
+            </RequestWrapper>
+            <RequestWrapper loading={getNumNewUsersToday.loading} error={getNumNewUsersToday.error}>
+              <CountCard label="New users" count={getNumNewUsersToday.data?.numNewUsersToday} unit="users"></CountCard>
+            </RequestWrapper>
+          </Stack>
+          <Typography variant="body2">* Only counts ACS-connected equipment</Typography>
+        </Box>
 
-      <EquipmentStats />
+        <EquipmentStats />
+        <TrainingStats />
+      </Box>
 
     </AdminPage>
   );
