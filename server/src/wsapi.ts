@@ -68,7 +68,7 @@ export async function identifyReader(executingUser: UserRow, readerId: number, d
 
     const reader = await getReaderByID(readerId);
     if (doIdentify) {
-        wsApiLog("{user} identified {access_device}", "status", { id: executingUser.id, label: getUsersFullName(executingUser) }, { id: readerId, label: reader.name ?? "unknown reader" });
+        wsApiLog("{user} identified {access_device}", "status", { id: executingUser.id, label: getUsersFullName(executingUser) }, { id: readerId, label: reader?.name ?? "unknown reader" });
     }
 
     sendToShlugUnprompted(connData, { "Identify": doIdentify });
