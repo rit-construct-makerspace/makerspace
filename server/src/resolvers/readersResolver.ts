@@ -14,6 +14,8 @@ import * as ShlugControl from "../wsapi.js"
 
 import { createCipheriv, randomInt, scryptSync } from "crypto";
 import { generateRandomHumanName } from "../data/humanReadableNames.js";
+import { getInstanceByReaderID } from "../repositories/Equipment/EquipmentInstancesRepository.js";
+import { getEquipmentByID } from "../repositories/Equipment/EquipmentRepository.js";
 const serverApiPass = process.env.SERVER_API_PASSWORD ?? 'unsecure_server_password';
 const serverKey = scryptSync(serverApiPass, 'makerspace-salt¯\_(ツ)_/¯', 24);
 const algorithm = 'aes-192-cbc';
@@ -199,18 +201,7 @@ const ReadersResolver = {
     ) =>
       ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (executingUser: any) => {
         try {
-          const reader = await ReaderRepo.getReaderByID(args.id);
-          if (reader == undefined) {
-            throw EntityNotFound;
-          }
-          await createLog(
-            `{user} set {access_device}'s state to ${args.state}.`,
-            "admin",
-            { id: executingUser.id, label: getUsersFullName(executingUser) },
-            { id: reader.id, label: reader.name }
-          );
-
-          return ShlugControl.sendState(Number(args.id), args.state);
+          return ShlugControl.sendState(executingUser, Number(args.id), args.state);
         } catch (e) {
           return `failed to parse id: ${e}`;
         }
