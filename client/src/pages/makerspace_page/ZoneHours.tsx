@@ -54,7 +54,7 @@ export default function ZoneHours(props: ZoneHoursProps) {
         (time) => time.dayOfTheWeek == 3
     );
 
-    const wednsday = props.hours.filter(
+    const wednesday = props.hours.filter(
         (time) => time.dayOfTheWeek == 4
     );
     
@@ -85,8 +85,8 @@ export default function ZoneHours(props: ZoneHoursProps) {
                 <Typography variant="body2">{makeHours(tuesday)}</Typography>
             </Stack>
             <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}>
-                <Typography color="darkorange" variant="h6">Wednsday</Typography>
-                <Typography variant="body2">{makeHours(wednsday)}</Typography>
+                <Typography color="darkorange" variant="h6">Wednesday</Typography>
+                <Typography variant="body2">{makeHours(wednesday)}</Typography>
             </Stack>
             <Stack alignItems="center" direction={props.isMobile ? "row" : "column"} justifyContent={props.isMobile ? "space-between" : undefined}>
                 <Typography color="darkorange" variant="h6">Thursday</Typography>
