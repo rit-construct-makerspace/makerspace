@@ -143,5 +143,15 @@ export const UsersTypeDefs = gql`
       userID: ID!
       notes: String!
     ): User
+
+    setUserAdmin(userID: ID!, admin: Boolean): Boolean
+
+    makeUserManager(userID: ID!, makerspaceID: ID!): [Int]
+    makeUserStaff(userID: ID!, makerspaceID: ID!): [Int]
+    makeUserTrainer(userID: ID!, equipmentID: ID!): [Int]
+
+    revokeUserManager(userID: ID!, makerspaceID: ID!): [Int]
+    revokeUserStaff(userID: ID!, makerspaceID: ID!): [Int]
+    revokeUserTrainer(userID: ID!, equipmentID: ID!): [Int]
   }
 `;
