@@ -6,7 +6,7 @@ import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutli
 import { useMutation, useQuery } from "@apollo/client";
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import { GET_READER_BY_ID, GET_UNPAIRED_READERS, Reader, SET_READER_STATE } from "../../../queries/readersQueries";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import BlockIcon from '@mui/icons-material/Block';
 import SaveIcon from '@mui/icons-material/Save';
@@ -47,7 +47,9 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     const [status, setStatus] = useState<InstanceStatus>(props.instance.status);
     const [reader, setReader] = useState<{ id: number, name: string } | null>(props.instance.reader);
 
-    function isOffline(lastStatusTime: string) {
+    const [isOffline, setIsOffline] = useState<boolean>(false);
+
+    function calcIsOffline(lastStatusTime: string) {
         if (lastStatusTime != null) {
             const OFFLINE_CUTOFF_MS = 30 * 1000;
             const msSinceLastStatus = Date.now() - new Date(lastStatusTime).getTime()
@@ -62,6 +64,20 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
         pollInterval: 2000,
         variables: { id: props.instance.reader?.id },
     });
+
+
+    useEffect(() => {
+        function updateOfflineness() {
+            let off = calcIsOffline(currentReader.data?.reader?.lastStatusTime);
+            setIsOffline(off)
+        }
+        let interval = setInterval(updateOfflineness, 2000)
+
+        return (() => { // cleanup function to stop pollin
+            clearInterval(interval)
+        })
+    }, [currentReader.data?.reader?.lastStatusTime])
+
 
     const [sendCommandedState] = useMutation(SET_READER_STATE);
     const [commandedState, setCommandedState] = useState<string>("Idle");
@@ -168,7 +184,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                         </Typography>
                 }
                 {
-                    isOffline(currentReader.data?.reader?.lastStatusTime) ?
+                    isOffline ?
                         <Alert severity="warning" variant="filled" icon={<WifiOffIcon />}>Offline</Alert>
                         :
                         <Stack direction="row" justifyContent="space-between" alignItems={"center"} spacing={1}>
