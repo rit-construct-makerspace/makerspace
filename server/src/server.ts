@@ -123,7 +123,7 @@ async function startServer() {
    */
   app.all(/\/app(?!\/makerspace\/\d+|\/home)\/.+/gm, (req, res, next) => {
     //process.env.USE_TEST_DEV_USER_DANGER=="TRUE" || 
-    if (process.env.USE_TEST_DEV_USER_DANGER != "TRUE" || req.user) {
+    if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE" || req.user) {
       return next();
     }
     console.log("LOGIN REDIRECT");
