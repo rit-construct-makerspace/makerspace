@@ -231,25 +231,31 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   };
 
   return (
-    <PrettyModal open={!!selectedUserID} onClose={onClose} width={isMobile ? 250 : 600}>
+    <PrettyModal open={!!selectedUserID} onClose={onClose} width={isMobile ? 300 : 800}>
       <RequestWrapper2
         result={getUserResult}
         render={({ user }) => (
           <Stack>
-            <IconButton color="error" sx={{alignSelf: "flex-end"}}>
-              <CloseIcon/>
-            </IconButton>
-            <Stack direction="row" alignItems="center" spacing={2} mb={4}>
-              <Avatar
-                alt="Profile Picture"
-                {...stringAvatar(user.firstName, user.lastName, { width: 80, height: 80 })}
-              />
-              <Stack>
-                <Typography variant="h5" component="div" fontWeight={500}>
-                  {`${user.firstName} ${user.lastName}  (${user.ritUsername})`}
-                </Typography>
-                <Typography>{user.pronouns}</Typography>
+            <Stack direction="row" justifyContent="space-between">
+              <Stack direction="row" alignItems="center" spacing={2}>
+                {
+                  isMobile
+                  ? null
+                  : <Avatar
+                    alt="Profile Picture"
+                    {...stringAvatar(user.firstName, user.lastName, { width: 80, height: 80, fontSize: 35 })}
+                  />
+                }
+                <Stack>
+                  <Typography variant={isMobile ? "h6" : "h5"} component="div" fontWeight={500}>
+                    {`${user.firstName} ${user.lastName} (${user.ritUsername})`}
+                  </Typography>
+                  <Typography>{user.pronouns}</Typography>
+                </Stack>
               </Stack>
+              <IconButton color="error" size="small">
+                <CloseIcon/>
+              </IconButton>
             </Stack>
 
             <StyledInfo>
@@ -264,7 +270,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               />
             </StyledInfo>
 
-            <PrivilegeControl userID={user.id} privilege={user.privilege} />
+            <PrivilegeControl user={user} isMobile={isMobile} />
 
             <Typography variant="h6" component="div" mt={6} mb={1}>
               Account Holds

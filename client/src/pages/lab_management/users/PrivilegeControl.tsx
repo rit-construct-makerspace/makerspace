@@ -1,89 +1,41 @@
-import React, { ChangeEvent } from "react";
-import {
-  Alert,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Typography,
-} from "@mui/material";
+import { Checkbox, FormGroup, Stack, Typography } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
-import { gql, useMutation } from "@apollo/client";
-import GET_USERS from "../../../queries/getUsers";
-import { GET_USER } from "./UserModal";
+import { FormControlLabel } from "@material-ui/core";
+import { ChangeEvent, useState } from "react";
+import { useMutation } from "@apollo/client";
+import { SET_USER_ADMIN } from "../../../queries/permissionQueries";
 
-const SET_PRIVILEGE = gql`
-  mutation SetPrivilege($userID: ID!, $privilege: Privilege) {
-    setPrivilege(userID: $userID, privilege: $privilege) {
-      id
-    }
-  }
-`;
 
 interface PrivilegeControlProps {
-  userID: string;
-  privilege: Privilege;
+    user: any;
+    isMobile: boolean;
 }
 
-export default function PrivilegeControl({
-  userID,
-  privilege,
-}: PrivilegeControlProps) {
-  const currentUser = useCurrentUser();
-  const [setPrivilege, setPrivilegeResult] = useMutation(SET_PRIVILEGE);
+export default function PrivilegeControl(props: PrivilegeControlProps) {
+    const currentUser = useCurrentUser();
 
-  const isAdmin = currentUser.privilege === Privilege.STAFF;
+    const [adminState, setAdminState] = useState(props.user.admin);
+    const [setAdmin] = useMutation(SET_USER_ADMIN);
 
-  const handlePrivilegeChanged = (
-    event: ChangeEvent<HTMLInputElement>,
-    newValue: string
-  ) => {
-    setPrivilege({
-      variables: { userID, privilege: newValue },
-      refetchQueries: [
-        { query: GET_USERS },
-        { query: GET_USER, variables: { id: userID } },
-      ],
-    });
-  };
+    function handleAdminChange(e: ChangeEvent<{}>, checked: boolean) {
+        setAdminState(checked);
+        setAdmin({variables: {userID: props.user.id, admin: checked}})
+    }
 
-  return (
-    <>
-      <Typography variant="h6" component="div" mt={6}>
-        Access Level
-      </Typography>
-
-      <FormControl disabled={!isAdmin || setPrivilegeResult.loading}>
-        <RadioGroup
-          row
-          aria-labelledby="privilege-level"
-          name="privilege-level"
-          value={privilege}
-          onChange={handlePrivilegeChanged}
-        >
-          <FormControlLabel
-            value={Privilege.MAKER}
-            control={<Radio />}
-            label="Maker"
-          />
-          <FormControlLabel
-            value={Privilege.MENTOR}
-            control={<Radio />}
-            label="Mentor"
-          />
-          <FormControlLabel
-            value={Privilege.STAFF}
-            control={<Radio />}
-            label="Staff"
-          />
-        </RadioGroup>
-      </FormControl>
-      {!isAdmin && (
-        <Alert severity="info" sx={{ width: "max-content", mt: 1 }}>
-          You do not have permission to change this.
-        </Alert>
-      )}
-    </>
-  );
+    return (
+        <Stack>
+            <Typography variant="h6" component="div">
+                Permissions
+            </Typography>
+            <FormGroup>
+                <FormControlLabel
+                    label="Admin"
+                    checked={adminState}
+                    control={<Checkbox/>}
+                    disabled={!currentUser.admin || props.user.id === currentUser.id}
+                    onChange={handleAdminChange}
+                />
+            </FormGroup>
+        </Stack>
+    );
 }
