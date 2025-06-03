@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
-import { Avatar, Box, Button, Card, Chip, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, Chip, IconButton, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoBlob from "./InfoBlob";
@@ -20,6 +20,8 @@ import AccessCheckCard from "./AccessCheckCard";
 import ActionButton from "../../../common/ActionButton";
 import GET_EQUIPMENTS, { GET_ALL_EQUIPMENTS } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
+import CloseIcon from '@mui/icons-material/Close';
+import { stringAvatar } from "../../../common/avatarGenerator";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -95,6 +97,10 @@ export const GET_USER = gql`
         }
         expires
       }
+      admin
+      manager
+      staff
+      trainer
     }
   }
 `;
@@ -230,15 +236,13 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
         result={getUserResult}
         render={({ user }) => (
           <Stack>
-            <CloseButton onClick={() => navigate("/admin/people")} />
+            <IconButton color="error" sx={{alignSelf: "flex-end"}}>
+              <CloseIcon/>
+            </IconButton>
             <Stack direction="row" alignItems="center" spacing={2} mb={4}>
               <Avatar
-                alt=""
-                src={
-                  // TODO: replace this with the user's profile pic
-                  "https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
-                }
-                sx={{ width: 80, height: 80 }}
+                alt="Profile Picture"
+                {...stringAvatar(user.firstName, user.lastName, { width: 80, height: 80 })}
               />
               <Stack>
                 <Typography variant="h5" component="div" fontWeight={500}>

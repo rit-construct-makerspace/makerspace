@@ -151,7 +151,5 @@ export function useCurrentUser() {
     throw new Error("useCurrentUser must be used within a CurrentUserProvider");
   }
 
-  console.log(context);
-
   return context;
 }

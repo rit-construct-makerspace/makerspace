@@ -14,13 +14,13 @@ export default function UserCard({ user, onClick }: UserCardProps) {
 
   const CARD_COLOR = ((
     user.activeHold
-  ) ? ((localStorage.getItem("themeMode") == "dark") ? "#382a29" : "#f1d1ce")
-    : null);
+  ) ? theme.palette.mode == "dark" ? theme.palette.error.dark : theme.palette.error.light
+    : undefined);
 
     const BORDER = ((
       user.activeHold
     ) ? `2px solid ${theme.palette.error.main}`
-      : `2px solid lightgray`);
+      : `2px solid ${theme.palette.background.paper}`);
 
   return (
     <Card elevation={2} sx={{ mr: 2, mb: 2, background: CARD_COLOR, border: BORDER}}>
