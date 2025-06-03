@@ -206,6 +206,19 @@ const ReadersResolver = {
           return `failed to parse id: ${e}`;
         }
       }),
+    identifyReader: async (
+      _parent: any,
+      args: { id: number, doIdentify: boolean },
+      { ifAllowed }: ApolloContext
+    ) =>
+      ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (executingUser: any) => {
+        try {
+          return ShlugControl.identifyReader(executingUser, Number(args.id), args.doIdentify);
+        } catch (e) {
+          return false;
+        }
+      }),
+
   }
 };
 

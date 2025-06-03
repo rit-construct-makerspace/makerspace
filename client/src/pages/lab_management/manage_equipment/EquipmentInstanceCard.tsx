@@ -1,11 +1,11 @@
-import { Alert, Autocomplete, Button, Card, IconButton, Link, MenuItem, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
+import { Alert, Autocomplete, Button, Card, Checkbox, IconButton, Link, MenuItem, Select, Stack, TextField, Tooltip, Typography } from "@mui/material";
 import { DELETE_EQUIPMENT_INSTANCE, EquipmentInstance, GET_EQUIPMENT_INSTANCES, InstanceStatus, UPDATE_INSTANCE } from "../../../queries/equipmentInstanceQueries";
 import ActionButton from "../../../common/ActionButton";
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 
 import { useMutation, useQuery } from "@apollo/client";
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import { GET_READER_BY_ID, GET_UNPAIRED_READERS, Reader, SET_READER_STATE } from "../../../queries/readersQueries";
+import { GET_READER_BY_ID, GET_UNPAIRED_READERS, IDENTIFY_READER, Reader, SET_READER_STATE } from "../../../queries/readersQueries";
 import { useEffect, useState } from "react";
 
 import BlockIcon from '@mui/icons-material/Block';
@@ -96,7 +96,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
         return options;
     }
 
-    async function handleSubmit() {
+    async function handleSave() {
         setAllowEdit(false);
         updateInstance({ variables: { id: props.instance.id, name: name, status: status, readerID: reader?.id ?? null } })
     }
@@ -113,8 +113,16 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     }
     function setStateClicked(e: any) {
         if (reader != null) {
-            sendCommandedState({ variables: { id: reader.id, state: commandedState } });
+            if (window.confirm("Are you sure about that :|")) {
+                sendCommandedState({ variables: { id: reader.id, state: commandedState } });
+            }
         }
+    }
+
+    const [doIdentify] = useMutation(IDENTIFY_READER)
+    function handleIdentifyChecked(checked: boolean) {
+        doIdentify({ variables: { "id": props.instance.reader?.id, doIdentify: checked } })
+
     }
 
     async function handleDeleteInstance() {
@@ -191,7 +199,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                             {
                                 renderCurrentState()
                             }
-                            <Select disabled={allowEdit || reader == null} size="small" defaultValue={"Idle"} value={commandedState} onChange={handleStateChange} fullWidth>
+                            <Select disabled={allowEdit || reader == null} size="small" defaultValue={currentReader.data?.reader?.state ?? "Idle"} value={commandedState} onChange={handleStateChange} fullWidth>
                                 <MenuItem value="Idle">Idle</MenuItem>
                                 <MenuItem value="Lockout">Lockout</MenuItem>
                                 <MenuItem value="AlwaysOn">Always On</MenuItem>
@@ -206,9 +214,16 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                     allowEdit
                         ? <Stack direction="row" justifyContent="space-between">
                             <Button color="error" variant="contained" startIcon={<DeleteIcon />} onClick={handleDeleteInstance}>Delete</Button>
-                            <Button color="success" variant="contained" startIcon={<SaveIcon />} onClick={handleSubmit}>Save</Button>
+                            <Button color="success" variant="contained" startIcon={<SaveIcon />} onClick={handleSave}>Save</Button>
                         </Stack>
-                        : null
+                        : undefined
+                }
+                {
+                    (!allowEdit && !isOffline && reader) ?
+                        <Stack direction="row" justifyContent={"space-between"} alignItems={"center"}>
+                            Identify Reader
+                            <Checkbox onChange={(e, checked) => handleIdentifyChecked(checked)}></Checkbox>
+                        </Stack> : null
                 }
             </Stack>
         </Card>

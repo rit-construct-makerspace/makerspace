@@ -59,6 +59,23 @@ function removeConnection(connData: ConnectionData): boolean {
     return slugPool.delete(connData.readerId);
 }
 
+export async function identifyReader(executingUser: UserRow, readerId: number, doIdentify: boolean): Promise<boolean> {
+    let connData = slugPool.get(readerId);
+    if (connData == null) {
+        console.error(`WSACS: Couldn't find shlug with id ${readerId} \n in pool ${stringSlugPool()}`)
+        return false;
+    }
+
+    const reader = await getReaderByID(readerId);
+    if (doIdentify) {
+        wsApiLog("{user} identified {access_device}", "status", { id: executingUser.id, label: getUsersFullName(executingUser) }, { id: readerId, label: reader.name ?? "unknown reader" });
+    }
+
+    sendToShlugUnprompted(connData, { "Identify": doIdentify });
+
+    return true;
+}   
+
 /**
  * Sends a state to a shlug
  * @param readerId reader to send the state to

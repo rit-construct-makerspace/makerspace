@@ -168,6 +168,12 @@ export const SET_READER_NAME = gql`
   }
 `;
 
+export const IDENTIFY_READER = gql`
+  mutation IdentifyReader($id:ID!, $doIdentify: Boolean!){
+    identifyReader(id:$id, doIdentify:$doIdentify)
+  }
+`;
+
 export const SET_READER_STATE = gql`
   mutation SetReaderState($id: ID!, $state: String) {
     setState(id: $id, state: $state)
