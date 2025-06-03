@@ -119,11 +119,6 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
         }
     }
 
-    const [doIdentify] = useMutation(IDENTIFY_READER)
-    function handleIdentifyChecked(checked: boolean) {
-        doIdentify({ variables: { "id": props.instance.reader?.id, doIdentify: checked } })
-
-    }
 
     async function handleDeleteInstance() {
         await deleteInstance({ variables: { id: props.instance.id } });
@@ -217,13 +212,6 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
                             <Button color="success" variant="contained" startIcon={<SaveIcon />} onClick={handleSave}>Save</Button>
                         </Stack>
                         : undefined
-                }
-                {
-                    (!allowEdit && !isOffline && reader) ?
-                        <Stack direction="row" justifyContent={"space-between"} alignItems={"center"}>
-                            Identify Reader
-                            <Checkbox onChange={(e, checked) => handleIdentifyChecked(checked)}></Checkbox>
-                        </Stack> : null
                 }
             </Stack>
         </Card>
