@@ -115,8 +115,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true
+        byReservationOnly: false,
+        needsWelcome: true
     })).id;
 
     // Check added
@@ -130,8 +130,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true
+        byReservationOnly: false,
+        needsWelcome: true
     });
 
     // Check name updated
@@ -154,8 +154,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true
+        byReservationOnly: false,
+        needsWelcome: true
     })).id;
 
     // Check added
@@ -191,8 +191,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true
+        byReservationOnly: false,
+        needsWelcome: true
     })).id;
 
     const exampleQuiz: TrainingModuleItem[] = [{
@@ -234,8 +234,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true
+        byReservationOnly: false,
+        needsWelcome: true
     })).id;
 
     const moduleOneID = (await ModuleRepo.addModule("Test Module I", exampleQuiz)).id;
@@ -275,8 +275,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true
+        byReservationOnly: false,
+        needsWelcome: true
     })).id;
 
     // Create user
@@ -315,8 +315,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true
+        byReservationOnly: false,
+        needsWelcome: true
     })).id;
 
     // Check added
