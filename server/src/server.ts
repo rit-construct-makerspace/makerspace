@@ -23,7 +23,7 @@ import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLog
 import { getEquipmentByID, getMissingTrainingModules, hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
 import { Room } from "./models/rooms/room.js";
 import { Privilege } from "./schemas/usersSchema.js";
-import { createReader, getReaderByID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
+import { createReader, getReaderByID, getReaderByName, getReaderCertCA, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
@@ -170,7 +170,6 @@ async function startServer() {
   app.ws("/api/ws", ws_acs_api);
 
   app.all("/api/files/*", async function (req, res, next) {
-    console.error("Middle");
     const SNHeader = 'shlug-sn';
     const KeyHeader = 'shlug-key';
     if (!req.headers[SNHeader] || !req.headers[KeyHeader]) {
@@ -186,10 +185,18 @@ async function startServer() {
     if (!ok) {
       return res.status(403).send();
     }
-    // return res.sendFile("TestCode.ino.bin", { root: "server/src/shlug-control/" });
     return next();
   });
   app.use("/api/files/", express.static(path.join(__dirname, '../../client/shlug-files/')));
+
+  app.get("/api/files/certCA", async function (req, res) {
+    const certca = (await getReaderCertCA())?.value;
+    if (certca == null) {
+      return res.status(404).send();
+    }
+    return res.send(certca);
+  })
+
   /**
    * WELCOME----
    * Log a user signing in to a makerspace room. Return whether the user is in the database
