@@ -2,11 +2,11 @@ import { Request } from "express";
 import * as ws from "ws";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository.js";
 import { createReaderFromSN, getReaderByID, getReaderByName, getReaderBySN, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
-import { EquipmentRow, ReaderRow } from "./db/tables.js";
+import { EquipmentRow, ReaderRow, UserRow } from "./db/tables.js";
 import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository.js";
 import { getEquipmentByID, getMissingTrainingModules, hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
 import { EntityNotFound } from "./EntityNotFound.js";
-import { Privilege } from "./schemas/usersSchema.js";
+import { Privilege, User } from "./schemas/usersSchema.js";
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 import { hasSwipedToday } from "./repositories/Rooms/RoomRepository.js";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
@@ -27,7 +27,9 @@ const MIN_SESSION_LENGTH = 15
 var slugPool: Map<number, ConnectionData> = new Map();
 
 function stringSlugPool() {
-    return JSON.stringify(Array.from(slugPool.entries()))
+    var entries = Array.from(slugPool.entries());
+    var entriesNoWs = entries.map(([_, data]) => ({ "id": data?.readerId, "timeLastSent": data?.timeLastSent, "state": data?.currentState }));
+    return JSON.stringify(entriesNoWs)
 }
 
 /** 
@@ -36,8 +38,7 @@ function stringSlugPool() {
  */
 async function addOrUpdateConnection(connData: ConnectionData) {
     if (connData.readerId == null) {
-        console.error(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${stringSlugPool()}`)
-        wsApiDebugLog(`WSACS: Attempting to add invalid connection to active connections\n${JSON.stringify(connData)}\nPool: ${stringSlugPool()}`, "status");
+        console.error(`WSACS: Attempting to add invalid connection to active connections\nState: ${connData.currentState}\nID: ${connData.readerId}\nSeqNum: ${connData.toShlugSeqNum}`)
         return;
     }
     slugPool.set(connData.readerId, connData);
@@ -48,13 +49,32 @@ async function addOrUpdateConnection(connData: ConnectionData) {
  * @returns true if the item was removed. false if it wasn't found
  */
 function removeConnection(connData: ConnectionData): boolean {
-    if (connData.readerId == null || !slugPool.has(connData.readerId)) {
-        console.error(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`);
-        wsApiDebugLog(`WSACS: Attempting to remove invalid/nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`, "status");
+    if (connData.readerId == null) {
+        console.error(`WSACS: Attempting to remove invalid connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`);
         return false;
+    } else if (!slugPool.has(connData.readerId)) {
+        console.error(`WSACS: Attempting to remove nonexistent connection to shlug from pool\nData: ${JSON.stringify(connData)}\nPool:${stringSlugPool()}`);
+        return false;    
     }
     return slugPool.delete(connData.readerId);
 }
+
+export async function identifyReader(executingUser: UserRow, readerId: number, doIdentify: boolean): Promise<boolean> {
+    let connData = slugPool.get(readerId);
+    if (connData == null) {
+        console.error(`WSACS: Couldn't find shlug with id ${readerId} \n in pool ${stringSlugPool()}`)
+        return false;
+    }
+
+    const reader = await getReaderByID(readerId);
+    if (doIdentify) {
+        wsApiLog("{user} identified {access_device}", "status", { id: executingUser.id, label: getUsersFullName(executingUser) }, { id: readerId, label: reader?.name ?? "unknown reader" });
+    }
+
+    sendToShlugUnprompted(connData, { "Identify": doIdentify });
+
+    return true;
+}   
 
 /**
  * Sends a state to a shlug
@@ -62,12 +82,39 @@ function removeConnection(connData: ConnectionData): boolean {
  * @param state the string representing the target state
  * @returns text description of success or failure
  */
-export function sendState(readerId: number, state: string): string {
+export async function sendState(executingUser: UserRow, readerId: number, state: string): Promise<string> {
     let connData = slugPool.get(readerId);
     if (connData == null) {
         console.error(`WSACS: Couldn't find shlug with id ${readerId} \n in pool ${stringSlugPool()}`)
         return "not found";
     }
+
+    const reader = await getReaderByID(readerId);
+    if (reader == undefined) {
+        throw EntityNotFound;
+    }
+
+    const instance = await getInstanceByReaderID(readerId);
+    const equipment = instance ? await getEquipmentByID(instance.equipmentID) : null;
+
+    if (instance == null || equipment == null) {
+        await createLog(
+            `{user} commanded {access_device}'s state to ${state} (unpaired).`,
+            "admin",
+            { id: executingUser.id, label: getUsersFullName(executingUser) },
+            { id: reader.id, label: reader.name }
+        );
+    } else {
+        const equipmentLabel = { id: equipment?.id, label: equipment ? equipment?.name : "unknown equipment" }
+        await createLog(
+            `{user} commanded {equipment} instance ${instance.name}'s state to ${state}.`,
+            "admin",
+            { id: executingUser.id, label: getUsersFullName(executingUser) },
+            equipmentLabel
+        );
+
+    }
+
     sendToShlugUnprompted(connData, { "State": state });
     return "success";
 }
@@ -390,6 +437,28 @@ async function generateUniqueHumanName() {
 }
 
 /**
+ * Checks if a shlug is valid, paired, and authenticated
+ * @param readerSN SN reported by a client
+ * @param readerKey Key associated with that SN that a client gave
+ * @returns true if that is a valid, paired shlug
+ */
+export async function authenticateReader(readerSN: string, readerKey: string): Promise<boolean> {
+    if (!readerSN || !readerKey) {
+        return false;
+    }
+    var reader: ReaderRow | undefined = await getReaderBySN(readerSN);
+    if (reader?.pairTime == null || reader?.SN == null || reader?.readerKeyCycle == null) {
+        return false;
+
+    }
+    const keyToMatch = await generateShlugKey(reader.pairTime, reader.SN, reader.readerKeyCycle);
+    if (readerKey != keyToMatch) {
+        return false;
+    }
+    return true;
+}
+
+/**
  * Parses and handles the initial informational message sent by the shlug identifying itself
  * @param connData state of the connection
  * @param message the message that the shlug sent
@@ -400,14 +469,14 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         if (message.Key) {
             message.Key = "<sanitized>";
         }
-        wsApiDebugLog(`WSACS: Missing fields in boot message. Got ${JSON.stringify(message)}`, "status");
+        wsApiDebugLog(`WSACS: Missing fields in boot message from ${srcIp}. Got ${JSON.stringify(message)}`, "status");
         ws.close(4000, "Invalid Fields");
         return false;
     }
-
     var reader: ReaderRow | undefined = await getReaderBySN(message.SerialNumber ?? "");
     if (reader?.pairTime == null || reader?.SN == null) {
         wsApiLog(`WSACS: Request from unpaired shlug ${srcIp}. Denying`, "status");
+        console.error(`WSACS: Request from unpaired shlug ${srcIp}. Denying`);
         ws.close(4001, "Unpaired Reader. Rejected");
         return false;
 
@@ -426,6 +495,7 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         reader = await createReaderFromSN({
             SN: message.SerialNumber, name: await generateUniqueHumanName(),
         });
+        console.log("WSACS: Creating new Reader for SN ", message.SerialNumber);
         connData.readerId = reader?.id;
 
 
@@ -436,6 +506,19 @@ async function handleBootupMessage(connData: ConnectionData, message: ShlugMessa
         else {
             wsApiLog("New Access Device {access_device} registered", "status", { id: reader?.id, label: reader?.name })
         }
+    }
+
+    const instance = await getInstanceByReaderID(reader.id);
+    const equipment = instance ? await getEquipmentByID(instance.equipmentID) : null;
+    const tag = (equipment == null) ? "reader {access_device} (unpaired)" : ("{equipment} instance " + (instance?.name ?? "unknown instance"))
+    const label: { id: number, label: string } = (equipment == null) ? { id: reader.id, label: reader.name } : { id: equipment.id, label: equipment.name ?? "unknown equipment" }
+
+    if (reader?.lastStatusTime) {
+        let offlineMs = new Date().getTime() - reader.lastStatusTime.getTime();
+        const timeString = new Date(offlineMs).toISOString().slice(11, 19);
+        wsApiLog(`Opened WS to ${tag}. Offline for ${timeString}`, "status", label)
+    } else {
+        wsApiLog(`Opened WS to ${tag}`, "status", label)
     }
     connData.readerId = reader.id;
 
@@ -482,13 +565,17 @@ async function handleStateTransition(reader: ReaderRow, newState: string, active
     }
 
     const user = await getUserByCardTagID(oldUID ?? "");
+    const instance = await getInstanceByReaderID(reader.id);
+    const equipment = instance ? await getEquipmentByID(instance.equipmentID) : null;
+    const tag = (equipment == null) ? "reader {access_device} (unpaired)" : ("{equipment} instance " + (instance?.name ?? "unknown instance"))
+    const label: { id: number, label: string } = (equipment == null) ? { id: reader.id, label: reader.name } : { id: equipment.id, label: equipment.name ?? "unknown equipment" }
 
 
     if (oldState != newState) {
         if (user == null) {
-            wsApiLog(`State of {access_device} changed: ${oldState} -> ${newState}`, "state", { id: reader?.id, label: reader?.name });
+            wsApiLog(`State of ${tag} changed: ${oldState} -> ${newState}`, "state", label);
         } else {
-            wsApiLog(`{user} changed state of {access_device}: ${oldState} -> ${newState}`, "state", { id: user.id ?? 0, label: user ? getUsersFullName(user) : "NULL" }, { id: reader?.id, label: reader?.name });
+            wsApiLog(`{user} changed state of ${tag}: ${oldState} -> ${newState}`, "state", { id: user.id ?? 0, label: user ? getUsersFullName(user) : "NULL" }, label);
         }
         if (newState == "Unlocked") {
             reader.sessionStartTime = new Date();
@@ -500,17 +587,15 @@ async function handleStateTransition(reader: ReaderRow, newState: string, active
             reader.currentUID = activeUID ?? '';
             const timeString = new Date(reader.recentSessionLength * 1000).toISOString().slice(11, 19);
 
-            const instance = await getInstanceByReaderID(reader.id);
-            if (instance == null) {
+            if (instance == null || equipment == null) {
                 if (user != null) {
-                    await createLog(`{user} signed out of reader that was not paired with any instance (Unpaired while in use) (Session: ${timeString})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: reader.name ?? "undefined" });
+                    await createLog(`{user} signed out of {access_device} that was not paired with any instance (Unpaired while in use) (Session: ${timeString})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: reader.name ?? "undefined" });
                 }
             } else {
-                const equipment = await getEquipmentByID(instance?.equipmentID);
             // Update equipment session that was created when we authed
                 await setLatestEquipmentSessionLength(equipment.id, reader.recentSessionLength, reader.name);
                 if (user != null) {
-                    await createLog(`{user} signed out of {machine} - {equipment} (Session: ${timeString})`, "status", { id: user.id, label: getUsersFullName(user) }, { id: reader.id, label: reader.name ?? "undefined" }, { id: equipment.id, label: equipment.name });
+                    await createLog(`{user} signed out of {equipment} (Session: ${timeString})`, "status", { id: user.id, label: getUsersFullName(user) }, label);
                 }
             }
         }
@@ -521,8 +606,6 @@ async function handleStateTransition(reader: ReaderRow, newState: string, active
         const elapsedSeconds = Math.floor((now.getTime() - then.getTime()) / 1000);
         reader.recentSessionLength = elapsedSeconds;
     }
-
-
 
     await updateReaderStatus(reader);
 
@@ -547,7 +630,7 @@ function isReplyWorthSending(resp: ShlugResponse): boolean {
  */
 export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
     var connData: ConnectionData = initConnectionData(ws);
-    console.log(`WSACS: Websocket opened to ${req.ip}`)
+    console.log(`WSACS: Websocket opened to ${req.ip}`);
 
     try {
         ws.onclose = async function (ev: ws.CloseEvent) {
@@ -586,8 +669,6 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                         // failed to setup  
                         return;
                     }
-                    // Successfully read bootup message. Add this to available connections
-                    addOrUpdateConnection(connData);
                 }
 
                 addOrUpdateConnection(connData);
@@ -603,7 +684,7 @@ export async function ws_acs_api(ws: ws.WebSocket, req: Request) {
                 var response: ShlugResponse = handleRequest(connData, shlugMessage.Request || [])
 
 
-                if (shlugMessage.Message) {
+                if (shlugMessage.Message) { 
                     wsApiLog(`{access_device} message: ${shlugMessage.Message}`, "message", { id: reader.id, label: reader.name })
                 }
                 if (shlugMessage.State) {
