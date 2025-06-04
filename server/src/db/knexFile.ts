@@ -13,8 +13,6 @@ const __dirname = import.meta.dirname;
 
 require("dotenv").config({ path: __dirname + "/./../../.env" });
 
-export const isdevdb = process.env.IS_DEV ?? false
-
 // Update with your config settings.
 const config: any = { //remove ': any' if using --esm
   development: {
@@ -27,13 +25,6 @@ const config: any = { //remove ': any' if using --esm
     pool: {
       min: 2,
       max: 10,
-      afterCreate: function(connection: any, callback: any) { //remove both ': any' if using --esm
-        console.log("timezoning")
-        connection.query('SET TIME ZONE TO \'EST5EDT\';', function(err: Error) { //remove ': Error' if using --esm
-          console.log(err)
-          callback(err, connection);
-        });
-      }
     },
     migrations: {
       tableName: "knex_migrations",
@@ -46,7 +37,10 @@ const config: any = { //remove ': any' if using --esm
     client: "pg",
     connection: {
       connectionString: process.env.DATABASE_URL,
-      ssl: isdevdb ? false : { rejectUnauthorized: false, sslmode: 'require' },
+      ssl: {
+        rejectUnauthorized: false,
+        sslmode: 'require',
+      },
     },
     pool: {
       min: 2,
@@ -70,7 +64,7 @@ const config: any = { //remove ': any' if using --esm
     },
     pool: {
       min: 2,
-      max: 10,
+      max: 20,
     },
     migrations: {
       tableName: "knex_migrations",
