@@ -50,7 +50,7 @@ const config: any = { //remove ': any' if using --esm
     },
     pool: {
       min: 2,
-      max: 20,
+      max: 10,
     },
     migrations: {
       tableName: "knex_migrations",

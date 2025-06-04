@@ -125,7 +125,9 @@ export default function EditNewModulePage() {
                     alignItems="center"
                     justifyContent="center"
                 >
-                <Grid size={{xs: 12, md: 8}}>
+                <Grid item
+                    xs={12}
+                    md={8}>
                     <TextField
                     label="Module title"
                     value={moduleDraft.name}

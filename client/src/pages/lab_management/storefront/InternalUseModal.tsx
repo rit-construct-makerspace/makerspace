@@ -1,8 +1,9 @@
 import React, { ReactNode, useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
-import { Button, Divider, Stack, TextareaAutosize, Typography } from "@mui/material";
+import { Button, Divider, Stack, Typography } from "@mui/material";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import InventoryIcon from "@mui/icons-material/Inventory";
+import { TextareaAutosize } from "@material-ui/core";
 
 function StepNumber({ children }: { children: ReactNode }) {
   return (

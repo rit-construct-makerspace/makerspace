@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Collapse, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Table, TableCell, TableRow, Tooltip, Typography, useTheme } from "@mui/material";
+import { Box, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Collapse, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Table, TableCell, TableRow, Tooltip, Typography } from "@mui/material";
 import { ToolItemCondition, ToolItemInstance, ToolItemStatus } from "../../../types/ToolItem";
 import ActionButton from "../../../common/ActionButton";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import { useMutation } from "@apollo/client";
 import { DELETE_INSTANCE, GET_TOOL_ITEM_INSTANCES_BY_TYPE, GET_TOOL_ITEM_TYPES_WITH_INSTANCES, UPDATE_TOOL_ITEM_INSTANCE } from "../../../queries/toolItemQueries";
+import { useTheme } from "@material-ui/core";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import TimeAgo from 'react-timeago'
 import { useNavigate } from "react-router-dom";

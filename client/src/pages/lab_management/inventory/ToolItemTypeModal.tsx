@@ -4,7 +4,8 @@ import { TOOL_ITEM_CONDITION_ARRAY, TOOL_ITEM_STATUS_ARRAY, ToolItemCondition, T
 import { useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Divider, InputLabel, FormControl, MenuItem, Select, Stack, Switch, TextField, Tooltip, Typography, FormControlLabel, TextareaAutosize } from "@mui/material";
+import { Box, Button, Divider, InputLabel, FormControl, MenuItem, Select, Stack, Switch, TextField, Tooltip, Typography } from "@mui/material";
+import { FormControlLabel, TextareaAutosize } from "@material-ui/core";
 import GET_ROOMS from "../../../queries/roomQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Room from "../../../types/Room";

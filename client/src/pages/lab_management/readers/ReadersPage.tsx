@@ -46,7 +46,7 @@ export default function ReadersPage() {
               .toLocaleLowerCase()
               .includes(searchText.toLocaleLowerCase())
           ).map((e: Reader) => (
-            <Grid key={e.id}>
+            <Grid key={e.id} item>
               <ReaderCard id={e.id} name={e.name} machineID={parseInt(e.machineID)} machineType={e.machineType} 
                 zone={e.zone} temp={e.temp} state={e.state} userID={e.user?.id} userName={e.user != null ? e.user.firstName + " " + e.user.lastName : null}
                 recentSessionLength={e.recentSessionLength} lastStatusReason={e.lastStatusReason} 
