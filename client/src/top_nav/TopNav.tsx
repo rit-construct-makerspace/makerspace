@@ -17,6 +17,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Footer from "./Footer";
 import Privilege from "../types/Privilege";
 import PersonIcon from '@mui/icons-material/Person';
+import { useIsMobile } from "../common/IsMobileProvider";
 
 const StyledLogo = styled.img`
   margin: 12px;
@@ -26,19 +27,7 @@ const StyledLogo = styled.img`
 `;
 
 export default function TopNav() {
-
-    const [width, setWidth] = useState<number>(window.innerWidth);
-    function handleWindowSizeChange() {
-        setWidth(window.innerWidth);
-    }
-    useEffect(() => {
-        window.addEventListener('resize', handleWindowSizeChange);
-        return () => {
-            window.removeEventListener('resize', handleWindowSizeChange);
-        }
-    }, []);
-    const isMobile = width <= 1100;
-
+    const isMobile = useIsMobile();
     const navigate = useNavigate();
 
     const currentUser = useCurrentUser();

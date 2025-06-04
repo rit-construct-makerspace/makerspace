@@ -37,6 +37,7 @@ import NewReaderPage from "./pages/newreaderpage/NewReaderPage";
 import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
 import { useCurrentUser } from "./common/CurrentUserProvider";
 import Privilege from "./types/Privilege";
+import StaffBar from "./pages/makerspace_page/StaffBar";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -71,10 +72,13 @@ export default function AppRoutes() {
             <Route path="/user/trainings" element={<UserTraingingsPage />}/>
             <Route path="/user/settings" element={<UserSettingsPage />}/>
 
-            
-            <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
-            <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
-            <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
+            <Route path="/makerspace/:makerspaceID" element={<StaffBar/>}>
+              <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
+              <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
+              <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
+              <Route path="/makerspace/:makerspaceID/people" element={<UsersPage />}/>
+              <Route path="/makerspace/:makerspaceID/people/:userID" element={<UsersPage />}/>
+            </Route>
 
             <Route path="/maker/training" element={<TrainingPage />} />
             <Route path="/maker/training/:id" element={<QuizPage />} />
@@ -99,9 +103,6 @@ export default function AppRoutes() {
             <Route path="/admin/tools/instance" element={<ToolItemPage />} />
 
             <Route path="/admin/storefront" element={<StorefrontPage />} />
-
-            <Route path="/admin/people/:id" element={<UsersPage />} />
-            <Route path="/admin/people" element={<UsersPage />} />
 
             <Route path="/admin/announcements" element={<AnnouncementsPage />} />
             <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />

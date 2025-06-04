@@ -5,6 +5,7 @@ import { CurrentUserProvider } from "./common/CurrentUserProvider";
 import AppRoutes from "./AppRoutes";
 import { BrowserRouter } from "react-router-dom";
 import { theme } from "./Theme";
+import { IsMobileProvider } from "./common/IsMobileProvider";
 
 const apolloClient = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URL ?? "https://localhost:3000/graphql",
@@ -19,7 +20,9 @@ export default function App() {
         <CssBaseline/>
         <BrowserRouter basename={ process.env.PUBLIC_URL }>
           <CurrentUserProvider>
-            <AppRoutes />
+            <IsMobileProvider>
+              <AppRoutes />
+            </IsMobileProvider>
           </CurrentUserProvider>
         </BrowserRouter>
       </ThemeProvider>

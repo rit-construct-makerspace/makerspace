@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from "react";
-import Page from "../../Page";
+import { useEffect, useState } from "react";
 import SearchBar from "../../../common/SearchBar";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import UserCard from "./UserCard";
 import { useLazyQuery, useQuery } from "@apollo/client";
-import GET_USERS, { GET_NUM_USERS, GET_USERS_LIMIT, PartialUser } from "../../../queries/getUsers";
+import { GET_NUM_USERS, GET_USERS_LIMIT, PartialUser } from "../../../queries/getUsers";
 import RequestWrapper from "../../../common/RequestWrapper";
 import UserModal from "./UserModal";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import AdminPage from "../../AdminPage";
-import User from "../../../types/User";
 
 export default function UsersPage() {
-  const { id } = useParams<{ id: string }>();
+  const { userID } = useParams<{ userID: string }>();
   const { search } = useLocation();
   const navigate = useNavigate();
   const [query, queryResult] = useLazyQuery(GET_USERS_LIMIT);
@@ -44,18 +42,6 @@ export default function UsersPage() {
   const handleUserModalClosed = () => {
     navigate("/admin/people");
   };
-
-  const [width, setWidth] = useState<number>(window.innerWidth);
-  function handleWindowSizeChange() {
-      setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-      window.addEventListener('resize', handleWindowSizeChange);
-      return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
-      }
-  }, []);
-  const isMobile = width <= 1100;
 
   const safeUsers = queryResult.data?.usersLimit.slice() ?? [];
 
@@ -95,7 +81,7 @@ export default function UsersPage() {
         </Stack>
         <p>This page is limited to 100 users. Consider narrowing your search.</p>
 
-        <UserModal selectedUserID={id ?? ""} onClose={handleUserModalClosed} />
+        <UserModal selectedUserID={userID ?? ""} onClose={handleUserModalClosed} />
         </Box>
       </AdminPage>
     </RequestWrapper>
