@@ -1,7 +1,7 @@
 import { Alert, AppBar, Avatar, Box, Button, ButtonBase, Drawer, IconButton, Menu, MenuItem, Stack, Typography } from "@mui/material";
 import styled from "styled-components";
-import LogoSvgWhite from "../assets/acronym_logo_all_white.svg";
-import LogoSvgW from "../assets/acronym_logo_w.svg";
+import LogoSvgWhite from "../assets/shed logo white.png";
+import LogoSvgOrange from "../assets/the shed logo orange white.png";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import PrinterOsIcon from "../common/PrinterOSIcon";
@@ -86,7 +86,7 @@ export default function TopNav() {
             { isMobile
             ? <AppBar position="static">
                 <Stack direction="row" justifyContent="space-between">
-                    <StyledLogo width="75%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
+                    <StyledLogo width="75%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgOrange : LogoSvgWhite} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
                     <IconButton onClick={() => setMobileDrawer(true)}>
                         <MenuIcon />
                     </IconButton>
@@ -161,7 +161,7 @@ export default function TopNav() {
                 <AppBar position="static">
                     <Stack component="nav" direction="row" justifyContent="space-between" alignItems="center">
                         <ButtonBase onClick={() => {navigate(`/`);}} sx={{width: "15%"}} focusRipple>
-                            <StyledLogo width="100%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo"/>
+                            <StyledLogo width="100%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgOrange : LogoSvgWhite} alt="SHED logo"/>
                         </ButtonBase>
                         <NavLink
                             to="/maker/training/13"

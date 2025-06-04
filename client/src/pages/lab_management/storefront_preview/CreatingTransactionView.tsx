@@ -1,5 +1,5 @@
 import React from "react";
-import LogoSvg from "../../../assets/acronym_logo.svg";
+import LogoSvg from "../../../assets/the shed logo orange white.png";
 import { Divider, Stack, Typography } from "@mui/material";
 import NameTag from "./NameTag";
 import styled from "styled-components";
