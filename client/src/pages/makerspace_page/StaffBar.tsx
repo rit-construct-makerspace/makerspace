@@ -88,7 +88,7 @@ export default function StaffBar() {
             />
             <NavLink
                 primary={"Readers"}
-                to={"/admin/readers"}
+                to={`/makerspace/${makerspaceID}/readers`}
                 icon={<ScannerIcon />}
             />
             <NavLink

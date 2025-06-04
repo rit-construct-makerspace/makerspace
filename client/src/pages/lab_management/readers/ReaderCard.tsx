@@ -37,6 +37,7 @@ interface ReaderCardProps {
     FEVer?: string,
     HWVer?: string,
     SN?: string,
+    makerspaceID: string,
 }
 
 
@@ -53,7 +54,7 @@ const useStyles = makeStyles({
   }
 });
 
-export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer, SN }: ReaderCardProps) {
+export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer, SN, makerspaceID }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
     <p>Current User: <AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity><br></br>Session Length: {recentSessionLength} sec</p>
   ) : (

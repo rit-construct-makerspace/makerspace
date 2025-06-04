@@ -112,10 +112,12 @@ export default function AppRoutes() {
                   <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
                   <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
                 </Route>
+                {/* End manager routes */}
                 <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
                 <Route path="/makerspace/:makerspaceID/people" element={<UsersPage />}/>
                 <Route path="/makerspace/:makerspaceID/people/:userID" element={<UsersPage />}/>
                 <Route path="/makerspace/:makerspaceID/history" element={<AuditLogsPage />}/>
+                <Route path="/makerspace/:makerspaceID/readers" element={<ReadersPage/>}/>
               </Route>
             </Route>
 
@@ -125,6 +127,8 @@ export default function AppRoutes() {
               <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
               <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
               <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
+
+              <Route path="/admin/newreader" element={<NewReaderPage />} />
             </Route>
 
             <Route path="/maker/training" element={<TrainingPage />} />
@@ -150,9 +154,6 @@ export default function AppRoutes() {
             <Route path="/admin/tools/instance" element={<ToolItemPage />} />
 
             <Route path="/admin/storefront" element={<StorefrontPage />} />
-
-            <Route path="/admin/readers" element={<ReadersPage />} />
-            <Route path="/admin/newreader" element={<NewReaderPage />} />
 
             <Route path="/admin/statistics" element={<StatisticsPage />} />
 
