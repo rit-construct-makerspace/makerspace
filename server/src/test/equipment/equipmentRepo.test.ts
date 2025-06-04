@@ -366,8 +366,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true,
+        byReservationOnly: false,
+        needsWelcome: true,
     })).id;
 
     // Check added
@@ -423,8 +423,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true
+        byReservationOnly: false,
+        needsWelcome: true
     })).id;
 
     // Check added
@@ -473,8 +473,8 @@ describe("EquipmentRepository tests", () => {
         imageUrl: null,
         sopUrl: null,
         notes: null,
-      byReservationOnly: false,
-      needsWelcome: true,
+        byReservationOnly: false,
+        needsWelcome: true,
     })).id;
 
     // Check added
