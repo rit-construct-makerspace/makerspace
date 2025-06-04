@@ -1,9 +1,9 @@
 import { useQuery } from "@apollo/client";
 import { GET_READERS, Reader } from "../../../queries/readersQueries";
-import { Button, Grid, Stack } from "@mui/material";
+import { Box, Button, Grid, Stack } from "@mui/material";
 import Page from "../../Page";
 import SearchBar from "../../../common/SearchBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { useState } from "react";
 import ReaderCard from "./ReaderCard";
@@ -13,16 +13,16 @@ import AddIcon from '@mui/icons-material/Add';
 
 
 export default function ReadersPage() {
-  const getReadersResult = useQuery(GET_READERS, {pollInterval: 2000});
+  const { makerspaceID } = useParams<{makerspaceID: string}>();
 
-  const url = "/admin/readers";
+  const getReadersResult = useQuery(GET_READERS, {pollInterval: 2000});
   const user = useCurrentUser();
   const navigate = useNavigate();
 
   const [searchText, setSearchText] = useState("");
 
   return (
-    <AdminPage title="Readers" maxWidth="1250px">
+    <Box padding="20px">
       <Stack direction="row" spacing={2}>
         <SearchBar
           placeholder="Search access devices"
@@ -51,11 +51,11 @@ export default function ReadersPage() {
                 zone={e.zone} temp={e.temp} state={e.state} userID={e.user?.id} userName={e.user != null ? e.user.firstName + " " + e.user.lastName : null}
                 recentSessionLength={e.recentSessionLength} lastStatusReason={e.lastStatusReason} 
                 scheduledStatusFreq={e.scheduledStatusFreq} lastStatusTime={e.lastStatusTime} helpRequested={e.helpRequested}
-                BEVer={e.BEVer} FEVer={e.FEVer} HWVer={e.HWVer} SN={e.SN}/>
+                BEVer={e.BEVer} FEVer={e.FEVer} HWVer={e.HWVer} SN={e.SN} makerspaceID={makerspaceID ?? "0"}/>
             </Grid>
           ))}
         </Grid>
       </RequestWrapper>
-    </AdminPage>
+    </Box>
   );
 }

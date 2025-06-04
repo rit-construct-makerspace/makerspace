@@ -7,9 +7,6 @@ import { knex } from "../../db/index.js";
 import { createLog } from "../AuditLogs/AuditLogRepository.js";
 import { EntityNotFound } from "../../EntityNotFound.js";
 import { UserRow } from "../../db/tables.js";
-import { createHash } from "crypto";
-import { use } from "passport";
-import { User } from "@node-saml/passport-saml/lib/types.js";
 
 
 /**
@@ -78,6 +75,9 @@ export async function getUserByRitUsername(
   ritUsername: string
 ): Promise<UserRow | undefined> {
   console.log("Checking user: " + ritUsername);
+  if (!ritUsername) {
+    return undefined;
+  }
   return knex("Users").first().where("ritUsername", ritUsername);
 }
 
@@ -228,4 +228,90 @@ export async function archiveUser(userID: number): Promise<UserRow> {
  */
 export async function getNumUsers(): Promise<string> {
   return (await knex("Users").count("*"))[0];
+}
+
+/**
+ * Get all the makerspaceIDs for which the given user is a manager
+ * @param userID the user to get all the manager perms for
+ * @returns number[] of makerspaceIDs
+ */
+export async function getUserManagerPerms(userID: number): Promise<number[]> {
+  var makerspaceIDs: number[] = [];
+  
+  (await knex("Managers").where({userID: userID}).select("makerspaceID")).map((row) => {
+    makerspaceIDs.push(row.makerspaceID);
+  })
+
+  return makerspaceIDs;
+}
+
+/**
+ * Get all makerspaceIDs for which the given user is a staff
+ * @param userID the user to get all the staff perms for
+ * @returns number[] of makerpsaceIDs
+ */
+export async function getUserStaffPerms(userID: number): Promise<number[]> {
+  var makerspaceIDs: number[] = [];
+  
+  (await knex("Staff").where({userID: userID}).select("makerspaceID")).map((row) => {
+    makerspaceIDs.push(row.makerspaceID);
+  })
+
+  return makerspaceIDs;
+}
+
+/**
+ * Get all equipmentIDs for which the given user is a trainer
+ * @param userID the user to get all the trainer perms for
+ * @returns number[] of equipmentIDs
+ */
+export async function getUserTrainerPerms(userID: number): Promise<number[]> {
+  var equipmentIDs: number[] = [];
+  
+  (await knex("Trainers").where({userID: userID}).select("equipmentID")).map((row) => {
+    equipmentIDs.push(row.equipmentID);
+  })
+
+  return equipmentIDs;
+}
+
+export async function setUserAdmin(userID: number, admin: boolean): Promise<boolean> {
+  await knex("Users").where({id: userID}).update({admin: admin});
+  return admin;
+}
+
+export async function makeUserManager(userID: number, makerspaceID: number): Promise<number[]> {
+  await knex("Managers").insert({userID, makerspaceID});
+
+  return await getUserManagerPerms(userID);
+}
+
+export async function makeUserStaff(userID: number, makerspaceID: number): Promise<number[]> {
+  await knex("Staff").insert({userID, makerspaceID});
+
+  return await getUserStaffPerms(userID);
+}
+
+export async function makeUserTrainer(userID: number, equipmentID: number): Promise<number[]> {
+  await knex("Trainers").insert({userID, equipmentID});
+
+  return await getUserTrainerPerms(userID);
+}
+
+export async function revokeUserManager(userID: number, makerspaceID: number): Promise<number[]> {
+  await knex("Managers").where({userID: userID, makerspaceID: makerspaceID}).delete();
+
+  return await getUserManagerPerms(userID);
+}
+
+export async function revokeUserStaff(userID: number, makerspaceID: number): Promise<number[]> {
+  await knex("Staff").where({userID: userID, makerspaceID: makerspaceID}).delete();
+
+  return await getUserStaffPerms(userID);
+}
+
+export async function revokeUserTrainer(userID: number, equipmentID: number): Promise<number[]> {
+  await knex("Trainers").where({userID: userID, equipmentID: equipmentID}).delete();
+
+  return await getUserTrainerPerms(userID);
 }

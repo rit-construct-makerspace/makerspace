@@ -1,22 +1,15 @@
-import React from "react";
-import Privilege from "../../../types/Privilege";
 import { Chip } from "@mui/material";
-
-// MAKER -> Maker, MENTOR -> Mentor, etc.
-export function makeSentenceCase(allCaps: string) {
-  return allCaps.substring(0, 1) + allCaps.substring(1).toLocaleLowerCase();
-}
+import { isAdmin, isManager, isStaff } from "../../../common/PrivilegeUtils";
 
 interface PrivilegeChipProps {
-  privilege: Privilege;
+  user: any;
 }
 
-export default function PrivilegeChip({ privilege }: PrivilegeChipProps) {
-  // Don't show a chip for makers
-  if (privilege === Privilege.MAKER) return null;
+export default function PrivilegeChip(props: PrivilegeChipProps) {
 
-  const label = makeSentenceCase(privilege);
-  const color = privilege === Privilege.STAFF ? "primary" : "secondary";
+  const label = isAdmin(props.user) ? "Admin" : isManager(props.user) ? "Manager" : isStaff(props.user) ? "Staff" : "";
+  if (label === "") return null; // No chip for Makers (and trainers 😢)
+  const color = label === "Admin" ? "primary" : label === "Manager" ? "error" : label === "Staff" ? "success" : "error"
 
   return <Chip label={label} variant="outlined" size="small" color={color} />;
 }

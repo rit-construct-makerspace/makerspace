@@ -4,7 +4,7 @@
  */
 
 import * as ReaderRepo from "../repositories/Readers/ReaderRepository.js";
-import { ApolloContext } from "../context.js";
+import { ApolloContext, CurrentUser } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUserByCardTagID, getUsersFullName } from "../repositories/Users/UserRepository.js";
@@ -72,8 +72,8 @@ const ReadersResolver = {
     readers: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async (user: CurrentUser) => {
         return await ReaderRepo.getReaders();
       }),
 
@@ -85,8 +85,8 @@ const ReadersResolver = {
     unpairedReaders: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await ReaderRepo.getUnpairedReaders();
       }),
 
@@ -99,8 +99,8 @@ const ReadersResolver = {
     reader: async (
       _parent: any,
       args: { id: string },
-      { ifAllowedOrSelf }: ApolloContext) =>
-      ifAllowedOrSelf(Number(args.id), [Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async (user: CurrentUser) => {
         return await ReaderRepo.getReaderByID(Number(args.id));
       })
   },
@@ -118,8 +118,8 @@ const ReadersResolver = {
     createReader: async (
       _parent: any,
       args: {machineID?: number, machineType?: string, name?: string, zone?: string},
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async (user: CurrentUser) => {
         return await ReaderRepo.createReader(args);
       }),
 
@@ -132,8 +132,8 @@ const ReadersResolver = {
     pairReader: async (
       _parent: any,
       args: { SN: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async (user) => {
+      { isManager }: ApolloContext) =>
+      isManager(async (user) => {
         const timeOfPair = new Date();
 
         var reader = await ReaderRepo.getReaderBySN(args.SN);
@@ -177,9 +177,9 @@ const ReadersResolver = {
     setName: async (
       _parent: any,
       args: { id: string; name: string },
-      { ifAllowed }: ApolloContext
+      { isManager }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async (executingUser: any) => {
+      isManager(async (user: CurrentUser) => {
         const readerSubject = await ReaderRepo.getReaderByID(Number(args.id));
         if (readerSubject == undefined) {
           throw EntityNotFound;
@@ -189,7 +189,7 @@ const ReadersResolver = {
         await createLog(
           `{user} set {reader}'s name to ${args.name}.`,
           "admin",
-          { id: executingUser.id, label: getUsersFullName(executingUser) },
+          { id: user.id, label: getUsersFullName(user) },
           { id: readerSubject.id, label: readerSubject.name }
         );
       }),
@@ -197,9 +197,9 @@ const ReadersResolver = {
     setState: async (
       _parent: any,
       args: { id: number; state: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (executingUser: any) => {
+      isStaff(async (executingUser: any) => {
         try {
           return ShlugControl.sendState(executingUser, Number(args.id), args.state);
         } catch (e) {

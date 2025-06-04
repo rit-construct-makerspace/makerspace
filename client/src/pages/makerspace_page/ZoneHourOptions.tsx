@@ -6,7 +6,7 @@ import ZoneHourRow from "./ZoneHourRow";
 import ZoneHour from "../../types/Room"
 import { useCurrentUser } from "../../common/CurrentUserProvider";
 import RequestWrapper from "../../common/RequestWrapper";
-import Privilege from "../../types/Privilege";
+import { isManagerFor } from "../../common/PrivilegeUtils";
 
 export const GET_ZONE_HOURS = gql`
   query GetZoneHoursByZone($zoneID: ID!) {
@@ -137,7 +137,7 @@ export default function ZoneHourOptions({zoneID}: ZoneHourOptionsProps) {
                 <TableCell>
                 <LoadingButton
                   loading={result.loading}
-                  disabled={currentUser.privilege !== Privilege.STAFF}
+                  disabled={!isManagerFor(currentUser, zoneID)}
                   size="large"
                   color="success"
                   variant="outlined"

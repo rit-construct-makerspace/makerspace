@@ -20,8 +20,8 @@ const TermsResolver = {
     setTerms: async (
       _parent: any,
       args: { value: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async () => {
         return (await setTerms(args.value));
       }),
   }

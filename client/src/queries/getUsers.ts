@@ -30,8 +30,11 @@ export const GET_USERS_LIMIT = gql`
       ritUsername
       firstName
       lastName
-      privilege
       activeHold
+      admin
+      manager
+      staff
+      trainer
     }
   }
 `;

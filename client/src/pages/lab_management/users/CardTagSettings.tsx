@@ -1,16 +1,12 @@
-import React, { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import {
   Alert,
   FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
   Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
 import { gql, useMutation } from "@apollo/client";
 import GET_USERS from "../../../queries/getUsers";
 import { GET_USER } from "./UserModal";
@@ -41,8 +37,6 @@ export default function CardTagSettings({
   const [setCardTagID, setCardTagIDResult] = useMutation(SET_CARD_TAG_ID);
   
   const [updatedCardTagID, setUpdatedCardTagID] = useState("");
-
-  const isAdmin = currentUser.privilege === Privilege.STAFF;
 
   const handleSubmit = () => {
     if (!updatedCardTagID || updatedCardTagID == "") {
@@ -94,7 +88,7 @@ export default function CardTagSettings({
         </Stack>
       )}
 
-      <FormControl disabled={!isAdmin || setCardTagIDResult.loading}>
+      <FormControl disabled={!currentUser.admin || setCardTagIDResult.loading}>
         <TextField
           label="Update RIT ID"
           value={updatedCardTagID}
@@ -113,7 +107,7 @@ export default function CardTagSettings({
           Update RIT Card Tag
         </LoadingButton>
       </FormControl>
-      {!isAdmin && (
+      {!currentUser.admin && (
         <Alert severity="info" sx={{ width: "max-content", mt: 1 }}>
           You do not have permission to change this.
         </Alert>

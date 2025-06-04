@@ -57,8 +57,8 @@ const StatisticQueryResolver = {
         dayOfTheWeek: string,
         sumStartDate: string, sumStopDate: string
       },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         const { startOfMonth, today } = getMonthToPresentBounds();
 
         const sumStartDate = args.sumStartDate ?? startOfMonth;
@@ -80,8 +80,8 @@ const StatisticQueryResolver = {
         sumStartDate: string, sumStopDate: string
         avgStartDate: string, avgStopDate: string,
       },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         const { startOfMonth, today } = getMonthToPresentBounds();
         const startOfWeek = getSunday();
         const startDate = args.sumStartDate && args.sumStartDate != "" ? args.sumStartDate : startOfWeek.toDateString();
@@ -105,8 +105,8 @@ const StatisticQueryResolver = {
     moduleScores: async (
       _parent: any,
       args: { startDate: string, stopDate: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         const result = await getModulePassedandFailedCountWithModuleName(args.startDate, args.stopDate);
         return result
       }),
@@ -118,8 +118,8 @@ const StatisticQueryResolver = {
     numNewUsersToday: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await getNumUsersRegisteredToday();
       }),
 
@@ -130,8 +130,8 @@ const StatisticQueryResolver = {
     numRoomSwipesToday: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await getNumRoomSwipesToday();
       }),
 
@@ -142,8 +142,8 @@ const StatisticQueryResolver = {
     numEquipmentSessionsToday: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await getNumEquipmentSessionsToday();
       }),
   },

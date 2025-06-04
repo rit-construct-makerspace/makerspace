@@ -15,7 +15,7 @@ import { DELETE_ROOM, UPDATE_ROOM_NAME } from "../../queries/roomQueries";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCurrentUser } from "../../common/CurrentUserProvider";
 import SaveIcon from '@mui/icons-material/Save';
-import Privilege from "../../types/Privilege";
+import { isManagerFor } from "../../common/PrivilegeUtils";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -150,7 +150,7 @@ export default function ManageRoomPage() {
             <Stack direction={isMobile ? "column" : "row"} justifyContent={isMobile ? undefined : "space-between"} alignItems="flex-end" spacing={2}>
               <Typography variant={isMobile ? "h4" : "h3"}>Manage {room.name} [ID: {roomID}]</Typography>
               {
-                user.privilege === Privilege.STAFF
+                isManagerFor(user, Number(roomID))
                 ? <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
                   Delete Room
                 </Button>

@@ -3,7 +3,7 @@
  * GraphQL Endpoint implementations for MaintenanceLogs, ResolutionLogs, and MaintenanceTags
  */
 
-import { ApolloContext } from "../context.js";
+import { ApolloContext, CurrentUser } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository.js";
 import * as UsersRepo from "../repositories/Users/UserRepository.js";
@@ -22,9 +22,9 @@ const MaintenanceLogsResolver = {
     author: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async (user: CurrentUser) => {
         return UsersRepo.getUserByID(parent.authorID);
       }),
 
@@ -32,55 +32,50 @@ const MaintenanceLogsResolver = {
     equipment: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.equipmentID && getEquipmentByID(parent.equipmentID)
+      isStaff(
+        async (user: CurrentUser) => parent.equipmentID && getEquipmentByID(parent.equipmentID)
       ),
 
     //Map instance field to EquipmentInstance
     instance: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.instanceID && getInstanceByID(parent.instanceID)
+      isStaff(
+        async (user: CurrentUser) => parent.instanceID && getInstanceByID(parent.instanceID)
       ),
 
     //Map tag1 field to MaintenanceTag
     tag1: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.tagID1 && getMaintenanceTagByID(parent.tagID1)
+      isStaff(
+        async (user: CurrentUser) => parent.tagID1 && getMaintenanceTagByID(parent.tagID1)
       ),
 
     //Map tag2 field to MaintenanceTag
     tag2: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.tagID2 && getMaintenanceTagByID(parent.tagID2)
+      isStaff(
+        async (user: CurrentUser) => parent.tagID2 && getMaintenanceTagByID(parent.tagID2)
       ),
 
     //Map tag3 field to MaintenanceTag
     tag3: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.tagID3 && getMaintenanceTagByID(parent.tagID3)
+      isStaff(
+        async (user: CurrentUser) => parent.tagID3 && getMaintenanceTagByID(parent.tagID3)
       ),
   },
 
@@ -89,9 +84,9 @@ const MaintenanceLogsResolver = {
     author: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async (user: CurrentUser) => {
         return UsersRepo.getUserByID(parent.authorID);
       }),
 
@@ -99,55 +94,50 @@ const MaintenanceLogsResolver = {
     equipment: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.equipmentID && getEquipmentByID(parent.equipmentID)
+      isStaff(
+        async (user: CurrentUser) => parent.equipmentID && getEquipmentByID(parent.equipmentID)
       ),
 
     //Map instance field to EquipmentInstance
     instance: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.instanceID && getInstanceByID(parent.instanceID)
+      isStaff(
+        async (user: CurrentUser) => parent.instanceID && getInstanceByID(parent.instanceID)
       ),
 
     //Map tag1 field to MaintenanceTag
     tag1: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.tagID1 && getMaintenanceTagByID(parent.tagID1)
+      isStaff(
+        async (user: CurrentUser) => parent.tagID1 && getMaintenanceTagByID(parent.tagID1)
       ),
 
     //Map tag2 field to MaintenanceTag
     tag2: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.tagID2 && getMaintenanceTagByID(parent.tagID2)
+      isStaff(
+        async (user: CurrentUser) => parent.tagID2 && getMaintenanceTagByID(parent.tagID2)
       ),
 
     //Map tag3 field to MaintenanceTag
     tag3: async (
       parent: MaintenanceLogRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.tagID3 && getMaintenanceTagByID(parent.tagID3)
+      isStaff(
+        async (user: CurrentUser) => parent.tagID3 && getMaintenanceTagByID(parent.tagID3)
       ),
   },
 
@@ -156,11 +146,10 @@ const MaintenanceLogsResolver = {
     equipment: async (
       parent: MaintenanceTagRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.equipmentID && getEquipmentByID(parent.equipmentID)
+      isStaff(
+        async (user: CurrentUser) => parent.equipmentID && getEquipmentByID(parent.equipmentID)
       ),
   },
 
@@ -173,11 +162,10 @@ const MaintenanceLogsResolver = {
     getMaintenanceLogsByEquipment: async (
       _parent: any,
       args: { equipmentID: number },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => getMaintenanceLogsByEquipment(args.equipmentID)
+      isStaff(
+        async (user: CurrentUser) => getMaintenanceLogsByEquipment(args.equipmentID)
       ),
 
     /**
@@ -188,11 +176,10 @@ const MaintenanceLogsResolver = {
     getResolutionLogsByEquipment: async (
       _parent: any,
       args: { equipmentID: number },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => getResolutionLogsByEquipment(args.equipmentID)
+      isStaff(
+        async (user: CurrentUser) => getResolutionLogsByEquipment(args.equipmentID)
       ),
 
     /**
@@ -203,11 +190,10 @@ const MaintenanceLogsResolver = {
     getMaintenanceTags: async (
       _parent: any,
       args: {equipmentID?: number},
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => {
+      isStaff(
+        async (user: CurrentUser) => {
           return !args.equipmentID ? getMaintenanceTags() : getMaintenanceTagsByEquipmentOrGlobal(args.equipmentID)
         }
       ),
@@ -220,11 +206,10 @@ const MaintenanceLogsResolver = {
     getMaintenanceTagByID: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => getMaintenanceTagByID(args.id)
+      isStaff(
+        async (user: CurrentUser) => getMaintenanceTagByID(args.id)
       ),
   },
 
@@ -239,11 +224,10 @@ const MaintenanceLogsResolver = {
     createMaintenanceLog: async (
       _parent: any,
       args: { equipmentID: number, instanceID?: number, content: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+      isStaff(
+        async (user: CurrentUser) => {
           await createLog(`{user} created a maintenance log for {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: args.equipmentID, label: (await getEquipmentByID(args.equipmentID)).name });
           const result = await createMaintenanceLog(user.id, args.equipmentID, args.instanceID == 0 ? undefined : args.instanceID, args.content);
           console.log(args)
@@ -262,11 +246,10 @@ const MaintenanceLogsResolver = {
     createResolutionLog: async (
       _parent: any,
       args: { equipmentID: number, instanceID?: number, issue: string, content: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+      isStaff(
+        async (user: CurrentUser) => {
           await createLog(`{user} created a resolution log for {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: args.equipmentID, label: (await getEquipmentByID(args.equipmentID)).name });
           return createResolutionLog(user.id, args.equipmentID, ((!args.instanceID && args.instanceID != 0) ? undefined : args.instanceID), args.issue, args.content);
         }
@@ -280,11 +263,10 @@ const MaintenanceLogsResolver = {
     deleteMaintenanceLog: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+      isStaff(
+        async (user: CurrentUser) => {
           const equipment = await getMaintenanceLogByID(args.id);
           if (!equipment) throw new GraphQLError("Equipment does not exist");
           await createLog(`{user} deleted a maintenance log from {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: (await getEquipmentByID(equipment.equipmentID)).name });
@@ -300,11 +282,10 @@ const MaintenanceLogsResolver = {
     deleteResolutionLog: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+      isStaff(
+        async (user: CurrentUser) => {
           const equipment = await getResolutionLogByID(args.id);
           if (!equipment) throw new GraphQLError("Equipment does not exist");
           await createLog(`{user} deleted a resolution log from {equipment}`, "admin", { id: user.id, label: getUsersFullName(user) }, { id: equipment.id, label: (await getEquipmentByID(equipment.equipmentID)).name });
@@ -322,11 +303,10 @@ const MaintenanceLogsResolver = {
     createMaintenanceTag: async (
       _parent: any,
       args: { equipmentID?: number, label: string, color: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+      isStaff(
+        async (user: CurrentUser) => {
           await createLog(`{user} created a maintenance tag "${args.label}"`, "admin", { id: user.id, label: getUsersFullName(user) });
           return createMaintenanceTag(args.equipmentID ?? null, args.label, args.color);
         }
@@ -340,11 +320,10 @@ const MaintenanceLogsResolver = {
     deleteMaintenanceTag: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+      isStaff(
+        async (user: CurrentUser) => {
           const orig = await getMaintenanceTagByID(args.id);
           if (!orig) throw new GraphQLError("Tag does not exist");
           await createLog(`{user} deleted a maintenance tag "${orig.label}"`, "admin", { id: user.id, label: getUsersFullName(user) });
@@ -362,10 +341,9 @@ const MaintenanceLogsResolver = {
     updateMaintenanceTag: async (
       _parent: any,
       args: { id: number, label?: string, color?: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
+      isStaff(
         async (user) => {
           const orig = await getMaintenanceTagByID(args.id);
           if (!orig) throw new GraphQLError("Tag does not exist");
@@ -384,11 +362,10 @@ const MaintenanceLogsResolver = {
     addTagToLog: async (
       _parent: any,
       args: { logId: number, tagId: number, logType: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+      isStaff(
+        async (user: CurrentUser) => {
           const log: any = args.logType == "resolution" ? await getResolutionLogByID(args.logId) : await getMaintenanceLogByID(args.logId);
           if (!log) throw new GraphQLError("Log does not exist");
           const tag = await getMaintenanceTagByID(args.tagId);
@@ -421,11 +398,10 @@ const MaintenanceLogsResolver = {
     removeTagFromLog: async (
       _parent: any,
       args: { logId: number, tagId: number, logType: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async (user) => {
+      isStaff(
+        async (user: CurrentUser) => {
           const log: any = args.logType == "resolution" ? await getResolutionLogByID(args.logId) : await getMaintenanceLogByID(args.logId);
           if (!log) throw new GraphQLError("Log does not exist");
           const tag = await getMaintenanceTagByID(args.tagId);

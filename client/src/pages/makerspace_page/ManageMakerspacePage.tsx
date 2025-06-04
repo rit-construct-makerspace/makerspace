@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { FullZone, GET_ZONE_BY_ID, DELETE_ZONE, UPDATE_ZONE } from "../../queries/zoneQueries";
-import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, Stack, TextField, Typography } from "@mui/material";
 import RequestWrapper2 from "../../common/RequestWrapper2";
 import { useEffect, useState } from "react";
 import SaveIcon from '@mui/icons-material/Save';
@@ -9,11 +9,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AdminPage from "../AdminPage";
 import AddIcon from '@mui/icons-material/Add';
 import { CREATE_ROOM } from "../../queries/roomQueries";
-import Room, { FullRoom } from "../../types/Room";
+import Room from "../../types/Room";
 import RoomCard from "./RoomCard";
 import PrettyModal from "../../common/PrettyModal";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
-import Privilege from "../../types/Privilege";
 import ZoneHourOptions from "./ZoneHourOptions";
 
 
@@ -100,7 +99,7 @@ export default function ManageMakerspacePage() {
                     >
                         <Typography variant="h4" align="center">{`Edit ${zone.name} Makerspace [ID: ${zone.id}]`}</Typography>
                         {
-                            user.privilege === Privilege.STAFF
+                            user.admin
                             ? <Button color="error" variant="contained" onClick={handleDeleteZone} startIcon={<DeleteIcon/>}>Delete Makerspace</Button>
                             : null
                         }
