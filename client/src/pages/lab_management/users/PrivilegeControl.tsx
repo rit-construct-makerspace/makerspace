@@ -40,15 +40,14 @@ export default function PrivilegeControl(props: PrivilegeControlProps) {
         await makeUserManager({
             variables: {userID: props.user.id, makerspaceID: addManagerPerms},
         });
-        //window.location.reload();
     }
 
     async function removeManagerPerms(makerspaceID: number) {
         await revokeUserManager({variables: {userID: props.user.id, makerspaceID: makerspaceID}});
     }
 
-    const [makeUserStaff] = useMutation(MAKE_USER_STAFF);
-    const [revokeUserStaff] = useMutation(REVOKE_USER_STAFF);
+    const [makeUserStaff] = useMutation(MAKE_USER_STAFF, {refetchQueries: [{query: GET_USER, variables: {id: props.user.id}}]});
+    const [revokeUserStaff] = useMutation(REVOKE_USER_STAFF, {refetchQueries: [{query: GET_USER, variables: {id: props.user.id}}]});
     const [addStaffPerms, setAddStaffPerms] = useState(-1);
 
     async function handleAddStaffPerms() {
@@ -56,7 +55,9 @@ export default function PrivilegeControl(props: PrivilegeControlProps) {
             alert("Makerspace cannot be empty, please select a makerspace");
             return;
         }
-        await makeUserStaff({variables: {userID: props.user.id, makerspaceID: addStaffPerms}});
+        await makeUserStaff({
+            variables: {userID: props.user.id, makerspaceID: addStaffPerms}
+        });
     }
 
     async function removeStaffPerms(makerspaceID: number) {
