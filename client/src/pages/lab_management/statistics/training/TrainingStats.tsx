@@ -131,8 +131,8 @@ export function TrainingStats() {
 
   function handleCSVExport() {
     let csvContent =
-      Object.keys(getTrainingSubmissionsResult.data.getEquipmentSessionsWithAttachedEntities[0] as VerboseTrainingSubmission).map((s: string) => s == "__typename" ? '' : `${s},`).join('')
-      + '\n' + getTrainingSubmissionsResult.data.getEquipmentSessionsWithAttachedEntities.map((e: VerboseTrainingSubmission) => joinTrainingSubmission(e)).join("\n");
+      Object.keys(getTrainingSubmissionsResult.data.getTrainingSubmissionsWithAttachedEntities[0] as VerboseTrainingSubmission).map((s: string) => s == "__typename" ? '' : `${s},`).join('')
+      + '\n' + getTrainingSubmissionsResult.data.getTrainingSubmissionsWithAttachedEntities.map((e: VerboseTrainingSubmission) => joinTrainingSubmission(e)).join("\n");
     download(csvContent, "trainingSubmissions.csv");
   }
 
