@@ -38,7 +38,7 @@ import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
 import { useCurrentUser } from "./common/CurrentUserProvider";
 import Privilege from "./types/Privilege";
 import StaffBar from "./pages/makerspace_page/StaffBar";
-import { isAdmin, isStaffFor } from "./common/PrivilegeUtils";
+import { isAdmin, isManagerFor, isStaffFor } from "./common/PrivilegeUtils";
 import { Alert } from "@mui/material";
 import NoPrivilegePage from "./pages/NoPrivilegePage";
 
@@ -60,6 +60,16 @@ function StaffRoute() {
   const user = useCurrentUser();
   if (isStaffFor(user, Number(makerspaceID))) {
     return <Outlet/>
+  } else {
+    return <NoPrivilegePage/>
+  }
+}
+
+function ManagerRoute() {
+  const { makerspaceID } = useParams<{makerspaceID: string}>();
+  const user = useCurrentUser();
+  if (isManagerFor(user, Number(makerspaceID))) {
+    return <Outlet />
   } else {
     return <NoPrivilegePage/>
   }
@@ -96,8 +106,10 @@ export default function AppRoutes() {
 
             <Route element={<StaffRoute/>}>
               <Route path="/makerspace/:makerspaceID" element={<StaffBar/>}>
-                <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
-                <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
+                <Route element={<ManagerRoute/>}>
+                  <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
+                  <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
+                </Route>
                 <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
                 <Route path="/makerspace/:makerspaceID/people" element={<UsersPage />}/>
                 <Route path="/makerspace/:makerspaceID/people/:userID" element={<UsersPage />}/>
