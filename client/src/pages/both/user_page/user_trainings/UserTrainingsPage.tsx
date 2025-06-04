@@ -123,6 +123,7 @@ export default function UserTraingingsPage() {
                                         <EquipmentCard 
                                             equipment={ac.equipment}
                                             isMobile={isMobile}
+                                            staffMode={false}
                                         />
                                     </Grid>
                                 ))}
@@ -134,6 +135,7 @@ export default function UserTraingingsPage() {
                                         <EquipmentCard
                                             equipment={ac.equipment}
                                             isMobile={isMobile}
+                                            staffMode={false}
                                         />
                                     </Grid>
                                 ))}

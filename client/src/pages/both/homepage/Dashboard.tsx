@@ -13,6 +13,7 @@ import RequestWrapper2 from "../../../common/RequestWrapper2";
 import GET_EVENTS, { MakeEvent } from "../../../queries/eventQueries"
 import EventCard from "./EventCard";
 import EditIcon from '@mui/icons-material/Edit';
+import { isAdmin } from "../../../common/PrivilegeUtils";
 
 const INCREMENT_SITE_VISITS = gql`
     query IncrementSiteVisits {
@@ -22,7 +23,7 @@ const INCREMENT_SITE_VISITS = gql`
 
 export function Dashboard() {
     const currentUser = useCurrentUser();
-    const isPriviledged = currentUser.privilege === "MENTOR" || currentUser.privilege === "STAFF";
+    const adminMode = isAdmin(currentUser);
     const navigate = useNavigate();
 
     const incrementSiteVisits = useQuery(INCREMENT_SITE_VISITS);
@@ -83,8 +84,8 @@ export function Dashboard() {
                     <Stack direction="row" spacing={2} alignItems="center" margin="30px 30px 10px 30px">
                         <Typography variant={isMobile ? "h4" : "h3"}>Announcements</Typography>
                         {
-                            isPriviledged
-                            ?  <IconButton onClick={() => navigate("/admin/announcements")} sx={{color: "gray"}}>
+                            adminMode
+                            ? <IconButton onClick={() => navigate("/admin/announcements")} sx={{color: "gray"}}>
                                 <EditIcon />
                             </IconButton>
                             : undefined

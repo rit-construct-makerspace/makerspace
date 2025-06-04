@@ -13,23 +13,17 @@ const ZonesResolver = {
     rooms: async (
       parent: ZoneRow,
       _args: any,
-      { ifAllowed }: ApolloContext
-    ) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
-        return getRoomsByZone(parent.id);
-      }
-    ),
+    ) => {
+      return getRoomsByZone(parent.id);
+    },
     
     //Map hours field to array of ZoneHours
     hours: async (
       parent: ZoneRow,
       _args: any,
-      { ifAllowed }: ApolloContext
-    ) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
-        return getHoursByZone(parent.id);
-      }
-    ),
+    ) => {
+      return getHoursByZone(parent.id);
+    }
   },
 
   Query: {
@@ -41,10 +35,9 @@ const ZonesResolver = {
     zones: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
-        return await getZones();
-      }),
+    ) => {
+      return await getZones();
+    },
 
     /**
      * Fetch a single Zone by ID
@@ -54,10 +47,9 @@ const ZonesResolver = {
     zoneByID: async (
       _parent: any,
       args: { id: number},
-      { ifAuthenticated }: ApolloContext ) =>
-        ifAuthenticated(async () => {
+    ) => {
           return await getZoneByID(args.id);
-      }),
+      },
   },
 
   Mutation: {
@@ -70,8 +62,8 @@ const ZonesResolver = {
     addZone: async (
       _parent: any,
       args: { name: string },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isAdmin }: ApolloContext) =>
+      isAdmin(async () => {
         const res = await createZone(args.name);
         return res
       }),
@@ -79,8 +71,8 @@ const ZonesResolver = {
     updateZone: async (
       _parent: any,
       args: { id: number, newZone: ZoneInput },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isManagerFor }: ApolloContext) =>
+      isManagerFor(args.id, async () => {
         const res = await updateZone(args.id, args.newZone);
         return res
       }),
@@ -94,8 +86,8 @@ const ZonesResolver = {
     deleteZone: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isAdmin }: ApolloContext) =>
+      isAdmin(async () => {
         await deleteZone(args.id);
         return (await getZones())[0];
       }),

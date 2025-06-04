@@ -16,13 +16,14 @@ import ReactMarkdown from "react-markdown";
 interface EquipmentCardProps {
     equipment: Equipment;
     isMobile: boolean;
+    staffMode: boolean;
 }
 
 export default function EquipmentCard(props: EquipmentCardProps) {
     const user = useCurrentUser();
     const navigate = useNavigate();
     const theme = useTheme();
-    const isPriviledged = user.privilege === "MENTOR" || user.privilege === "STAFF";
+    const isPriviledged = props.staffMode;
     const hasApprovedAccessCheck: boolean = !!user.accessChecks.find((ac) => Number(ac.equipmentID) == props.equipment.id && ac.approved)
 
     const moduleStatuses = props.equipment.trainingModules.map(

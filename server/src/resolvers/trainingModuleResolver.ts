@@ -149,9 +149,9 @@ const TrainingModuleResolvers = {
     modules: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { ifAuthenticated }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
+      ifAuthenticated(async (user: any) => {
         let modules = await ModuleRepo.getModulesWhereArchived(false);
 
         if (user.privilege === "MAKER")
@@ -169,9 +169,9 @@ const TrainingModuleResolvers = {
     module: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext
+      { ifAuthenticated }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
+      ifAuthenticated(async (user: any) => {
         let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, false);
 
         if (user.privilege === "MAKER") {
@@ -189,9 +189,9 @@ const TrainingModuleResolvers = {
     archivedModules: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (_user) => {
+      isStaff(async (_user) => {
         let modules = await ModuleRepo.getModulesWhereArchived(true);
 
         return modules;
@@ -206,9 +206,9 @@ const TrainingModuleResolvers = {
     archivedModule: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (_user) => {
+      isStaff(async (_user) => {
         let module = await ModuleRepo.getModuleByIDWhereArchived(args.id, true);
 
         return module;
@@ -261,9 +261,9 @@ const TrainingModuleResolvers = {
     createModule: async (
       _parent: any,
       args: { name: string; quiz: object },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
+      isStaff(async (user: any) => {
         const module = await ModuleRepo.addModule(
           args.name,
           args.quiz
@@ -291,9 +291,9 @@ const TrainingModuleResolvers = {
     updateModule: async (
       _parent: any,
       args: { id: string; name: string; quiz: object; reservationPrompt?: object },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
+      isStaff(async (user: any) => {
         const module = await ModuleRepo.updateModule(
           Number(args.id),
           args.name,
@@ -318,9 +318,9 @@ const TrainingModuleResolvers = {
     archiveModule: async (
       _parent: any,
       args: { id: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
+      isStaff(async (user: any) => {
         const module = await ModuleRepo.setModuleArchived(Number(args.id), true);
 
         await createLog(
@@ -342,9 +342,9 @@ const TrainingModuleResolvers = {
     publishModule: async (
       _parent: any,
       args: { id: string },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
+      isStaff(async (user: any) => {
         const module = await ModuleRepo.setModuleArchived(Number(args.id), false);
 
         await createLog(
@@ -367,10 +367,9 @@ const TrainingModuleResolvers = {
     submitModule: async (
       _parent: any,
       args: { moduleID: string; answerSheet: AnswerInput[] },
-      { ifAllowed }: ApolloContext
+      { ifAuthenticated }: ApolloContext
     ) => {
-      return ifAllowed(
-        [Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF],
+      return ifAuthenticated(
         async (user: any) => {
           //Prevent submission if user has a Training Hold on this training
           if (await getTrainingHoldByUserForModule(user.id, Number(args.moduleID))) throw Error(`Active Training Hold on this Module.`)

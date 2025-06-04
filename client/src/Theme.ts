@@ -18,5 +18,11 @@ export const theme = createTheme({
     },
     typography: {
         fontFamily: 'Roboto',
+        subtitle1: {
+            fontWeight: "bold",
+        },
+        body1: {
+            fontWeight: undefined,
+        },
     },
 })

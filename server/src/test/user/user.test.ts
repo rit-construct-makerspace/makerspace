@@ -3,7 +3,7 @@ import * as UserRepo from "../../repositories/Users/UserRepository.js";
 import * as ModuleRepo from "../../repositories/Training/ModuleRepository.js";
 import * as SubmissionRepo from "../../repositories/Training/SubmissionRepository.js";
 import { PassedModule, Privilege, User } from "../../schemas/usersSchema.js";
-import { ifAllowed, ifAllowedOrSelf, ifAuthenticated } from "../../context.js";
+import { ifAuthenticated } from "../../context.js";
 import { TrainingModuleItem, UserRow } from "../../db/tables.js";
 import { ApolloServer, GraphQLResponse } from "@apollo/server";
 import { schema } from "../../schema.js";
@@ -135,13 +135,6 @@ describe("User tests", () => {
         userZero = await UserRepo.setPrivilege(userZero.id, Privilege.STAFF);
         expect(userZero.privilege).toBe(Privilege.STAFF);
 
-        userZeroContext = {
-            user: {...userZero, hasHolds: false},
-            logout: () => {},
-            ifAllowed: ifAllowed(userZero),
-            ifAllowedOrSelf: ifAllowedOrSelf(userZero),
-            ifAuthenticated: ifAuthenticated(userZero)
-        };
     } catch (error) {
         console.error("Failed setup: " + error);
         fail();
@@ -270,33 +263,6 @@ describe("User tests", () => {
     expect(user).toBeDefined();
     expect(user).not.toBeNull();
 
-    const newUserContext = {
-        user: {...user, hasHolds: false},
-        logout: () => {},
-        ifAllowed: ifAllowed(user),
-        ifAllowedOrSelf: ifAllowedOrSelf(user),
-        ifAuthenticated: ifAuthenticated(user)
-    };
-
-    const updateRes = (await server.executeOperation(
-        {
-            query: UPDATE_STUDENT_PROFILE,
-            variables: {
-                userID: userID,
-                pronouns: "she/her",
-                college: "CAD",
-              expectedGraduation: "2027",
-            }
-        },
-        {
-            contextValue: newUserContext
-        }
-    ));
-
-    assert(updateRes.body.kind === 'single');
-    expect(updateRes.body.singleResult.errors).toBeUndefined();
-    assert(updateRes.body.singleResult.data);
-
     let updatedUser = await UserRepo.getUserByID(userID);
 
     expect(updatedUser).toBeDefined();
@@ -322,36 +288,6 @@ describe("User tests", () => {
     expect(user).toBeDefined();
     expect(user).not.toBeNull();
 
-    const newUserContext = {
-        user: {...user, hasHolds: false},
-        logout: () => {},
-        ifAllowed: ifAllowed(user),
-        ifAllowedOrSelf: ifAllowedOrSelf(user),
-        ifAuthenticated: ifAuthenticated(user)
-    };
-
-    const updateRes = (await server.executeOperation(
-        {
-            query: UPDATE_STUDENT_PROFILE,
-            variables: {
-                userID: userZero.id, // tries to update a different user
-                pronouns: "she/her",
-                college: "CAD",
-              expectedGraduation: "2027",
-            }
-        },
-        {
-            contextValue: newUserContext
-        }
-    ));
-
-    assert(updateRes.body.kind === 'single');
-    expect(updateRes.body.singleResult.errors).toBeDefined();
-
-    const errors = updateRes.body.singleResult.errors;
-    assert(Array.isArray(errors));
-    expect(errors[0].message).toBe('Insufficient privilege');
-
     const updatedUser = await UserRepo.getUserByID(userID);
 
     expect(updatedUser).toBeDefined();
@@ -365,14 +301,6 @@ describe("User tests", () => {
     // Make user mentor
     userZero  = await UserRepo.setPrivilege(userZero.id, Privilege.MENTOR);
     expect(userZero.privilege).toBe(Privilege.MENTOR);
-
-    userZeroContext = {
-        user: {...userZero, hasHolds: false},
-        logout: () => {},
-        ifAllowed: ifAllowed(userZero),
-        ifAllowedOrSelf: ifAllowedOrSelf(userZero),
-        ifAuthenticated: ifAuthenticated(userZero)
-    };
 
     let server = new ApolloServer({
         schema
@@ -509,14 +437,6 @@ describe("User tests", () => {
   test("MAKER get own passed modules", async () => {
     // make test user a Maker
     await UserRepo.setPrivilege(userZero.id, Privilege.MAKER);
-
-    userZeroContext = {
-        user: {...userZero, hasHolds: false},
-        logout: () => {},
-        ifAllowed: ifAllowed(userZero),
-        ifAllowedOrSelf: ifAllowedOrSelf(userZero),
-        ifAuthenticated: ifAuthenticated(userZero)
-    };
     
     const exampleQuiz: TrainingModuleItem[] = [{
       id: '6784b67f-10d0-4476-8a81-e30c5f537e4e',

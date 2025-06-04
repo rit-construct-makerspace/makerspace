@@ -5,9 +5,10 @@ import { createLog } from "../repositories/AuditLogs/AuditLogRepository.js";
 import { getUsersFullName } from "../repositories/Users/UserRepository.js";
 import assert from "assert";
 import { Room } from "../models/rooms/room.js";
-import { ApolloContext } from "../context.js";
+import { ApolloContext, CurrentUser, isManagerFor } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import * as ZoneRepo from "../repositories/Zones/ZonesRespository.js";
+import { GraphQLError } from "graphql";
 
 const RoomResolvers = {
   Room: {
@@ -38,12 +39,13 @@ const RoomResolvers = {
      * Fetch all Rooms
      * @returns all Rooms
      * @throws GraphQLError if not MENTOR or STAFF or is on hold
+     * @todo Probably rstrict this ot admin only, but ensure it is not used anywhere first
      */
     rooms: async (
       _:any,
       args: {null:any},
-      {ifAllowed}: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      {isStaff}: ApolloContext) =>
+      isStaff(async (user: CurrentUser) => {
         return await RoomRepo.getRooms();
     }),
 
@@ -65,8 +67,8 @@ const RoomResolvers = {
      * @returns new Room
      * @throws GraphQLError if not MENTOR or STAFF or is on hold
      */
-    addRoom: async (parent: any, args: {room: Room}, { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async (user: any) => {
+    addRoom: async (parent: any, args: {room: Room}, { isManagerFor }: ApolloContext) =>
+      isManagerFor(args.room.zoneID ?? -1, async (user: any) => {
         const newRoom = await RoomRepo.addRoom(args.room);
 
         await createLog(
@@ -83,9 +85,14 @@ const RoomResolvers = {
       return await RoomRepo.archiveRoom(args.id);
     },
 
-    deleteRoom: async (_parent: any, args: {roomID: number}, { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
-        await RoomRepo.deleteRomm(args.roomID);
+    deleteRoom: async (_parent: any, args: {roomID: number}, { isManager }: ApolloContext) =>
+      isManager(async (user: CurrentUser) => {
+        const room = await RoomRepo.getRoomByID(args.roomID);
+        if (!room) throw new GraphQLError(`Room ${args.roomID} does not exist`);
+        if (!user.manager.includes(room.zoneID ?? -1) && !user.admin) {
+          throw new GraphQLError(`Insufficent Privilege for Makerspace ${room.zoneID}`)
+        };
+        return await RoomRepo.deleteRomm(args.roomID);
       }),
 
     /**
@@ -95,9 +102,15 @@ const RoomResolvers = {
      * @returns updated Room
      * @throws GraphQLError if not STAFF or is on hold
      */
-    updateRoomName: async (_parent: any, args: {roomID: number, name: string}, { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], async () => await RoomRepo.updateRoomName(args.roomID, args.name));
-    },
+    updateRoomName: async (_parent: any, args: {roomID: number, name: string}, { isManager }: ApolloContext) =>
+      isManager(async (user: CurrentUser) => {
+        const room = await RoomRepo.getRoomByID(args.roomID);
+        if (!room) throw new GraphQLError(`Room ${args.roomID} does not exist`);
+        if (!user.manager.includes(room.zoneID ?? -1) && !user.admin) {
+          throw new GraphQLError(`Insufficent Privilege for Makerspace ${room.zoneID}`)
+        };
+        return await RoomRepo.updateRoomName(args.roomID, args.name)
+      }),
 
     /**
      * Update the zone of a Room
@@ -106,8 +119,8 @@ const RoomResolvers = {
      * @returns updated Room
      * @throws GraphQLError if not STAFF or is on hold
      */
-    setZone: async (_parent: any, args: {roomID: number, zoneID: number}, { ifAllowed }: ApolloContext) => {
-      return ifAllowed([Privilege.STAFF], async () => await RoomRepo.updateZone(args.roomID, args.zoneID));
+    setZone: async (_parent: any, args: {roomID: number, zoneID: number}, { isManagerFor }: ApolloContext) => {
+      return isManagerFor(args.zoneID, async () => await RoomRepo.updateZone(args.roomID, args.zoneID));
     },
 
     swipeIntoRoomWithID: async (

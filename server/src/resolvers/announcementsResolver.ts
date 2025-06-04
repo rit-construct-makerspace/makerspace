@@ -18,22 +18,20 @@ const AnnouncementsResolver = {
     getAllAnnouncements: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MAKER, Privilege.MENTOR, Privilege.STAFF], async () => {
+      ) => {
         return await getAnnouncements();
-      }),
+      },
 
     /**
      * Fetch Announcement by ID
      * @argument id ID of announcement
      * @returns Announcement
-     * @throws GraphQLError if not MENTOR or STAFF or is on hold
      */
     getAnnouncement: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isAdmin }: ApolloContext) =>
+      isAdmin(async () => {
         return await getAnnouncementByID(args.id)
       })
   },
@@ -49,8 +47,8 @@ const AnnouncementsResolver = {
     createAnnouncement: async (
       _parent: any,
       args: {title: string, description: string},
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isAdmin }: ApolloContext) =>
+      isAdmin(async () => {
         return await createAnnouncement(args);
       }),
 
@@ -65,8 +63,8 @@ const AnnouncementsResolver = {
     updateAnnouncement: async (
       _parent: any,
       args: {id: number, title: string, description: string},
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isAdmin }: ApolloContext) =>
+      isAdmin(async () => {
         return await updateAnnouncement(args);
       }),
 
@@ -79,8 +77,8 @@ const AnnouncementsResolver = {
     deleteAnnouncement: async (
       _parent: any,
       args: {id: number},
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isAdmin }: ApolloContext) =>
+      isAdmin(async () => {
         return await deleteAnnouncement(args.id);
       }),
 

@@ -1,4 +1,4 @@
-import { ApolloContext } from "../context.js";
+import { ApolloContext, CurrentUser } from "../context.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import * as HoldsRepo from "../repositories/Holds/HoldsRepository.js";
 import * as UsersRepo from "../repositories/Users/UserRepository.js";
@@ -12,9 +12,9 @@ const HoldsResolvers = {
     creator: async (
       parent: HoldRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      isStaff(async (user: CurrentUser) => {
         return UsersRepo.getUserByID(parent.creatorID);
       }),
 
@@ -22,11 +22,10 @@ const HoldsResolvers = {
     remover: async (
       parent: HoldRow,
       _args: any,
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed(
-        [Privilege.MENTOR, Privilege.STAFF],
-        async () => parent.removerID && UsersRepo.getUserByID(parent.removerID)
+      isStaff(
+        async (user: CurrentUser) => parent.removerID && UsersRepo.getUserByID(parent.removerID)
       ),
   },
 
@@ -40,9 +39,9 @@ const HoldsResolvers = {
     createHold: async (
       _parent: any,
       args: { userID: string; description: string },
-      { ifAllowed }: ApolloContext
+      { isManager }: ApolloContext
     ) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user: any) => {
+      isManager(async (user: CurrentUser) => {
         const userWithHold = await UsersRepo.getUserByID(Number(args.userID));
 
         await createLog(
@@ -64,9 +63,9 @@ const HoldsResolvers = {
     removeHold: async (
       _parent: any,
       args: { holdID: string },
-      { ifAllowed }: ApolloContext
+      { isManager }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF], async (user: any) => {
+      isManager(async (user: CurrentUser) => {
         const hold = await HoldsRepo.getHold(Number(args.holdID));
         const userWithHold = await UsersRepo.getUserByID(hold.userID);
 

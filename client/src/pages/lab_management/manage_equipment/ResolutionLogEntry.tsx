@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Chip, IconButton, MenuItem, Select, Stack, SxProps, TableCell, TableRow, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Chip, IconButton, MenuItem, Select, Stack, TableCell, TableRow, Typography } from "@mui/material";
 import { format, parseISO } from "date-fns";
-import reactStringReplace from "react-string-replace";
-import { ADD_TAG_TO_LOG, DELETE_MAINTENANCE_LOG, DELETE_RESOLUTION_LOG, GET_MAINTENANCE_LOGS, GET_RESOLUTION_LOGS, MaintenanceLogItem, MaintenanceTag, REMOVE_TAG_FROM_LOG, ResolutionLogItem } from "../../../queries/maintenanceLogQueries";
+import { ADD_TAG_TO_LOG, DELETE_RESOLUTION_LOG, GET_RESOLUTION_LOGS, MaintenanceTag, REMOVE_TAG_FROM_LOG, ResolutionLogItem } from "../../../queries/maintenanceLogQueries";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
-import ActionButton from "../../../common/ActionButton";
 import DeleteIcon from '@mui/icons-material/Delete';
-import Privilege from "../../../types/Privilege";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import { useMutation } from "@apollo/client";
 import MaintenanceTagChip from "./MaintenanceTagChip";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { isManager } from "../../../common/PrivilegeUtils";
 
 
 function formatDateTime(dateTime: string) {
@@ -66,7 +64,7 @@ export default function ResolutionLogEntry({ logItem, allTags }: { logItem: Reso
   return (
     <TableRow>
       <TableCell>
-        <IconButton hidden={currentUser.privilege != Privilege.STAFF} color="error" onClick={handleDeleteClick}><DeleteIcon /></IconButton>
+        <IconButton hidden={!isManager(currentUser)} color="error" onClick={handleDeleteClick}><DeleteIcon /></IconButton>
       </TableCell>
       <TableCell>
         {logItem.instance?.name ?? <i>None</i>}

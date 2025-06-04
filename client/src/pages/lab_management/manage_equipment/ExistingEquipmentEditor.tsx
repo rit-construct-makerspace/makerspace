@@ -56,7 +56,8 @@ export default function ExistingEquipmentEditor({
             imageUrl: equipment.imageUrl ?? "",
             sopUrl: equipment.sopUrl ?? "",
             notes: equipment.notes ?? "",
-            byReservationOnly: equipment.byReservationOnly
+            byReservationOnly: equipment.byReservationOnly,
+            needsWelcome: equipment.needsWelcome
           })
         }
       />

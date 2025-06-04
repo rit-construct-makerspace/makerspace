@@ -54,6 +54,7 @@ export const UsersTypeDefs = gql`
     isStudent: Boolean!
     privilege: Privilege!
     registrationDate: DateTime!
+    admin: Boolean!
     holds: [Hold]
     passedModules: [PassedModule]
     accessChecks: [UserAccessCheck]
@@ -65,6 +66,10 @@ export const UsersTypeDefs = gql`
     notes: String
     activeHold: Boolean
     trainingHolds: [TrainingHold]
+    manager: [Int]
+    staff: [Int]
+    trainer: [Int]
+    restricitons: [Restriction]
 
     """
     The number-letter combination that is attached to your RIT email
@@ -138,5 +143,15 @@ export const UsersTypeDefs = gql`
       userID: ID!
       notes: String!
     ): User
+
+    setUserAdmin(userID: ID!, admin: Boolean): Boolean
+
+    makeUserManager(userID: ID!, makerspaceID: ID!): [Int]
+    makeUserStaff(userID: ID!, makerspaceID: ID!): [Int]
+    makeUserTrainer(userID: ID!, equipmentID: ID!): [Int]
+
+    revokeUserManager(userID: ID!, makerspaceID: ID!): [Int]
+    revokeUserStaff(userID: ID!, makerspaceID: ID!): [Int]
+    revokeUserTrainer(userID: ID!, equipmentID: ID!): [Int]
   }
 `;

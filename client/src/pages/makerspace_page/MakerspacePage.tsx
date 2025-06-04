@@ -12,30 +12,21 @@ import StaffBar from "./StaffBar";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import { useIsMobile } from "../../common/IsMobileProvider";
+import { isManagerFor, isStaffFor } from "../../common/PrivilegeUtils";
 
 export default function MakerspacePage() {
     const { makerspaceID } = useParams<{ makerspaceID: string }>();
 
     const user = useCurrentUser();
     const navigate = useNavigate();
+    const isMobile = useIsMobile();
 
     const getZone = useQuery(GET_ZONE_BY_ID, {variables: {id: makerspaceID}});
 
-    const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
-
-    function handleWindowSizeChange() {
-        setWindowWidth(window.innerWidth);
-    }
-    useEffect(() => {
-        window.addEventListener('resize', handleWindowSizeChange);
-        return () => {
-            window.removeEventListener('resize', handleWindowSizeChange);
-        }
-    }, []);
-
-    const isMobile = windowWidth <= 1100;
-
     const [equipmentSearch, setEquipmentSearch] = useState("");
+
+    const staffMode = isStaffFor(user, Number(makerspaceID))
 
     return (
         <RequestWrapper2 result={getZone} render={(data) => {
@@ -47,7 +38,7 @@ export default function MakerspacePage() {
                     <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} width="auto">
                         <Typography variant="h3" align="center">{fullZone.name}</Typography>
                         {
-                            user.privilege === "STAFF"
+                            isManagerFor(user, Number(makerspaceID))
                             ? <IconButton
                                 onClick={() => {navigate(`/makerspace/${makerspaceID}/edit`)}}
                                 sx={{color: "gray"}}
@@ -59,7 +50,7 @@ export default function MakerspacePage() {
                         
                     </Stack>
                     <ZoneHours hours={fullZone.hours} isMobile={isMobile}/>
-                    <StaffBar isMobile={isMobile} zoneID={fullZone.id}/>
+                    <StaffBar/>
                     <Stack padding="10px" direction="row" spacing={2}>
                         <SearchBar
                             placeholder="Search Equipment"
@@ -76,7 +67,7 @@ export default function MakerspacePage() {
                         }
                     </Stack>
                     {fullZone.rooms.map((room: FullRoom) => (
-                        <RoomSection room={room} equipmentSearch={equipmentSearch} isMobile={isMobile} />
+                        <RoomSection room={room} equipmentSearch={equipmentSearch} isMobile={isMobile} staffMode={staffMode} />
                     ))}
                 </Stack>
             );
