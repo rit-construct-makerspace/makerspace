@@ -118,8 +118,8 @@ export function RoomStats() {
 
   function handleCSVExport() {
     let csvContent =
-      Object.keys(getRoomSwipesResult.data.getEquipmentSessionsWithAttachedEntities[0] as VerboseRoomSwipe).map((s: string) => s == "__typename" ? '' : `${s},`).join('')
-      + '\n' + getRoomSwipesResult.data.getEquipmentSessionsWithAttachedEntities.map((e: VerboseRoomSwipe) => joinRoomSession(e)).join("\n");
+      Object.keys(getRoomSwipesResult.data.getRoomSwipesWithAttachedEntities[0] as VerboseRoomSwipe).map((s: string) => s == "__typename" ? '' : `${s},`).join('')
+      + '\n' + getRoomSwipesResult.data.getRoomSwipesWithAttachedEntities.map((e: VerboseRoomSwipe) => joinRoomSession(e)).join("\n");
     download(csvContent, "roomSwipes.csv");
   }
 
