@@ -53,7 +53,7 @@ export default function UserCard({ user, onClick }: UserCardProps) {
             </Typography>
           </Typography>
 
-          <PrivilegeChip privilege={user.privilege} />
+          <PrivilegeChip user={user} />
         </Stack>
       </CardActionArea>
     </Card>
