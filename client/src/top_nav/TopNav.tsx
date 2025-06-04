@@ -20,7 +20,7 @@ import { useIsMobile } from "../common/IsMobileProvider";
 import { isStaff } from "../common/PrivilegeUtils";
 
 const StyledLogo = styled.img`
-  margin: 12px;
+  padding: 12px;
   &:hover {
     cursor: pointer;
   }
