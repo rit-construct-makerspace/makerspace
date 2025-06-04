@@ -1,4 +1,4 @@
-import { ApolloContext, CurrentUser, isManager, isStaff } from "../context.js";
+import { ApolloContext, CurrentUser } from "../context.js";
 import * as InventoryRepo from "../repositories/Store/InventoryRepository.js";
 import { InventoryItem, InventoryItemInput } from "../schemas/storeFrontSchema.js";
 import { deleteInventoryItem } from "../repositories/Store/InventoryRepository.js";
@@ -231,7 +231,7 @@ const StorefrontResolvers = {
     archiveInventoryItem: async (
       _: any,
       args: { itemID: string },
-      { isManager }: ApolloContext) => {
+      { isManager, isStaff }: ApolloContext) => {
       if (!(await InventoryRepo.getItemById(Number(args.itemID)))?.staffOnly) {
         return isManager(async () => {
           return await InventoryRepo.archiveItem(Number(args.itemID));

@@ -1,6 +1,5 @@
-import { Alert, Button, Card, Checkbox, FormControl, FormGroup, IconButton, InputLabel, MenuItem, Select, Stack, Typography } from "@mui/material";
+import { Alert, Button, Card, Checkbox, FormControl, FormControlLabel, FormGroup, IconButton, InputLabel, MenuItem, Select, Stack, Typography } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import { FormControlLabel } from "@material-ui/core";
 import { ChangeEvent, ReactElement, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { MAKE_USER_MANAGER, MAKE_USER_STAFF, REVOKE_USER_MANAGER, REVOKE_USER_STAFF, SET_USER_ADMIN } from "../../../queries/permissionQueries";
