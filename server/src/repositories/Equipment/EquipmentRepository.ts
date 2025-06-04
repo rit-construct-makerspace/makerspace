@@ -271,7 +271,8 @@ export async function updateEquipment(
     imageUrl: equipment.imageUrl ?? undefined,
     sopUrl: equipment.sopUrl ?? undefined,
     notes: equipment.notes ?? undefined,
-    byReservationOnly: equipment.byReservationOnly
+    byReservationOnly: equipment.byReservationOnly,
+    needsWelcome: equipment.needsWelcome ?? true,
   });
 
   await updateModules(id, equipment.moduleIDs);
@@ -295,7 +296,8 @@ export async function addEquipment(
       imageUrl: equipment.imageUrl ?? undefined,
       sopUrl: equipment.sopUrl ?? undefined,
       notes: equipment.notes ?? undefined,
-      byReservationOnly: equipment.byReservationOnly
+      byReservationOnly: equipment.byReservationOnly,
+      needsWelcome: equipment.needsWelcome ?? true,
     },
     "id"
   );

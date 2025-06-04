@@ -128,7 +128,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     function renderCurrentState() {
         switch (currentReader.data?.reader?.state) {
             case "Idle":
-                return <Tooltip title="Lockout"><HourglassFullIcon color="warning" /></Tooltip>;
+                return <Tooltip title="Idle"><HourglassFullIcon color="warning" /></Tooltip>;
             case "Unlocked":
                 return <Tooltip title="Unlocked"><LockOpenIcon color="success" /></Tooltip>;
             case "Lockout":
@@ -136,7 +136,7 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
             case "Restart":
                 return <Tooltip title="Restart"><RestartAltIcon color="info" /></Tooltip>;
             case "Fault":
-                return <Tooltip title="Restart"><ReportProblemIcon color="error" /></Tooltip>;
+                return <Tooltip title="Fault"><ReportProblemIcon color="error" /></Tooltip>;
             case "AlwaysOn":
                 return <Tooltip title="AlwaysOn"><StarsIcon color="success" /></Tooltip>;
             case "Startup":
