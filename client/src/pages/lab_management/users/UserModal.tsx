@@ -237,7 +237,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
                   <Typography>{user.pronouns}</Typography>
                 </Stack>
               </Stack>
-              <IconButton color="error" size="small">
+              <IconButton color="error" onClick={onClose}>
                 <CloseIcon/>
               </IconButton>
             </Stack>
