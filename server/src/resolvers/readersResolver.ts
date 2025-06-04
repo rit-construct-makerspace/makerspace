@@ -209,9 +209,9 @@ const ReadersResolver = {
     identifyReader: async (
       _parent: any,
       args: { id: number, doIdentify: boolean },
-      { ifAllowed }: ApolloContext
+      { isStaff }: ApolloContext
     ) =>
-      ifAllowed([Privilege.STAFF, Privilege.MENTOR], async (executingUser: any) => {
+      isStaff(async (executingUser: any) => {
         try {
           return ShlugControl.identifyReader(executingUser, Number(args.id), args.doIdentify);
         } catch (e) {
