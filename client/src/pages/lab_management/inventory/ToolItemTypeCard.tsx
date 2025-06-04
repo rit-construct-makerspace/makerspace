@@ -101,9 +101,9 @@ export function ToolItemTypeCard({ type, handleLoanInstanceClick, handleReturnIn
         </Stack>
         <Collapse in={showInstances}>
           <Grid container spacing={2} py={2} px={"16px"}>
-            {type.instances.length == 0 && <Grid item pl={2}><Typography variant="body2" ml={5}>No Instances</Typography></Grid>}
+            {type.instances.length == 0 && <Grid pl={2}><Typography variant="body2" ml={5}>No Instances</Typography></Grid>}
             {type.instances.map((instance: ToolItemInstance) => (
-              <Grid item>
+              <Grid>
                 <ToolItemInstanceCard item={instance} handleLoanClick={(item: ToolItemInstance) => handleLoanInstanceClick(item, type)} handleReturnClick={(item: ToolItemInstance) => handleReturnInstanceClick(item, type)} />
               </Grid>
             ))}

@@ -34,7 +34,7 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
         <CardActionArea>
           <CardContent>
             <Grid container direction={isMobile ? "column" : "row"}>
-              <Grid item xs={12}>
+              <Grid size={{xs: 12}}>
                 <Typography
                   variant="h4"
                   component="div"
@@ -42,7 +42,7 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
                   Submission
                 </Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{xs: 6}}>
                 <Typography
                   variant="h6"
                   sx={{fontSize: 18}}
@@ -51,7 +51,7 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
                   {`${module.name}`}
                 </Typography>
               </Grid>
-              {!isMobile && <Grid item xs={6}>
+              {!isMobile && <Grid size={{xs: 6, md: 8}}>
                 <Typography
                   variant="h6"
                   component="div"
@@ -59,7 +59,7 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
                   Score
                 </Typography>
               </Grid>}
-              <Grid item xs={6}>
+              <Grid size={{xs: 6}}>
                 <Typography
                   sx={{fontSize: 16}}
                   component="div"
@@ -67,7 +67,7 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
                   {`${submissionDate}`}
                 </Typography>
               </Grid>
-              {!isMobile && <Grid item xs={6}>
+              {!isMobile && <Grid size={{xs: 6}}>
                 <Typography
                   sx={{fontSize: 18}}
                   component="div"
@@ -83,7 +83,7 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
             </Grid>
             {isMobile && 
               <Grid>
-                <Grid item xs={6}>
+                <Grid size={{xs: 6}}>
                   <Typography
                     variant="h6"
                     component="div"
@@ -91,7 +91,7 @@ export default function SubmissionCard({ module, submission }: SubmissionCardPro
                     Score
                   </Typography>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid size={{xs: 6}}>
                   <Typography
                     sx={{fontSize: 18}}
                     component="div"

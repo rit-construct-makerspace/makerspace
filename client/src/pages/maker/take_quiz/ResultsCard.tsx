@@ -11,7 +11,6 @@ import { Module, Submission } from "../../../types/Quiz";
 import Markdown from "react-markdown";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CloseIcon from "@mui/icons-material/Close";
-import { makeStyles } from "@material-ui/core/styles";
 import { useEffect, useState } from "react";
 
 interface ResultsCardProps {
@@ -24,7 +23,7 @@ interface ChoiceSummary {
   correct: boolean;
 }
 
-const useStyles = makeStyles({
+const styles = {
   strongerBolds: {
     '& p': {
       fontWeight: 400
@@ -33,7 +32,7 @@ const useStyles = makeStyles({
       fontWeight: 900
     }
   }
-});
+};
 
 
 export default function SubmissionCard({ summary }: ResultsCardProps) {
@@ -53,8 +52,6 @@ export default function SubmissionCard({ summary }: ResultsCardProps) {
 
   const summaryObj = summary;
 
-  const classes = useStyles();
-
   return (
     <Card sx={{ width: (isMobile ? "90vw" : 0.85) }}>
       <CardHeader title="Question Summary"></CardHeader>
@@ -65,7 +62,7 @@ export default function SubmissionCard({ summary }: ResultsCardProps) {
               {choiceSummary.correct 
               ? <CheckCircleIcon color="success" />
               : <CloseIcon color="error" />}
-              <Typography sx={{ fontWeight: 500, mb: 1 }}><Markdown className={classes.strongerBolds}>{choiceSummary.questionText}</Markdown></Typography>
+              <Typography sx={{ fontWeight: 500, mb: 1, ...styles.strongerBolds }}><Markdown>{choiceSummary.questionText}</Markdown></Typography>
             </Stack>
           </Card>
         ))}

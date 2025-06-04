@@ -23,9 +23,7 @@ export default function EditAnnouncementSample() {
             display="flex"
             px={5}
           >
-            <Grid item
-              xs={12}
-              sm={5}>
+            <Grid size={{xs: 12, sm: 12}}>
               <TextField
                 label="Announcement title"
                 value={title}
@@ -34,10 +32,8 @@ export default function EditAnnouncementSample() {
               />
             </Grid>
 
-            <Grid item xs={50} >
-                <Grid item
-                xs={12}
-                md={50}>
+            <Grid size={{xs: 50}} >
+                <Grid size={{xs: 12, md: 50}}>
                 <TextField
                     label="Announcement description"
                     value={description}
@@ -49,14 +45,9 @@ export default function EditAnnouncementSample() {
                 </Grid>
             </Grid>
 
-            <Grid item
-            md={10}
-            xs={4}>
+            <Grid size={{md: 10, xs: 4}}>
             </Grid>
-            <Grid item
-              xs={8}
-              md={1}
-              justifySelf="center">
+            <Grid size={{xs: 8, md: 1}} justifySelf="center">
               <Button
                 startIcon={<SaveIcon />}
                 color="info"
@@ -65,10 +56,7 @@ export default function EditAnnouncementSample() {
                 Save
               </Button>
             </Grid>
-            <Grid item
-              xs={8}
-              md={1}
-              justifySelf="center">
+            <Grid size={{xs: 8, md: 1}} justifySelf="center">
               <Button
                 startIcon={<DeleteIcon />}
                 color="error"

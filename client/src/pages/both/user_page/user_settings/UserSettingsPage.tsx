@@ -115,16 +115,16 @@ export default function UserSettingsPage() {
                             </Dialog>
                         </Stack>
                         <Grid container justifyContent="space-around" maxWidth={isMobile ? undefined : "750px"}>
-                            <Grid item minWidth="155px">
+                            <Grid minWidth="155px">
                                 <InfoBlob label="Pronous" value={pronouns}/>
                             </Grid>
-                            <Grid item minWidth="155px">
+                            <Grid minWidth="155px">
                                 <InfoBlob label="Role" value={user.privilege}/>
                             </Grid>
-                            <Grid item minWidth="155px">
+                            <Grid minWidth="155px">
                                 <InfoBlob label="College" value={user.college}/>
                             </Grid>
-                            <Grid item minWidth="155px">
+                            <Grid minWidth="155px">
                                 <InfoBlob label="Expected Graduation" value={user.expectedGraduation}/>
                             </Grid>
                         </Grid>

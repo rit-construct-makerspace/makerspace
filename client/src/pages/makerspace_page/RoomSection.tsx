@@ -40,7 +40,7 @@ export default function RoomSection(props: RoomSectionProps) {
             <Grid container spacing={3} justifyContent="center">
                 {
                     liveEquipment.map((equipment: Equipment) => (
-                        <Grid key={equipment.id} item>
+                        <Grid key={equipment.id}>
                             <EquipmentCard equipment={equipment} isMobile={props.isMobile} staffMode={props.staffMode}/>
                         </Grid>
                     ))
@@ -48,7 +48,7 @@ export default function RoomSection(props: RoomSectionProps) {
                 {
                     props.staffMode
                     ? archivedEquipment.map((equipment: Equipment) => (
-                        <Grid key={equipment.id} item>
+                        <Grid key={equipment.id}>
                             <EquipmentCard equipment={equipment} isMobile={props.isMobile} staffMode={props.staffMode}/>
                         </Grid>
                     ))

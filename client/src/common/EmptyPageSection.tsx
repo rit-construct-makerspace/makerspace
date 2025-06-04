@@ -2,7 +2,7 @@ import React, { cloneElement, ReactElement } from "react";
 import { Stack, SxProps, Typography } from "@mui/material";
 
 interface EmptyPageSectionProps {
-  icon?: ReactElement;
+  icon?: ReactElement<any>;
   label: string;
   sx?: SxProps;
 }
@@ -25,7 +25,7 @@ export default function EmptyPageSection({
       justifyContent="center"
       spacing={1}
     >
-      {icon && cloneElement(icon, { fontSize: "inherit", opacity: 0.5 })}
+      {icon && cloneElement(icon, { fontSize: "inherit", opacity: 0.5 }, null)}
 
       <Typography color="grey.600" fontStyle="italic">
         {label}
