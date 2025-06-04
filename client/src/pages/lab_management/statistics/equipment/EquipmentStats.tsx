@@ -290,7 +290,7 @@ export function EquipmentStats() {
               />
 
               <Box width={"100%"}>
-                <IconButton sx={{width: "100%"}} onClick={() => setCardContainerCollapsed(!cardContainerCollapsed)}>
+                <IconButton sx={{width: "100%", borderRadius: 0}} onClick={() => setCardContainerCollapsed(!cardContainerCollapsed)}>
                   {cardContainerCollapsed ? "Show Cards" : "Hide Cards"}
                   {cardContainerCollapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
                 </IconButton>
