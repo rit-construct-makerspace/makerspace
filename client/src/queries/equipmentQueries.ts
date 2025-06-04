@@ -99,6 +99,7 @@ export const GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID = gql`
       numAvailable
       numInUse
       byReservationOnly
+      needsWelcome
     }
   }
 `;
@@ -113,6 +114,8 @@ export const GET_ARCHIVED_EQUIPMENTS = gql`
       archived
       imageUrl
       sopUrl
+      byReservationOnly
+      needsWelcome
     }
   }
 `;
@@ -135,6 +138,7 @@ export const GET_ARCHIVED_EQUIPMENT_BY_ID = gql`
       }
       notes
       byReservationOnly
+      needsWelcome
     }
   }
 `;
@@ -161,10 +165,11 @@ export const UPDATE_EQUIPMENT = gql`
     $sopUrl: String!
     $notes: String!
     $byReservationOnly: Boolean
+    $needsWelcome: Boolean
   ) {
     updateEquipment(
       id: $id
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes, byReservationOnly: $byReservationOnly }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes, byReservationOnly: $byReservationOnly, needsWelcome: $needsWelcome }
     ) {
       id
     }
@@ -196,9 +201,10 @@ export const CREATE_EQUIPMENT = gql`
     $sopUrl: String!
     $notes: String!
     $byReservationOnly: Boolean
+    $needsWelcome: Boolean
     ) {
     addEquipment(
-      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes, byReservationOnly: $byReservationOnly }
+      equipment: { name: $name, roomID: $roomID, moduleIDs: $moduleIDs, imageUrl: $imageUrl, sopUrl: $sopUrl, notes: $notes, byReservationOnly: $byReservationOnly, needsWelcome: $needsWelcome }
     ) {
       id
     }

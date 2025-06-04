@@ -30,7 +30,7 @@ export default function ReadersPage() {
           onChange={(e) => setSearchText(e.target.value)}
         />
         {
-          user.privilege === "STAFF" ? 
+          (user.privilege === "STAFF" || user.privilege === "MENTOR") ? 
           <Button color="success" variant="contained" onClick={()=>{navigate("/admin/newreader")}}><AddIcon/>Pair New Reader</Button> 
           : null
         }

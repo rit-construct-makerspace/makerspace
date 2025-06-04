@@ -110,6 +110,14 @@ export default function EquipmentEditor({
     });
   };
 
+  const handleNeedsWelcomeSwitchChanged = () => {
+    setEquipment({
+      ...equipment,
+      needsWelcome: !equipment.needsWelcome
+    });
+  };
+
+
   const [instancesModalOpen, setInstancesModalOpen] = useState<boolean>(false);
 
   const [width, setWidth] = useState<number>(window.innerWidth);
@@ -255,6 +263,7 @@ export default function EquipmentEditor({
                 rows={3}
               />
               <FormControlLabel control={<Switch checked={equipment.byReservationOnly} onChange={handleByReservationOnlySwitchChanged} />} label={"Available by reservation only"} />
+              <FormControlLabel control={<Switch checked={equipment.needsWelcome} onChange={handleNeedsWelcomeSwitchChanged} />} label={"Needs Welcome"} />
               <Typography variant="h5">Training Modules</Typography>
               <Stack divider={<Divider flexItem />} spacing={1}>
                 {equipment.trainingModules.map((m) => (

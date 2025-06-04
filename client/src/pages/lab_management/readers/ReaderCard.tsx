@@ -3,6 +3,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   Link,
   MenuItem,
   Select,
@@ -16,7 +17,7 @@ import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/roomQueries";
 import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
-import { SET_READER_STATE } from "../../../queries/readersQueries";
+import { IDENTIFY_READER, SET_READER_STATE } from "../../../queries/readersQueries";
 
 interface ReaderCardProps {
     id: number,
@@ -80,6 +81,13 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     }
     setReaderState({variables: {id: id, state: event.target.value}});
   };
+
+  const [doIdentify] = useMutation(IDENTIFY_READER)
+  function handleIdentifyChecked(checked: boolean) {
+    doIdentify({ variables: { "id": id, doIdentify: checked } })
+
+  }
+
   return (
     <RequestWrapper
     loading={machineResult.loading}
@@ -182,8 +190,8 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               sx={{ lineHeight: 1, mb: 1 }}
               noWrap
           >
-              <b>Last Status:</b> <span style={{fontWeight: lastTimeDifference > 60000 ? 'bold' : 'regular', color:  lastTimeDifference > 60000 ? 'red' : 'inherit'}}><TimeAgo date={lastStatusTime} locale="en-US"/></span> - <b>Reason:</b> <span className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
-              <b>Regular Status Interval:</b> {scheduledStatusFreq} sec
+            <b>Last Status:</b> <span style={{ fontWeight: lastTimeDifference > 60000 ? 'bold' : 'regular', color: lastTimeDifference > 60000 ? 'red' : 'inherit' }}><TimeAgo date={lastStatusTime} locale="en-US" /></span>
+            <b>Reason:</b> <span className={lastStatusReason === "Error" || lastStatusReason === "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
           </Typography>
           <Typography
               variant="body2"
@@ -192,6 +200,11 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               noWrap
           >
               {stateContent}
+            <Stack direction="row" justifyContent={"space-between"} alignItems={"center"}>
+              Identify Reader
+              <Checkbox onChange={(e, checked) => handleIdentifyChecked(checked)}></Checkbox>
+            </Stack>
+
           </Typography>
           <Stack direction={"row"}>
             <Select defaultValue={"State"} onChange={handleChange}>
