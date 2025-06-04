@@ -1,5 +1,4 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import Page from "../../Page";
 import {
   Box,
   Button,
@@ -20,11 +19,9 @@ import SearchBar from "../../../common/SearchBar";
 import { gql, useLazyQuery } from "@apollo/client";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import AuditLogRow from "./AuditLogRow";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { endOfDay, parse, startOfDay } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
-import AdminPage from "../../AdminPage";
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { ManualRoomSignInModal } from "./ManualRoomSignInModal";
@@ -74,6 +71,7 @@ function parseDateForQuery(
 }
 
 export default function LogPage() {
+  const { makerspaceID } = useParams<{ makerspaceID: string }>();
   const isMobile = useIsMobile();
 
   const { search } = useLocation();
@@ -140,7 +138,7 @@ export default function LogPage() {
   const setUrlParam = (paramName: string, paramValue: string) => {
     const params = new URLSearchParams(search);
     params.set(paramName, paramValue);
-    navigate("/admin/history?" + params, { replace: true });
+    navigate(`/makerspace/${makerspaceID}/history?` + params, { replace: true });
   };
 
   const handleDateChange =
@@ -152,7 +150,7 @@ export default function LogPage() {
 
   const handleClear = () => {
     setSearchText("");
-    navigate("/admin/history", { replace: true });
+    navigate(`/makerspace/${makerspaceID}/history`, { replace: true });
   };
 
   const showClearButton =
