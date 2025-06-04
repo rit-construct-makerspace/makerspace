@@ -437,6 +437,28 @@ async function generateUniqueHumanName() {
 }
 
 /**
+ * Checks if a shlug is valid, paired, and authenticated
+ * @param readerSN SN reported by a client
+ * @param readerKey Key associated with that SN that a client gave
+ * @returns true if that is a valid, paired shlug
+ */
+export async function authenticateReader(readerSN: string, readerKey: string): Promise<boolean> {
+    if (!readerSN || !readerKey) {
+        return false;
+    }
+    var reader: ReaderRow | undefined = await getReaderBySN(readerSN);
+    if (reader?.pairTime == null || reader?.SN == null || reader?.readerKeyCycle == null) {
+        return false;
+
+    }
+    const keyToMatch = await generateShlugKey(reader.pairTime, reader.SN, reader.readerKeyCycle);
+    if (readerKey != keyToMatch) {
+        return false;
+    }
+    return true;
+}
+
+/**
  * Parses and handles the initial informational message sent by the shlug identifying itself
  * @param connData state of the connection
  * @param message the message that the shlug sent

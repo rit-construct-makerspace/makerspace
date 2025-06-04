@@ -113,7 +113,11 @@ export default function EquipmentInstanceCard(props: EquipmentInstanceCardProps)
     }
     function setStateClicked(e: any) {
         if (reader != null) {
-            if (window.confirm("Are you sure about that :|")) {
+            if (currentReader.data?.reader?.state === "Unlocked") {
+                if (window.confirm("This machine is currently in use. Continue?")) {
+                    sendCommandedState({ variables: { id: reader.id, state: commandedState } });
+                }
+            } else {
                 sendCommandedState({ variables: { id: reader.id, state: commandedState } });
             }
         }

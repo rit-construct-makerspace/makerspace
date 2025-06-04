@@ -23,7 +23,7 @@ import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLog
 import { getEquipmentByID, getMissingTrainingModules, hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
 import { Room } from "./models/rooms/room.js";
 import { Privilege } from "./schemas/usersSchema.js";
-import { createReader, getReaderByID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
+import { createReader, getReaderByID, getReaderByName, getReaderCertCA, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
@@ -32,7 +32,7 @@ import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursReposito
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 import { setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 import { ReaderRow } from "./db/tables.js";
-import { ws_acs_api } from "./wsapi.js"
+import { authenticateReader, ws_acs_api } from "./wsapi.js"
 const require = createRequire(import.meta.url);
 
 const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -168,6 +168,34 @@ async function startServer() {
    */
   // Websocket ACS Handler
   app.ws("/api/ws", ws_acs_api);
+
+  app.all("/api/files/*", async function (req, res, next) {
+    const SNHeader = 'shlug-sn';
+    const KeyHeader = 'shlug-key';
+    if (!req.headers[SNHeader] || !req.headers[KeyHeader]) {
+      return res.status(401).send();
+    }
+    const SN = req.headers[SNHeader];
+    const Key = req.headers[KeyHeader];
+    if (typeof SN !== "string" || typeof Key !== "string") {
+      return res.status(401).send();
+    }
+
+    const ok = await authenticateReader(SN, Key);
+    if (!ok) {
+      return res.status(403).send();
+    }
+    return next();
+  });
+  app.use("/api/files/", express.static(path.join(__dirname, '../../client/shlug-files/')));
+
+  app.get("/api/files/certCA", async function (req, res) {
+    const certca = (await getReaderCertCA())?.value;
+    if (certca == null) {
+      return res.status(404).send();
+    }
+    return res.send(certca);
+  })
 
   /**
    * WELCOME----
