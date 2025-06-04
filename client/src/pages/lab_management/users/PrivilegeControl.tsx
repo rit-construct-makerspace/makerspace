@@ -6,7 +6,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { MAKE_USER_MANAGER, MAKE_USER_STAFF, REVOKE_USER_MANAGER, REVOKE_USER_STAFF, SET_USER_ADMIN } from "../../../queries/permissionQueries";
 import { FullZone, GET_FULL_ZONES } from "../../../queries/zoneQueries";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
-import { isManager } from "../../../common/PrivilegeUtils";
+import { isManagerFor } from "../../../common/PrivilegeUtils";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { GET_USER } from "./UserModal";
 
@@ -83,9 +83,9 @@ export default function PrivilegeControl(props: PrivilegeControlProps) {
                 const fullZones: FullZone[] = data.zones;
 
                 const managerZones = fullZones.filter((zone: FullZone) => props.user.manager.includes(Number(zone.id)));
-                const potentialManagerZones = fullZones.filter((zone: FullZone) => !props.user.manager.includes(Number(zone.id)) && isManager(currentUser, zone.id));
+                const potentialManagerZones = fullZones.filter((zone: FullZone) => !props.user.manager.includes(Number(zone.id)) && isManagerFor(currentUser, zone.id));
                 const staffZones = fullZones.filter((zone: FullZone) => props.user.staff.includes(Number(zone.id)));
-                const potentialStaffZones = fullZones.filter((zone: FullZone) => !props.user.staff.includes(Number(zone.id)) && isManager(currentUser, zone.id));
+                const potentialStaffZones = fullZones.filter((zone: FullZone) => !props.user.staff.includes(Number(zone.id)) && isManagerFor(currentUser, zone.id));
 
                 return (
                     <Stack spacing={2}>
@@ -101,7 +101,7 @@ export default function PrivilegeControl(props: PrivilegeControlProps) {
                                                 <Stack direction={props.isMobile ? "column" : "row"} justifyContent="space-between">
                                                     <Typography variant="body2">{zone.name} ID: {zone.id}</Typography>
                                                     {
-                                                        isManager(currentUser, zone.id) && !(currentUser.id == props.user.id)
+                                                        isManagerFor(currentUser, zone.id) && !(currentUser.id == props.user.id)
                                                         ? <IconButton color="error" onClick={() => {removeManagerPerms(zone.id)}}>
                                                             <DeleteIcon/>
                                                         </IconButton>
@@ -146,7 +146,7 @@ export default function PrivilegeControl(props: PrivilegeControlProps) {
                                                 <Stack direction={props.isMobile ? "column" : "row"} justifyContent="space-between">
                                                     <Typography variant="body2">{zone.name} ID: {zone.id}</Typography>
                                                     {
-                                                        isManager(currentUser, zone.id)
+                                                        isManagerFor(currentUser, zone.id)
                                                         ? <IconButton color="error" onClick={() => {removeStaffPerms(zone.id)}}>
                                                             <DeleteIcon/>
                                                         </IconButton>
