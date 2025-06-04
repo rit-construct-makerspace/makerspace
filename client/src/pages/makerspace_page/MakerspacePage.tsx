@@ -13,6 +13,7 @@ import { useCurrentUser } from "../../common/CurrentUserProvider";
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import { useIsMobile } from "../../common/IsMobileProvider";
+import { isManagerFor, isStaffFor } from "../../common/PrivilegeUtils";
 
 export default function MakerspacePage() {
     const { makerspaceID } = useParams<{ makerspaceID: string }>();
@@ -25,6 +26,8 @@ export default function MakerspacePage() {
 
     const [equipmentSearch, setEquipmentSearch] = useState("");
 
+    const staffMode = isStaffFor(user, Number(makerspaceID))
+
     return (
         <RequestWrapper2 result={getZone} render={(data) => {
 
@@ -35,7 +38,7 @@ export default function MakerspacePage() {
                     <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} width="auto">
                         <Typography variant="h3" align="center">{fullZone.name}</Typography>
                         {
-                            user.privilege === "STAFF"
+                            isManagerFor(user, Number(makerspaceID))
                             ? <IconButton
                                 onClick={() => {navigate(`/makerspace/${makerspaceID}/edit`)}}
                                 sx={{color: "gray"}}
@@ -64,7 +67,7 @@ export default function MakerspacePage() {
                         }
                     </Stack>
                     {fullZone.rooms.map((room: FullRoom) => (
-                        <RoomSection room={room} equipmentSearch={equipmentSearch} isMobile={isMobile} />
+                        <RoomSection room={room} equipmentSearch={equipmentSearch} isMobile={isMobile} staffMode={staffMode} />
                     ))}
                 </Stack>
             );
