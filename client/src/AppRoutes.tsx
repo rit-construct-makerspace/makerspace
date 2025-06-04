@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
 import EditEquipmentPage from "./pages/lab_management/manage_equipment/EditEquipmentPage";
 import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
@@ -38,6 +38,9 @@ import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
 import { useCurrentUser } from "./common/CurrentUserProvider";
 import Privilege from "./types/Privilege";
 import StaffBar from "./pages/makerspace_page/StaffBar";
+import { isStaffFor } from "./common/PrivilegeUtils";
+import { Alert } from "@mui/material";
+import NoPrivilegePage from "./pages/NoPrivilegePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
@@ -51,6 +54,16 @@ const AuthedRoute = () => {
     return <Outlet />
   }
 };
+
+function StaffRoute() {
+  const { makerspaceID } = useParams<{makerspaceID: string}>();
+  const user = useCurrentUser();
+  if (isStaffFor(user, Number(makerspaceID))) {
+    return <Outlet/>
+  } else {
+    return <NoPrivilegePage/>
+  }
+}
 
 export default function AppRoutes() {
   return (
@@ -72,12 +85,14 @@ export default function AppRoutes() {
             <Route path="/user/trainings" element={<UserTraingingsPage />}/>
             <Route path="/user/settings" element={<UserSettingsPage />}/>
 
-            <Route path="/makerspace/:makerspaceID" element={<StaffBar/>}>
-              <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
-              <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
-              <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
-              <Route path="/makerspace/:makerspaceID/people" element={<UsersPage />}/>
-              <Route path="/makerspace/:makerspaceID/people/:userID" element={<UsersPage />}/>
+            <Route element={<StaffRoute/>}>
+              <Route path="/makerspace/:makerspaceID" element={<StaffBar/>}>
+                <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
+                <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
+                <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
+                <Route path="/makerspace/:makerspaceID/people" element={<UsersPage />}/>
+                <Route path="/makerspace/:makerspaceID/people/:userID" element={<UsersPage />}/>
+              </Route>
             </Route>
 
             <Route path="/maker/training" element={<TrainingPage />} />
