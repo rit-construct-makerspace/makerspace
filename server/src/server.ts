@@ -119,8 +119,9 @@ async function startServer() {
    *    /app/makerspace/##
    *      (# is a number)
    * This is so some parts of the website can be publicly accessible w/o logging in.
+   * // /\/app(?!\/makerspace\/\d+|\/home)\/.+/gm
    */
-  app.all(/\/app(?!\/makerspace\/\d+|\/home)\/.+/gm, (req, res, next) => {
+  app.all("/app/*", (req, res, next) => {
     //process.env.USE_TEST_DEV_USER_DANGER=="TRUE" || 
     if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE" || req.user) {
       return next();
