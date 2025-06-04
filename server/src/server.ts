@@ -32,7 +32,7 @@ import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursReposito
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 import { setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 import { ReaderRow } from "./db/tables.js";
-import { ws_acs_api } from "./wsapi.js"
+import { authenticateReader, ws_acs_api } from "./wsapi.js"
 const require = createRequire(import.meta.url);
 
 const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -169,6 +169,27 @@ async function startServer() {
   // Websocket ACS Handler
   app.ws("/api/ws", ws_acs_api);
 
+  app.all("/api/files/*", async function (req, res, next) {
+    console.error("Middle");
+    const SNHeader = 'shlug-sn';
+    const KeyHeader = 'shlug-key';
+    if (!req.headers[SNHeader] || !req.headers[KeyHeader]) {
+      return res.status(401).send();
+    }
+    const SN = req.headers[SNHeader];
+    const Key = req.headers[KeyHeader];
+    if (typeof SN !== "string" || typeof Key !== "string") {
+      return res.status(401).send();
+    }
+
+    const ok = await authenticateReader(SN, Key);
+    if (!ok) {
+      return res.status(403).send();
+    }
+    // return res.sendFile("TestCode.ino.bin", { root: "server/src/shlug-control/" });
+    return next();
+  });
+  app.use("/api/files/", express.static(path.join(__dirname, '../../client/shlug-files/')));
   /**
    * WELCOME----
    * Log a user signing in to a makerspace room. Return whether the user is in the database
