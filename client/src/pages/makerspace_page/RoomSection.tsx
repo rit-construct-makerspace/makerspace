@@ -10,12 +10,12 @@ interface RoomSectionProps {
     room: FullRoom;
     equipmentSearch: string;
     isMobile: boolean;
+    staffMode: boolean;
 }
 
 export default function RoomSection(props: RoomSectionProps) {
     const user = useCurrentUser();
     const roomEquipment = props.room.equipment;
-    const isPriviledged = user.privilege === "MENTOR" || user.privilege === "STAFF";
 
     const filteredEquipment = roomEquipment.filter((equipment: Equipment) => equipment.name.toLowerCase().includes(props.equipmentSearch.toLowerCase()))
     const sortedEquipment = filteredEquipment.sort((a, b) => (a.name.toLowerCase().localeCompare(b.name.toLowerCase())));
@@ -40,16 +40,16 @@ export default function RoomSection(props: RoomSectionProps) {
             <Grid container spacing={3} justifyContent="center">
                 {
                     liveEquipment.map((equipment: Equipment) => (
-                        <Grid key={equipment.id} item>
-                            <EquipmentCard equipment={equipment} isMobile={props.isMobile}/>
+                        <Grid key={equipment.id}>
+                            <EquipmentCard equipment={equipment} isMobile={props.isMobile} staffMode={props.staffMode}/>
                         </Grid>
                     ))
                 }
                 {
-                    isPriviledged
+                    props.staffMode
                     ? archivedEquipment.map((equipment: Equipment) => (
-                        <Grid key={equipment.id} item>
-                            <EquipmentCard equipment={equipment} isMobile={props.isMobile}/>
+                        <Grid key={equipment.id}>
+                            <EquipmentCard equipment={equipment} isMobile={props.isMobile} staffMode={props.staffMode}/>
                         </Grid>
                     ))
                     : null

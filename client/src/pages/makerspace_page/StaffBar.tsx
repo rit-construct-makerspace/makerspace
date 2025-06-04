@@ -12,15 +12,17 @@ import { useState } from "react";
 import MenuIcon from '@mui/icons-material/Menu';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import ScannerIcon from '@mui/icons-material/Scanner';
+import { isStaffFor } from "../../common/PrivilegeUtils";
+import { useIsMobile } from "../../common/IsMobileProvider";
+import { Outlet, useParams } from "react-router-dom";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-interface StaffBarProps {
-    isMobile: boolean;
-    zoneID: number;
-}
-
-export default function StaffBar(props: StaffBarProps) {
+export default function StaffBar() {
+    const { makerspaceID } = useParams<{ makerspaceID: string }>();
+    
     const user = useCurrentUser();
-    const isPriviledged = user.privilege === "MENTOR" || user.privilege === "STAFF";
+    const isMobile = useIsMobile();
+    const isPriviledged = isStaffFor(user, Number(makerspaceID));
 
     const [mobileMenu, setMobileMenu] = useState(false);
 
@@ -30,8 +32,8 @@ export default function StaffBar(props: StaffBarProps) {
 
     const staffNavigation = (
         <Stack
-            direction={props.isMobile ? "column" : "row"}
-            justifyContent={props.isMobile ? "flex-start" : "space-around"}
+            direction={isMobile ? "column" : "row"}
+            justifyContent={isMobile ? "flex-start" : "space-around"}
             alignItems="center"
             padding="10px 0px"
         >
@@ -45,19 +47,28 @@ export default function StaffBar(props: StaffBarProps) {
                 </ButtonBase>
                 : null
             }
+            {
+                window.location.pathname.match(/\/app\/makerspace\/\d+\/.+/gm) !== null
+                ? <NavLink
+                    primary={"Back"}
+                    to={`/makerspace/${makerspaceID}`}
+                    icon={<ArrowBackIcon/>}
+                />
+                : null
+            }
             <NavLink
                 primary={"Manage Trainings"}
                 to={"/admin/training"}
                 icon={<SchoolIcon />}
             />
             <NavLink
-                primary={"Material Inventory"}
+                primary={"Materials"}
                 to={"/admin/inventory"}
                 icon={<InventoryIcon />}
             />
             <NavLink
-                primary={"Tool Inventory"}
-                to={`/makerspace/${props.zoneID}/tools`}
+                primary={"Tools"}
+                to={`/makerspace/${makerspaceID}/tools`}
                 icon={<ArchitectureIcon />}
             />
             <NavLink
@@ -67,17 +78,17 @@ export default function StaffBar(props: StaffBarProps) {
             />
             <NavLink
                 primary={"People"}
-                to={"/admin/people"}
+                to={`/makerspace/${makerspaceID}/people`}
                 icon={<PeopleIcon />}
             />
             <NavLink
                 primary={"History"}
-                to={"/admin/history"}
+                to={`/makerspace/${makerspaceID}/history`}
                 icon={<HistoryIcon />}
             />
             <NavLink
                 primary={"Readers"}
-                to={"/admin/readers"}
+                to={`/makerspace/${makerspaceID}/readers`}
                 icon={<ScannerIcon />}
             />
             <NavLink
@@ -89,17 +100,20 @@ export default function StaffBar(props: StaffBarProps) {
     );
 
     return (
-        <Box>{
-            props.isMobile
-            ? mobileMenu
-                ? staffNavigation
-                : <ButtonBase onClick={() => setMobileMenu(true)} sx={{width: "100%", padding: "10px 0px"}}>
-                    <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
-                        <Typography variant="body1" color="grey">Staff Actions</Typography>
-                        <MenuIcon />
-                    </Stack>
-                </ButtonBase>
-            : staffNavigation
-        }</Box>
+        <Stack>
+            {
+                isMobile
+                ? mobileMenu
+                    ? staffNavigation
+                    : <ButtonBase onClick={() => setMobileMenu(true)} sx={{width: "100%", padding: "10px 0px"}}>
+                        <Stack direction="row" justifyContent="space-between" alignItems="center" width="100%">
+                            <Typography variant="body1" color="grey">Staff Actions</Typography>
+                            <MenuIcon />
+                        </Stack>
+                    </ButtonBase>
+                : staffNavigation
+            }
+            <Outlet/>
+        </Stack>
     );
 }

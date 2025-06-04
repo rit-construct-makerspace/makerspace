@@ -60,3 +60,11 @@ export async function deleteZone(id: number): Promise<number> {
 
     return await knex("Zones").delete().where({id});
 }
+
+export async function getZoneManagers(zoneID: number): Promise<number[]> {
+    return await knex("Managers").where({makerspaceID: zoneID}).select("userID");
+}
+
+export async function getZoneStaff(zoneID: number): Promise<number[]> {
+    return await knex("Managers").where({makerspaceID: zoneID}).select("userID");
+}

@@ -2,8 +2,8 @@ import { gql, useMutation } from "@apollo/client";
 import { Button, TableCell, TableRow } from "@mui/material";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
 import { GET_ZONE_HOURS } from "./ZoneHourOptions";
-import Privilege from "../../types/Privilege";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { isManagerFor } from "../../common/PrivilegeUtils";
 
 const DELETE_ZONE_HOURS = gql`
   mutation DeleteZoneHours($id: ID!) {
@@ -57,7 +57,7 @@ export default function ZoneHourRow({id, zoneID, type, dayOfTheWeek, time}: Zone
     <TableCell>{dayOfTheWeekConvert(Number(dayOfTheWeek))}</TableCell>
     <TableCell>{time}</TableCell>
     <TableCell>
-      {currentUser.privilege === Privilege.STAFF &&
+      {isManagerFor(currentUser, zoneID) &&
         <Button
           variant="outlined"
           color="error"

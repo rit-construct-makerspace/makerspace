@@ -1,6 +1,6 @@
 import React from "react";
 import { Stack, Typography } from "@mui/material";
-import LogoSvg from "../../../assets/acronym_logo.svg";
+import LogoSvg from "../../../assets/the shed logo orange white.png";
 import styled from "styled-components";
 import NameTag from "./NameTag";
 

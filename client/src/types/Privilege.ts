@@ -1,4 +1,5 @@
 enum Privilege {
+  VISITOR = "VISITOR",
   MAKER = "MAKER",
   MENTOR = "MENTOR",
   STAFF = "STAFF",

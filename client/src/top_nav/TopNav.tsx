@@ -1,9 +1,9 @@
-import { Alert, AppBar, Avatar, Box, ButtonBase, Container, Drawer, IconButton, List, Menu, MenuItem, Stack, Typography, useScrollTrigger } from "@mui/material";
+import { Alert, AppBar, Avatar, Box, Button, ButtonBase, Drawer, IconButton, Menu, MenuItem, Stack, Typography } from "@mui/material";
 import styled from "styled-components";
-import LogoSvgWhite from "../assets/acronym_logo_all_white.svg";
-import LogoSvgW from "../assets/acronym_logo_w.svg";
+import LogoSvgWhite from "../assets/shed logo white.png";
+import LogoSvgOrange from "../assets/the shed logo orange white.png";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PrinterOsIcon from "../common/PrinterOSIcon";
 import SlackIcon from "../common/SlackIcon";
 import EventIcon from "@mui/icons-material/Event";
@@ -15,6 +15,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { stringAvatar } from "../common/avatarGenerator";
 import MenuIcon from '@mui/icons-material/Menu';
 import Footer from "./Footer";
+import PersonIcon from '@mui/icons-material/Person';
+import { useIsMobile } from "../common/IsMobileProvider";
+import { isStaff } from "../common/PrivilegeUtils";
 
 const StyledLogo = styled.img`
   margin: 12px;
@@ -24,23 +27,11 @@ const StyledLogo = styled.img`
 `;
 
 export default function TopNav() {
-
-    const [width, setWidth] = useState<number>(window.innerWidth);
-    function handleWindowSizeChange() {
-        setWidth(window.innerWidth);
-    }
-    useEffect(() => {
-        window.addEventListener('resize', handleWindowSizeChange);
-        return () => {
-            window.removeEventListener('resize', handleWindowSizeChange);
-        }
-    }, []);
-    const isMobile = width <= 1100;
-
+    const isMobile = useIsMobile();
     const navigate = useNavigate();
 
     const currentUser = useCurrentUser();
-    const isPriviledged = currentUser.privilege === "MENTOR" || currentUser.privilege === "STAFF";
+    const isPriviledged = isStaff(currentUser);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const userMenuOpen = Boolean(anchorEl);
 
@@ -95,13 +86,13 @@ export default function TopNav() {
             { isMobile
             ? <AppBar position="static">
                 <Stack direction="row" justifyContent="space-between">
-                    <StyledLogo width="75%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
+                    <StyledLogo width="75%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgOrange : LogoSvgWhite} alt="SHED logo" onClick={() => {navigate(`/`);}}/>
                     <IconButton onClick={() => setMobileDrawer(true)}>
                         <MenuIcon />
                     </IconButton>
                 </Stack>
                 <Drawer anchor="top" open={mobileDrawer} onClose={() => setMobileDrawer(false)}>
-                    <Stack alignItems="center" spacing={2} paddingTop="10px">
+                    <Stack alignItems="center" spacing={2} paddingTop="10px" paddingBottom="10px">
                         <NavLink
                             to="/maker/training/13"
                             primary="3D Printing Training"
@@ -131,17 +122,23 @@ export default function TopNav() {
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
-                        <ButtonBase onClick={handleUserMenuOpen}>
-                            <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-                                <Avatar
-                                    alt="Profile picture"
-                                    {...stringAvatar(currentUser.firstName, currentUser.lastName, {height: "30px", width: "30px", fontSize: 16})}
-                                />
-                                <Typography variant="body1">
-                                    {`${currentUser.firstName} ${currentUser.lastName}`}
-                                </Typography>     
-                            </Stack>
-                        </ButtonBase>
+                        {
+                            currentUser.visitor
+                            ? <Button sx={{height: "95%"}} variant="contained" color="secondary" endIcon={<PersonIcon/>} onClick={() => window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")}>
+                                LOGIN
+                            </Button>
+                            : <ButtonBase onClick={handleUserMenuOpen}>
+                                <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+                                    <Avatar
+                                        alt="Profile picture"
+                                        {...stringAvatar(currentUser.firstName, currentUser.lastName, {height: "30px", width: "30px", fontSize: 16})}
+                                    />
+                                    <Typography variant="body1">
+                                        {`${currentUser.firstName} ${currentUser.lastName}`}
+                                    </Typography>     
+                                </Stack>
+                            </ButtonBase>
+                        }
 
                         <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
                             <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose(); setMobileDrawer(false);}}>
@@ -162,9 +159,9 @@ export default function TopNav() {
             </AppBar>
             :<Box width="100%" height="5%">
                 <AppBar position="static">
-                    <Stack component="nav" direction="row" justifyContent="space-between">
+                    <Stack component="nav" direction="row" justifyContent="space-between" alignItems="center">
                         <ButtonBase onClick={() => {navigate(`/`);}} sx={{width: "15%"}} focusRipple>
-                            <StyledLogo width="100%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgW : LogoSvgWhite} alt="SHED logo"/>
+                            <StyledLogo width="100%" src={localStorage.getItem("themeMode") == "dark" ? LogoSvgOrange : LogoSvgWhite} alt="SHED logo"/>
                         </ButtonBase>
                         <NavLink
                             to="/maker/training/13"
@@ -195,17 +192,23 @@ export default function TopNav() {
                             icon={<SharepointIcon />}
                             newTab={true}
                         />
-                        <ButtonBase onClick={handleUserMenuOpen} focusRipple>
-                            <Stack direction="row" alignItems="center" spacing={2} padding={2}>
-                                <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                                    {`${currentUser.firstName} ${currentUser.lastName}`}
-                                </Typography>
-                                <Avatar
-                                    alt="Profile picture"
-                                    {...stringAvatar(currentUser.firstName, currentUser.lastName)}
-                                />
-                            </Stack>
-                        </ButtonBase>
+                        {
+                            currentUser.visitor
+                            ? <Button sx={{height: "95%", marginRight: "10px"}} variant="contained" color="secondary" endIcon={<PersonIcon/>} onClick={() => window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")}>
+                                LOGIN
+                            </Button>
+                            : <ButtonBase onClick={handleUserMenuOpen} focusRipple>
+                                <Stack direction="row" alignItems="center" spacing={2} padding={2}>
+                                    <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                                        {`${currentUser.firstName} ${currentUser.lastName}`}
+                                    </Typography>
+                                    <Avatar
+                                        alt="Profile picture"
+                                        {...stringAvatar(currentUser.firstName, currentUser.lastName)}
+                                    />
+                                </Stack>
+                            </ButtonBase>
+                        }
 
                         <Menu open={userMenuOpen} anchorEl={anchorEl} onClose={handleUserMenuClose}>
                             <MenuItem onClick={() => {navigate("/user/trainings"); handleUserMenuClose();}}>

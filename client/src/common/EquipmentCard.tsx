@@ -1,4 +1,4 @@
-import { Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardContent, CardHeader, CardMedia, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import Equipment from "../types/Equipment";
 import { useCurrentUser } from "./CurrentUserProvider";
 import EditIcon from '@mui/icons-material/Edit';
@@ -12,18 +12,18 @@ import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import LockClockIcon from '@mui/icons-material/LockClock';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import ReactMarkdown from "react-markdown";
-import { useTheme } from "@material-ui/core/styles";
 
 interface EquipmentCardProps {
     equipment: Equipment;
     isMobile: boolean;
+    staffMode: boolean;
 }
 
 export default function EquipmentCard(props: EquipmentCardProps) {
     const user = useCurrentUser();
     const navigate = useNavigate();
     const theme = useTheme();
-    const isPriviledged = user.privilege === "MENTOR" || user.privilege === "STAFF";
+    const isPriviledged = props.staffMode;
     const hasApprovedAccessCheck: boolean = !!user.accessChecks.find((ac) => Number(ac.equipmentID) == props.equipment.id && ac.approved)
 
     const moduleStatuses = props.equipment.trainingModules.map(

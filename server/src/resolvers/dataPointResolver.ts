@@ -18,8 +18,8 @@ const DataPointsResolver = {
     dataPoint: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await getDataPointByID(args.id);
       }),
 
@@ -31,8 +31,8 @@ const DataPointsResolver = {
     dailySiteVisits: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isStaff }: ApolloContext) =>
+      isStaff(async () => {
         return await getDataPointByID(1);
       }),
 
@@ -44,10 +44,9 @@ const DataPointsResolver = {
     incrementSiteVisits: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.MAKER, Privilege.STAFF], async () => {
-        return (await incrementDataPointValue(1, 1));
-      }),
+    ) => {
+      return (await incrementDataPointValue(1, 1));
+    }
   },
 
   Mutation: {
@@ -61,8 +60,8 @@ const DataPointsResolver = {
     setDataPointValue: async (
       _parent: any,
       args: { id: number, value: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async () => {
         return (await setDataPointValue(args.id, args.value));
       }),
   }

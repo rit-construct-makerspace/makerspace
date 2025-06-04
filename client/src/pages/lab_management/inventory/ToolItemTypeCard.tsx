@@ -1,7 +1,6 @@
 import { Box, Card, CardContent, CardHeader, CardMedia, Collapse, Divider, Grid, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Stack, Typography } from "@mui/material";
 import { ToolItemInstance, ToolItemType } from "../../../types/ToolItem";
 import ActionButton from "../../../common/ActionButton";
-import Privilege from "../../../types/Privilege";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -15,6 +14,7 @@ import { ToolItemInstanceCard } from "./ToolItemInstanceCard";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Markdown from "react-markdown";
 import AddIcon from '@mui/icons-material/Add';
+import { isManager } from "../../../common/PrivilegeUtils";
 
 
 export function ToolItemTypeCard({ type, handleLoanInstanceClick, handleReturnInstanceClick }: { type: ToolItemType, handleLoanInstanceClick: (item: ToolItemInstance, type: ToolItemType) => void, handleReturnInstanceClick: (item: ToolItemInstance, type: ToolItemType) => void }) {
@@ -84,7 +84,7 @@ export function ToolItemTypeCard({ type, handleLoanInstanceClick, handleReturnIn
           alt={`${type.name} image`}
           sx={{ width: 150 }} />
         <Box width={"98.5%"} pl={"1.5%"}>
-          <CardHeader title={<Typography variant="h4" pt={"2%"}>{type.name}</Typography>} action={currentUser.privilege == Privilege.STAFF && CONTROL_MENU} sx={{ height: 15, pb: 3, pl: 1 }}></CardHeader>
+          <CardHeader title={<Typography variant="h4" pt={"2%"}>{type.name}</Typography>} action={isManager(currentUser) && CONTROL_MENU} sx={{ height: 15, pb: 3, pl: 1 }}></CardHeader>
           <Box my={2} mx={2} py={1} px={1} border={`1px solid ${localStorage.getItem("themeMode") == "dark" ? "#000000" : "#fafafa"}`}>
             <Markdown>{type.description}</Markdown>
           </Box>
@@ -101,9 +101,9 @@ export function ToolItemTypeCard({ type, handleLoanInstanceClick, handleReturnIn
         </Stack>
         <Collapse in={showInstances}>
           <Grid container spacing={2} py={2} px={"16px"}>
-            {type.instances.length == 0 && <Grid item pl={2}><Typography variant="body2" ml={5}>No Instances</Typography></Grid>}
+            {type.instances.length == 0 && <Grid pl={2}><Typography variant="body2" ml={5}>No Instances</Typography></Grid>}
             {type.instances.map((instance: ToolItemInstance) => (
-              <Grid item>
+              <Grid>
                 <ToolItemInstanceCard item={instance} handleLoanClick={(item: ToolItemInstance) => handleLoanInstanceClick(item, type)} handleReturnClick={(item: ToolItemInstance) => handleReturnInstanceClick(item, type)} />
               </Grid>
             ))}

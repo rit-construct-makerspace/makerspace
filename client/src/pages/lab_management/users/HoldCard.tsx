@@ -1,11 +1,10 @@
-import React from "react";
 import { Card, CardActions, Stack, Typography } from "@mui/material";
 import { GET_USER, Hold } from "./UserModal";
 import { format, parseISO } from "date-fns";
 import { gql, useMutation } from "@apollo/client";
 import { LoadingButton } from "@mui/lab";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
+import { isManager } from "../../../common/PrivilegeUtils";
 
 const REMOVE_HOLD = gql`
   mutation RemoveHold($holdID: ID!) {
@@ -61,7 +60,7 @@ export default function HoldCard({ hold, userID }: HoldCardProps) {
             color="error"
             loading={result.loading}
             onClick={() => removeHold()}
-            disabled={currentUser.privilege != Privilege.STAFF}
+            disabled={!isManager(currentUser)}
           >
             Remove hold
           </LoadingButton>

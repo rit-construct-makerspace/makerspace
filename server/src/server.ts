@@ -7,7 +7,6 @@ import express from "express";
 import expressWs from 'express-ws';
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "@apollo/server-plugin-landing-page-graphql-playground";
 import { createServer } from "http";
 import compression from "compression";
 import cors from "cors";
@@ -23,16 +22,16 @@ import { createLog, createLogWithArray } from "./repositories/AuditLogs/AuditLog
 import { getEquipmentByID, getMissingTrainingModules, hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
 import { Room } from "./models/rooms/room.js";
 import { Privilege } from "./schemas/usersSchema.js";
-import { createReader, getReaderByID, getReaderByName, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
+import { createReader, getReaderByID, getReaderByName, getReaderCertCA, toggleHelpRequested, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import morgan from "morgan"; //Log provider
 import bodyParser from "body-parser"; //JSON request body parser
 import { createRequire } from "module";
 import { getHoursByZone, WeekDays } from "./repositories/Zones/ZoneHoursRepository.js";
-import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
+import { createEquipmentSession, pruneNullLengthEquipmentSessions, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
 import { setDataPointValue } from "./repositories/DataPoints/DataPointsRepository.js";
 import { ReaderRow } from "./db/tables.js";
-import { ws_acs_api } from "./wsapi.js"
+import { authenticateReader, ws_acs_api } from "./wsapi.js"
 const require = createRequire(import.meta.url);
 
 const allowed_origins = [process.env.REACT_APP_ORIGIN, "https://studio.apollographql.com", "https://make.rit.edu", "https://shibboleth.main.ad.rit.edu"];
@@ -111,8 +110,17 @@ async function startServer() {
   //serves built react app files under make.rit.edu/app
   app.use("/app/", express.static(path.join(__dirname, '../../client/build')));
 
-  //verifies user logged in under all front-end urls and if not send to login
-  app.all("/app/*", (req, res, next) => {
+  
+  /**
+   * REGEX QUERY:
+   * matches to all urls EXCEPT:
+   *    /app/
+   *    /app/home
+   *    /app/makerspace/##
+   *      (# is a number)
+   * This is so some parts of the website can be publicly accessible w/o logging in.
+   */
+  app.all(/\/app(?!\/makerspace\/\d+|\/home)\/.+/gm, (req, res, next) => {
     //process.env.USE_TEST_DEV_USER_DANGER=="TRUE" || 
     if (process.env.USE_TEST_DEV_USER_DANGER == "TRUE" || req.user) {
       return next();
@@ -167,7 +175,35 @@ async function startServer() {
    * Details of protocol are handled in wsapi.ts
    */
   // Websocket ACS Handler
-  app.ws("/api/ws", ws_acs_api)
+  app.ws("/api/ws", ws_acs_api);
+
+  app.all("/api/files/*", async function (req, res, next) {
+    const SNHeader = 'shlug-sn';
+    const KeyHeader = 'shlug-key';
+    if (!req.headers[SNHeader] || !req.headers[KeyHeader]) {
+      return res.status(401).send();
+    }
+    const SN = req.headers[SNHeader];
+    const Key = req.headers[KeyHeader];
+    if (typeof SN !== "string" || typeof Key !== "string") {
+      return res.status(401).send();
+    }
+
+    const ok = await authenticateReader(SN, Key);
+    if (!ok) {
+      return res.status(403).send();
+    }
+    return next();
+  });
+  app.use("/api/files/", express.static(path.join(__dirname, '../../client/shlug-files/')));
+
+  app.get("/api/files/certCA", async function (req, res) {
+    const certca = (await getReaderCertCA())?.value;
+    if (certca == null) {
+      return res.status(404).send();
+    }
+    return res.send(certca);
+  })
 
   /**
    * WELCOME----
@@ -724,15 +760,16 @@ async function startServer() {
 
   const dailyJob = schedule.scheduleJob("0 0 4 * * *", async function () {
     console.log('Wiping daily records...');
-    if (API_DEBUG_LOGGING) await createLog('It is now 4:00am. Daily Temp Records have been wiped.', "server")
-    setDataPointValue(1, 0);
+    if (API_DEBUG_LOGGING) await createLog('It is now 4:00am. Wiping Daily Temp Records...', "server")
+    await setDataPointValue(1, 0).then(async () => await createLog('Daily Visits reset.', "server"));
+    await pruneNullLengthEquipmentSessions().then(async () => await createLog('Unfinished Equipment Sessions pruned.', "server"));;
   });
 
 
 
   const server = new ApolloServer({
     schema,
-    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+    plugins: [],
   });
 
 

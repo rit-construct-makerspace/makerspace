@@ -7,8 +7,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckIcon from '@mui/icons-material/Check';
 import { Box, Chip, IconButton, MenuItem, Select, Stack, TableCell, TableRow, TextField } from "@mui/material";
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
 import { useState } from "react";
 import ActionButton from "../../../common/ActionButton";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";

@@ -28,6 +28,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { ManualRoomSignInModal } from "./ManualRoomSignInModal";
+import { useIsMobile } from "../../../common/IsMobileProvider";
 
 const GET_LOGS = gql`
   query GetLogs(
@@ -73,17 +74,7 @@ function parseDateForQuery(
 }
 
 export default function LogPage() {
-  const [width, setWidth] = useState<number>(window.innerWidth);
-  function handleWindowSizeChange() {
-    setWidth(window.innerWidth);
-  }
-  useEffect(() => {
-    window.addEventListener('resize', handleWindowSizeChange);
-    return () => {
-      window.removeEventListener('resize', handleWindowSizeChange);
-    }
-  }, []);
-  const isMobile = width <= 1100;
+  const isMobile = useIsMobile();
 
   const { search } = useLocation();
   const navigate = useNavigate();
@@ -168,8 +159,7 @@ export default function LogPage() {
     startDateString || stopDateString || search.includes("q=");
 
   return (
-    <AdminPage>
-      <Box margin="25px">
+    <Box margin="25px">
       <Stack direction="row" justifyContent="space-between" alignItems="baseline">
         <Typography variant="h4">History</Typography>
         <Button startIcon={<PersonAddIcon />} color="secondary" onClick={() => setManualSignInModal(true)}>Manual Room Sign-in</Button>
@@ -318,6 +308,5 @@ export default function LogPage() {
 
       <ManualRoomSignInModal modalOpen={manualSignInModal} setModalOpen={setManualSignInModal} />
     </Box>
-    </AdminPage>
   );
 }

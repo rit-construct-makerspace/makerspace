@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Page from "../../Page";
-import { Box, Button, Divider, FormGroup, Stack, Switch, Typography } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
+import { Box, Divider, Stack, Switch, Typography } from "@mui/material";
 import InventoryRow from "../../../common/InventoryRow";
 import SearchBar from "../../../common/SearchBar";
 import InventoryItem from "../../../types/InventoryItem";
@@ -8,13 +7,12 @@ import AddToCartModal from "./AddToCartModal";
 import { useImmer } from "use-immer";
 import ShoppingCart from "./ShoppingCart";
 import { v4 as uuidv4 } from "uuid";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import RequestWrapper from "../../../common/RequestWrapper";
 import { GET_INVENTORY_ITEMS } from "../../../queries/inventoryQueries";
 import AdminPage from "../../AdminPage";
-import Privilege from "../../../types/Privilege";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
+import { isManager } from "../../../common/PrivilegeUtils";
 
 const REMOVE_INVENTORY_ITEM_AMOUNT = gql`
   mutation RemoveInventoryItemAmount($itemID: ID!, $amountToRemove: Int!) {
@@ -147,7 +145,7 @@ export default function StorefrontPage() {
               <Switch color="warning" onChange={handleShowInternalChange}></Switch><span> Internal Use Items</span>
             </Stack>
             <Stack direction={"row"} alignItems={"center"}>
-            <Switch color="warning" onChange={handleShowStaffChange} disabled={currentUser.privilege != Privilege.STAFF}></Switch><span> Staff Only Items</span>
+            <Switch color="warning" onChange={handleShowStaffChange} disabled={!isManager(currentUser)}></Switch><span> Staff Only Items</span>
             </Stack>
           </Stack>
         </Stack>
@@ -164,7 +162,7 @@ export default function StorefrontPage() {
           {data?.InventoryItems?.filter((item: InventoryItem) =>
             item.name.toLowerCase().includes(searchText.toLowerCase())
             && (!showInternalItems ? item.storefrontVisible : true)
-            && ((currentUser.privilege != Privilege.STAFF && showStaffItems) ? !item.staffOnly : true)
+            && ((!isManager(currentUser) && showStaffItems) ? !item.staffOnly : true)
           ).map((item: InventoryItem) => (
             <InventoryRow
               item={item}

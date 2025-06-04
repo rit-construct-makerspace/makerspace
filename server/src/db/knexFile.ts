@@ -25,13 +25,6 @@ const config: any = { //remove ': any' if using --esm
     pool: {
       min: 2,
       max: 10,
-      afterCreate: function(connection: any, callback: any) { //remove both ': any' if using --esm
-        console.log("timezoning")
-        connection.query('SET TIME ZONE TO \'EST5EDT\';', function(err: Error) { //remove ': Error' if using --esm
-          console.log(err)
-          callback(err, connection);
-        });
-      }
     },
     migrations: {
       tableName: "knex_migrations",
@@ -51,7 +44,7 @@ const config: any = { //remove ': any' if using --esm
     },
     pool: {
       min: 2,
-      max: 10,
+      max: 20,
     },
     migrations: {
       tableName: "knex_migrations",
@@ -71,7 +64,7 @@ const config: any = { //remove ': any' if using --esm
     },
     pool: {
       min: 2,
-      max: 10,
+      max: 20,
     },
     migrations: {
       tableName: "knex_migrations",

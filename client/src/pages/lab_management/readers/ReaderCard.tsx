@@ -3,20 +3,21 @@ import {
   Card,
   CardContent,
   CardHeader,
+  Checkbox,
   Link,
+  makeStyles,
   MenuItem,
   Select,
   Stack,
   Typography,
 } from "@mui/material";
-import { makeStyles } from '@material-ui/core/styles';
 import { GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import GET_ROOMS from "../../../queries/roomQueries";
 import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
-import { SET_READER_STATE } from "../../../queries/readersQueries";
+import { IDENTIFY_READER, SET_READER_STATE } from "../../../queries/readersQueries";
 
 interface ReaderCardProps {
     id: number,
@@ -37,10 +38,12 @@ interface ReaderCardProps {
     FEVer?: string,
     HWVer?: string,
     SN?: string,
+    makerspaceID: string,
 }
 
 
-const useStyles = makeStyles({
+
+const styles = {
   errorText: {
     color: "red",
     fontWeight: "bold"
@@ -51,9 +54,10 @@ const useStyles = makeStyles({
   notifCard: {
     border: "3px solid blue"
   }
-});
+};
 
-export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer, SN }: ReaderCardProps) {
+
+export default function ReaderCard({ id, machineID, machineType, name, zone, temp, state, userID, userName, recentSessionLength, lastStatusReason, scheduledStatusFreq , lastStatusTime, helpRequested, BEVer, FEVer, HWVer, SN, makerspaceID }: ReaderCardProps) {
   const stateContent = state === "Active" ? (
     <p>Current User: <AuditLogEntity entityCode={`user:${userID}:${userName}`}></AuditLogEntity><br></br>Session Length: {recentSessionLength} sec</p>
   ) : (
@@ -67,8 +71,6 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     
   const rooms = useQuery(GET_ROOMS);
     
-  const classes = useStyles();
-
   const now = new Date();
   const lastTimeDifference = now.getTime() - (new Date(lastStatusTime).getTime());
 
@@ -80,12 +82,19 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
     }
     setReaderState({variables: {id: id, state: event.target.value}});
   };
+
+  const [doIdentify] = useMutation(IDENTIFY_READER)
+  function handleIdentifyChecked(checked: boolean) {
+    doIdentify({ variables: { "id": id, doIdentify: checked } })
+
+  }
+
   return (
     <RequestWrapper
     loading={machineResult.loading}
     error={machineResult.error}
     >
-      <Card sx={{ width: 350, minHeight: 600}} className={(lastStatusReason === "Error" || lastStatusReason === "Temperature" ? classes.errorCard : "") + (helpRequested ? classes.notifCard : "")}>
+      <Card sx={{ width: 350, minHeight: 600, border: (lastStatusReason == "Error" || lastStatusReason == "Temperature" ? styles.errorCard : helpRequested ? styles.notifCard : "")}}>
         <CardHeader
           title={name}
           subheader={(machineType != null && machineType !== "") ? ("Type: " + machineType) : `SN: ${SN}`}
@@ -182,8 +191,8 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               sx={{ lineHeight: 1, mb: 1 }}
               noWrap
           >
-              <b>Last Status:</b> <span style={{fontWeight: lastTimeDifference > 60000 ? 'bold' : 'regular', color:  lastTimeDifference > 60000 ? 'red' : 'inherit'}}><TimeAgo date={lastStatusTime} locale="en-US"/></span> - <b>Reason:</b> <span className={lastStatusReason == "Error" || lastStatusReason == "Temperature" ? classes.errorText : ""}>{lastStatusReason}</span><br></br>
-              <b>Regular Status Interval:</b> {scheduledStatusFreq} sec
+            <b>Last Status:</b> <span style={{ fontWeight: lastTimeDifference > 60000 ? 'bold' : 'regular', color: lastTimeDifference > 60000 ? 'red' : 'inherit' }}><TimeAgo date={lastStatusTime} locale="en-US" /></span>
+            <b>Reason:</b> <span  style={(lastStatusReason == "Error" || lastStatusReason == "Temperature") ? styles.errorText : {}}>{lastStatusReason}</span><br></br>
           </Typography>
           <Typography
               variant="body2"
@@ -192,6 +201,11 @@ export default function ReaderCard({ id, machineID, machineType, name, zone, tem
               noWrap
           >
               {stateContent}
+            <Stack direction="row" justifyContent={"space-between"} alignItems={"center"}>
+              Identify Reader
+              <Checkbox onChange={(e, checked) => handleIdentifyChecked(checked)}></Checkbox>
+            </Stack>
+
           </Typography>
           <Stack direction={"row"}>
             <Select defaultValue={"State"} onChange={handleChange}>

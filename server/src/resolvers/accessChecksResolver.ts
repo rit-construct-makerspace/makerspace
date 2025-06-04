@@ -4,6 +4,7 @@
  */
 
 import * as EquipmentRepo from "../repositories/Equipment/EquipmentRepository.js";
+import * as RoomRepo from "../repositories/Rooms/RoomRepository.js";
 import { Privilege } from "../schemas/usersSchema.js";
 import { ApolloContext } from "../context.js";
 import { accessCheckExists, createAccessCheck, getAccessCheckByID, getAccessChecks, getAccessChecksByApproved, getAccessChecksByUserID, purgeUnapprovedAccessChecks, setAccessCheckApproval } from "../repositories/Equipment/AccessChecksRepository.js";
@@ -28,8 +29,8 @@ const AccessChecksResolver = {
     accessChecks: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isTrainer }: ApolloContext) =>
+      isTrainer(async () => {
         return await getAccessChecks();
       }),
 
@@ -42,8 +43,8 @@ const AccessChecksResolver = {
     accessCheck: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isTrainer }: ApolloContext) =>
+      isTrainer(async () => {
         return await getAccessCheckByID(args.id)
       }),
     
@@ -69,8 +70,8 @@ const AccessChecksResolver = {
     approvedAccessChecks: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isTrainer }: ApolloContext) =>
+      isTrainer(async () => {
         return await getAccessChecksByApproved(true)
       }),
 
@@ -82,8 +83,8 @@ const AccessChecksResolver = {
     unapprovedAccessChecks: async (
       _parent: any,
       _args: any,
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async () => {
+      { isTrainer }: ApolloContext) =>
+      isTrainer(async () => {
         return await getAccessChecksByApproved(false)
       }),
   },
@@ -98,12 +99,16 @@ const AccessChecksResolver = {
     approveAccessCheck: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { isTrainer }: ApolloContext) =>
+      isTrainer(async (user) => {
         const check = await getAccessCheckByID(args.id);
         if (!check) throw new GraphQLError("Access Check does not exist");
         const equipment = await EquipmentRepo.getEquipmentByID(check?.equipmentID);
         if (!equipment) throw new GraphQLError("Equipment does not exist");
+        const room = await RoomRepo.getRoomByID(equipment.roomID);
+        if (!user.trainer.includes(check.equipmentID) && !user.manager.includes(room?.zoneID ?? -1) && !user.staff.includes(room?.zoneID ?? -1) && !user.admin) {
+          throw new GraphQLError(`Not an approved trainer for ${check.equipmentID}`)
+        }
         const affectedUser = await getUserByID(check.userID);
         if (!affectedUser) throw new GraphQLError("User does not exist");
         await createLog(`{user} approved the {equipment} access check for {user}`, `admin`,
@@ -120,12 +125,16 @@ const AccessChecksResolver = {
     unapproveAccessCheck: async (
       _parent: any,
       args: { id: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { isTrainer }: ApolloContext) =>
+      isTrainer(async (user) => {
         const check = await getAccessCheckByID(args.id);
         if (!check) throw new GraphQLError("Access Check does not exist");
         const equipment = await EquipmentRepo.getEquipmentByID(check?.equipmentID);
         if (!equipment) throw new GraphQLError("Equipment does not exist");
+        const room = await RoomRepo.getRoomByID(equipment.roomID);
+        if (!user.trainer.includes(check.equipmentID) && !user.manager.includes(room?.zoneID ?? -1) && !user.staff.includes(room?.zoneID ?? -1) && !user.admin) {
+          throw new GraphQLError(`Not an approved trainer for ${check.equipmentID}`)
+        }
         const affectedUser = await getUserByID(check.userID);
         if (!affectedUser) throw new GraphQLError("User does not exist");
         await createLog(`{user} unapproved the {equipment} access check for {user}`, `admin`,
@@ -143,8 +152,8 @@ const AccessChecksResolver = {
     createAccessCheck: async (
       _parent: any,
       args: { userID: number, equipmentID: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.STAFF], async () => {
+      { isManager }: ApolloContext) =>
+      isManager(async () => {
         const result = await createAccessCheck(args.userID, args.equipmentID);
         return true;
       }
@@ -159,8 +168,8 @@ const AccessChecksResolver = {
     refreshAccessChecks: async (
       _parent: any,
       args: { userID: number },
-      { ifAllowed }: ApolloContext) =>
-      ifAllowed([Privilege.MENTOR, Privilege.STAFF], async (user) => {
+      { isTrainer }: ApolloContext) =>
+      isTrainer(async (user) => {
         const equipmentToCheck = await EquipmentRepo.getEquipment();
         equipmentToCheck.forEach(async (equipment) => {
           await purgeUnapprovedAccessChecks(args.userID);

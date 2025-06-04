@@ -6,7 +6,6 @@ import {
   Select,
 } from "@mui/material";
 import { useCurrentUser } from "../../common/CurrentUserProvider";
-import Privilege from "../../types/Privilege";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { InputLabel } from "@mui/material";
@@ -45,8 +44,6 @@ export default function RoomZoneAssociation({
   
   const [updatedZoneID, setUpdatedZoneID] = useState(zoneID);
 
-  const isAdmin = currentUser.privilege === Privilege.STAFF;
-
   const handleSubmit = () => {
     setNewZone({
       variables: {
@@ -58,13 +55,12 @@ export default function RoomZoneAssociation({
 
   return (
     <>
-      <FormControl disabled={!isAdmin || setNewZoneResult.loading}>
+      <FormControl disabled={!currentUser.admin || setNewZoneResult.loading}>
         <InputLabel id="update-zone-label">Zone</InputLabel>
         <Select
           value={updatedZoneID}
           id="update-zone-label"
           label="Zone"
-          placeholder="Zone"
           onChange={(e) => setUpdatedZoneID(Number(e.target.value))}
         >
           {getZonesResult.data != null && getZonesResult.data.zones.map((zone: {id: number, name: string}) => (
@@ -82,7 +78,7 @@ export default function RoomZoneAssociation({
         Update Zone
       </LoadingButton>
       
-      {!isAdmin && (
+      {!currentUser.admin && (
         <Alert severity="info" sx={{ width: "max-content", mt: 1 }}>
           You do not have permission to change this.
         </Alert>

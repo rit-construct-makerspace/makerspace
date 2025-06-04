@@ -13,6 +13,7 @@ export interface EquipmentInput {
   imageUrl: string | null;
   sopUrl: string | null
   byReservationOnly: boolean;
+  needsWelcome: boolean;
 }
 
 export const EquipmentTypeDefs = gql`
@@ -41,6 +42,7 @@ export const EquipmentTypeDefs = gql`
     sopUrl: String!
     notes: String!
     byReservationOnly: Boolean
+    needsWelcome: Boolean
   }
 
   extend type Query {

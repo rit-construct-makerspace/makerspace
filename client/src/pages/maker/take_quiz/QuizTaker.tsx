@@ -10,7 +10,6 @@ import { GET_CURRENT_USER, useCurrentUser } from "../../../common/CurrentUserPro
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Markdown from 'react-markdown'
-import { makeStyles } from '@material-ui/core/styles';
 import GET_TRAINING_MODULES from "../../../queries/trainingQueries";
 
 
@@ -20,7 +19,7 @@ const StyledDiv = styled.div`
   height: 1000px;
 `;
 
-const useStyles = makeStyles({
+const styles = {
   strongerBolds: {
     '& p': {
       fontWeight: 400
@@ -29,7 +28,7 @@ const useStyles = makeStyles({
       fontWeight: 900
     }
   }
-});
+};
 
 const elevationTwoShadow = css`
   box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2),
@@ -166,8 +165,6 @@ export default function QuizTaker({ module }: QuizTakerProps) {
     trainingCancelAnimation();
   };
 
-  const classes = useStyles();
-
   window.addEventListener('beforeunload', function (e) {
     if (quizProgressed) {
       e.preventDefault();
@@ -176,7 +173,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
   });
 
   return (
-    <Stack spacing={4} className={classes.strongerBolds}>
+    <Stack spacing={4} sx={styles.strongerBolds}>
       {module.isLocked &&
       <Card>
         <CardContent>
@@ -194,7 +191,7 @@ export default function QuizTaker({ module }: QuizTakerProps) {
 
         switch (quizItem.type) {
           case QuizItemType.Text:
-            return <Typography key={quizItem.id}><Markdown className={classes.strongerBolds}>{quizItem.text}</Markdown></Typography>;
+            return <Typography key={quizItem.id} sx={styles.strongerBolds}><Markdown>{quizItem.text}</Markdown></Typography>;
           case QuizItemType.MultipleChoice:
             return (
               <Question

@@ -1,25 +1,25 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
-import { Avatar, Box, Button, Card, Chip, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, Chip, IconButton, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import InfoBlob from "./InfoBlob";
 import { format, parseISO } from "date-fns";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import styled from "styled-components";
-import DeleteIcon from "@mui/icons-material/Delete";
 import HistoryIcon from "@mui/icons-material/History";
 import PrivilegeControl from "./PrivilegeControl";
 import { useNavigate } from "react-router-dom";
 import HoldCard from "./HoldCard";
-import Privilege from "../../../types/Privilege";
-import { PassedModule, useCurrentUser } from "../../../common/CurrentUserProvider";
-import CloseButton from "../../../common/CloseButton";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import CardTagSettings from "./CardTagSettings";
 import AccessCheckCard from "./AccessCheckCard";
 import ActionButton from "../../../common/ActionButton";
-import GET_EQUIPMENTS, { GET_ALL_EQUIPMENTS } from "../../../queries/equipmentQueries";
+import { GET_ALL_EQUIPMENTS } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
+import CloseIcon from '@mui/icons-material/Close';
+import { stringAvatar } from "../../../common/avatarGenerator";
+import { isManager } from "../../../common/PrivilegeUtils";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -95,6 +95,10 @@ export const GET_USER = gql`
         }
         expires
       }
+      admin
+      manager
+      staff
+      trainer
     }
   }
 `;
@@ -184,20 +188,6 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
     });
   };
 
-  // const handleDeleteUserClicked = () => {
-  //   const fName = getUserResult.data.user.firstName;
-  //   const lName = getUserResult.data.user.lastName;
-  //   const result = window.confirm(
-  //     `Are you sure you wish to delete ${fName} ${lName}'s account? This cannot be undone.`
-  //   );
-  //   if (result) {
-  //     deleteUser({
-  //       variables: { userID: getUserResult.data.user.id },
-  //       refetchQueries: [{ query: GET_USER, variables: { id: selectedUserID } }],
-  //     });
-  //   };
-  // }
-
   function handleTrainingHoldDeleteClick(id: number) {
     deleteTrainingHold({variables: {id}});
   }
@@ -225,27 +215,31 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
   };
 
   return (
-    <PrettyModal open={!!selectedUserID} onClose={onClose} width={isMobile ? 250 : 600}>
+    <PrettyModal open={!!selectedUserID} onClose={onClose} width={isMobile ? 300 : 800}>
       <RequestWrapper2
         result={getUserResult}
         render={({ user }) => (
           <Stack>
-            <CloseButton onClick={() => navigate("/admin/people")} />
-            <Stack direction="row" alignItems="center" spacing={2} mb={4}>
-              <Avatar
-                alt=""
-                src={
-                  // TODO: replace this with the user's profile pic
-                  "https://t4.ftcdn.net/jpg/00/64/67/63/240_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg"
+            <Stack direction="row" justifyContent="space-between">
+              <Stack direction="row" alignItems="baseline" spacing={2}>
+                {
+                  isMobile
+                  ? null
+                  : <Avatar
+                    alt="Profile Picture"
+                    {...stringAvatar(user.firstName, user.lastName, { width: 80, height: 80, fontSize: 35 })}
+                  />
                 }
-                sx={{ width: 80, height: 80 }}
-              />
-              <Stack>
-                <Typography variant="h5" component="div" fontWeight={500}>
-                  {`${user.firstName} ${user.lastName}  (${user.ritUsername})`}
-                </Typography>
-                <Typography>{user.pronouns}</Typography>
+                <Stack>
+                  <Typography variant={isMobile ? "h6" : "h5"} component="div" fontWeight={500}>
+                    {`${user.firstName} ${user.lastName} (${user.ritUsername})`}
+                  </Typography>
+                  <Typography>{user.pronouns}</Typography>
+                </Stack>
               </Stack>
+              <IconButton color="error" size="small">
+                <CloseIcon/>
+              </IconButton>
             </Stack>
 
             <StyledInfo>
@@ -260,7 +254,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
               />
             </StyledInfo>
 
-            <PrivilegeControl userID={user.id} privilege={user.privilege} />
+            <PrivilegeControl user={user} isMobile={isMobile} />
 
             <Typography variant="h6" component="div" mt={6} mb={1}>
               Account Holds
@@ -304,7 +298,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
             <Stack direction={"row"} spacing={1}>
               <ActionButton iconSize={5} color="info" appearance={"small"} variant="outlined" handleClick={async () => { refreshCheck() }} loading={refreshCheckResult.loading} buttonText="Refresh Checks" tooltipText="Purge all unapproved checks and repopulate based on currently passed modules." />
-              {currentUser.privilege == Privilege.STAFF && <ActionButton iconSize={5} color="primary" appearance={"small"} variant="outlined" handleClick={async () => { setOpenCreateCheckDialouge(!openCreateCheckDialouge) }} loading={false} buttonText="Create Check" />}
+              {isManager(currentUser) && <ActionButton iconSize={5} color="primary" appearance={"small"} variant="outlined" handleClick={async () => { setOpenCreateCheckDialouge(!openCreateCheckDialouge) }} loading={false} buttonText="Create Check" />}
             </Stack>
             {openCreateCheckDialouge && <Stack direction={"row"} mt={1}>
               <RequestWrapper loading={getEquipment.loading} error={getEquipment.error}>
@@ -408,7 +402,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
             <CardTagSettings userID={user.id} hasCardTag={(user.cardTagID != null && user.cardTagID != "")} />
 
-            {currentUser.privilege == Privilege.STAFF &&
+            {isManager(currentUser) &&
               <>
                 <Typography variant="h6" component="div" mt={6} mb={1}>
                   Notes
