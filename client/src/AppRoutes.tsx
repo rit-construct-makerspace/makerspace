@@ -104,8 +104,10 @@ export default function AppRoutes() {
             <Route path="/user/trainings" element={<UserTraingingsPage />}/>
             <Route path="/user/settings" element={<UserSettingsPage />}/>
 
+            {/* Routes for staff + higher */}
             <Route element={<StaffRoute/>}>
               <Route path="/makerspace/:makerspaceID" element={<StaffBar/>}>
+                {/* Routes for manager + higher */}
                 <Route element={<ManagerRoute/>}>
                   <Route path="/makerspace/:makerspaceID/edit" element={<ManageMakerspacePage />}/>
                   <Route path="/makerspace/:makerspaceID/edit/room/:roomID" element={<ManageRoomPage />}/>
@@ -113,7 +115,16 @@ export default function AppRoutes() {
                 <Route path="/makerspace/:makerspaceID/tools" element={<ToolItemPage />}/>
                 <Route path="/makerspace/:makerspaceID/people" element={<UsersPage />}/>
                 <Route path="/makerspace/:makerspaceID/people/:userID" element={<UsersPage />}/>
+                <Route path="/makerspace/:makerspaceID/history" element={<AuditLogsPage />}/>
               </Route>
+            </Route>
+
+            {/* Routes for admins */}
+            <Route element={<AdminRoute/>}>
+              <Route path="/admin/announcements" element={<AnnouncementsPage />} />
+              <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
+              <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
+              <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
             </Route>
 
             <Route path="/maker/training" element={<TrainingPage />} />
@@ -139,13 +150,6 @@ export default function AppRoutes() {
             <Route path="/admin/tools/instance" element={<ToolItemPage />} />
 
             <Route path="/admin/storefront" element={<StorefrontPage />} />
-            <Route element={<AdminRoute/>}>
-              <Route path="/admin/announcements" element={<AnnouncementsPage />} />
-              <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
-              <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
-              <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
-            </Route>
-            <Route path="/admin/history" element={<AuditLogsPage />} />
 
             <Route path="/admin/readers" element={<ReadersPage />} />
             <Route path="/admin/newreader" element={<NewReaderPage />} />

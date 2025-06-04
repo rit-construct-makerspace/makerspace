@@ -83,7 +83,7 @@ export default function StaffBar() {
             />
             <NavLink
                 primary={"History"}
-                to={"/admin/history"}
+                to={`/makerspace/${makerspaceID}/history`}
                 icon={<HistoryIcon />}
             />
             <NavLink
