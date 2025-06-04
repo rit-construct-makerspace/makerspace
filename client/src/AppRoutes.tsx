@@ -38,14 +38,14 @@ import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
 import { useCurrentUser } from "./common/CurrentUserProvider";
 import Privilege from "./types/Privilege";
 import StaffBar from "./pages/makerspace_page/StaffBar";
-import { isStaffFor } from "./common/PrivilegeUtils";
+import { isAdmin, isStaffFor } from "./common/PrivilegeUtils";
 import { Alert } from "@mui/material";
 import NoPrivilegePage from "./pages/NoPrivilegePage";
 
 // This is where we map the browser's URL to a
 // React component with the help of React Router.
 
-const AuthedRoute = () => {
+function AuthedRoute() {
   const user = useCurrentUser();
   if (user.privilege === Privilege.VISITOR) {
     window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")
@@ -59,6 +59,15 @@ function StaffRoute() {
   const { makerspaceID } = useParams<{makerspaceID: string}>();
   const user = useCurrentUser();
   if (isStaffFor(user, Number(makerspaceID))) {
+    return <Outlet/>
+  } else {
+    return <NoPrivilegePage/>
+  }
+}
+
+function AdminRoute() {
+  const user = useCurrentUser();
+  if (isAdmin(user)) {
     return <Outlet/>
   } else {
     return <NoPrivilegePage/>
@@ -118,12 +127,12 @@ export default function AppRoutes() {
             <Route path="/admin/tools/instance" element={<ToolItemPage />} />
 
             <Route path="/admin/storefront" element={<StorefrontPage />} />
-
-            <Route path="/admin/announcements" element={<AnnouncementsPage />} />
-            <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
-            <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
-            <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
-
+            <Route element={<AdminRoute/>}>
+              <Route path="/admin/announcements" element={<AnnouncementsPage />} />
+              <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
+              <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
+              <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
+            </Route>
             <Route path="/admin/history" element={<AuditLogsPage />} />
 
             <Route path="/admin/readers" element={<ReadersPage />} />
