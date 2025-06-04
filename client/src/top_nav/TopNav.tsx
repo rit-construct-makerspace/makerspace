@@ -18,6 +18,7 @@ import Footer from "./Footer";
 import Privilege from "../types/Privilege";
 import PersonIcon from '@mui/icons-material/Person';
 import { useIsMobile } from "../common/IsMobileProvider";
+import { isStaff } from "../common/PrivilegeUtils";
 
 const StyledLogo = styled.img`
   margin: 12px;
@@ -31,7 +32,7 @@ export default function TopNav() {
     const navigate = useNavigate();
 
     const currentUser = useCurrentUser();
-    const isPriviledged = currentUser.privilege === "MENTOR" || currentUser.privilege === "STAFF";
+    const isPriviledged = isStaff(currentUser);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const userMenuOpen = Boolean(anchorEl);
 

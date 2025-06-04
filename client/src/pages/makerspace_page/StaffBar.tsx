@@ -48,7 +48,7 @@ export default function StaffBar() {
                 : null
             }
             {
-                window.location.pathname.match(/\/app\/makerspace\/38\/.+/gm) !== null
+                window.location.pathname.match(/\/app\/makerspace\/\d+\/.+/gm) !== null
                 ? <NavLink
                     primary={"Back"}
                     to={`/makerspace/${makerspaceID}`}
