@@ -59,7 +59,7 @@ export default function MakerspacePage() {
                             onClear={() => setEquipmentSearch("")}
                         />
                         {
-                            user.privilege === "STAFF"
+                            isManagerFor(user, Number(makerspaceID))
                             ? <Button variant="contained" color="success" startIcon={<AddIcon/>} onClick={() => (navigate("/admin/equipment/new"))}>
                                 Create New Equipment
                             </Button>
