@@ -1,6 +1,5 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
 import AdminPage from "../../AdminPage";
 import AddIcon from '@mui/icons-material/Add';
 import { useQuery } from "@apollo/client";
@@ -18,6 +17,7 @@ import { CreateToolItemInstanceModal, EditToolItemInstanceModal } from "./EditCr
 import { ToolItemsByUser } from "./ToolItemsByUser";
 import { GET_ZONE_BY_ID } from "../../../queries/zoneQueries";
 import Room from "../../../types/Room";
+import { isManager } from "../../../common/PrivilegeUtils";
 
 
 export function ToolItemPage() {
@@ -50,7 +50,7 @@ export function ToolItemPage() {
       {/* <ToolItemsByUser handleReturnItemClick={handleReturnInstanceClick} /> */}
       <Stack direction="row" justifyContent="space-between" alignItems="baseline" paddingBottom="10px">
         <Typography variant="h4">Tools</Typography>
-        {currentUser.privilege == Privilege.STAFF && <Button startIcon={<AddIcon />} variant="outlined" color="primary" onClick={() => navigate(`/admin/tools/type`)}>Create Type</Button>}
+        {isManager(currentUser) && <Button startIcon={<AddIcon />} variant="outlined" color="primary" onClick={() => navigate(`/admin/tools/type`)}>Create Type</Button>}
       </Stack>
 
       <RequestWrapper loading={getToolItemTypes.loading || getZone.loading} error={getToolItemTypes.error || getZone.error}>

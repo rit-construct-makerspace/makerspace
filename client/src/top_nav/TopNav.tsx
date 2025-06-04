@@ -1,9 +1,9 @@
-import { Alert, AppBar, Avatar, Box, Button, ButtonBase, Container, Drawer, IconButton, List, Menu, MenuItem, Stack, Typography, useScrollTrigger } from "@mui/material";
+import { Alert, AppBar, Avatar, Box, Button, ButtonBase, Drawer, IconButton, Menu, MenuItem, Stack, Typography } from "@mui/material";
 import styled from "styled-components";
 import LogoSvgWhite from "../assets/acronym_logo_all_white.svg";
 import LogoSvgW from "../assets/acronym_logo_w.svg";
-import { Outlet, redirect, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import PrinterOsIcon from "../common/PrinterOSIcon";
 import SlackIcon from "../common/SlackIcon";
 import EventIcon from "@mui/icons-material/Event";
@@ -15,7 +15,6 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { stringAvatar } from "../common/avatarGenerator";
 import MenuIcon from '@mui/icons-material/Menu';
 import Footer from "./Footer";
-import Privilege from "../types/Privilege";
 import PersonIcon from '@mui/icons-material/Person';
 import { useIsMobile } from "../common/IsMobileProvider";
 import { isStaff } from "../common/PrivilegeUtils";
@@ -124,7 +123,7 @@ export default function TopNav() {
                             newTab={true}
                         />
                         {
-                            currentUser.privilege === Privilege.VISITOR
+                            currentUser.visitor
                             ? <Button sx={{height: "95%"}} variant="contained" color="secondary" endIcon={<PersonIcon/>} onClick={() => window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")}>
                                 LOGIN
                             </Button>
@@ -194,7 +193,7 @@ export default function TopNav() {
                             newTab={true}
                         />
                         {
-                            currentUser.privilege === Privilege.VISITOR
+                            currentUser.visitor
                             ? <Button sx={{height: "95%", marginRight: "10px"}} variant="contained" color="secondary" endIcon={<PersonIcon/>} onClick={() => window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")}>
                                 LOGIN
                             </Button>

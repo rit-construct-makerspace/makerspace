@@ -6,7 +6,6 @@ import { ADD_TAG_TO_LOG, DELETE_MAINTENANCE_LOG, DELETE_RESOLUTION_LOG, GET_MAIN
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import ActionButton from "../../../common/ActionButton";
 import DeleteIcon from '@mui/icons-material/Delete';
-import Privilege from "../../../types/Privilege";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import { useMutation } from "@apollo/client";
 import MaintenanceTagChip from "./MaintenanceTagChip";
@@ -14,6 +13,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useNavigate } from "react-router-dom";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { isManager } from "../../../common/PrivilegeUtils";
 
 
 function formatDateTime(dateTime: string) {
@@ -77,7 +77,7 @@ export default function MaintenanceLogEntry({ logItem, allTags }: { logItem: Mai
   return (
     <TableRow>
       <TableCell>
-        <IconButton hidden={currentUser.privilege != Privilege.STAFF} color="error" onClick={handleDeleteClick}><DeleteIcon /></IconButton>
+        <IconButton hidden={!isManager(currentUser)} color="error" onClick={handleDeleteClick}><DeleteIcon /></IconButton>
       </TableCell>
       <TableCell>
         {logItem.instance?.name ?? <i>None</i>}

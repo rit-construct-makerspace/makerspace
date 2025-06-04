@@ -6,11 +6,11 @@ import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { useMutation } from "@apollo/client";
 import { ADD_TAG_TO_ITEM, GET_INVENTORY_ITEMS, GET_INVENTORY_TAGS, REMOVE_TAG_FROM_ITEM, SET_STAFF_ONLY, SET_STOREFRONT_VISIBLE } from "../../../queries/inventoryQueries";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
 import InventoryTagChip from "./InventoryTagChip";
 import { MaintenanceTag } from "../../../queries/maintenanceLogQueries";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { isManager } from "../../../common/PrivilegeUtils";
 
 interface InventoryRowProps {
   item: InventoryItem;
@@ -78,11 +78,11 @@ export default function AdminInventoryRow({ item, onClick, allTags }: InventoryR
 
       <TableCell>${item.pricePerUnit.toFixed(2)}</TableCell>
 
-      <TableCell><Switch onChange={handleToggleStaffOnly} disabled={currentUser.privilege != Privilege.STAFF} defaultChecked={item.staffOnly}></Switch></TableCell>
+      <TableCell><Switch onChange={handleToggleStaffOnly} disabled={!isManager(currentUser)} defaultChecked={item.staffOnly}></Switch></TableCell>
 
-      <TableCell><Switch onChange={handleToggleStorefrontVisible} disabled={item.staffOnly && currentUser.privilege != Privilege.STAFF} defaultChecked={item.storefrontVisible}></Switch></TableCell>
+      <TableCell><Switch onChange={handleToggleStorefrontVisible} disabled={item.staffOnly && !isManager(currentUser)} defaultChecked={item.storefrontVisible}></Switch></TableCell>
 
-      <TableCell><IconButton onClick={onClick} disabled={item.staffOnly && currentUser.privilege != Privilege.STAFF} defaultChecked={item.storefrontVisible}><ModeEditIcon /></IconButton></TableCell>
+      <TableCell><IconButton onClick={onClick} disabled={item.staffOnly && !isManager(currentUser)} defaultChecked={item.storefrontVisible}><ModeEditIcon /></IconButton></TableCell>
     </TableRow>
   );
 }

@@ -36,7 +36,6 @@ import MakerspacePage from "./pages/makerspace_page/MakerspacePage";
 import NewReaderPage from "./pages/newreaderpage/NewReaderPage";
 import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
 import { useCurrentUser } from "./common/CurrentUserProvider";
-import Privilege from "./types/Privilege";
 import StaffBar from "./pages/makerspace_page/StaffBar";
 import { isAdmin, isManagerFor, isStaffFor } from "./common/PrivilegeUtils";
 import { Alert } from "@mui/material";
@@ -47,7 +46,7 @@ import NoPrivilegePage from "./pages/NoPrivilegePage";
 
 function AuthedRoute() {
   const user = useCurrentUser();
-  if (user.privilege === Privilege.VISITOR) {
+  if (user.visitor) {
     window.location.replace(process.env.REACT_APP_LOGIN_URL ?? "/")
     return <></>;
   } else {

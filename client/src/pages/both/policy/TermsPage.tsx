@@ -1,12 +1,11 @@
 import { gql, useQuery } from "@apollo/client";
 import Page from "../../Page";
-import {Button, Grid, Stack, Typography} from "@mui/material";
-import {useCallback} from "react";
-import {redirect, useNavigate} from "react-router-dom";
+import {Button} from "@mui/material";
+import {useNavigate} from "react-router-dom";
 import RequestWrapper from "../../../common/RequestWrapper";
 import Markdown from "react-markdown";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
+import { isAdmin } from "../../../common/PrivilegeUtils";
 
 const GET_TERMS_TEXT = gql`
     query GetTermsText {
@@ -21,7 +20,7 @@ export default function TermsPage() {
 
     return (
         <Page title="Terms and Conditions" maxWidth="1250px"
-        topRightAddons={currentUser.privilege == Privilege.STAFF &&
+        topRightAddons={isAdmin(currentUser) &&
             <Button variant="outlined" onClick={() => navigate('/admin/terms') }>Edit</Button>
         }>
             <RequestWrapper loading={text.loading} error={text.error}>

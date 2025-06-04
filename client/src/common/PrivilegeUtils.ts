@@ -8,7 +8,6 @@ export function isManagerFor(user: CurrentUser, makerspaceID: number) {
     if (isAdmin(user)) {
         return true;
     }
-
     return user.manager.includes(makerspaceID);
 }
 

@@ -66,6 +66,7 @@ export interface CurrentUser {
   accessChecks: AccessCheck[];
   cardTagID: string;
   trainingHolds: TrainingHold[];
+  visitor: boolean;
   admin: boolean;
   manager: number[];
   staff: number[];
@@ -107,6 +108,7 @@ const visitor: CurrentUser = {
   accessChecks: [],
   cardTagID: "nothing",
   trainingHolds: [],
+  visitor: true,
   admin: false,
   manager: [],
   staff: [],

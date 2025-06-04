@@ -1,17 +1,5 @@
-import PrettyModal from "../../../common/PrettyModal";
-import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client";
-import { GET_EQUIPMENT_BY_ID } from "../../../queries/equipmentQueries";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import CloseIcon from '@mui/icons-material/Close';
-import CheckIcon from '@mui/icons-material/Check';
-import { CREATE_MAINTENANCE_TAG, DELETE_MAINTENANCE_TAG, GET_MAINTENANCE_TAGS, MaintenanceTag, UPDATE_MAINTENANCE_TAG } from "../../../queries/maintenanceLogQueries";
-import { Box, Chip, IconButton, MenuItem, Select, Stack, TableCell, TableRow, TextField } from "@mui/material";
-import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
+import { Chip, Stack } from "@mui/material";
 import { useState } from "react";
-import ActionButton from "../../../common/ActionButton";
 import CircleIcon from '@mui/icons-material/Circle';
 import CancelIcon from '@mui/icons-material/Cancel';
 

@@ -5,7 +5,7 @@ import { useMutation } from "@apollo/client";
 import { DELETE_INVENTORY_LEDGER, GET_LEDGERS } from "../../../queries/inventoryQueries";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
-import Privilege from "../../../types/Privilege";
+import { isManager } from "../../../common/PrivilegeUtils";
 
 const CONFIRM_PROMPT =
   "Are you sure you want to delete this material? This cannot be undone.";
@@ -25,6 +25,6 @@ export default function LedgerDeleteButton({ itemID }: LedgerDeleteButtonProps) 
   };
 
   return (
-    <IconButton disabled={currentUser.privilege != Privilege.STAFF} color="error" onClick={handleClick}><DeleteIcon /></IconButton>
+    <IconButton disabled={!isManager(currentUser)} color="error" onClick={handleClick}><DeleteIcon /></IconButton>
   );
 }

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import PrettyModal from "../../../common/PrettyModal";
 import { Avatar, Box, Button, Card, Chip, IconButton, MenuItem, Select, Stack, TextareaAutosize, Typography } from "@mui/material";
 import { gql, useLazyQuery, useMutation, useQuery } from "@apollo/client";
@@ -7,21 +7,19 @@ import InfoBlob from "./InfoBlob";
 import { format, parseISO } from "date-fns";
 import RequestWrapper2 from "../../../common/RequestWrapper2";
 import styled from "styled-components";
-import DeleteIcon from "@mui/icons-material/Delete";
 import HistoryIcon from "@mui/icons-material/History";
 import PrivilegeControl from "./PrivilegeControl";
 import { useNavigate } from "react-router-dom";
 import HoldCard from "./HoldCard";
-import Privilege from "../../../types/Privilege";
-import { PassedModule, useCurrentUser } from "../../../common/CurrentUserProvider";
-import CloseButton from "../../../common/CloseButton";
+import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import CardTagSettings from "./CardTagSettings";
 import AccessCheckCard from "./AccessCheckCard";
 import ActionButton from "../../../common/ActionButton";
-import GET_EQUIPMENTS, { GET_ALL_EQUIPMENTS } from "../../../queries/equipmentQueries";
+import { GET_ALL_EQUIPMENTS } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import CloseIcon from '@mui/icons-material/Close';
 import { stringAvatar } from "../../../common/avatarGenerator";
+import { isManager } from "../../../common/PrivilegeUtils";
 
 const StyledInfo = styled.div`
   margin-top: 16px;
@@ -300,7 +298,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
             <Stack direction={"row"} spacing={1}>
               <ActionButton iconSize={5} color="info" appearance={"small"} variant="outlined" handleClick={async () => { refreshCheck() }} loading={refreshCheckResult.loading} buttonText="Refresh Checks" tooltipText="Purge all unapproved checks and repopulate based on currently passed modules." />
-              {currentUser.privilege == Privilege.STAFF && <ActionButton iconSize={5} color="primary" appearance={"small"} variant="outlined" handleClick={async () => { setOpenCreateCheckDialouge(!openCreateCheckDialouge) }} loading={false} buttonText="Create Check" />}
+              {isManager(currentUser) && <ActionButton iconSize={5} color="primary" appearance={"small"} variant="outlined" handleClick={async () => { setOpenCreateCheckDialouge(!openCreateCheckDialouge) }} loading={false} buttonText="Create Check" />}
             </Stack>
             {openCreateCheckDialouge && <Stack direction={"row"} mt={1}>
               <RequestWrapper loading={getEquipment.loading} error={getEquipment.error}>
@@ -404,7 +402,7 @@ export default function UserModal({ selectedUserID, onClose }: UserModalProps) {
 
             <CardTagSettings userID={user.id} hasCardTag={(user.cardTagID != null && user.cardTagID != "")} />
 
-            {currentUser.privilege == Privilege.STAFF &&
+            {isManager(currentUser) &&
               <>
                 <Typography variant="h6" component="div" mt={6} mb={1}>
                   Notes
