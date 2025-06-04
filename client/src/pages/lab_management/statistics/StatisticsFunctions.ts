@@ -44,3 +44,19 @@ export function formatTimeToMillisecondsUTC(hours: number, minutes: number, seco
   date.setMilliseconds(milliseconds);
   return date.getTime();
 }
+
+export function getDateRange(earliestDate: Date, latestDate: Date, interval: number): Date[] {
+    const dates: Date[] = [];
+    let currentDate = new Date(earliestDate);
+    
+    // Ensure earliestDate starts at midnight
+    currentDate.setHours(0, 0, 0, 0);
+    
+    while (currentDate <= latestDate) {
+        dates.push(new Date(currentDate)); // Clone the date to avoid mutation
+        currentDate.setDate(currentDate.getDate() + interval); // Move to the next day
+        currentDate.setHours(0, 0, 0, 0); // Ensure each iteration resets to midnight
+    }
+
+    return dates;
+}

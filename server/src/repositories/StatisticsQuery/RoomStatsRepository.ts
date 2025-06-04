@@ -20,14 +20,14 @@ export async function getRoomSwipesWithAttachedEntities(startDate?: string, endD
   if (startDate) {
     numWhereCaluses++;
     //To prevent SQL Injection, Make sure JS sees it as a Date
-    if (!isNaN(new Date(startDate).getDate())) startDateSearchString = `ms."submissionDate" >= '${startDate}'`;
+    if (!isNaN(new Date(startDate).getDate())) startDateSearchString = `rs."dateTime" >= '${startDate}'`;
   }
 
   var endDateSearchString = "";
   if (endDate) {
     numWhereCaluses++;
     //To prevent SQL Injection, Make sure JS sees it as a Date
-    if (!isNaN(new Date(endDate).getDate())) endDateSearchString = `ms."submissionDate" < '${endDate}'`;
+    if (!isNaN(new Date(endDate).getDate())) endDateSearchString = `rs."dateTime" < '${endDate}'`;
   }
 
   var roomSearchString = "";

@@ -10,6 +10,7 @@ import GET_ROOMS from "../../../queries/roomQueries";
 import { GET_EQUIPMENT_SESSIONS, GET_MODULE_SCORES, GET_NUM_EQUIPMENT_SESSIONS_TODAY, GET_NUM_NEW_USERS, GET_NUM_ROOM_SWIPES_TODAY, GET_NUM_SITE_VISITS, GET_ROOM_SWIPE_COUNTS, GET_ZONE_HOURS } from "./statisticsQueries";
 import { EquipmentStats } from "./equipment/EquipmentStats";
 import { TrainingStats } from "./training/TrainingStats";
+import { RoomStats } from "./room/RoomStats";
 
 
 function getMonthToPresentBounds(): { startOfMonth: Date, today: Date } {
@@ -89,6 +90,7 @@ export default function StatisticsPage() {
 
         <EquipmentStats />
         <TrainingStats />
+        <RoomStats />
       </Box>
 
     </AdminPage>
