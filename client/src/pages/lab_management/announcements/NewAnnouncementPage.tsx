@@ -55,6 +55,7 @@ export default function NewAnnouncementPage() {
 
     return (
         <Stack padding={"25px"} spacing={2}>
+            <title>New Announcment | Make @ RIT</title>
             <Typography variant="h5">
                 New Announcement
             </Typography>

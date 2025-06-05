@@ -57,6 +57,7 @@ export default function UserSettingsPage() {
 
     return (
         <Stack margin={isMobile ? "10px" : "30px"} width={isMobile ? "fit-content" : "auto"} spacing={2} divider={<Divider orientation="horizontal" flexItem/>}>
+            <title>User Settings | Make @ RIT</title>
             {/* Personal info */}
             <RequestWrapper2 result={userResult} render={({user}) => {
                 

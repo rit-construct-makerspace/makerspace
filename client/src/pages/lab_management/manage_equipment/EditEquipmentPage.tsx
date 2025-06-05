@@ -58,24 +58,29 @@ export default function EditEquipmentPage(props: EditEquipmentPageProps) {
     navigate("/");
   };
 
-  return newEquipment ? (
-    <NewEquipmentEditor
-      equipment={equipment}
-      setEquipment={setEquipment}
-      onSave={handleSave}
-    />
-  ) : props.archived ? (
-    <ArchivedEquipmentEditor
-      equipment={equipment}
-      setEquipment={setEquipment}
-      onSave={handleSave}
-    />
-  ) :
-  (
-    <ExistingEquipmentEditor
-      equipment={equipment}
-      setEquipment={setEquipment}
-      onSave={handleSave}
-    />
+  return (
+    <>
+      <title>Edit Equipment | Make @ RIT</title>
+      {newEquipment ? (
+        <NewEquipmentEditor
+          equipment={equipment}
+          setEquipment={setEquipment}
+          onSave={handleSave}
+        />
+      ) : props.archived ? (
+        <ArchivedEquipmentEditor
+          equipment={equipment}
+          setEquipment={setEquipment}
+          onSave={handleSave}
+        />
+      ) :
+      (
+        <ExistingEquipmentEditor
+          equipment={equipment}
+          setEquipment={setEquipment}
+          onSave={handleSave}
+        />
+      )}
+    </>
   );
 }

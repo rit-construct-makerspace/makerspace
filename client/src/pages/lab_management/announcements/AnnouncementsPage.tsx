@@ -31,6 +31,7 @@ export default function AnnouncementsPage() {
       error={getAnnouncementsResults.error}
     >
       <Stack padding="25px" spacing={2}>
+        <title>Manage Announcements | Make @ RIT</title>
         <Typography variant="h4">Edit Announcements</Typography>
         <Stack direction={isMobile ? "column" : "row"} alignItems="center" spacing={1}>
           <SearchBar
