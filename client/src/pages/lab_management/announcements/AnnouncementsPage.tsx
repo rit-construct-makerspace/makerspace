@@ -10,22 +10,18 @@ import RequestWrapper from "../../../common/RequestWrapper";
 import { GET_ANNOUNCEMENTS } from "../../../queries/announcementsQueries";
 import AnnouncementModule from "./AnnouncementModule";
 import AdminPage from "../../AdminPage";
+import { useIsMobile } from "../../../common/IsMobileProvider";
 
 
 export default function AnnouncementsPage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const getAnnouncementsResults = useQuery(GET_ANNOUNCEMENTS);
 
   const [searchText, setSearchText] = useState("");
 
   const handleNewAnnouncementClicked = async () => {
-    //const result = await createAnnouncement();
-    //const announcementID = result?.data?.createAnnouncement?.id;
-
-    // Redirect to the announcement editor after creation
-    //navigate(`/admin/announcements/${announcementID}`);
-    //navigate(`/admin/announcements/sample`);s
     navigate(`/admin/announcements/new`);
   };
 
@@ -34,10 +30,9 @@ export default function AnnouncementsPage() {
       loading={getAnnouncementsResults.loading}
       error={getAnnouncementsResults.error}
     >
-      <AdminPage>
-        <Box margin="25px">
+      <Stack padding="25px" spacing={2}>
         <Typography variant="h4">Edit Announcements</Typography>
-        <Stack direction="row" alignItems="center" spacing={1}>
+        <Stack direction={isMobile ? "column" : "row"} alignItems="center" spacing={1}>
           <SearchBar
             placeholder="Search announcements"
             value={searchText}
@@ -56,7 +51,7 @@ export default function AnnouncementsPage() {
 
         <Stack
           alignItems="stretch"
-          sx={{ width: "100%", mt: 2 }}
+          sx={{ width: "100%"}}
           divider={<Divider flexItem />}
         >
           {getAnnouncementsResults.data?.getAllAnnouncements
@@ -69,8 +64,7 @@ export default function AnnouncementsPage() {
               <AnnouncementModule key={m.id} id={m.id} title={m.title} />
             ))}
         </Stack>
-        </Box>
-      </AdminPage>
+      </Stack>
     </RequestWrapper>
   );
 }
