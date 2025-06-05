@@ -57,3 +57,4 @@ jobs:
         run: npm run build:server && npm run knex:migrate:latest DEBUG=knex:tx
         env:
           DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
+          NODE_ENV: "staging"
