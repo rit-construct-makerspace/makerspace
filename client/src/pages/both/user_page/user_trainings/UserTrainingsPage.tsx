@@ -50,6 +50,7 @@ export default function UserTraingingsPage() {
             width="fit-content"
             divider={<Divider orientation="horizontal" flexItem/>}
         >
+            <title>{`${user.firstName}'s Trainings | Make @ RIT`}</title>
             {/* Trainings */}
             <RequestWrapper2
                 result={getAllModules}
