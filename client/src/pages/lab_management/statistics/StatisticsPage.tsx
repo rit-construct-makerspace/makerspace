@@ -68,6 +68,7 @@ export default function StatisticsPage() {
   return (
     <AdminPage>
       <Box margin="25px">
+        <title>Statistics | Make @ RIT</title>
         <Typography variant="h4">Statistics</Typography>
         <Box>
           <Typography variant="h4">Today's Numbers</Typography>
