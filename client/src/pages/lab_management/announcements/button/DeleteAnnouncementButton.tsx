@@ -17,7 +17,7 @@ export default function DeleteAnnouncementButton({onDelete}: DeleteAnnouncementB
 
   return (
     <Button
-      variant="outlined"
+      variant="contained"
       startIcon={<DeleteOutlineIcon />}
       color="error"
       onClick={handleClick}
