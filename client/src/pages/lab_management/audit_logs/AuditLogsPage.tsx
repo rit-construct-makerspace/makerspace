@@ -158,6 +158,7 @@ export default function LogPage() {
 
   return (
     <Box margin="25px">
+      <title>History | Make @ RIT</title>
       <Stack direction="row" justifyContent="space-between" alignItems="baseline">
         <Typography variant="h4">History</Typography>
         <Button startIcon={<PersonAddIcon />} color="secondary" onClick={() => setManualSignInModal(true)}>Manual Room Sign-in</Button>

@@ -23,6 +23,7 @@ export default function ReadersPage() {
 
   return (
     <Box padding="20px">
+      <title>Readers | Make @ RIT</title>
       <Stack direction="row" spacing={2}>
         <SearchBar
           placeholder="Search access devices"

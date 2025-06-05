@@ -45,9 +45,9 @@ export function ToolItemPage() {
   }
   
   return (
-    <AdminPage>
-      <Box padding="25px">
+    <Box padding="25px">
       {/* <ToolItemsByUser handleReturnItemClick={handleReturnInstanceClick} /> */}
+      <title>Tools | Make @ RIT</title>
       <Stack direction="row" justifyContent="space-between" alignItems="baseline" paddingBottom="10px">
         <Typography variant="h4">Tools</Typography>
         {isManager(currentUser) && <Button startIcon={<AddIcon />} variant="outlined" color="primary" onClick={() => navigate(`/admin/tools/type`)}>Create Type</Button>}
@@ -68,7 +68,6 @@ export function ToolItemPage() {
 
       {loanItem && currentType && <LoanToolItemModal item={loanItem} setItem={setLoanItem} type={currentType} />}
       {returnItem && currentType && <ReturnToolItemModal item={returnItem} setItem={setReturnItem} type={currentType} />}
-      </Box>
-    </AdminPage>
+    </Box>
   );
 }

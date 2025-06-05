@@ -2,13 +2,14 @@ import { useState } from "react";
 import HistoryIcon from "@mui/icons-material/History";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_ANNOUNCEMENTS, CREATE_ANNOUNCEMENT } from "../../../queries/announcementsQueries";
-import { Button, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
 import DeleteMaterialButton from "../inventory/DeleteMaterialButton";
 import SaveIcon from "@mui/icons-material/Save";
 import { useNavigate } from "react-router-dom";
 import Page from "../../Page";
 import AdminPage from "../../AdminPage";
+import CloseIcon from '@mui/icons-material/Close';
 
 
 interface InputErrors {
@@ -53,8 +54,9 @@ export default function NewAnnouncementPage() {
     };
 
     return (
-        <AdminPage title={""} maxWidth="1250px">
-            <Typography variant="h5" mb={2}>
+        <Stack padding={"25px"} spacing={2}>
+            <title>New Announcment | Make @ RIT</title>
+            <Typography variant="h5">
                 New Announcement
             </Typography>
             <Stack direction="row" spacing={2}>
@@ -67,29 +69,29 @@ export default function NewAnnouncementPage() {
                     />
                     <Stack direction="row" spacing={2}>
                         <TextField
-                        label="Description"
-                        sx={{ flex: 1 }}
-                        type="string"
-                        value={newDescription ?? ""}
-                        error={inputErrors.description}
-                        onChange={(e) => setNewDescription(e.target.value)}
+                            label="Description"
+                            sx={{ flex: 1 }}
+                            type="string"
+                            value={newDescription ?? ""}
+                            error={inputErrors.description}
+                            onChange={(e) => setNewDescription(e.target.value)}
+                            multiline
+                            minRows={3}
                         />
                     </Stack>
                 </Stack>
             </Stack>
 
-            <Stack direction="row" justifyContent="space-between" mt={4}>
-                <Stack direction="row" spacing={2}>
-
-                    <Button variant="outlined" startIcon={<HistoryIcon />}>
-                        View Logs
-                    </Button>
-                </Stack>
+            <Stack direction="row" justifyContent="flex-end" spacing={2}>
+                <Button startIcon={<CloseIcon/>} variant="contained" color="error" onClick={() => navigate("/admin/announcements")}>
+                    Cancel
+                </Button>
 
                 <LoadingButton
                     loading={mutation.loading}
                     size="large"
                     variant="contained"
+                    color="success"
                     startIcon={<SaveIcon />}
                     sx={{ ml: "auto" }}
                     onClick={handleSaveClick}
@@ -97,6 +99,6 @@ export default function NewAnnouncementPage() {
                     Save
                 </LoadingButton>
             </Stack>
-        </AdminPage>
+        </Stack>
     );
 }

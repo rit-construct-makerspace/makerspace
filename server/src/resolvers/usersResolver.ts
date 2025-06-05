@@ -189,7 +189,7 @@ const UsersResolvers = {
         expectedGraduation: string;
       },
       { ifStaffOrSelf }: ApolloContext) =>
-      ifStaffOrSelf(async (user) => {
+      ifStaffOrSelf(Number(args.userID), async () => {
         return await UserRepo.updateStudentProfile({
           userID: Number(args.userID),
           pronouns: args.pronouns,
