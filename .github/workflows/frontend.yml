@@ -4,10 +4,10 @@ name: Frontend
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [master, heroku-deploy]
+    branches: [main, heroku-deploy]
     paths: ["client/**"]
   pull_request:
-    branches: [master, heroku-deploy]
+    branches: [main, heroku-deploy]
     paths: ["client/**"]
 
   # Allows you to run this workflow manually from the Actions tab
