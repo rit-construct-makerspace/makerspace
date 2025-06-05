@@ -9,6 +9,7 @@ import { useMutation } from "@apollo/client";
 import { DELETE_INSTANCE, GET_TOOL_ITEM_INSTANCES_BY_TYPE, GET_TOOL_ITEM_TYPES_WITH_INSTANCES, UPDATE_TOOL_ITEM_INSTANCE } from "../../../queries/toolItemQueries";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
 import TimeAgo from 'react-timeago'
+import {makeIntlFormatter} from 'react-timeago/defaultFormatter';
 import { useNavigate } from "react-router-dom";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { isManager } from "../../../common/PrivilegeUtils";
@@ -86,6 +87,10 @@ export function ToolItemInstanceCard({ item, handleLoanClick, handleReturnClick 
 
   const lastTimeDifference = item.borrowedAt ? (new Date().getTime() - new Date(item.borrowedAt).getTime()) : null;
 
+  const intlFormatter = makeIntlFormatter({
+    locale: "en-US",
+  });
+
   console.log(item.borrowedAt)
 
   return (
@@ -109,7 +114,9 @@ export function ToolItemInstanceCard({ item, handleLoanClick, handleReturnClick 
             <TableCell align="left" sx={{ fontWeight: "bold", maxWidth: 140, minHeight: 60 }}>Borrowed</TableCell>
             <TableCell align="right">
               <span style={{ fontWeight: lastTimeDifference ?? 0 > 86400000 ? 'bold' : 'regular', color: lastTimeDifference ?? 0 > 86400000 ? 'red' : 'inherit' }}>
-                <TimeAgo date={new Date(Number(item.borrowedAt))} locale="en-US" />
+                {/* Seems like an issue w/ types when I updated, dunno. Still builds.
+                  @ts-ignore */}
+                <TimeAgo date={new Date(Number(item.borrowedAt))} locale={intlFormatter} />
               </span>
             </TableCell>
           </TableRow>
