@@ -98,7 +98,7 @@ export default function ReaderCard({reader, makerspaceID}: ReaderCardProps) {
             component="div"
             sx={{ lineHeight: 1, mb: 1 }}
           >
-            <b>Device ID: </b>{reader.id}
+            <b>Reader ID: </b>{reader.id}
             <br></br>
             <b>Machine: </b> 
             {
