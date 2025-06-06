@@ -184,8 +184,8 @@ export default function ReaderCard({reader, makerspaceID}: ReaderCardProps) {
             </Stack>
 
           </Typography>
-          <Stack direction={"row"}>
-            <Select defaultValue={"State"} onChange={handleChange}>
+          <Stack spacing={1} alignItems="center">
+            <Select defaultValue={"State"} onChange={handleChange} fullWidth>
               <MenuItem value="State">State</MenuItem>
               <MenuItem value="Idle">Idle</MenuItem>
               <MenuItem value="Unlocked">Unlocked</MenuItem>
@@ -196,7 +196,7 @@ export default function ReaderCard({reader, makerspaceID}: ReaderCardProps) {
               <MenuItem value="Restart">Restart</MenuItem>
             </Select>
             <Box>
-              <Stack direction={"column"} spacing={0.5} color={"secondary"} mt={1}>
+              <Stack direction={"row"} spacing={2}>
                 <Typography variant="body2"><b>BEVer:</b> {reader.BEVer ?? "NULL"}</Typography>
                 <Typography variant="body2"><b>FEVer:</b> {reader.FEVer ?? "NULL"}</Typography>
                 <Typography variant="body2"><b>HWVer:</b> {reader.HWVer ?? "NULL"}</Typography>
