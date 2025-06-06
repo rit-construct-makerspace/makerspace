@@ -18,6 +18,8 @@ import GET_ROOMS from "../../../queries/roomQueries";
 import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
 import { IDENTIFY_READER, Reader, SET_READER_STATE } from "../../../queries/readersQueries";
+import { GET_ROOM } from "../../makerspace_page/MonitorRoomPage";
+import RequestWrapper2 from "../../../common/RequestWrapper2";
 
 interface ReaderCardProps {
     reader: Reader
@@ -59,7 +61,7 @@ export default function ReaderCard({reader, makerspaceID}: ReaderCardProps) {
     });
   const machine = machineResult?.data?.correspondingEquipment;
     
-  const rooms = useQuery(GET_ROOMS);
+  const room = useQuery(GET_ROOM);
     
   const now = new Date();
   const lastTimeDifference = now.getTime() - (new Date(reader.lastStatusTime).getTime());
@@ -97,21 +99,6 @@ export default function ReaderCard({reader, makerspaceID}: ReaderCardProps) {
             sx={{ lineHeight: 1, mb: 1 }}
           >
             <b>Device ID: </b>{reader.id}
-            <br></br>
-            <b>Zone(s): </b>
-            {
-              reader.zone?.split(",")?.map(function(zoneStr) {
-                const zoneNum = parseInt(zoneStr);
-                var code = "0:none:none:"
-                if (rooms.data != null && reader.zone != null && reader.zone !== ''){
-                  const room = rooms.data.rooms.find((room: { id: number; }) => Number(room.id) === zoneNum)
-                  code = `room:${zoneNum}:${room.name}`    
-                }
-                return (
-                  <span><AuditLogEntity entityCode={code}></AuditLogEntity><br></br></span>
-                )
-              })
-            }
             <br></br>
             <b>Machine: </b> 
             {
