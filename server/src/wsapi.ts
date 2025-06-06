@@ -3,12 +3,12 @@ import * as ws from "ws";
 import { createLog } from "./repositories/AuditLogs/AuditLogRepository.js";
 import { createReaderFromSN, getReaderByID, getReaderByName, getReaderBySN, updateReaderStatus } from "./repositories/Readers/ReaderRepository.js";
 import { EquipmentRow, ReaderRow, UserRow } from "./db/tables.js";
-import { getUserByCardTagID, getUsersFullName } from "./repositories/Users/UserRepository.js";
+import { getUserByCardTagID, getUserManagerPerms, getUsersFullName } from "./repositories/Users/UserRepository.js";
 import { getEquipmentByID, getMissingTrainingModules, hasAccessByID } from "./repositories/Equipment/EquipmentRepository.js";
 import { EntityNotFound } from "./EntityNotFound.js";
 import { Privilege, User } from "./schemas/usersSchema.js";
 import { createEquipmentSession, setLatestEquipmentSessionLength } from "./repositories/Equipment/EquipmentSessionsRepository.js";
-import { hasSwipedToday } from "./repositories/Rooms/RoomRepository.js";
+import { getRoomByID, hasSwipedToday } from "./repositories/Rooms/RoomRepository.js";
 import { isApproved } from "./repositories/Equipment/AccessChecksRepository.js";
 import { getInstanceByReaderID } from "./repositories/Equipment/EquipmentInstancesRepository.js";
 import { randomInt } from "crypto";
@@ -264,12 +264,26 @@ async function authorizeUid(uid: string, readerId: number, inResponse: ShlugResp
             return inResponse;
         }
 
-        //Staff bypass. Skip Welcome and training check.
-        if (user.privilege == Privilege.STAFF) {
-            wsApiLog("{user} has activated {access_device} - {equipment} with STAFF access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: reader?.id, label: reader?.name }, { id: machine.id, label: machine.name });
+        //Admin bypass. Skip Welcome and training check.
+        if (user.admin) {
+            wsApiLog("{user} has activated {access_device} - {equipment} with ADMIN access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: reader?.id, label: reader?.name }, { id: machine.id, label: machine.name });
             createEquipmentSession(machine.id, user.id, reader.name ?? undefined);
             inResponse.Verified = 1;
             return inResponse;
+        }
+
+        // Find Makerspace
+        const machineMakerspace = (await getRoomByID(machine.roomID))?.zoneID
+
+        // Manager bypass. Skip welcome and training check.
+        if (typeof(machineMakerspace) === "number") {
+            const userManagerPerms = await getUserManagerPerms(user.id);
+            if (userManagerPerms.includes(machineMakerspace)) {
+                wsApiLog("{user} has activated {access_device} - {equipment} with MANAGER access", "auth", { id: user.id, label: getUsersFullName(user) }, { id: reader?.id, label: reader?.name }, { id: machine.id, label: machine.name });
+                createEquipmentSession(machine.id, user.id, reader.name ?? undefined);
+                inResponse.Verified = 1;
+                return inResponse;
+            }
         }
 
         //If needs welcome, check that room swipe has occured in the zone today
