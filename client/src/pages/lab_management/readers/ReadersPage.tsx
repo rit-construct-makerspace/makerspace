@@ -10,6 +10,7 @@ import ReaderCard from "./ReaderCard";
 import AdminPage from "../../AdminPage";
 import { useCurrentUser } from "../../../common/CurrentUserProvider";
 import AddIcon from '@mui/icons-material/Add';
+import { isStaff } from "../../../common/PrivilegeUtils";
 
 
 export default function ReadersPage() {
@@ -32,7 +33,7 @@ export default function ReadersPage() {
           onClear={() => setSearchText("")}
         />
         {
-          (user.privilege === "STAFF" || user.privilege === "MENTOR") ? 
+          isStaff(user) ? 
           <Button color="success" variant="contained" onClick={()=>{navigate("/admin/newreader")}}><AddIcon/>Pair New Reader</Button> 
           : null
         }
