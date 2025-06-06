@@ -97,6 +97,7 @@ export default function ReaderCard({reader, makerspaceID}: ReaderCardProps) {
             variant="body2"
             component="div"
             sx={{ lineHeight: 1, mb: 1 }}
+            noWrap
           >
             <b>Reader ID: </b>{reader.id}
             <br></br>
