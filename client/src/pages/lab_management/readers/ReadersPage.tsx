@@ -29,6 +29,7 @@ export default function ReadersPage() {
           placeholder="Search access devices"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
+          onClear={() => setSearchText("")}
         />
         {
           (user.privilege === "STAFF" || user.privilege === "MENTOR") ? 
@@ -47,7 +48,7 @@ export default function ReadersPage() {
               .toLocaleLowerCase()
               .includes(searchText.toLocaleLowerCase())
           ).map((reader: Reader) => (
-            <Grid key={reader.id}>
+            <Grid key={reader.id} alignItems="stretch">
               <ReaderCard 
                 reader={reader}
                 makerspaceID={makerspaceID ?? "0"}/>
