@@ -5,7 +5,6 @@ import {
   CardHeader,
   Checkbox,
   Link,
-  makeStyles,
   MenuItem,
   Select,
   Stack,
@@ -14,12 +13,9 @@ import {
 import { GET_CORRESPONDING_MACHINE_BY_READER_ID_OR_MACHINE_ID } from "../../../queries/equipmentQueries";
 import RequestWrapper from "../../../common/RequestWrapper";
 import AuditLogEntity from "../audit_logs/AuditLogEntity";
-import GET_ROOMS from "../../../queries/roomQueries";
 import { useQuery, useMutation } from "@apollo/client";
 import TimeAgo from 'react-timeago'
 import { IDENTIFY_READER, Reader, SET_READER_STATE } from "../../../queries/readersQueries";
-import { GET_ROOM } from "../../makerspace_page/MonitorRoomPage";
-import RequestWrapper2 from "../../../common/RequestWrapper2";
 
 interface ReaderCardProps {
     reader: Reader
@@ -60,8 +56,6 @@ export default function ReaderCard({reader, makerspaceID}: ReaderCardProps) {
       variables: {readerid: reader.id, id: reader.machineID }
     });
   const machine = machineResult?.data?.correspondingEquipment;
-    
-  const room = useQuery(GET_ROOM);
     
   const now = new Date();
   const lastTimeDifference = now.getTime() - (new Date(reader.lastStatusTime).getTime());
