@@ -53,7 +53,7 @@ export function Dashboard() {
                         marginLeft="0px"
                     >
                         {sortedZones.map((zone: ZoneWithHours) => (
-                            <Grid marginTop={isMobile ? "10px" : undefined}>
+                            <Grid gap={2}>
                                 <ZoneCard 
                                     id={zone.id}
                                     name={zone.name}
