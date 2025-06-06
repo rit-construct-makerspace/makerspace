@@ -1,18 +1,13 @@
 import { useState } from "react";
-import { Button, Grid, Stack, Typography } from "@mui/material";
-import Page from "../../Page";
+import { Box, Button, Grid, Stack, Typography } from "@mui/material";
 import SearchBar from "../../../common/SearchBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { GET_EQUIPMENTS, GET_ARCHIVED_EQUIPMENTS } from "../../../queries/equipmentQueries";
-import { ObjectSummary } from "../../../types/Common";
 import RequestWrapper from "../../../common/RequestWrapper";
 import EditableEquipmentCard from "./EditableEquipmentCard";
 import Equipment from "../../../types/Equipment";
 import AdminPage from "../../AdminPage";
-import EquipmentModal from "../../maker/equipment_modal/EquipmentModal";
-import MaintenanceLogModal from "./ResolutionLog";
-import IssueLogModal from "./IssueLogModal";
 
 export default function ManageEquipmentPage({ showLogs }: { showLogs?: boolean }) {
   const { id, logid } = useParams<{ id: string, logid: string }>();
@@ -26,7 +21,8 @@ export default function ManageEquipmentPage({ showLogs }: { showLogs?: boolean }
   const url = "/admin/equipment/";
 
   return (
-    <AdminPage title="Equipment" maxWidth="1250px">
+    <Box padding="25px">
+      <title>Manage Equipment | Make @ RIT</title>
       <Stack
         spacing={2}
       >
@@ -89,6 +85,6 @@ export default function ManageEquipmentPage({ showLogs }: { showLogs?: boolean }
           </Grid>
         </RequestWrapper>
       </Stack>
-    </AdminPage>
+    </Box>
   );
 }

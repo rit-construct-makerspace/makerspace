@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PublishTrainingModuleButton from "../training_modules/PublishTrainingModuleButton";
 import ArchiveTrainingModuleButton from "../training_modules/ArchiveTrainingModuleButton";
-import { DropResult } from "react-beautiful-dnd";
+import { DropResult } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 import AdminPage from "../../AdminPage";
 interface EditModulePageProps {

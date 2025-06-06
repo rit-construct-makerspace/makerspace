@@ -47,6 +47,7 @@ export function Dashboard() {
 
     return (
         <Box>
+            <title>Make @ RIT</title>
             <RequestWrapper loading={incrementSiteVisits.loading} error={incrementSiteVisits.error}><></></RequestWrapper>
             {/* Zones */}
             <RequestWrapper2 result={getZonesResult} render={(data) => {

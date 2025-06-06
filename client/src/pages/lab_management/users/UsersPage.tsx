@@ -51,6 +51,7 @@ export default function UsersPage() {
       error={queryResult.error}
     >
       <Box margin="25px">
+        <title>People | Make @ RIT</title>
       <Typography variant="h4">People</Typography>
       <Stack direction={"row"} spacing={1} sx={{mb: 2}}>
         <SearchBar 

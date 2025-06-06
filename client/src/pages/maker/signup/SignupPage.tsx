@@ -122,6 +122,7 @@ export default function SignupPage() {
 
   return (
     <Stack sx={{ maxWidth: 715, mx: "auto", mt: 8 }}>
+      <title>Signup | Make @ RIT</title>
       <Typography variant="h3">Welcome to The SHED at RIT!</Typography>
       <Typography variant="body1" mt={4}>
         The SHED is the premier makerspace at RIT. Join a growing community

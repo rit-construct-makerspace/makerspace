@@ -35,6 +35,7 @@ export default function MakerspacePage() {
 
             return (
                 <Stack spacing={"2"} padding="20px" divider={<Divider orientation="horizontal" flexItem/>}>
+                    <title>{`${fullZone.name} | Make @ RIT`}</title>
                     <Stack direction="row" justifyContent="center" alignItems="center" spacing={2} width="auto">
                         <Typography variant="h3" align="center">{fullZone.name}</Typography>
                         {
@@ -59,7 +60,7 @@ export default function MakerspacePage() {
                             onClear={() => setEquipmentSearch("")}
                         />
                         {
-                            user.privilege === "STAFF"
+                            isManagerFor(user, Number(makerspaceID))
                             ? <Button variant="contained" color="success" startIcon={<AddIcon/>} onClick={() => (navigate("/admin/equipment/new"))}>
                                 Create New Equipment
                             </Button>

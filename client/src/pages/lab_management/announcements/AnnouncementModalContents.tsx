@@ -1,5 +1,6 @@
 import { ChangeEvent, useState } from "react";
 import {
+  Box,
   Button,
   Stack,
   TextField,
@@ -70,8 +71,8 @@ export default function AnnouncementModalContents({
   const title = `${isNewAnnouncement ? "New" : "Edit"} Announcement`;
 
   return (
-    <AdminPage title={""} maxWidth="1250px">
-      <Typography variant="h5" mb={2}>
+    <Stack padding="25px" spacing={2}>
+      <Typography variant="h5">
         {title}
       </Typography>
       <Stack direction="row" spacing={2}>
@@ -97,7 +98,7 @@ export default function AnnouncementModalContents({
         </Stack>
       </Stack>
 
-      <Stack direction="row" justifyContent="space-between" mt={4}>
+      <Stack direction="row" justifyContent="flex-end" spacing={2}>
         {!isNewAnnouncement && (
           <Stack direction="row" spacing={2}>
             <DeleteAnnouncementButton 
@@ -110,6 +111,7 @@ export default function AnnouncementModalContents({
           loading={loading}
           size="large"
           variant="contained"
+          color="success"
           startIcon={<SaveIcon />}
           sx={{ ml: "auto" }}
           onClick={handleSaveClick}
@@ -117,6 +119,6 @@ export default function AnnouncementModalContents({
           Save
         </LoadingButton>
       </Stack>
-    </AdminPage>
+    </Stack>
   );
 }

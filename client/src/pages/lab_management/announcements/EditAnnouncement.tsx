@@ -43,14 +43,17 @@ export default function EditAnnouncement() {
 
   return (
     <RequestWrapper loading={query.loading || del.loading} error={query.error || del.error} minHeight={322}>
-      <AnnouncementModalContents
-        isNewAnnouncement={false}
-        announcementDraft={announcementDraft}
-        setAnnouncementDraft={setAnnouncementDraft}
-        onSave={updateAnnouncement}
-        onDelete={deleteAnnouncement}
-        loading={mutation.loading || del.loading}
-      />
+      <>
+        <title>{`Edit ${announcementDraft.title ?? "Announcement"} | Make @ RIT`}</title>
+        <AnnouncementModalContents
+          isNewAnnouncement={false}
+          announcementDraft={announcementDraft}
+          setAnnouncementDraft={setAnnouncementDraft}
+          onSave={updateAnnouncement}
+          onDelete={deleteAnnouncement}
+          loading={mutation.loading || del.loading}
+        />
+      </>
     </RequestWrapper>
   );
 }

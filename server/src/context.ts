@@ -44,7 +44,7 @@ export interface ApolloContext {
   user: CurrentUser | undefined;
   logout: () => void;
   ifAuthenticated: (callback: (user: CurrentUser) => any) => any;
-  ifStaffOrSelf: (callback: (user: CurrentUser) => any) => any;
+  ifStaffOrSelf: (targetedUserID: number, callback: (user: CurrentUser) => any) => any;
   isAdmin: (callback: (user: CurrentUser) => any) => any;
   isManager: (callback: (user: CurrentUser) => any) => any;
   isStaff: (callback: (user: CurrentUser) => any) => any;
@@ -236,7 +236,8 @@ const context = async ({ req }: { req: any }) => ({
   isManagerFor: isManagerFor(req.user),
   isStaffFor: isStaffFor(req.user),
   isTrainerFor: isTrainerFor(req.user),
-  ifAuthenticated: ifAuthenticated(req.user)
+  ifAuthenticated: ifAuthenticated(req.user),
+  ifStaffOrSelf: ifStaffOrSelf(req.user)
 });
 
 export default context;

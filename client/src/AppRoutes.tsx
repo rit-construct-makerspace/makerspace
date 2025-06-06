@@ -1,4 +1,4 @@
-import { Navigate, Outlet, Route, Routes, useNavigate, useParams } from "react-router-dom";
+import { Outlet, Route, Routes, useParams } from "react-router-dom";
 import StorefrontPreviewPage from "./pages/lab_management/storefront_preview/StorefrontPreviewPage";
 import EditEquipmentPage from "./pages/lab_management/manage_equipment/EditEquipmentPage";
 import TrainingModulesPage from "./pages/lab_management/training_modules/TrainingModulesPage";
@@ -13,7 +13,6 @@ import SignupPage from "./pages/maker/signup/SignupPage";
 import QuizPage from "./pages/maker/take_quiz/QuizPage";
 import QuizResults from "./pages/maker/take_quiz/QuizResults";
 import AnnouncementsPage from "./pages/lab_management/announcements/AnnouncementsPage";
-import EditAnnouncementSample from "./pages/lab_management/announcements/EditAnnouncementPage_sample";
 import ManageEquipmentPage from "./pages/lab_management/manage_equipment/ManageEquipmentPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import EditActiveModulePage from "./pages/lab_management/edit_module/EditActiveModulePage";
@@ -38,7 +37,6 @@ import ManageMakerspacePage from "./pages/makerspace_page/ManageMakerspacePage";
 import { useCurrentUser } from "./common/CurrentUserProvider";
 import StaffBar from "./pages/makerspace_page/StaffBar";
 import { isAdmin, isManagerFor, isStaffFor } from "./common/PrivilegeUtils";
-import { Alert } from "@mui/material";
 import NoPrivilegePage from "./pages/NoPrivilegePage";
 
 // This is where we map the browser's URL to a
@@ -118,14 +116,13 @@ export default function AppRoutes() {
                 <Route path="/makerspace/:makerspaceID/history" element={<AuditLogsPage />}/>
                 <Route path="/makerspace/:makerspaceID/readers" element={<ReadersPage/>}/>
               </Route>
-            </Route>
+            </Route>n
 
             {/* Routes for admins */}
             <Route element={<AdminRoute/>}>
               <Route path="/admin/announcements" element={<AnnouncementsPage />} />
               <Route path="/admin/announcements/:id" element={<EditAnnouncement />} />
               <Route path="/admin/announcements/new" element={<NewAnnouncementPage />} />
-              <Route path="/admin/announcements/sample" element={<EditAnnouncementSample />} />
 
               <Route path="/admin/newreader" element={<NewReaderPage />} />
             </Route>

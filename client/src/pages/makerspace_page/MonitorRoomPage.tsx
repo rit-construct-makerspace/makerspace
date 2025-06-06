@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  Box,
   Button,
   Stack,
   TextField,
@@ -16,6 +17,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useCurrentUser } from "../../common/CurrentUserProvider";
 import SaveIcon from '@mui/icons-material/Save';
 import { isManagerFor } from "../../common/PrivilegeUtils";
+import { useIsMobile } from "../../common/IsMobileProvider";
 
 const StyledRecentSwipes = styled.div`
   display: flex;
@@ -88,27 +90,16 @@ const url = "/admin/equipment/";
 export default function ManageRoomPage() {
   const { makerspaceID } = useParams<{ makerspaceID: string }>();
   const { roomID } = useParams<{ roomID: string }>();
+
   const user = useCurrentUser();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const queryResult = useQuery(GET_ROOM, { variables: { id: roomID } });
   const [updateRoomName] = useMutation(UPDATE_ROOM_NAME);
   const [deleteRoom] = useMutation(DELETE_ROOM);
 
   const [roomName, setRoomName] = useState("");
-
-  const [windowWidth, setWindowWidth] = useState<number>(window.innerWidth);
-  function handleWindowSizeChange() {
-      setWindowWidth(window.innerWidth);
-  }
-  useEffect(() => {
-      window.addEventListener('resize', handleWindowSizeChange);
-      return () => {
-          window.removeEventListener('resize', handleWindowSizeChange);
-      }
-  }, []);
-
-  const isMobile = windowWidth <= 1100;
 
   async function handleUpdateRoomName() {
     await updateRoomName({
@@ -145,10 +136,11 @@ export default function ManageRoomPage() {
         }
 
         return (
-        <AdminPage>
+        <Box>
+          <title>{`Manage ${room.name} | Make @ RIT`}</title>
           <Stack direction="column" spacing={2} margin="25px">
             <Stack direction={isMobile ? "column" : "row"} justifyContent={isMobile ? undefined : "space-between"} alignItems="flex-end" spacing={2}>
-              <Typography variant={isMobile ? "h4" : "h3"}>Manage {room.name} [ID: {roomID}]</Typography>
+              <Typography variant={"h4"}>Manage {room.name} [ID: {roomID}]</Typography>
               {
                 isManagerFor(user, Number(roomID))
                 ? <Button color="error" variant="contained" startIcon={<DeleteIcon/>} onClick={handleDeleteRoom}>
@@ -167,7 +159,7 @@ export default function ManageRoomPage() {
               </Stack>
             </Stack>
           </Stack>
-        </AdminPage>
+        </Box>
       )}}
     />
   );
