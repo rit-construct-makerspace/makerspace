@@ -22,6 +22,8 @@ function getEntityUrl(entityType: string, id: string) {
       return "/admin/readers";
     case "machine":
       return "/admin/readers";
+    case "makerspace":
+      return `/makerspace/${id}`;
     default:
       return "/admin/history";
   }
