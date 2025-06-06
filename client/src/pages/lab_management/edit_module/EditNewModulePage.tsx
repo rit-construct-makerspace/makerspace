@@ -18,7 +18,7 @@ import QuizBuilder from "./quiz/QuizBuilder";
 import { toast } from 'react-toastify';
 import SaveIcon from "@mui/icons-material/Save";
 import { ChangeEventHandler } from "react";
-import { DropResult } from "react-beautiful-dnd";
+import { DropResult } from "@hello-pangea/dnd";
 import AdminPage from "../../AdminPage";
 
 

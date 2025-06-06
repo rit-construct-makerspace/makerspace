@@ -12,7 +12,7 @@ import YouTubeEmbedDraft from "./YouTubeEmbedDraft";
 import ImageEmbedDraft from "./ImageEmbedDraft";
 import TextDraft from "./TextDraft";
 import { Module, QuizItem, QuizItemType } from "../../../../types/Quiz";
-import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "@hello-pangea/dnd";
 import EmptyPageSection from "../../../../common/EmptyPageSection";
 import { Moduledraft } from "../../../../types/Quiz";
 import PdfEmbedDraft from "./PdfEmbedDraft";

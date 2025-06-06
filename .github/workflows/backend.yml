@@ -2,12 +2,12 @@ name: Backend
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
+  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [master, heroku-deploy]
+    branches: [main, heroku-deploy]
     paths: ["server/**"]
   pull_request:
-    branches: [master, heroku-deploy]
+    branches: [main, heroku-deploy]
     paths: ["server/**"]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -57,3 +57,4 @@ jobs:
         run: npm run build:server && npm run knex:migrate:latest DEBUG=knex:tx
         env:
           DATABASE_URL: postgresql://pguser:pgpassword@localhost:5433/pgdb
+          NODE_ENV: "development"

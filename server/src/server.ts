@@ -763,7 +763,7 @@ async function startServer() {
     console.log('Wiping daily records...');
     if (API_DEBUG_LOGGING) await createLog('It is now 4:00am. Wiping Daily Temp Records...', "server")
     await setDataPointValue(1, 0).then(async () => await createLog('Daily Visits reset.', "server"));
-    await pruneNullLengthEquipmentSessions().then(async () => await createLog('Unfinished Equipment Sessions pruned.', "server"));;
+    //await pruneNullLengthEquipmentSessions().then(async () => await createLog('Unfinished Equipment Sessions pruned.', "server"));;
   });
 
 
