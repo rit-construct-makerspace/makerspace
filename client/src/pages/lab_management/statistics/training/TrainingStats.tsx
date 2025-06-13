@@ -22,6 +22,7 @@ const GET_VERBOSE_TRAINING_SUBMISSIONS = gql`
       id
       moduleID
       moduleName
+      quiz
       makerID
       makerName
       summary
@@ -35,6 +36,7 @@ const GET_VERBOSE_TRAINING_SUBMISSIONS = gql`
 export interface VerboseTrainingSubmission {
   id: number;
   moduleID: number;
+  quiz: { id: string, type: string, text: string }[];
   makerID: number;
   summary: {questionNum: string, questionText: string, correct: boolean}[];
   submissionDate: Date;
