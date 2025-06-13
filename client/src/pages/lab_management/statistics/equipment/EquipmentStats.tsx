@@ -186,7 +186,7 @@ export function EquipmentStats() {
         <RequestWrapper2 result={getEquipment} render={function (data: any): ReactElement {
           return (
             <FormControl sx={{ width: '25em' }}>
-              <InputLabel id="es-stat_equipment-select_label">Equipment</InputLabel>
+              <InputLabel id="es-stat_equipment-select_label">Equipment (Default is all)</InputLabel>
               <Select
                 labelId="es-stat_equipment-select_label"
                 value={equipmentIDs}

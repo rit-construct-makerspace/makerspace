@@ -182,7 +182,7 @@ export function TrainingStats() {
 
         <RequestWrapper loading={getModules.loading} error={getModules.error}>
           <FormControl sx={{ width: '25em' }}>
-            <InputLabel id="es-stat_equipment-select_label">Modules</InputLabel>
+            <InputLabel id="es-stat_equipment-select_label">Modules (Default is all)</InputLabel>
             <Select
               labelId="es-stat_equipment-select_label"
               value={moduleIDs}
