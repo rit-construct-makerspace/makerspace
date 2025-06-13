@@ -22,6 +22,9 @@ export function RoomStatCard({ relevantRoomSwipes: relevantRoomSwipes }: RoomSta
 
   relevantRoomSwipes.forEach((roomSwipe: VerboseRoomSwipe) => {
     const date = new Date(roomSwipe.dateTime);
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
 
     //Increment sum for session's day of week
     sumSwipesPerDayOfWeek[new Date(roomSwipe.dateTime).getDay()]++;
