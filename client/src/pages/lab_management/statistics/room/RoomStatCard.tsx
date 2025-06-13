@@ -53,7 +53,12 @@ export function RoomStatCard({ relevantRoomSwipes: relevantRoomSwipes }: RoomSta
   });
 
   const numDays = (earliestDate && latestDate) ? Math.round(Math.abs((earliestDate - latestDate) / (24 * 60 * 60 * 1000))) : undefined;
-  const numWeeks = numDays ? Math.floor(numDays / 7) : 1;
+  const numWeeks = numDays ? Math.ceil(numDays / 7) : 1;
+
+  //sumSwipesPerDayOfWeek.forEach((sum: number) => console.log(sum))
+  console.log(sumSwipesPerDayOfWeek)
+  console.log("Days " + numDays)
+  console.log("Weeks " + numWeeks)
 
   var avgSwipesPerDayOfWeek = sumSwipesPerDayOfWeek.map((sum: number) => sum / numWeeks);
 
