@@ -174,7 +174,7 @@ const AccessChecksResolver = {
       ),
 
     /**
-     * Purge all unapproved access checks for a specified user and fetch new ones based on ccompleted trainings
+     * Purge all unapproved access checks for a specified user and fetch new ones based on completed trainings
      * @argument userID id of user to filter by
      * @returns void
      * @throws GraphQLError if not MENTOR or STAFF or or hold
@@ -187,7 +187,15 @@ const AccessChecksResolver = {
         const equipmentToCheck = await EquipmentRepo.getEquipment();
         await purgeUnapprovedAccessChecks(args.userID);
         for (const equipment of equipmentToCheck) {
-          if (!equipment.archived && !(await accessCheckExists(args.userID, equipment.id)) && ((await EquipmentRepo.getModulesByEquipment(equipment.id)).length == 0 || (await EquipmentRepo.UserIdHasTrainingModules(args.userID, equipment.id)))) {
+          if (!equipment.requiresInPerson){
+            continue
+          }
+          const liveEquipment = !equipment.archived;
+          const accessCheckAlreadyExists = await accessCheckExists(args.userID, equipment.id);
+          const equipmentHasNoTrainingModules = (await EquipmentRepo.getModulesByEquipment(equipment.id)).length == 0;
+          const userPassedAllTrainingModules = (await EquipmentRepo.UserIdHasTrainingModules(args.userID, equipment.id))
+          const passesTrainingModuleCriteria = (equipmentHasNoTrainingModules || userPassedAllTrainingModules);
+          if (liveEquipment && !accessCheckAlreadyExists && passesTrainingModuleCriteria) {
             await createAccessCheck(args.userID, equipment.id);
           }
         }
