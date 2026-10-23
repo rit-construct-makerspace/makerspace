@@ -10,17 +10,17 @@ import { Alert, CircularProgress, Stack } from "@mui/material";
  * check it everywhere you use it.
  */
 
-interface RequestWrapper2Props {
-  result: useQuery.Result;
+interface RequestWrapper2Props<TData> {
+  result: useQuery.Result<TData>;
   render: (data: any) => ReactElement;
   minHeight?: number;
 }
 
-export default function RequestWrapper2({
+export default function RequestWrapper2<TData = unknown>({
   result: { loading, error, data },
   minHeight = 400,
   render,
-}: RequestWrapper2Props) {
+}: RequestWrapper2Props<TData>) {
   if (!loading && !error && data) return render(data);
 
   return (

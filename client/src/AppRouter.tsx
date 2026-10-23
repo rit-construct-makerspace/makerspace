@@ -51,6 +51,7 @@ import ThemeManagementPage from "./pages/site-settings/ThemeManagementPage";
 import NewThemePage from "./pages/site-settings/NewThemePage";
 import ManageThemePage from "./pages/site-settings/ManageThemePage";
 import EquipmentUserInfo from "./pages/makerspace_page/equipment_pages/EquipmentUserInfo";
+import StaffSchedulePage from "./pages/makerspace_page/StaffSchedulePage";
 
 function AppRoot() {
   return (
@@ -163,6 +164,7 @@ export const routes = [
                       {
                         element: <StaffRoute />,
                         children: [
+                          { path: "/makerspace/:makerspaceID/schedule", element: <StaffSchedulePage /> },
                           { path: "/makerspace/:makerspaceID/trainings", element: <TrainingModulesPage /> },
                           { path: "/makerspace/:makerspaceID/training/new", element: <NewModulePage /> },
                           { path: "/makerspace/:makerspaceID/training/:id", element: <EditActiveModulePage /> },

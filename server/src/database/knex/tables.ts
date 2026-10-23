@@ -437,6 +437,14 @@ export interface StaffRow {
   makerspaceID: number;
 }
 
+export interface StaffShiftRow {
+  id: number;
+  makerspaceID: number;
+  userID: number;
+  start: Date;
+  end: Date;
+}
+
 /** 
  * Table describing which users are Trainers (for equipment)
  */

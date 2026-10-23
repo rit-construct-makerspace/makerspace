@@ -9,6 +9,7 @@ import PaidIcon from '@mui/icons-material/Paid';
 import PeopleIcon from "@mui/icons-material/People";
 import SchoolIcon from "@mui/icons-material/School";
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import RouterIcon from '@mui/icons-material/Router';
 import { ButtonBase, Stack, Typography } from "@mui/material";
@@ -133,6 +134,11 @@ export default function StaffBar() {
           primary={"Reservations"}
           to={`/makerspace/${makerspaceID}/reservations`}
           icon={<CalendarMonthIcon />}
+        />
+        <NavLink
+          primary={"Schedule"}
+          to={`/makerspace/${makerspaceID}/schedule`}
+          icon={<CalendarViewWeekIcon />}
         />
         {
           isManager
